@@ -16,11 +16,11 @@ from src.database_commander import DatabaseCommander
 from src.machine.carriage import create_carriage
 from src.machine.dispensers import create_dispenser
 from src.machine.dispensers.base import BaseDispenser
-from src.machine.dispensers.scheduler import DispenserScheduler, PreparationItem
+from src.machine.dispensers.scheduler import CleaningItem, CleaningScheduler, DispenserScheduler, PreparationItem
 from src.machine.hardware import HardwareContext
 from src.machine.leds import LedController, create_led_controller
 from src.machine.pin_controller import PinController
-from src.machine.reverter import Reverter
+from src.machine.reverter import create_reverter
 from src.machine.rfid import RFIDReader, create_rfid
 from src.machine.scale import create_scale
 from src.models import CocktailStatus, EventType, Ingredient, PreparationResult, PrepareResult
@@ -52,9 +52,11 @@ class MachineController:
     def init_machine(self) -> None:
         _logger.log_header("INFO", "Initializing machine")
         # Stage 1: core hardware + extensions (no dependencies)
+        pin_controller = PinController()
         self.hardware = HardwareContext(
-            pin_controller=PinController(),
+            pin_controller=pin_controller,
             led_controller=LedController(),
+            reverter=create_reverter(cfg.MAKER_PUMP_REVERSION_CONFIG, pin_controller),
             extra=HARDWARE_ADDONS.create_all(),
         )
         # Stage 1b: populate the LED controller singleton from cfg.LED_CONFIG.
@@ -70,7 +72,6 @@ class MachineController:
         # Stage 4: RFID can access pins, leds, extra, scale, AND carriage
         self.hardware.rfid = create_rfid(cfg.RFID_CONFIG, self.hardware)
         RFIDReader().attach(self.hardware.rfid)
-        self.reverter = Reverter(cfg.MAKER_PUMP_REVERSION_CONFIG)
         self.set_up_pumps()
         self.default_led()
         _logger.log_header("INFO", "Machine initialized")
@@ -84,15 +85,27 @@ class MachineController:
         pin flips all pumps, so disallowed slots cannot run forward in parallel).
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
-        items = self._build_clean_items(revert=revert_pumps)
+        items = self._build_cleaning_items(revert=revert_pumps)
         if w is not None:
             w.open_progression_window("Cleaning")
         _logger.log_header("INFO", "Start Cleaning")
-        if revert_pumps:
-            self.reverter.revert_on()
-        self._run_scheduler(w, items, use_carriage=cfg.CARRIAGE_CONFIG.move_during_cleaning)
-        if revert_pumps:
-            self.reverter.revert_off()
+        if revert_pumps and self.hardware.reverter is not None:
+            self.hardware.reverter.revert_on()
+        carriage = self.hardware.carriage if cfg.CARRIAGE_CONFIG.move_during_cleaning else None
+        scheduler = CleaningScheduler(cfg.MAKER_SIMULTANEOUSLY_PUMPS, carriage=carriage)
+
+        def on_progress(progress: int, _: list[float]) -> None:
+            shared.cocktail_status.progress = progress
+            if w is not None:
+                w.change_progression_window(progress)
+                QApplication.processEvents()
+
+        def is_cancelled() -> bool:
+            return shared.cocktail_status.status == PrepareResult.CANCELED
+
+        scheduler.run(items, on_progress, is_cancelled)
+        if revert_pumps and self.hardware.reverter is not None:
+            self.hardware.reverter.revert_off()
         _logger.log_header("INFO", "Done Cleaning")
         if w is not None:
             w.close_progression_window()
@@ -148,12 +161,10 @@ class MachineController:
     ) -> None:
         """Create a scheduler and run the given items."""
         carriage = self.hardware.carriage if use_carriage else None
-        home_position = cfg.CARRIAGE_CONFIG.home_position if carriage is not None else 0
         scheduler = DispenserScheduler(
             cfg.MAKER_SIMULTANEOUSLY_PUMPS,
             verbose=verbose,
             carriage=carriage,
-            home_position=home_position,
         )
 
         def on_progress(progress: int, consumption: list[float]) -> None:
@@ -175,7 +186,8 @@ class MachineController:
         for slot, pump_cfg in enumerate(used_config, start=1):
             dispenser = create_dispenser(slot, pump_cfg, self.hardware)
             self.dispensers[slot] = dispenser
-        self.reverter.initialize_pin()
+        if self.hardware.reverter is not None:
+            self.hardware.reverter.initialize_pin()
 
     def close_all_pumps(self) -> None:
         """Stop all active dispensers."""
@@ -188,7 +200,7 @@ class MachineController:
         HARDWARE_ADDONS.cleanup_all()
         self.hardware.cleanup()
 
-    def _build_clean_items(self, revert: bool = False) -> list[PreparationItem]:
+    def _build_cleaning_items(self, revert: bool = False) -> list[CleaningItem]:
         """Build cleaning items for all active dispensers.
 
         When revert is True, slots whose ingredient is flagged as
@@ -204,12 +216,11 @@ class MachineController:
         for slot, dispenser in self.dispensers.items():
             if slot in skip_slots:
                 continue
-            amount_ml = dispenser.volume_flow * cfg.MAKER_CLEAN_TIME
             items.append(
-                PreparationItem(
+                CleaningItem(
                     dispenser=dispenser,
-                    amount_ml=amount_ml,
-                    pump_speed=100,
+                    duration_seconds=cfg.MAKER_CLEAN_TIME,
+                    revert=revert,
                 )
             )
         return items

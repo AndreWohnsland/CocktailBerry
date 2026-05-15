@@ -108,7 +108,7 @@ async def clean_machine(background_tasks: BackgroundTasks, revert_pumps: bool = 
     raise_when_cocktail_is_in_progress()
     _logger.info("Cleaning started by user request")
     # Reversion only honored when machine is configured for it; ignore the flag otherwise.
-    use_revert = revert_pumps and cfg.MAKER_PUMP_REVERSION_CONFIG.use_reversion
+    use_revert = revert_pumps and cfg.MAKER_PUMP_REVERSION_CONFIG.enabled
     mc = MachineController()
     background_tasks.add_task(mc.clean_pumps, None, use_revert)
     return ApiMessage(message=DH.get_translation("cleaning_started"))

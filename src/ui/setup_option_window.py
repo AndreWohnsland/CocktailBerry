@@ -167,7 +167,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         _logger.info("Cleaning requested over option UI, starting cleaning process")
         revert_pumps = False
-        if cfg.MAKER_PUMP_REVERSION_CONFIG.use_reversion:
+        if cfg.MAKER_PUMP_REVERSION_CONFIG.enabled:
             revert_pumps = DP_CONTROLLER.ask_to_use_reverted_pump()
         mc = MachineController()
         mc.clean_pumps(self.mainscreen, revert_pumps)

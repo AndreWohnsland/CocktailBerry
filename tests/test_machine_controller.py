@@ -171,8 +171,9 @@ class TestController:
         assert data.done is True
         mock_disp.dispense.assert_called_once()
         call_args = mock_disp.dispense.call_args
-        assert call_args[0][0] == 100  # amount_ml
-        assert call_args[0][1] == 100  # pump_speed
+        assert call_args.kwargs["amount_ml"] == 100
+        assert call_args.kwargs["pump_speed"] == 100
+        assert call_args.kwargs["revert"] is False
 
     @patch("src.machine.dispensers.scheduler.time.sleep")
     def test_scheduler_run(self, mock_sleep: MagicMock):
@@ -330,6 +331,7 @@ class TestCarriageScheduler:
         mock_carriage = MagicMock()
         mock_carriage.travel_time.return_value = 0.0
         mock_carriage.wait_after_dispense = 0.0
+        mock_carriage.home_position = 0
         mock_disp1 = _mock_dispenser(1, carriage_position=20)
         mock_disp2 = _mock_dispenser(2, carriage_position=60)
         mock_disp1.dispense.return_value = 10.0
@@ -342,7 +344,7 @@ class TestCarriageScheduler:
             PreparationItem(dispenser=mock_disp2, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
         ]
 
-        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage, home_position=0)
+        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage)
         _current_time, max_time = scheduler.run(items, lambda p, c: None, lambda: False)
 
         # Sequential: 1.0 + 1.0 = 2.0
@@ -360,6 +362,7 @@ class TestCarriageScheduler:
         mock_carriage = MagicMock()
         mock_carriage.travel_time.return_value = 0.0
         mock_carriage.wait_after_dispense = 0.0
+        mock_carriage.home_position = 0
         mock_disp1 = _mock_dispenser(1, carriage_position=80)
         mock_disp2 = _mock_dispenser(2, carriage_position=20)
         mock_disp1.dispense.return_value = 10.0
@@ -372,7 +375,7 @@ class TestCarriageScheduler:
             PreparationItem(dispenser=mock_disp2, amount_ml=10, pump_speed=100, estimated_time=1.0, recipe_order=1),
         ]
 
-        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage, home_position=0)
+        scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage)
         scheduler.run(items, lambda p, c: None, lambda: False)
 
         # Should move to position 20 first (closer to home=0), then 80

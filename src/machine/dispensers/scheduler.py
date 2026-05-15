@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import contextlib
 import heapq
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -36,6 +37,7 @@ class PreparationItem:
     recipe_order: int = 1
     ingredient: Ingredient | None = None
     """Back-reference to the source ingredient. None for non-ingredient tasks like cleaning."""
+    revert: bool = False
 
     def __post_init__(self) -> None:
         if self.estimated_time <= 0.0:
@@ -43,6 +45,15 @@ class PreparationItem:
             if divisor == 0:
                 return
             self.estimated_time = self.amount_ml / divisor
+
+
+@dataclass
+class CleaningItem:
+    """A single time-based cleaning task for the CleaningScheduler."""
+
+    dispenser: BaseDispenser
+    duration_seconds: float
+    revert: bool = False
 
 
 class DispenserScheduler:
@@ -60,12 +71,10 @@ class DispenserScheduler:
         max_concurrent: int,
         verbose: bool = True,
         carriage: CarriageInterface | None = None,
-        home_position: int = 0,
     ) -> None:
         self.max_concurrent = max_concurrent
         self.verbose = verbose
         self._carriage = carriage
-        self._home_position = home_position
         self._next_log_time = 0.0
 
     def run(
@@ -84,8 +93,8 @@ class DispenserScheduler:
         self._next_log_time = 0.0
         groups = _group_by_recipe_order(items)
         if self._carriage is not None:
-            groups = [_order_by_carriage_position(g, self._home_position) for g in groups]
-            max_time = _estimate_carriage_time(groups, self._carriage, self._home_position)
+            groups = [_order_by_carriage_position(g, self._carriage.home_position) for g in groups]
+            max_time = _estimate_carriage_time(groups, self._carriage, self._carriage.home_position)
         else:
             max_time = _estimate_total_time(groups, self.max_concurrent)
         if max_time == 0:
@@ -201,7 +210,12 @@ class DispenserScheduler:
             self._emit_progress(all_items, on_progress)
 
         try:
-            consumption = item.dispenser.dispense(item.amount_ml, item.pump_speed, progress_callback)
+            consumption = item.dispenser.dispense(
+                amount_ml=item.amount_ml,
+                pump_speed=item.pump_speed,
+                revert=item.revert,
+                callback=progress_callback,
+            )
             item.consumption = consumption
             item.done = True
         except Exception:
@@ -229,6 +243,7 @@ class DispenserScheduler:
         _logger.debug(f"{progress:>2}% | Volumes: {pretty}")
 
 
+# TODO: this heavily overlaps with _run_exclusive ->> do we need _run_exclusive or can we merge this?
 def _run_dispenser(data: PreparationItem) -> float:
     """Run a single dispenser. Called in a worker thread."""
 
@@ -236,7 +251,12 @@ def _run_dispenser(data: PreparationItem) -> float:
         data.consumption = consumption_ml
         data.done = is_done
 
-    consumption = data.dispenser.dispense(data.amount_ml, data.pump_speed, callback)
+    consumption = data.dispenser.dispense(
+        amount_ml=data.amount_ml,
+        pump_speed=data.pump_speed,
+        revert=data.revert,
+        callback=callback,
+    )
     data.consumption = consumption
     data.done = True
     return consumption
@@ -301,7 +321,9 @@ def _estimate_carriage_time(
     return round(total, 2)
 
 
-def _order_by_carriage_position(items: list[PreparationItem], home_position: int) -> list[PreparationItem]:
+def _order_by_carriage_position[DispatchItem: (PreparationItem, CleaningItem)](
+    items: list[DispatchItem], home_position: int
+) -> list[DispatchItem]:
     """Order items to minimize total carriage travel distance.
 
     Since positions are on a 1D line (0-100), the optimal order is a monotonic
@@ -318,7 +340,7 @@ def _order_by_carriage_position(items: list[PreparationItem], home_position: int
     return descending
 
 
-def _total_travel(items: list[PreparationItem], home_position: int) -> int:
+def _total_travel(items: Sequence[PreparationItem | CleaningItem], home_position: int) -> int:
     """Calculate total carriage travel: home -> items in order -> home."""
     if not items:
         return 0
@@ -328,3 +350,124 @@ def _total_travel(items: list[PreparationItem], home_position: int) -> int:
         total += abs(positions[i] - positions[i - 1])
     total += abs(positions[-1] - home_position)
     return total
+
+
+# ---------------------------------------------------------------------------
+# Cleaning scheduler — time-based, no volume/scale logic
+# ---------------------------------------------------------------------------
+
+_CLEANING_LARGE_AMOUNT = 2000
+"""Sentinel amount that ensures a dispenser never self-terminates during cleaning.
+
+The scheduler is responsible for stopping dispensers after the configured
+wall-clock duration, so the amount passed to dispense() must never be
+reached naturally.
+"""
+
+_CLEANING_POLL_INTERVAL = 0.05
+"""How often (seconds) the cleaning loop checks elapsed time and cancellation."""
+
+
+class CleaningScheduler:
+    """Schedules time-based pump cleaning.
+
+    Each dispenser runs for a fixed wall-clock duration — no volume
+    calculations or scale interaction. In parallel mode, items are
+    processed in batches of up to *max_concurrent*. With a carriage,
+    items run sequentially with position moves between each.
+    """
+
+    def __init__(
+        self,
+        max_concurrent: int,
+        carriage: CarriageInterface | None = None,
+    ) -> None:
+        self.max_concurrent = max_concurrent
+        self._carriage = carriage
+
+    def run(
+        self,
+        items: list[CleaningItem],
+        on_progress: SchedulerProgressCallback,
+        is_cancelled: CancelCheck,
+    ) -> None:
+        """Execute all cleaning items."""
+        if not items:
+            return
+        if self._carriage is not None:
+            self._run_with_carriage(items, on_progress, is_cancelled)
+            self._carriage.home()
+        else:
+            self._run_parallel(items, on_progress, is_cancelled)
+
+    def _run_parallel(
+        self,
+        items: list[CleaningItem],
+        on_progress: SchedulerProgressCallback,
+        is_cancelled: CancelCheck,
+    ) -> None:
+        """Run items in parallel batches, emitting overall progress."""
+        batches = [items[i : i + self.max_concurrent] for i in range(0, len(items), self.max_concurrent)]
+        n_batches = len(batches)
+        for batch_idx, batch in enumerate(batches):
+            if is_cancelled():
+                break
+            base = batch_idx * 100 // n_batches
+            ceiling = (batch_idx + 1) * 100 // n_batches
+            self._run_timed(batch, on_progress, is_cancelled, base_progress=base, max_progress=ceiling)
+
+    def _run_with_carriage(
+        self,
+        items: list[CleaningItem],
+        on_progress: SchedulerProgressCallback,
+        is_cancelled: CancelCheck,
+    ) -> None:
+        """Run items sequentially with carriage positioning before each."""
+        if self._carriage is None:
+            raise ValueError("Carriage is required for this operation")
+        ordered = _order_by_carriage_position(items, self._carriage.home_position)
+        total = len(ordered)
+        for idx, item in enumerate(ordered):
+            if is_cancelled():
+                break
+            self._carriage.move_to(item.dispenser.carriage_position)
+            base = idx * 100 // total
+            ceiling = (idx + 1) * 100 // total
+            self._run_timed([item], on_progress, is_cancelled, base_progress=base, max_progress=ceiling)
+            if self._carriage.wait_after_dispense > 0 and not is_cancelled():
+                time.sleep(self._carriage.wait_after_dispense)
+
+    def _run_timed(
+        self,
+        batch: list[CleaningItem],
+        on_progress: SchedulerProgressCallback,
+        is_cancelled: CancelCheck,
+        base_progress: int,
+        max_progress: int,
+    ) -> None:
+        """Start all dispensers in *batch*, wait for duration, then stop all.
+
+        Uses a sentinel large amount so dispensers never self-terminate —
+        the scheduler drives the stop after the wall-clock duration elapses.
+        """
+        duration = batch[0].duration_seconds
+        with ThreadPoolExecutor(max_workers=len(batch)) as executor:
+            futures = [
+                executor.submit(item.dispenser.dispense, _CLEANING_LARGE_AMOUNT, 100, item.revert, lambda *_: None)
+                for item in batch
+            ]
+            start = time.perf_counter()
+            while True:
+                elapsed = time.perf_counter() - start
+                if elapsed >= duration or is_cancelled():
+                    for item in batch:
+                        item.dispenser.stop()
+                    break
+                fraction = elapsed / duration
+                on_progress(base_progress + int(fraction * (max_progress - base_progress)), [])
+                time.sleep(_CLEANING_POLL_INTERVAL)
+            for f in futures:
+                with contextlib.suppress(Exception):
+                    f.result(timeout=2.0)
+        if not is_cancelled():
+            on_progress(max_progress, [])

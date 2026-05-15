@@ -1006,9 +1006,9 @@ ui:
       de: 'Skalierungsfaktor für alkoholische Zutaten in jedem Rezept. Verwende diesen, um den Alkoholgehalt aller Cocktails zu verringern/erhöhen. Standard ist 100%'
       pl: 'Wartość skalująca składniki alkoholowe w każdym przepisie. Użyj tego do zmniejszenia/zwiększenia poziomu alkoholu we wszystkich koktajlach. Domyślnie 100%'
     MAKER_PUMP_REVERSION_CONFIG:
-      en: 'Configuration for pump reversion: pin type, board number (# only relevant for I2C), pin and signal inversion. Needed for some setups to be able to revert the pump direction.'
-      de: 'Konfiguration für Pumpen Umkehrung: Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin und Signalinvertierung. Benötigt von einigen Setups, um die Pumpenrichtung ändern zu können.'
-      pl: 'Konfiguracja zmiany kierunku pompy: typ pinu, numer płytki (# tylko dla I2C), pin oraz inwersja sygnału. Wymagana w niektórych konfiguracjach do zmiany kierunku pompy.'
+      en: 'Configuration for pump reversion. Select "Global" for a shared relay pin (specify pin type, board number, pin, and signal inversion) or "Dispenser Controlled" to let each dispenser handle its own direction — dispensers that do not support reversion will skip it. Activate to enable reversion during cleaning.'
+      de: 'Konfiguration für Pumpen Umkehrung. Wähle "Global" für einen gemeinsamen Relais-Pin (Pin-Typ, Board-Nummer, Pin und Signalinvertierung angeben) oder "Dispenser Controlled", damit jeder Dispenser die Richtung selbst steuert — Dispenser ohne Unterstützung überspringen die Umkehrung. Aktivieren, um die Umkehrung beim Reinigen zu nutzen.'
+      pl: 'Konfiguracja zmiany kierunku pompy. Wybierz "Global" dla wspólnego pinu przekaźnika (podaj typ pinu, numer płytki, pin i inwersję sygnału) lub "Dispenser Controlled", aby każdy dozownik sam kontrolował kierunek — dozowniki bez obsługi pominią odwracanie. Aktywuj, aby włączyć odwracanie podczas czyszczenia.'
     MAKER_SEARCH_UPDATES:
       en: 'Search for updates, if available internet connection'
       de: 'Sucht nach Updates, wenn Internetverbindung besteht'

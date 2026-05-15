@@ -159,6 +159,7 @@ class ChooseOptions:
     scale_driver = ChooseType(allowed=SUPPORTED_SCALE_DRIVERS, default="HX711")
     carriage_type = ChooseType(allowed=SUPPORTED_CARRIAGE_TYPES, default="NoCarriage")
     led_driver = ChooseType(allowed=SUPPORTED_LED_DRIVERS, default="Normal")
+    reversion_type = ChooseType(allowed=["Global", "Dispenser Controlled"], default="Global")
 
 
 class StringType(_ConfigType[str]):
@@ -683,18 +684,34 @@ class I2CExpanderConfig(ConfigClass):
 
     def to_config(self) -> dict[str, bool | int | str]:
         return {
+            "enabled": self.enabled,
             "device_type": self.device_type,
             "board_number": self.board_number,
-            "enabled": self.enabled,
             "address": self.address,
             "inverted": self.inverted,
         }
 
 
-class ReversionConfig(ConfigClass):
-    """Configuration for pump reversion."""
+class BaseReversionConfig(ConfigClass):
+    """Shared base config for all reversion variants."""
 
-    use_reversion: bool
+    reversion_type: str
+    enabled: bool
+
+    def __init__(self, reversion_type: str, enabled: bool = False, **kwargs: Any) -> None:
+        self.reversion_type = reversion_type
+        self.enabled = enabled
+
+    def to_config(self) -> dict[str, Any]:
+        return {
+            "reversion_type": self.reversion_type,
+            "enabled": self.enabled,
+        }
+
+
+class GlobalReversionConfig(BaseReversionConfig):
+    """Configuration for global (single shared pin) pump reversion."""
+
     pin: int
     inverted: bool
     pin_type: SupportedPinControlType
@@ -702,13 +719,15 @@ class ReversionConfig(ConfigClass):
 
     def __init__(
         self,
-        use_reversion: bool,
-        pin: int,
-        inverted: bool,
+        enabled: bool = False,
+        pin: int = 0,
+        inverted: bool = False,
         pin_type: SupportedPinControlType = "GPIO",
         board_number: int = 1,
+        reversion_type: str = "Global",
+        **kwargs: Any,
     ) -> None:
-        self.use_reversion = use_reversion
+        super().__init__(reversion_type=reversion_type, enabled=enabled)
         self.pin = pin
         self.pin_type = pin_type
         self.inverted = inverted
@@ -720,13 +739,32 @@ class ReversionConfig(ConfigClass):
         return PinId(self.pin_type, self.board_number, self.pin)
 
     def to_config(self) -> dict[str, Any]:
-        return {
-            "pin_type": self.pin_type,
-            "board_number": self.board_number,
-            "pin": self.pin,
-            "use_reversion": self.use_reversion,
-            "inverted": self.inverted,
-        }
+        config = super().to_config()
+        config.update(
+            {
+                "pin_type": self.pin_type,
+                "board_number": self.board_number,
+                "pin": self.pin,
+                "inverted": self.inverted,
+            }
+        )
+        return config
+
+
+class DispenserControlledReversionConfig(BaseReversionConfig):
+    """Configuration for per-dispenser reversion.
+
+    When active, each dispenser is expected to implement direction control itself.
+    If a dispenser does not support reversion, it will silently skip it.
+    """
+
+    def __init__(
+        self,
+        active: bool = False,
+        reversion_type: str = "Dispenser Controlled",
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(reversion_type=reversion_type, enabled=active)
 
 
 class BaseLedConfig(ConfigClass):

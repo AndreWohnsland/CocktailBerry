@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Generator
+from dataclasses import dataclass
 from threading import Event
 from typing import TYPE_CHECKING
 
@@ -11,6 +12,18 @@ if TYPE_CHECKING:
 
 ProgressCallback = Callable[[float, bool], None]
 """Callback signature: (consumption_ml, is_done) -> None"""
+
+
+@dataclass
+class DispenseContext:
+    """Contextual information passed to dispenser hooks.
+
+    Passed to ``_before_dispense`` and ``_after_dispense``. New fields
+    added here with defaults will never break existing extension code.
+    """
+
+    revert: bool
+    """Whether this dispense run should reverse the motor direction."""
 
 
 class BaseDispenser(ABC):
@@ -41,7 +54,10 @@ class BaseDispenser(ABC):
         """True when this dispenser requires exclusive scheduling (i.e. it uses a scale)."""
         return self._scale is not None
 
-    def dispense(self, amount_ml: float, pump_speed: int, callback: ProgressCallback) -> float:
+    def _before_dispense(self, ctx: DispenseContext) -> None: ...  # noop
+    def _after_dispense(self, ctx: DispenseContext) -> None: ...  # noop
+
+    def dispense(self, amount_ml: float, pump_speed: int, revert: bool, callback: ProgressCallback) -> float:
         """Dispense the given amount at the given pump speed.
 
         This is a template method that drives ``_dispense_steps()``.
@@ -56,12 +72,15 @@ class BaseDispenser(ABC):
         if self._scale is not None:
             self._scale.tare()
         consumption = 0.0
+        ctx = DispenseContext(revert=revert)
+        self._before_dispense(ctx)
         callback(consumption, False)
         for consumption in self._dispense_steps(amount_ml, pump_speed):
             if self._stop_event.is_set():
                 break
             callback(consumption, False)
         callback(consumption, True)
+        self._after_dispense(ctx)
         return consumption
 
     @abstractmethod

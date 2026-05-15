@@ -39,7 +39,7 @@ def _health_check(scale: ScaleInterface) -> ScaleInterface | None:
     """
     ctx = multiprocessing.get_context("fork")
     queue: multiprocessing.Queue = ctx.Queue()  # type: ignore[type-arg]
-    proc = ctx.Process(target=_forked_read, args=(scale, queue), daemon=True)
+    proc = ctx.Process(target=_forked_read, args=(scale, queue), daemon=True)  # ty:ignore[unresolved-attribute]
     proc.start()
     proc.join(timeout=_SCALE_HEALTH_CHECK_TIMEOUT)
     if proc.is_alive():

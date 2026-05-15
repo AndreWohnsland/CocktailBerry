@@ -50,6 +50,8 @@ Your `Implementation` class must inherit from `BaseDispenser` and implement thes
 | Method                                   | Required | Description                                                                                                                                        |
 | ---------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `_dispense_steps(amount_ml, pump_speed)` | **yes**  | Generator that yields consumption values. Use `try/finally` for hardware cleanup. See details below.                                               |
+| `_before_dispense(ctx)`                  | no       | Called once before dispensing starts. Override to switch direction when `ctx.revert` is `True`. Default is a no-op.                                |
+| `_after_dispense(ctx)`                   | no       | Called once after dispensing finishes (including cancellation). Override to restore direction when `ctx.revert` is `True`. Default is a no-op.     |
 | `stop()`                                 | no       | Emergency stop. Default sets the internal stop event. Override and call `super().stop()` if you need additional hardware cleanup (e.g. close pin). |
 | `cleanup()`                              | no       | Release hardware resources at shutdown. Default does nothing.                                                                                      |
 
@@ -63,11 +65,35 @@ The base class provides a concrete `dispense()` method that drives your generato
 
 1. Clears the stop event
 2. Tares the scale (if connected)
-3. Iterates your `_dispense_steps()` generator
-4. Checks for cancellation between each yield
-5. Calls progress callbacks on each yielded value
+3. Calls `_before_dispense(ctx)` (direction setup, where `ctx` is a `DispenseContext`)
+4. Iterates your `_dispense_steps()` generator
+5. Checks for cancellation between each yield
+6. Calls progress callbacks on each yielded value
+7. Calls `_after_dispense(ctx)` (direction teardown)
 
 Your generator just needs to: activate hardware, yield consumption updates in a loop, and deactivate hardware in a `finally` block. The `finally` block runs on both normal completion and cancellation (the generator is automatically closed when the stop event fires).
+
+### Per-Dispenser Reversion (Dispenser Controlled mode)
+
+When the machine is configured with `MAKER_PUMP_REVERSION_CONFIG` set to **Dispenser Controlled**, there is no global relay pin — each dispenser is responsible for reversing its own motor direction if requested during cleaning.
+
+To support this, override `_before_dispense` and `_after_dispense`. Both receive a `DispenseContext` object — currently it carries `revert: bool`, and future versions may add more fields with defaults without breaking your extension:
+
+```python
+from src.machine.dispensers.base import DispenseContext
+
+def _before_dispense(self, ctx: DispenseContext) -> None:
+    if ctx.revert:
+        # Switch motor direction, e.g. flip H-bridge pins
+        ...
+
+def _after_dispense(self, ctx: DispenseContext) -> None:
+    if ctx.revert:
+        # Restore normal direction
+        ...
+```
+
+If your dispenser does not override these hooks, it silently skips reversion — no error is raised.
 
 ## Inherited Attributes & Helpers
 
@@ -103,7 +129,7 @@ Dispenser extensions follow this lifecycle:
 1. **Discovery & variant registration** — Extensions are discovered and registered as variants of `PUMP_CONFIG` before config is read.
 2. **Config load** — The GUI can now show and edit the dispenser extension fields.
 3. **Construction** — During `init_machine()`, after the scale and carriage are created, `Implementation(slot, config, hardware)` is called once per pump slot. You receive the fully assembled `HardwareContext` (pin controller, LEDs, scale, carriage, `extra`).
-4. **Runtime use** — The scheduler calls `dispense(amount_ml, pump_speed, callback)` on each slot. The base class drives your `_dispense_steps()` generator and dispatches progress updates. `stop()` may be called from another thread to cancel.
+4. **Runtime use** — The scheduler calls `dispense(amount_ml, pump_speed, revert, callback)` on each slot. The base class builds a `DispenseContext`, calls `_before_dispense(ctx)`, drives your `_dispense_steps()` generator, dispatches progress updates, then calls `_after_dispense(ctx)`. `stop()` may be called from another thread to cancel.
 5. **`cleanup()`** — Called at shutdown to release hardware resources.
 
 ## Full Example
