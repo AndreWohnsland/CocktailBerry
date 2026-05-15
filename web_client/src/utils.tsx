@@ -1,4 +1,5 @@
 import { toast } from 'react-toastify';
+import { confirm as confirmDialog } from './confirmDialog';
 import type { Cocktail, IssueData } from './types/models';
 
 export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
@@ -31,7 +32,7 @@ export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
 };
 
 export const confirmAndExecute = async (message: string, executable: () => Promise<unknown>): Promise<boolean> => {
-  const confirmation = globalThis.window.confirm(message);
+  const confirmation = await askYesNo(message);
   if (confirmation) {
     return executeAndShow(executable);
   } else {
@@ -39,8 +40,8 @@ export const confirmAndExecute = async (message: string, executable: () => Promi
   }
 };
 
-export const askYesNo = async (message: string): Promise<boolean> => {
-  return globalThis.window.confirm(message);
+export const askYesNo = async (message: string, yesLabel?: string, noLabel?: string): Promise<boolean> => {
+  return confirmDialog(message, yesLabel, noLabel);
 };
 
 const extractErrorMessage = (error: unknown): string => {
