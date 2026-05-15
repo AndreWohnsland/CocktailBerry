@@ -6,6 +6,7 @@ import { useIssues } from './api/options.ts';
 import AvailableBottles from './components/bottle/AvailableBottles.tsx';
 import BottleList from './components/bottle/BottleList.tsx';
 import CocktailList from './components/cocktail/CocktailList.tsx';
+import ConfirmDialog from './components/common/ConfirmDialog.tsx';
 import GettingConfiguration from './components/common/GettingConfiguration';
 import { MakerPasswordProtected, MasterPasswordProtected } from './components/common/ProtectedRoute.tsx';
 import RestrictedModePrompt from './components/common/RestrictedModePrompt.tsx';
@@ -15,12 +16,12 @@ import IngredientList from './components/ingredient/IngredientList.tsx';
 import AddonManager from './components/options/AddonManager.tsx';
 import CalibrationWindow from './components/options/CalibrationWindow.tsx';
 import ConfigWindow from './components/options/ConfigWindow.tsx';
-import ScaleCalibrationWindow from './components/options/ScaleCalibrationWindow.tsx';
 import DataWindow from './components/options/DataWindow.tsx';
 import EventWindow from './components/options/EventWindow.tsx';
 import LogWindow from './components/options/LogWindow.tsx';
 import NewsWindow from './components/options/NewsWindow.tsx';
 import OptionWindow from './components/options/OptionWindow.tsx';
+import ScaleCalibrationWindow from './components/options/ScaleCalibrationWindow.tsx';
 import SumupManager from './components/options/SumupManager.tsx';
 import TimeManager from './components/options/TimeManager.tsx';
 import WaiterWindow from './components/options/WaiterWindow.tsx';
@@ -51,6 +52,7 @@ function App() {
 
   return (
     <div className='min-h-screen flex w-full h-full'>
+      <ConfirmDialog />
       <RestrictedModePrompt />
       <Header />
       <div
