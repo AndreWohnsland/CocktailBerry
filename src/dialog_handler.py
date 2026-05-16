@@ -756,6 +756,32 @@ class UiLanguage:
             config_description = {"en": config_description}
         self.dialogs["settings_dialog"][config_name] = config_description
 
+    def get_config_label(self, config_name: str) -> str:
+        """Return the human-readable label for the configuration.
+
+        Returns empty string if there was nothing found, callers should fall back to the config name.
+        """
+        try:
+            return self._choose_language(config_name, "settings_label")
+        except (AttributeError, KeyError):
+            return ""
+
+    def add_config_label(
+        self,
+        config_name: str,
+        config_label: dict[str, str] | str,
+    ) -> None:
+        """Add a human-readable label to the configuration.
+
+        label is in a dictionary, or a string.
+        string: just the label in english
+        dict: holding language as key, label as a value, used for translation.
+        At least english (en) key needs to be provided.
+        """
+        if isinstance(config_label, str):
+            config_label = {"en": config_label}
+        self.dialogs.setdefault("settings_label", {})[config_name] = config_label
+
     def adjust_mainwindow(self, w: Ui_MainWindow) -> None:
         """Translate all needed elements of the main window (cocktail maker)."""
         window = "main_window"

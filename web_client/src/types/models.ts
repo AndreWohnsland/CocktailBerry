@@ -143,6 +143,7 @@ export interface DefinedConfigData {
   UI_PICTURE_SIZE: number;
   UI_ONLY_MAKER_TAB: boolean;
   PUMP_CONFIG: PumpConfig[];
+  MAKER_PINS_INVERTED: boolean;
   I2C_CONFIG: I2CConfig[];
   MAKER_NAME: string;
   MAKER_NUMBER_BOTTLES: number;
@@ -153,20 +154,14 @@ export interface DefinedConfigData {
   MAKER_PUMP_REVERSION_CONFIG: ReversionConfig;
   MAKER_SEARCH_UPDATES: boolean;
   MAKER_CHECK_BOTTLE: boolean;
-  MAKER_PINS_INVERTED: boolean;
   MAKER_THEME: string;
   MAKER_MAX_HAND_INGREDIENTS: number;
   MAKER_CHECK_INTERNET: boolean;
   MAKER_USE_RECIPE_VOLUME: boolean;
   MAKER_ADD_SINGLE_INGREDIENT: boolean;
   MAKER_RANDOM_COCKTAIL: boolean;
-  LED_PINS: number[];
-  LED_BRIGHTNESS: number;
-  LED_COUNT: number;
-  LED_NUMBER_RINGS: number;
-  LED_DEFAULT_ON: boolean;
-  LED_IS_WS: boolean;
-  RFID_READER: string;
+  LED_CONFIG: LedConfig[];
+  RFID_CONFIG: RfidConfig;
   MICROSERVICE_ACTIVE: boolean;
   MICROSERVICE_BASE_URL: string;
   TEAMS_ACTIVE: boolean;
@@ -195,6 +190,7 @@ export interface DefinedConfigData {
   CUSTOM_COLOR_DANGER: string;
   EXP_MAKER_UNIT: string;
   EXP_MAKER_FACTOR: number;
+  EXP_DEMO_MODE: boolean;
   SCALE_CONFIG: ScaleConfig;
   CARRIAGE_CONFIG: CarriageConfig;
 }
@@ -275,6 +271,34 @@ export interface I2CConfig {
   board_number: number;
 }
 
+export interface BaseLedConfig {
+  led_type: string;
+  default_on: boolean;
+  preparation_state: 'Effect' | 'On' | 'Off';
+}
+
+export interface NormalLedConfig extends BaseLedConfig {
+  led_type: 'Normal';
+  pin: number;
+  pin_type: string;
+  board_number: number;
+}
+
+export interface WS281xLedConfig extends BaseLedConfig {
+  led_type: 'WSLED';
+  pin: number;
+  brightness: number;
+  count: number;
+  number_rings: number;
+}
+
+export type LedConfig = NormalLedConfig | WS281xLedConfig;
+
+export interface RfidConfig {
+  rfid_type: string;
+  enabled: boolean;
+}
+
 // generic interface for the config data with ui information
 // The structure contains:
 // - Main key (e.g., "PUMP_CONFIG"): the root config item with ui metadata (value, description, prefix, suffix, etc.)
@@ -299,6 +323,7 @@ type PossibleUiInformation = {
   value: PossibleConfigValue;
   default: PossibleConfigValue;
   description: string;
+  label: string;
   prefix?: string;
   suffix?: string;
   immutable?: boolean;
@@ -316,6 +341,9 @@ export type PossibleConfigValue =
   | PumpConfig[]
   | I2CConfig
   | I2CConfig[]
+  | LedConfig
+  | LedConfig[]
+  | RfidConfig
   | ReversionConfig
   | ScaleConfig
   | CarriageConfig;

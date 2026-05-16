@@ -175,7 +175,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
     def _choose_display_style(self, config_name: str, config_setting: ConfigInterface) -> None:
         """Create the input face for the according config types."""
         # Add the elements header to the view
-        header = create_label(f"{config_name}:", font_size=LARGE_FONT, bold=True)
+        label_text = UI_LANGUAGE.get_config_label(config_name) or config_name
+        header = create_label(f"{label_text}:", font_size=LARGE_FONT, bold=True)
         vbox = self._choose_tab_container(config_name)
         vbox.addWidget(header)
         description_text = UI_LANGUAGE.get_config_description(config_name)
