@@ -175,9 +175,17 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self._scale_cocktail()
         amount: int | float = self.cocktail.adjusted_amount
         # Need to set the button text here, since we need cocktail
-        self.prepare_button.setText(
-            UI_LANGUAGE.get_translation("prepare_button", "cocktail_selection", amount=amount, unit=cfg.EXP_MAKER_UNIT)
-        )
+        # Only update prepare_button text in single-button mode; in multi-button mode
+        # the original prepare_button has been removed from the layout and deleted.
+        if not self._volume_buttons:
+            self.prepare_button.setText(
+                UI_LANGUAGE.get_translation(
+                    "prepare_button",
+                    "cocktail_selection",
+                    amount=amount,
+                    unit=cfg.EXP_MAKER_UNIT,
+                )
+            )
         virgin_prefix = "Virgin " if self.is_virgin else ""
         self.LAlkoholname.setText(f"{virgin_prefix}{self.cocktail.name}")
         display_volume = self._decide_rounding(amount * cfg.EXP_MAKER_FACTOR, 20)
