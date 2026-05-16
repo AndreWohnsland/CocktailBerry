@@ -550,6 +550,7 @@ class ConfigManager:
         for name, setting in self.config_type.items():
             setting_data = {"value": setting.to_config(getattr(self, name))}
             setting_data["description"] = UI_LANGUAGE.get_config_description(name)
+            setting_data["label"] = UI_LANGUAGE.get_config_label(name)
             self._enhance_config_specific_information(setting_data, setting)
             config[name] = setting_data
         return config

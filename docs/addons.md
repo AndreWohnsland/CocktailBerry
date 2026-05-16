@@ -329,6 +329,26 @@ def define_configuration(self):
 2. If you do provide a dictionary, it needs at least the English (`en`) key!
 3. You can also just use a string in the English language, if you don't want to provide translations
 
+#### Add GUI Label
+
+Alongside the description, you can register a short human-readable label that replaces the raw config name in the settings header.
+The same rules as for descriptions apply: pass either a single English string or a dictionary of language codes, with at least English provided.
+If no label is set, the raw config name is used as a fallback.
+
+```python
+from src.dialog_handler import UI_LANGUAGE as uil
+
+def define_configuration(self):
+    ...
+    label = {
+        "en": "My Addon Setting",
+        "de": "Meine Addon-Einstellung",
+    }
+    uil.add_config_label("ADDON_CONFIG", label)
+
+    uil.add_config_label("ADDON_CONFIG2", "Another Addon Setting")
+```
+
 ### Prevent Cocktail Preparation
 
 Your addon may want to check some condition before cocktail preparation.
