@@ -37,6 +37,7 @@ _SEARCH_ICON = "fa5s.search"
 _UPLOAD_ICON = "fa5s.upload"
 _QUESTION_ICON = "fa5.question-circle"
 _BORDER_ICON = "fa5.square"
+_CROSS = "mdi.close"
 BUTTON_SIZE = QSize(36, 36)
 SMALL_BUTTON_SIZE = QSize(24, 24)
 
@@ -63,6 +64,7 @@ class PresetIcon:
     skull: str = _SKULL
     easy: str = _EASY
     border: str = _BORDER_ICON
+    close: str = _CROSS
 
 
 @dataclass
@@ -145,6 +147,7 @@ class IconSetter:
             (w.increase_alcohol, _SKULL, True),
             (w.decrease_alcohol, _EASY, True),
             (w.virgin_toggle, _VIRGIN_ICON, True),
+            (w.button_back, _CROSS, True),
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self.set_icon(ui_element, fa_icon, no_text)

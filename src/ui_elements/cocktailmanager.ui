@@ -2622,7 +2622,7 @@
                <widget class="QProgressBar" name="ProBBelegung2">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -2653,7 +2653,7 @@
                <widget class="QProgressBar" name="ProBBelegung1">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -2684,7 +2684,7 @@
                <widget class="QProgressBar" name="ProBBelegung7">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -2715,7 +2715,7 @@
                <widget class="QProgressBar" name="ProBBelegung3">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -2746,7 +2746,7 @@
                <widget class="QProgressBar" name="ProBBelegung6">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -3343,7 +3343,7 @@
                <widget class="QProgressBar" name="ProBBelegung12">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -3374,7 +3374,7 @@
                <widget class="QProgressBar" name="ProBBelegung11">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -3623,7 +3623,7 @@
                <widget class="QProgressBar" name="ProBBelegung13">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -3766,7 +3766,7 @@
                <widget class="QProgressBar" name="ProBBelegung9">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -3797,7 +3797,7 @@
                <widget class="QProgressBar" name="ProBBelegung4">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -3853,7 +3853,7 @@
                <widget class="QProgressBar" name="ProBBelegung8">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -3884,7 +3884,7 @@
                <widget class="QProgressBar" name="ProBBelegung5">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -3940,7 +3940,7 @@
                <widget class="QProgressBar" name="ProBBelegung10">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -4786,7 +4786,7 @@
                <widget class="QProgressBar" name="ProBBelegung14">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -4817,7 +4817,7 @@
                <widget class="QProgressBar" name="ProBBelegung15">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -4848,7 +4848,7 @@
                <widget class="QProgressBar" name="ProBBelegung16">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -5103,7 +5103,7 @@
                <widget class="QProgressBar" name="ProBBelegung17">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -5134,7 +5134,7 @@
                <widget class="QProgressBar" name="ProBBelegung18">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -5165,7 +5165,7 @@
                <widget class="QProgressBar" name="ProBBelegung19">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -5196,7 +5196,7 @@
                <widget class="QProgressBar" name="ProBBelegung20">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -5227,7 +5227,7 @@
                <widget class="QProgressBar" name="ProBBelegung21">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -5258,7 +5258,7 @@
                <widget class="QProgressBar" name="ProBBelegung22">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -5289,7 +5289,7 @@
                <widget class="QProgressBar" name="ProBBelegung23">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>
@@ -5320,7 +5320,7 @@
                <widget class="QProgressBar" name="ProBBelegung24">
                 <property name="minimumSize">
                  <size>
-                  <width>250</width>
+                  <width>100</width>
                   <height>38</height>
                  </size>
                 </property>

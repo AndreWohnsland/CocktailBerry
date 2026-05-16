@@ -19,7 +19,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab, shared
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
-from src.display_controller import DP_CONTROLLER, ItemDelegate
+from src.display_controller import DP_CONTROLLER, CompactItemDelegate, ItemDelegate
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.models import Cocktail
@@ -460,7 +460,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
 
         # Connect the Lists with the Functions
         self.LWZutaten.itemSelectionChanged.connect(lambda: ingredients.display_selected_ingredient(self))
+        self.LWZutaten.setItemDelegate(CompactItemDelegate(self))
         self.LWRezepte.itemSelectionChanged.connect(lambda: recipes.load_selected_recipe_data(self))
+        self.LWRezepte.setItemDelegate(CompactItemDelegate(self))
 
         # Protect other tabs with password
         # since it's now a password, using 0 = no password will not trigger password window

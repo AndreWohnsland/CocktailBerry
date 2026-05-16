@@ -6,6 +6,9 @@
   padding-left: 10px;
   padding-right: 10px; }
 
+*[cssClass~='text-underline'] {
+  text-decoration: underline; }
+
 *[cssClass~='bold'] {
   font-weight: bold; }
 
@@ -14,10 +17,6 @@
 
 *[cssClass~='neutral'] {
   color: #489869; }
-
-*[cssClass~='lr-padding'] {
-  padding-left: 10px;
-  padding-right: 10px; }
 
 *[cssClass~='center'] {
   text-align: center; }

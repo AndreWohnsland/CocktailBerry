@@ -3,7 +3,8 @@ from __future__ import annotations
 import random
 from typing import TYPE_CHECKING
 
-from PyQt6.QtGui import QFont, QPixmap
+from PyQt6.QtCore import QSize, QTimer
+from PyQt6.QtGui import QFont, QPixmap, QResizeEvent
 from PyQt6.QtWidgets import QDialog, QLabel, QPushButton, QSizePolicy
 
 from src.config.config_manager import CONFIG as cfg
@@ -13,7 +14,14 @@ from src.display_controller import DP_CONTROLLER
 from src.filepath import DEFAULT_COCKTAIL_IMAGE
 from src.image_utils import find_cocktail_image
 from src.models import Cocktail, Ingredient
-from src.ui.creation_utils import LARGE_FONT, create_button, create_label, set_underline
+from src.ui.creation_utils import (
+    LARGE_FONT,
+    NARROW_WIDTH_THRESHOLD,
+    apply_responsive_layouts,
+    create_button,
+    create_label,
+    set_underline,
+)
 from src.ui.icons import IconSetter
 from src.ui.shared import qt_prepare_flow
 from src.ui_elements import Ui_CocktailSelection
@@ -46,15 +54,10 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self._volume_buttons: list[tuple[int, QPushButton]] = []
         # build the image
         self.image_container.setScaledContents(True)
-        self.image_container.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
-        picture_size = int(min(cfg.UI_WIDTH * 0.5, cfg.UI_HEIGHT * 0.60))
-        self.image_container.setMinimumSize(picture_size, picture_size)
-        self.image_container.setMaximumSize(picture_size, picture_size)
         self.icons = IconSetter()
         self.icons.set_cocktail_selection_icons(self)
         self._adjust_preparation_buttons()
 
-        UI_LANGUAGE.adjust_cocktail_selection_screen(self)
         self.clear_recipe_data_maker()
         DP_CONTROLLER.set_display_settings(self, False)
         self._connect_elements()
@@ -77,6 +80,42 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     @property
     def is_virgin(self) -> bool:
         return self.virgin_toggle.isChecked()
+
+    def resizeEvent(self, a0: QResizeEvent | None) -> None:
+        """Flip layout_maker_detail based on window width and resize image to fit its container."""
+        # Clear fixed-size constraints so the layout can freely allocate space for image_container.
+        self.image_container.setMinimumSize(QSize(0, 0))
+        self.image_container.setMaximumSize(QSize(16777215, 16777215))
+        super().resizeEvent(a0)
+        apply_responsive_layouts(self.width(), [self.layout_maker_detail])
+        self._update_image_spacers()
+        QTimer.singleShot(0, self._update_image_size)
+
+    def _update_image_spacers(self) -> None:
+        """Make image spacers expanding in portrait mode (centers image), fixed in landscape."""
+        is_portrait = self.width() < NARROW_WIDTH_THRESHOLD
+        h_policy = QSizePolicy.Policy.Expanding if is_portrait else QSizePolicy.Policy.Fixed
+        for idx in (0, 2):
+            item = self.horizontalLayout.itemAt(idx)
+            if item and item.spacerItem():
+                spacer = item.spacerItem()
+                if not spacer:
+                    continue
+                spacer.changeSize(5, 20, h_policy, QSizePolicy.Policy.Minimum)
+        self.horizontalLayout.invalidate()
+
+    def _update_image_size(self) -> None:
+        """Set image_container to 92% of the smaller dimension of its allocated space."""
+        w = self.layout_maker_detail.geometry().width()
+        h = self.layout_maker_detail.geometry().height()
+        print(f"{w=}, {h=}")
+        side = int(min(w, h) * 0.9)
+        print(f"{side=}")
+        # limit to 45% of long side:
+        side = min(side, int(max(w, h) * 0.45))
+        print(f"{side=}")
+        if side > 0:
+            self.image_container.setFixedSize(side, side)
 
     def _set_image(self) -> None:
         """Set the image of the cocktail."""
@@ -115,7 +154,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         surprise_label = UI_LANGUAGE.get_translation("random_be_surprised", "main_window")
         self.LAlkoholname.setText(random_label)
         self.LAlkoholgehalt.setText("?")
-        self.LMenge.setText("")
         # hide alcohol low/high buttons
         self.increase_alcohol.setVisible(False)
         self.decrease_alcohol.setVisible(False)
@@ -176,11 +214,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     def update_cocktail_data(self) -> None:
         """Update the cocktail data in the selection view."""
         self._scale_cocktail()
-        amount: int | float = self.cocktail.adjusted_amount
         virgin_prefix = "Virgin " if self.is_virgin else ""
         self.LAlkoholname.setText(f"{virgin_prefix}{self.cocktail.name}")
-        display_volume = self._decide_rounding(amount * cfg.EXP_MAKER_FACTOR, 20)
-        self.LMenge.setText(f"{display_volume} {cfg.EXP_MAKER_UNIT}")
         self.LAlkoholgehalt.setText(f"{self.cocktail.adjusted_alcohol:.1f}%")
         display_data = self.cocktail.machineadds
         hand = self.cocktail.handadds
@@ -239,7 +274,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Clear the cocktail data in the maker view, only clears selection if no other item was selected."""
         self.LAlkoholgehalt.setText("")
         self.LAlkoholname.setText(UI_LANGUAGE.get_cocktail_dummy())
-        self.LMenge.setText("")
         self.virgin_toggle.setChecked(self.cocktail.only_virgin)
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(), self.get_labels_maker_volume()):
             field_ingredient.setText("")
@@ -250,19 +284,19 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # iterate over all size types and adjust size relative to window height
         # default height was 480 for provided UI
         # so if its larger, the font should also be larger here
-        height = cfg.UI_HEIGHT
+        short_side = min(cfg.UI_HEIGHT, cfg.UI_WIDTH)
         # no need to adjust if its near to the original height
         default_height = 480
-        if height <= default_height + 20:
+        if short_side <= default_height + 20:
             return
         # creating list of all labels
         big_labels = [self.LAlkoholname]
-        medium_labels = [self.LMenge, self.LAlkoholgehalt]
+        medium_labels = [self.LAlkoholgehalt]
         small_labels = self.get_labels_maker_volume()
         small_labels_bold = self.get_labels_maker_ingredients()
         all_labels = [big_labels, medium_labels, small_labels_bold, small_labels]
 
-        diff_from_default_height = height / default_height
+        diff_from_default_height = short_side / default_height
         # from large to small
         default_sizes = [22, 16, 12, 12]
         is_bold_list = [True, True, True, False]
