@@ -97,7 +97,7 @@ class MachineController:
         carriage = self.hardware.carriage if use_carriage else None
         scheduler = CleaningScheduler(cfg.MAKER_SIMULTANEOUSLY_PUMPS, carriage=carriage)
 
-        def on_progress(progress: int, _: list[float]) -> None:
+        def on_progress(progress: int) -> None:
             shared.cocktail_status.progress = progress
             if w is not None:
                 w.change_progression_window(progress)
@@ -167,7 +167,7 @@ class MachineController:
             carriage=carriage,
         )
 
-        def on_progress(progress: int, consumption: list[float]) -> None:
+        def on_progress(progress: int) -> None:
             shared.cocktail_status.progress = progress
             if w is not None:
                 w.change_progression_window(progress)
