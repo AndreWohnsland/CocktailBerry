@@ -45,11 +45,12 @@ class PreparationItem:
     revert: bool = False
 
     def __post_init__(self) -> None:
-        if self.estimated_time <= 0.0:
-            divisor = self.dispenser.volume_flow * self.pump_speed / 100
-            if divisor == 0:
-                return
-            self.estimated_time = self.amount_ml / divisor
+        if self.estimated_time > 0.0:
+            return
+        divisor = self.dispenser.volume_flow * self.pump_speed / 100
+        if divisor == 0:
+            return
+        self.estimated_time = self.amount_ml / divisor
 
 
 @dataclass
