@@ -16,6 +16,10 @@ $picture-view-active-color: $secondary;
   padding-right: 10px;
 }
 
+*[cssClass~='text-underline'] {
+  text-decoration: underline;
+}
+
 *[cssClass~='bold'] {
   font-weight: bold;
 }
@@ -26,11 +30,6 @@ $picture-view-active-color: $secondary;
 
 *[cssClass~='neutral'] {
   color: $neutral;
-}
-
-*[cssClass~='lr-padding'] {
-  padding-left: 10px;
-  padding-right: 10px;
 }
 
 *[cssClass~='center'] {

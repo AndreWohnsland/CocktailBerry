@@ -5,8 +5,8 @@ from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal, cast
 
-from PyQt6.QtCore import QModelIndex, Qt
-from PyQt6.QtGui import QFont, QIcon, QPainter
+from PyQt6.QtCore import QModelIndex, QSize, Qt
+from PyQt6.QtGui import QFont, QFontMetrics, QIcon, QPainter
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -42,6 +42,16 @@ class ItemDelegate(QStyledItemDelegate):
     def paint(self, painter: QPainter | None, option: QStyleOptionViewItem, index: QModelIndex) -> None:
         option.decorationPosition = QStyleOptionViewItem.Position.Right
         super().paint(painter, option, index)
+
+
+class CompactItemDelegate(QStyledItemDelegate):
+    """Item delegate that removes the extra vertical padding Qt6 adds to list items."""
+
+    def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex) -> QSize:
+        size = super().sizeHint(option, index)
+        fm = QFontMetrics(option.font)
+        size.setHeight(fm.height() + 4)
+        return size
 
 
 @dataclass

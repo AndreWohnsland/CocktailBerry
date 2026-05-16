@@ -36,7 +36,6 @@ if TYPE_CHECKING:
         Ui_CalibrationRealWidget,
         Ui_CalibrationTargetWidget,
         Ui_CalibrationWindow,
-        Ui_CocktailSelection,
         Ui_ColorWindow,
         Ui_ConfigWindow,
         Ui_CustomDialog,
@@ -812,6 +811,7 @@ class UiLanguage:
             (w.button_enter_to_maker, "enter_to_maker"),
             (w.label_ingredient_unit, "label_ingredient_unit"),
             (w.label_cocktail_price, "label_cocktail_price"),
+            (w.check_ingredient_do_not_revert, "check_ingredient_do_not_revert"),
         ]:
             ui_element.setText(self._choose_language(text_name, window))
 
@@ -821,9 +821,6 @@ class UiLanguage:
             (w.PBBelegung, "change_button"),
         ]:
             ui_element.setText(self._choose_language(text_name))
-
-    def adjust_cocktail_selection_screen(self, w: Ui_CocktailSelection) -> None:
-        w.button_back.setText(self._choose_language("back"))
 
     def adjust_available_windows(self, w: Ui_available) -> None:
         """Translate all needed elements of the available window."""

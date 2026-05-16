@@ -131,28 +131,34 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   return (
     <>
       <div className='flex flex-col sm:flex-row items-center md:items-start justify-center w-full h-full'>
-        <div className='relative w-full h-full sm:mr-2 mb-2 flex-1'>
-          <img
-            src={`${API_URL}${selectedCocktail.image}`}
-            alt={selectedCocktail.name}
-            className='w-full h-full object-cover border-2 border-neutral rounded-lg overflow-hidden'
-          />
-          <button
-            type='button'
-            onClick={() => changeCocktailBy(-1)}
-            className='absolute left-2 top-1/2 -translate-y-1/2 bg-background opacity-80 rounded-full'
-            aria-label='previous'
-          >
-            <GrFormPreviousLink className='text-primary' size={80} />
-          </button>
-          <button
-            type='button'
-            onClick={() => changeCocktailBy(1)}
-            className='absolute right-2 top-1/2 -translate-y-1/2 bg-background opacity-80 rounded-full'
-            aria-label='next'
-          >
-            <GrFormNextLink className='text-primary' size={80} />
-          </button>
+        <div className='w-full h-full sm:mr-2 mb-2 flex-1 flex flex-col'>
+          <p className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral mb-2'>
+            {alcohol === 'virgin' && 'Virgin '}
+            {selectedCocktail.name}
+          </p>
+          <div className='relative flex-1'>
+            <img
+              src={`${API_URL}${selectedCocktail.image}`}
+              alt={selectedCocktail.name}
+              className='w-full h-full object-cover border-2 border-neutral rounded-lg overflow-hidden'
+            />
+            <button
+              type='button'
+              onClick={() => changeCocktailBy(-1)}
+              className='absolute left-2 top-1/2 -translate-y-1/2 bg-background opacity-80 rounded-full'
+              aria-label='previous'
+            >
+              <GrFormPreviousLink className='text-primary' size={80} />
+            </button>
+            <button
+              type='button'
+              onClick={() => changeCocktailBy(1)}
+              className='absolute right-2 top-1/2 -translate-y-1/2 bg-background opacity-80 rounded-full'
+              aria-label='next'
+            >
+              <GrFormNextLink className='text-primary' size={80} />
+            </button>
+          </div>
         </div>
         <div className='flex flex-col justify-between items-center w-full flex-1 self-stretch'>
           <div className='flex items-center justify-between mb-2 shrink w-full'>
@@ -198,30 +204,30 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
             <CloseButton onClick={handleCloseModal} />
           </div>
           <div className='grow flex flex-col justify-center w-full'>
-            <p className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral underline mb-2'>
-              {alcohol === 'virgin' && 'Virgin '}
-              {selectedCocktail.name}
-            </p>
-            <div className='my-2'>
-              <ul className='text-center text-base md:text-lg lg:text-xl space-y-1'>
-                {machineIngredients.map((ingredient) => (
-                  <li key={ingredient.id} className='text-text'>
-                    {ingredient.name}:
-                    <span className='text-secondary ml-2'>
-                      {ingredient.amount} {ingredient.unit}
-                    </span>
-                  </li>
-                ))}
-                {handIngredients.map((ingredient) => (
-                  <li key={ingredient.id} className='text-text'>
-                    <span className='text-neutral mr-2'>[Hand]</span>
-                    {ingredient.name}
-                    <span className='text-secondary ml-2'>
-                      {ingredient.amount} {ingredient.unit}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+            <div className='my-2 flex justify-center'>
+              <table className='text-base md:text-lg lg:text-xl'>
+                <tbody>
+                  {machineIngredients.map((ingredient) => (
+                    <tr key={ingredient.id}>
+                      <td className='text-text text-right pr-2'>{ingredient.name}</td>
+                      <td className='text-secondary text-left'>
+                        {ingredient.amount} {ingredient.unit}
+                      </td>
+                    </tr>
+                  ))}
+                  {handIngredients.map((ingredient) => (
+                    <tr key={ingredient.id}>
+                      <td className='text-text text-right pr-2'>
+                        <span className='text-neutral mr-2'>[Hand]</span>
+                        {ingredient.name}
+                      </td>
+                      <td className='text-secondary text-left'>
+                        {ingredient.amount} {ingredient.unit}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
           <ServingSizeButtons
