@@ -89,6 +89,8 @@ class MachineController:
         if w is not None:
             w.open_progression_window("Cleaning")
         _logger.log_header("INFO", "Start Cleaning")
+        revert_info = " reversion is active" if revert_pumps else ""
+        _logger.info(f"Every pump will be cleaned for {cfg.MAKER_CLEAN_TIME} seconds{revert_info}")
         if revert_pumps and self.hardware.reverter is not None:
             self.hardware.reverter.revert_on()
         use_carriage = cfg.CARRIAGE_CONFIG.move_during_cleaning and not revert_pumps

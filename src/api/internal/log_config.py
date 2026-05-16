@@ -29,7 +29,10 @@ log_config["formatters"]["access"]["datefmt"] = "%Y-%m-%d %H:%M:%S"
 log_config["filters"] = {
     "endpoint_filter": {
         "()": EndpointFilter,
-        "excluded_endpoints": ["GET /api/info"],
+        "excluded_endpoints": [
+            "GET /api/info",
+            "GET /api/cocktails/prepare/status",
+        ],
     }
 }
 log_config["handlers"]["access"]["filters"] = ["endpoint_filter"]
