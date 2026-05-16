@@ -19,11 +19,11 @@ const ActionCard = ({
   actionStyle = 'primary',
 }: ActionCardProps) => {
   return (
-    <div className='w-full mt-4 border rounded-lg border-neutral items-center justify-center flex flex-col p-2'>
+    <div className='w-full mt-4 border rounded-lg items-center justify-center flex flex-col p-2'>
       {header && <TextHeader text={header} subheader space={2} />}
       {sections.map((section, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: Controlled here
-        <p key={index} className='text-center text-primary break-words'>
+        <p key={index} className='text-center text-primary wrap-break-word'>
           {section}
         </p>
       ))}
