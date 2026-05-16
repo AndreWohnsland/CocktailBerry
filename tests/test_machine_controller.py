@@ -224,7 +224,7 @@ class TestController:
         ]
 
         scheduler = DispenserScheduler(max_concurrent=2)
-        scheduler.run(items, lambda p, c: None, lambda: False)
+        scheduler.run(items, lambda _p: None, lambda: False)
 
         # Verify max_time estimation: 1.0s + 1.0s for two sequential groups
         groups = _group_by_recipe_order(items)
@@ -235,6 +235,33 @@ class TestController:
         # Both should be marked done
         assert items[0].done is True
         assert items[1].done is True
+
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_scheduler_first_progress_is_zero_before_carriage_move(self, _mock_sleep: MagicMock):
+        """First on_progress emit is 0% and fires before the carriage moves.
+
+        Regression: with carriage enabled, the initial 0% must appear before
+        ``_carriage.move_to(...)`` so the UI refreshes immediately rather than
+        waiting for the (potentially seconds-long) move to the first position.
+        """
+        mock_carriage = MagicMock()
+        mock_carriage.wait_after_dispense = 0.0
+        mock_carriage.home_position = 0
+        mock_disp = _mock_dispenser(1, carriage_position=50)
+        mock_disp.needs_exclusive = False
+        mock_disp.dispense.return_value = 10.0
+
+        events: list[str] = []
+        mock_carriage.move_to.side_effect = lambda *_: events.append("move")
+
+        def on_progress(progress: int) -> None:
+            events.append(f"progress={progress}")
+
+        items = [PreparationItem(dispenser=mock_disp, amount_ml=10, pump_speed=100, estimated_time=1.0)]
+        DispenserScheduler(max_concurrent=1, carriage=mock_carriage).run(items, on_progress, lambda: False)
+
+        assert events[0] == "progress=0"
+        assert events.index("progress=0") < events.index("move")
 
 
 class TestCarriageOrdering:
@@ -379,7 +406,7 @@ class TestCarriageScheduler:
         ]
 
         scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage)
-        scheduler.run(items, lambda p, c: None, lambda: False)
+        scheduler.run(items, lambda _p: None, lambda: False)
 
         # Sequential: 1.0 + 1.0 = 2.0
         groups = _group_by_recipe_order(items)
@@ -411,7 +438,7 @@ class TestCarriageScheduler:
         ]
 
         scheduler = DispenserScheduler(max_concurrent=2, carriage=mock_carriage)
-        scheduler.run(items, lambda p, c: None, lambda: False)
+        scheduler.run(items, lambda _p: None, lambda: False)
 
         # Should move to position 20 first (closer to home=0), then 80
         move_calls = [call.args[0] for call in mock_carriage.move_to.call_args_list]
@@ -433,7 +460,7 @@ class TestCarriageScheduler:
         ]
 
         scheduler = DispenserScheduler(max_concurrent=2)
-        scheduler.run(items, lambda p, c: None, lambda: False)
+        scheduler.run(items, lambda _p: None, lambda: False)
 
         # Parallel: max(1.0, 1.0) = 1.0
         groups = _group_by_recipe_order(items)
@@ -453,7 +480,7 @@ class TestCleaningScheduler:
             CleaningItem(dispenser=mock_disp2, duration_seconds=0.0),
         ]
 
-        CleaningScheduler(max_concurrent=2).run(items, lambda p, c: None, lambda: False)
+        CleaningScheduler(max_concurrent=2).run(items, lambda _p: None, lambda: False)
 
         mock_disp1.dispense.assert_called_once()
         mock_disp2.dispense.assert_called_once()
@@ -475,7 +502,7 @@ class TestCleaningScheduler:
             CleaningItem(dispenser=mock_disp2, duration_seconds=0.0),
         ]
 
-        CleaningScheduler(max_concurrent=1, carriage=mock_carriage).run(items, lambda p, c: None, lambda: False)
+        CleaningScheduler(max_concurrent=1, carriage=mock_carriage).run(items, lambda _p: None, lambda: False)
 
         move_calls = [call.args[0] for call in mock_carriage.move_to.call_args_list]
         assert move_calls == [20, 80]
@@ -490,11 +517,31 @@ class TestCleaningScheduler:
         ]
         seen: list[int] = []
 
-        CleaningScheduler(max_concurrent=1).run(items, lambda p, _c: seen.append(p), lambda: False)
+        CleaningScheduler(max_concurrent=1).run(items, seen.append, lambda: False)
 
         assert seen, "progress should have been emitted at least once"
         assert seen == sorted(seen)
+        assert seen[0] == 0
         assert seen[-1] == 100
+
+    @patch("src.machine.dispensers.scheduler.time.sleep")
+    def test_cleaning_first_progress_is_zero_before_carriage_move(self, _mock_sleep: MagicMock):
+        """First on_progress emit is 0% and fires before the carriage moves."""
+        mock_carriage = MagicMock()
+        mock_carriage.wait_after_dispense = 0.0
+        mock_carriage.home_position = 0
+        items = [CleaningItem(dispenser=_mock_dispenser(1, carriage_position=20), duration_seconds=0.0)]
+
+        events: list[str] = []
+        mock_carriage.move_to.side_effect = lambda *_: events.append("move")
+
+        def on_progress(progress: int) -> None:
+            events.append(f"progress={progress}")
+
+        CleaningScheduler(max_concurrent=1, carriage=mock_carriage).run(items, on_progress, lambda: False)
+
+        assert events[0] == "progress=0"
+        assert events.index("progress=0") < events.index("move")
 
     @patch("src.machine.dispensers.scheduler.time.sleep")
     def test_cleaning_cancellation_stops_dispensers(self, _mock_sleep: MagicMock):
@@ -507,7 +554,7 @@ class TestCleaningScheduler:
         ]
         # Cancel after the first poll so the timed loop exits and triggers stop.
         cancel_calls = iter([False, True, True, True, True])
-        CleaningScheduler(max_concurrent=2).run(items, lambda p, c: None, lambda: next(cancel_calls, True))
+        CleaningScheduler(max_concurrent=2).run(items, lambda _p: None, lambda: next(cancel_calls, True))
 
         mock_disp1.stop.assert_called()
         mock_disp2.stop.assert_called()

@@ -16,8 +16,8 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("DispenserScheduler")
 
-SchedulerProgressCallback = Callable[[int, list[float]], None]
-"""Callback signature: (progress_percent, consumption_per_item) -> None"""
+SchedulerProgressCallback = Callable[[int], None]
+"""Callback signature: (progress_percent) -> None"""
 
 CancelCheck = Callable[[], bool]
 """Returns True if the preparation should be cancelled."""
@@ -124,6 +124,9 @@ class DispenserScheduler(BaseScheduler):
             return
 
         self._next_log_time = 0.0
+        # Emit initial 0% so the UI refreshes before any long blocking step
+        # (notably the carriage moving to the first position).
+        on_progress(0)
         groups = _group_by_recipe_order(items)
         if self._carriage is not None:
             groups = [_order_by_carriage_position(g, self._carriage.home_position) for g in groups]
@@ -238,7 +241,7 @@ class DispenserScheduler(BaseScheduler):
             else 0
         )
         consumption = [x.consumption for x in all_items]
-        on_progress(progress, consumption)
+        on_progress(progress)
         self._log_consumption(consumption, progress)
 
     def _log_consumption(self, consumption: list[float], progress: int) -> None:
@@ -397,6 +400,9 @@ class CleaningScheduler(BaseScheduler):
         """Execute all cleaning items."""
         if not items:
             return
+        # Emit initial 0% so the UI refreshes before any long blocking step
+        # (notably the carriage moving to the first position).
+        on_progress(0)
         if self._carriage is not None:
             ordered = _order_by_carriage_position(items, self._carriage.home_position)
             self._run_with_carriage(ordered, on_progress, is_cancelled)
@@ -465,7 +471,7 @@ class CleaningScheduler(BaseScheduler):
                         item.dispenser.stop()
                     break
                 fraction = elapsed / duration
-                on_progress(base_progress + int(fraction * (max_progress - base_progress)), [])
+                on_progress(base_progress + int(fraction * (max_progress - base_progress)))
                 time.sleep(_POLL_INTERVAL)
             for f in futures:
                 try:
@@ -473,4 +479,4 @@ class CleaningScheduler(BaseScheduler):
                 except Exception as exc:
                     _logger.error(f"Cleaning dispenser error: {exc}")
         if not is_cancelled():
-            on_progress(max_progress, [])
+            on_progress(max_progress)
