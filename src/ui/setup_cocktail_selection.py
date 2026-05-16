@@ -354,32 +354,37 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """
         if self._multi_button:
             for volume, button in self._volume_buttons:
-                button.setText(self._format_volume_button_label(volume))
+                button.setText(self._format_prepare_label(volume, include_unit=False))
             return
-        # In random mode the cocktail isn't scaled yet, so use the configured volume.
-        amount = self._single_button_volume() if self.random_mode else self.cocktail.adjusted_amount
-        self.prepare_button.setText(
-            UI_LANGUAGE.get_translation(
-                "prepare_button",
-                "cocktail_selection",
-                amount=amount,
-                unit=cfg.EXP_MAKER_UNIT,
-            )
-        )
+        # Single-button mode: the per-cocktail recipe volume is unknown until a random pick,
+        # so render it as "?" in that combination.
+        if self.random_mode and cfg.MAKER_USE_RECIPE_VOLUME:
+            volume: int | None = None
+        else:
+            volume = self._single_button_volume() if self.random_mode else self.cocktail.adjusted_amount
+        self.prepare_button.setText(self._format_prepare_label(volume, include_unit=True))
 
-    def _format_volume_button_label(self, volume: int) -> str:
-        """Build the label for one volume button in multi-button mode."""
-        volume_converted = self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)
-        label = f"{volume_converted}"
+    def _format_prepare_label(self, volume: int | None, *, include_unit: bool) -> str:
+        """Build a prepare-button label of the form `{volume}[ {unit}][: {price}€]`.
+
+        Pass `volume=None` when the volume is unknown (random mode with per-cocktail recipe
+        volume in single-button mode) — both volume and price then render as `?`. The unit is
+        embedded only when `include_unit` is True; multi-button mode shows it once in a
+        sidebar label instead.
+        """
+        volume_str = "?" if volume is None else f"{self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)}"
+        label = f"{volume_str} {cfg.EXP_MAKER_UNIT}" if include_unit else volume_str
         if cfg.payment_enabled:
-            if self.random_mode:
-                price_str = "?"
-            else:
-                multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.is_virgin else 1.0
-                price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume, price_multiplier=multiplier)
-                price_str = f"{price}".rstrip("0").rstrip(".")
-            label += f": {price_str}€"
+            label += f": {self._format_button_price(volume)}€"
         return label
+
+    def _format_button_price(self, volume: int | None) -> str:
+        """Compute the price string for a prepare button. Returns `?` when the price is unknown."""
+        if volume is None or self.random_mode:
+            return "?"
+        multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.is_virgin else 1.0
+        price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume, price_multiplier=multiplier)
+        return f"{price}".rstrip("0").rstrip(".")
 
 
 def _generate_needed_cocktail_icons(icon_setter: IconSetter, amount: int) -> list[str]:
