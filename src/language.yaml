@@ -627,13 +627,6 @@ ui:
       de: 'Lass dich überraschen!'
       pl: 'Daj się zaskoczyć!'
 
-  cocktail_selection:
-    # best is to use some space before to get a padding for icon
-    prepare_button:
-      en: '  Prepare {amount} {unit}'
-      de: '  {amount} {unit} Zubereiten'
-      pl: '  Przygotuj {amount} {unit}'
-
   ##### AVAILABLE WINDOW #####
   # all values for available window
   available_window:

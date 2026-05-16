@@ -740,29 +740,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QLabel" name="image_container">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>200</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignHCenter|Qt::AlignTop</set>
-         </property>
-         <property name="cssClass" stdset="0">
-          <string>cocktail-picture</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
      <item row="3" column="3">
       <layout class="QHBoxLayout" name="container_prepare_button">
        <item>
@@ -797,6 +774,25 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="image_container">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       </property>
+       <property name="cssClass" stdset="0">
+        <string>cocktail-picture</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

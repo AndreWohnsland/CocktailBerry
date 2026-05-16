@@ -39,8 +39,11 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.mainscreen = mainscreen
         self.random_mode = random_mode
         self.random_pool = random_pool or []
-        # Store references for dynamic button label updates
-        self._volume_buttons: list[tuple[int, QPushButton]] = []  # list of (volume, button) tuples
+        # Prepare-button layout: single designer button vs multiple dynamically-built buttons.
+        # Single-button mode reuses self.prepare_button from the .ui file.
+        # Multi-button mode deletes that widget and fills _volume_buttons instead.
+        self._multi_button: bool = not cfg.MAKER_USE_RECIPE_VOLUME and len(cfg.MAKER_PREPARE_VOLUME) > 1
+        self._volume_buttons: list[tuple[int, QPushButton]] = []
         # build the image
         self.image_container.setScaledContents(True)
         self.image_container.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
@@ -128,7 +131,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             field_volume.setText("")
         if fields_ingredient:
             fields_ingredient[0].setText(surprise_label)
-        self._update_volume_button_labels(random_cocktail=True)
+        self._render_prepare_buttons()
 
     def _prepare_random_cocktail(self, amount: int) -> None:
         """Pick a random cocktail from the pool and prepare it."""
@@ -174,10 +177,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Update the cocktail data in the selection view."""
         self._scale_cocktail()
         amount: int | float = self.cocktail.adjusted_amount
-        # Need to set the button text here, since we need cocktail
-        self.prepare_button.setText(
-            UI_LANGUAGE.get_translation("prepare_button", "cocktail_selection", amount=amount, unit=cfg.EXP_MAKER_UNIT)
-        )
         virgin_prefix = "Virgin " if self.is_virgin else ""
         self.LAlkoholname.setText(f"{virgin_prefix}{self.cocktail.name}")
         display_volume = self._decide_rounding(amount * cfg.EXP_MAKER_FACTOR, 20)
@@ -186,7 +185,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         display_data = self.cocktail.machineadds
         hand = self.cocktail.handadds
         self._apply_button_visibility()
-        self._update_volume_button_labels()
+        self._render_prepare_buttons()
         if hand:
             display_data.extend([Ingredient(-1, "", 0, 0, 0, False, 100, 100), *hand])
         fields_ingredient = self.get_labels_maker_ingredients()
@@ -228,7 +227,6 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.decrease_alcohol.setVisible(show_alcohol_buttons)
         self.LAlkoholgehalt.setVisible(not is_single_ingredient_recipe)
         self.virgin_toggle.setVisible(self.can_change_virgin)
-        # Update button labels if payment is active (price may change with virgin mode)
 
     def _decide_rounding(self, val: float, threshold: int = 8) -> int | float:
         """Return the right rounding for numbers displayed to the user."""
@@ -301,23 +299,24 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Toggle the virgin option."""
         self.decrease_alcohol.setChecked(False)
         self.increase_alcohol.setChecked(False)
-        if not self.random_mode:
-            self.update_cocktail_data()
+        if self.random_mode:
+            # Random mode keeps placeholder header but still re-renders buttons for consistency.
+            self._render_prepare_buttons()
+            return
+        self.update_cocktail_data()
 
     def _adjust_preparation_buttons(self) -> None:
-        """Decide if to use a single or multiple buttons and adjusts the text accordingly.
+        """Build the prepare-button widgets and connect them.
 
-        Also connects the functions to the buttons.
+        Single-button mode reuses the designer `prepare_button`. Multi-button mode replaces it
+        with one button per configured volume. Labels are rendered by the next update_* call,
+        not here.
         """
-        # if there is a fixed volume, use a single button
-        # this is either due to the user has only one volume
-        # or using the default cocktail recipe volume
-        if cfg.MAKER_USE_RECIPE_VOLUME or len(cfg.MAKER_PREPARE_VOLUME) == 1:
-            volume = self.cocktail.amount if cfg.MAKER_USE_RECIPE_VOLUME else cfg.MAKER_PREPARE_VOLUME[0]
+        if not self._multi_button:
+            volume = self._single_button_volume()
             self.prepare_button.clicked.connect(lambda: self._prepare_cocktail(volume))
             return
-        # if there are multiple volumes, use one button for each volume
-        # in addition, we need to clean the button container of the button first
+        # multi-button mode: drop the designer button and build one per volume
         DP_CONTROLLER.delete_items_of_layout(self.container_prepare_button)
         volume_list = sorted(int(x) for x in cfg.MAKER_PREPARE_VOLUME)
         icon_list = _generate_needed_cocktail_icons(self.icons, len(volume_list))
@@ -328,13 +327,10 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         )
         self.container_prepare_button.addWidget(volume_label)
 
-        # Clear stored button references
         self._volume_buttons = []
-
-        # Then create a button for each volume
         for volume, icon_name in zip(volume_list, icon_list):
             button = create_button(
-                "",  # Label will be set by _update_volume_button_labels
+                "",  # filled in by _render_prepare_buttons after construction
                 self,
                 css_class="btn-inverted ml round",
                 min_h=60,
@@ -344,25 +340,51 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             icon = self.icons.generate_icon(icon_name, self.icons.color.background)
             self.icons.set_icon(button, icon, False)
             self.container_prepare_button.addWidget(button)
-            # Store reference for later label updates
             self._volume_buttons.append((volume, button))
 
-        # Set initial button labels
-        self._update_volume_button_labels()
+    def _single_button_volume(self) -> int:
+        """Volume targeted by the single prepare button (recipe amount or first configured volume)."""
+        return self.cocktail.amount if cfg.MAKER_USE_RECIPE_VOLUME else cfg.MAKER_PREPARE_VOLUME[0]
 
-    def _update_volume_button_labels(self, random_cocktail: bool = False) -> None:
-        """Update the labels of volume buttons, recalculating prices if payment is active."""
-        for volume, button in self._volume_buttons:
-            volume_converted = self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)
-            label = f"{volume_converted}"
-            if cfg.payment_enabled:
-                multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.is_virgin else 1.0
-                price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume, price_multiplier=multiplier)
-                if random_cocktail:
-                    price = "?"
-                price_str = f"{price}".rstrip("0").rstrip(".")
-                label += f": {price_str}€"
-            button.setText(label)
+    def _render_prepare_buttons(self) -> None:
+        """Render labels on all prepare buttons for current cocktail/mode state.
+
+        Single source of truth for prepare-button text in both single- and multi-button modes,
+        and in both normal and random flows.
+        """
+        if self._multi_button:
+            for volume, button in self._volume_buttons:
+                button.setText(self._format_prepare_label(volume, include_unit=False))
+            return
+        # Single-button mode: the per-cocktail recipe volume is unknown until a random pick,
+        # so render it as "?" in that combination.
+        if self.random_mode and cfg.MAKER_USE_RECIPE_VOLUME:
+            volume: int | None = None
+        else:
+            volume = self._single_button_volume() if self.random_mode else self.cocktail.adjusted_amount
+        self.prepare_button.setText(self._format_prepare_label(volume, include_unit=True))
+
+    def _format_prepare_label(self, volume: int | None, *, include_unit: bool) -> str:
+        """Build a prepare-button label of the form `{volume}[ {unit}][: {price}€]`.
+
+        Pass `volume=None` when the volume is unknown (random mode with per-cocktail recipe
+        volume in single-button mode) — both volume and price then render as `?`. The unit is
+        embedded only when `include_unit` is True; multi-button mode shows it once in a
+        sidebar label instead.
+        """
+        volume_str = "?" if volume is None else f"{self._decide_rounding(volume * cfg.EXP_MAKER_FACTOR, 20)}"
+        label = f"{volume_str} {cfg.EXP_MAKER_UNIT}" if include_unit else volume_str
+        if cfg.payment_enabled:
+            label += f": {self._format_button_price(volume)}€"
+        return label
+
+    def _format_button_price(self, volume: int | None) -> str:
+        """Compute the price string for a prepare button. Returns `?` when the price is unknown."""
+        if volume is None or self.random_mode:
+            return "?"
+        multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.is_virgin else 1.0
+        price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume, price_multiplier=multiplier)
+        return f"{price}".rstrip("0").rstrip(".")
 
 
 def _generate_needed_cocktail_icons(icon_setter: IconSetter, amount: int) -> list[str]:

@@ -23,7 +23,6 @@ _PLUS_ICON = "fa5s.plus"
 _MINUS_ICON = "fa5s.minus"
 _DELETE_ICON = "fa5s.trash-alt"
 _CLEAR_ICON = "fa5s.eraser"
-_COCKTAIL_ICON = "fa5s.cocktail"
 _HUGE_GLASS = "mdi.glass-mug"
 _BIG_GLASS = "mdi.glass-pint-outline"
 _MEDIUM_GLASS = "mdi.glass-cocktail"
@@ -49,7 +48,7 @@ class PresetIcon:
     minus: str = _MINUS_ICON
     delete: str = _DELETE_ICON
     clear: str = _CLEAR_ICON
-    cocktail: str = _COCKTAIL_ICON
+    cocktail: str = _MEDIUM_GLASS
     virgin: str = _VIRGIN_ICON
     spinner: str = _SPINNER_ICON
     time: str = _TIME_ICON
@@ -142,7 +141,7 @@ class IconSetter:
     def set_cocktail_selection_icons(self, w: Ui_CocktailSelection) -> None:
         """Set the icons of the cocktail selection window according to style sheets props."""
         for ui_element, icon, no_text in [
-            (w.prepare_button, _COCKTAIL_ICON, False),
+            (w.prepare_button, _MEDIUM_GLASS, False),
             (w.increase_alcohol, _SKULL, True),
             (w.decrease_alcohol, _EASY, True),
             (w.virgin_toggle, _VIRGIN_ICON, True),
