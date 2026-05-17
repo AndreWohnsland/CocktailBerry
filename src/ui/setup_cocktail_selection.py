@@ -108,12 +108,9 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Set image_container to 92% of the smaller dimension of its allocated space."""
         w = self.layout_maker_detail.geometry().width()
         h = self.layout_maker_detail.geometry().height()
-        print(f"{w=}, {h=}")
         side = int(min(w, h) * 0.9)
-        print(f"{side=}")
         # limit to 45% of long side:
         side = min(side, int(max(w, h) * 0.45))
-        print(f"{side=}")
         if side > 0:
             self.image_container.setFixedSize(side, side)
 
