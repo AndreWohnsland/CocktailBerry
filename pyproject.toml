@@ -1,6 +1,6 @@
 [project]
 name = "CocktailBerry"
-version = "4.0.1"
+version = "4.1.0"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
 authors = [{ name= "Andre Wohnsland" , email =  "info@cocktailberry.org" }]
 readme = "readme.md"
@@ -46,9 +46,9 @@ dev = [
   "pytest>=9.0.3",
   "pytest-cov>=7.1.0",
   "pre-commit>=4.6.0",
-  "ty==0.0.35",
+  "ty==0.0.37",
   "ruff>=0.15.12",
-  "zensical>=0.0.40",
+  "zensical>=0.0.41",
 ]
 
 [project.optional-dependencies]
