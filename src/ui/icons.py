@@ -15,7 +15,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.filepath import STYLE_FOLDER
 
 if TYPE_CHECKING:
-    from src.ui_elements import Ui_CocktailSelection, Ui_MainWindow, Ui_PictureWindow
+    from src.ui_elements import Ui_available, Ui_CocktailSelection, Ui_MainWindow, Ui_PictureWindow
 
 # DEFINING THE ICONS
 _SETTING_ICON = "fa5s.cog"
@@ -38,6 +38,7 @@ _UPLOAD_ICON = "fa5s.upload"
 _QUESTION_ICON = "fa5.question-circle"
 _BORDER_ICON = "fa5.square"
 _CROSS = "mdi.close"
+LARGE_BUTTON_SIZE = QSize(48, 48)
 BUTTON_SIZE = QSize(36, 36)
 SMALL_BUTTON_SIZE = QSize(24, 24)
 
@@ -166,6 +167,14 @@ class IconSetter:
         ]:
             fa_icon: QIcon = qta.icon(icon, color=self.color.background)
             self.set_icon(ui_element, fa_icon, no_text)
+
+    def set_available_window_icons(self, windows: Ui_available) -> None:
+        for ui_element, icon, no_text in [
+            (windows.PBAdd, _PLUS_ICON, True),
+            (windows.PBRemove, _MINUS_ICON, True),
+        ]:
+            fa_icon: QIcon = qta.icon(icon, color=self.color.primary)
+            self.set_icon(ui_element, fa_icon, no_text, LARGE_BUTTON_SIZE)
 
     def generate_icon(self, icon_name: str, color: str, color_active: str | None = None, border: bool = False) -> QIcon:
         """Generate an icon with the given color and size.

@@ -796,7 +796,6 @@ class UiLanguage:
             text = self._choose_language(tab_name, window)
             w.tabWidget.setTabText(i, text)
         for ui_element, text_name in [
-            (w.PBZeinzelnd, "single_ingredient_button"),
             (w.PBAvailable, "available_button"),
             (w.CHBHand, "handadd_check_label"),
             (w.label_ingredient_name, "ingredient_label"),
@@ -809,7 +808,6 @@ class UiLanguage:
             (w.button_set_picture, "label_picture"),
             (w.label_search_title, "header_search"),
             (w.button_enter_to_maker, "enter_to_maker"),
-            (w.label_ingredient_unit, "label_ingredient_unit"),
             (w.label_cocktail_price, "label_cocktail_price"),
             (w.check_ingredient_do_not_revert, "check_ingredient_do_not_revert"),
         ]:

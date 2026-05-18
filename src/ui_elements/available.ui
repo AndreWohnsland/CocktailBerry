@@ -46,7 +46,6 @@
         <property name="font">
          <font>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -94,7 +93,6 @@
         <property name="font">
          <font>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -159,7 +157,6 @@
           <property name="font">
            <font>
             <pointsize>48</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -185,7 +182,6 @@
           <property name="font">
            <font>
             <pointsize>48</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -231,7 +227,7 @@
        <widget class="QPushButton" name="PBOk_2">
         <property name="minimumSize">
          <size>
-          <width>335</width>
+          <width>100</width>
           <height>60</height>
          </size>
         </property>
@@ -244,7 +240,6 @@
         <property name="font">
          <font>
           <pointsize>18</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -260,7 +255,7 @@
        <widget class="QPushButton" name="PBAbbruch_2">
         <property name="minimumSize">
          <size>
-          <width>335</width>
+          <width>100</width>
           <height>60</height>
          </size>
         </property>
@@ -273,7 +268,6 @@
         <property name="font">
          <font>
           <pointsize>18</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>

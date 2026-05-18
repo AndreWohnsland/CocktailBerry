@@ -11,7 +11,7 @@ import platform
 from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QEvent, QEventLoop, QObject
-from PyQt6.QtGui import QIntValidator, QMouseEvent
+from PyQt6.QtGui import QIntValidator, QMouseEvent, QResizeEvent
 from PyQt6.QtWidgets import QLineEdit, QMainWindow
 
 from src import FUTURE_PYTHON_VERSION
@@ -36,6 +36,7 @@ from src.startup_checks import (
 from src.tabs import bottles, ingredients, recipes
 from src.tabs.qt_tab_index import TabIndex
 from src.ui.cocktail_view import CocktailView
+from src.ui.creation_utils import apply_responsive_layouts
 from src.ui.icons import BUTTON_SIZE, IconSetter
 from src.ui.qt_worker import CallableWorker, run_with_spinner
 from src.ui.setup_available_window import AvailableWindow
@@ -183,6 +184,11 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         mc = MachineController()
         if mc.has_carriage:
             self._carriage_ref_worker = run_with_spinner(mc.find_carriage_reference, parent=self)
+
+    def resizeEvent(self, a0: QResizeEvent | None) -> None:
+        """Flip layout_maker_detail based on window width and resize image to fit its container."""
+        super().resizeEvent(a0)
+        apply_responsive_layouts(self.width(), [self.layout_ingredients, self.layout_recipes])
 
     def update_check(self) -> None:
         """Check if there is an update and asks to update, if exists."""
@@ -445,7 +451,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.PBZutathinzu.clicked.connect(lambda: ingredients.handle_enter_ingredient(self))
         self.PBRezepthinzu.clicked.connect(lambda: recipes.handle_enter_recipe(self))
         self.PBBelegung.clicked.connect(self.open_bottle_window)
-        self.PBZeinzelnd.clicked.connect(self.open_ingredient_window)
         self.PBclear.clicked.connect(lambda: DP_CONTROLLER.clear_recipe_data_recipes(self, False))
         self.PBdelete.clicked.connect(lambda: recipes.delete_recipe(self))
         self.PBZdelete.clicked.connect(lambda: ingredients.delete_ingredient(self))
@@ -477,8 +482,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         bottles.get_bottle_ingredients()
         # Load ingredients
         ingredients.load_ingredients(self)
-        # Load Bottles into the Labels
-        bottles.refresh_bottle_information(self)
         # Load combo buttons Recipes
         recipes.fill_recipe_box_with_ingredients(self)
         # Load combo buttons Bottles

@@ -551,13 +551,9 @@ ui:
       de: 'Alkohol'
       pl: 'Alkohol'
     bottle_volume_label:
-      en: 'Bottle volume'
-      de: 'Flaschenvolumen'
-      pl: 'Pojemność butelki'
-    single_ingredient_button:
-      en: 'Spend single ingredient'
-      de: 'Einzelne Zutat ausgeben'
-      pl: 'Podaj pojedynczy składnik'
+      en: 'Capacity'
+      de: 'Kapazität'
+      pl: 'Pojemność'
     handadd_check_label:
       en: 'Only add self by hand'
       de: 'Nur selbst hinzufügen'
@@ -598,10 +594,6 @@ ui:
       en: 'Show in Maker'
       de: 'Im Maker anzeigen'
       pl: 'Pokaż w Makerze'
-    label_ingredient_unit:
-      en: 'Unit'
-      de: 'Einheit'
-      pl: 'Jednostka'
     check_ingredient_do_not_revert:
       en: 'Never pump back'
       de: 'Niemals zurück pumpen'

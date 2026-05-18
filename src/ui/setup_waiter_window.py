@@ -4,15 +4,19 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QMainWindow, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QBoxLayout,
+    QCheckBox,
+    QComboBox,
+    QGridLayout,
+    QHBoxLayout,
+    QMainWindow,
+    QVBoxLayout,
+    QWidget,
+)
 
 from src.config.config_manager import shared
-from src.database_commander import (
-    DatabaseCommander,
-    ElementAlreadyExistsError,
-    ElementNotFoundError,
-    RoleInUseError,
-)
+from src.database_commander import DatabaseCommander, ElementAlreadyExistsError, ElementNotFoundError, RoleInUseError
 from src.db_models import DbWaiterLog
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -188,14 +192,16 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         layout.addLayout(actions)
         return edit_section_widget
 
-    def _build_permission_checkboxes(self, layout: QHBoxLayout, default_maker: bool) -> dict[str, QCheckBox]:
+    def _build_permission_checkboxes(self, layout: QBoxLayout, default_maker: bool) -> dict[str, QCheckBox]:
         boxes: dict[str, QCheckBox] = {}
-        for key in self._PERMISSION_KEYS:
+        grid = QGridLayout()
+        for index, key in enumerate(self._PERMISSION_KEYS):
             checkbox = QCheckBox(UI_LANGUAGE.get_translation(f"permission_{key}", "waiter_window"))
             adjust_font(checkbox, MEDIUM_FONT)
             checkbox.setChecked(default_maker and key == "maker")
             boxes[key] = checkbox
-            layout.addWidget(checkbox)
+            grid.addWidget(checkbox, index // 3, index % 3)
+        layout.addLayout(grid)
         return boxes
 
     def _refresh_scan_state(self) -> None:
@@ -458,9 +464,9 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
                 min_h=30,
             )
         )
-        tab_perm_layout = QHBoxLayout()
-        self._role_create_permission_boxes = self._build_permission_checkboxes(tab_perm_layout, default_maker=False)
-        self.data_container_roles.addLayout(tab_perm_layout)
+        self._role_create_permission_boxes = self._build_permission_checkboxes(
+            self.data_container_roles, default_maker=False
+        )
         self.data_container_roles.addSpacerItem(create_spacer(10))
 
         self.data_container_roles.addWidget(
@@ -574,13 +580,14 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
                         FontSize.SMALL,
                         css_class="secondary",
                         min_h=25,
+                        word_wrap=True,
                     )
                 )
 
             active_tiles = [key for key in _ALL_TILE_KEYS if bool((role.tile_permissions or {}).get(key))]
             if active_tiles:
                 preview = ", ".join(key.replace("_", " ").title() for key in active_tiles)
-                card_layout.addWidget(create_label(preview, FontSize.SMALL, min_h=25))
+                card_layout.addWidget(create_label(preview, FontSize.SMALL, min_h=25, word_wrap=True))
 
             actions = QHBoxLayout()
             edit_btn = create_button(
