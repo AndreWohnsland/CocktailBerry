@@ -95,6 +95,8 @@ class BaseScheduler:
             if is_cancelled():
                 break
             self._carriage.move_to(item.dispenser.carriage_position)
+            if is_cancelled():
+                break
             on_each(item, idx, total)
             if self._carriage.wait_after_dispense > 0 and not is_cancelled():
                 time.sleep(self._carriage.wait_after_dispense)
@@ -227,7 +229,13 @@ class DispenserScheduler(BaseScheduler):
         """Run a single exclusive dispenser (blocking, no concurrency)."""
         if is_cancelled():
             return
-        _dispense_item(item, on_step=lambda: self._emit_progress(all_items, on_progress))
+
+        def on_step() -> None:
+            if is_cancelled():
+                item.dispenser.stop()
+            self._emit_progress(all_items, on_progress)
+
+        _dispense_item(item, on_step=on_step)
 
     def _emit_progress(
         self,
