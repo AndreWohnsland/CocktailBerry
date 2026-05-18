@@ -41,8 +41,11 @@ def _square_size() -> int:
     """Return calculated square size for the cocktail view."""
     # Need method, since config will be loaded in at runtime
     n_columns = _n_columns()
-    # keep a 17% margin
-    return int(cfg.UI_WIDTH / (n_columns * 1.17))
+    _SCROLLBAR = 60
+    _OUTER_MARGIN = 2 * 20  # roughly 20px per side
+    _COLUMN_GAP = 6
+    available = cfg.UI_WIDTH - _SCROLLBAR - _OUTER_MARGIN - (n_columns - 1) * _COLUMN_GAP
+    return available // n_columns
 
 
 def generate_random_image_block(cocktails: list[Cocktail], mainscreen: MainScreen) -> QVBoxLayout:

@@ -3,13 +3,15 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from PIL import Image
-from PyQt6.QtGui import QImage, QPixmap
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QImage, QPixmap, QResizeEvent
 from PyQt6.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.image_utils import find_default_cocktail_image, find_user_cocktail_image, process_image, save_image
 from src.models import Cocktail
+from src.ui.creation_utils import apply_responsive_layouts
 from src.ui.icons import IconSetter
 from src.ui_elements import Ui_PictureWindow
 
@@ -22,6 +24,8 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         self.setupUi(self)
         self.cocktail = cocktail
         self.new_picture: Image.Image | None = None
+        self.system_pixmap: QPixmap | None = None
+        self.user_pixmap: QPixmap | None = None
         self.refresh_cocktail_view = refresh_cocktail_view
         DP_CONTROLLER.initialize_window_object(self)
         self.button_back.clicked.connect(self.close)
@@ -34,6 +38,29 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
         self._get_pictures()
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
+
+    def resizeEvent(self, a0: QResizeEvent | None) -> None:
+        """Flip layout_maker_detail based on window width and resize image to fit its container."""
+        super().resizeEvent(a0)
+        apply_responsive_layouts(self.width(), [self.layout_image])
+        QTimer.singleShot(0, self._update_pixmaps)
+
+    def _update_pixmaps(self) -> None:
+        """Re-scale stored pixmaps to fit their labels while keeping aspect ratio."""
+        if self.system_pixmap is not None:
+            scaled = self.system_pixmap.scaled(
+                self.picture_system.size(),
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
+            )
+            self.picture_system.setPixmap(scaled)
+        if self.user_pixmap is not None:
+            scaled = self.user_pixmap.scaled(
+                self.picture_user.size(),
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
+            )
+            self.picture_user.setPixmap(scaled)
 
     def _set_picture(self) -> None:
         """Upload the picture to the user folder."""
@@ -73,19 +100,17 @@ class PictureWindow(QMainWindow, Ui_PictureWindow):
             QImage.Format.Format_RGB888,
         )
         pixmap = QPixmap.fromImage(q_image)
-        self.picture_user.setPixmap(pixmap)
+        self.user_pixmap = pixmap
+        self._update_pixmaps()
 
     def _get_pictures(self) -> None:
         """Populate the pictures for system and user."""
         self.system_image_path = find_default_cocktail_image(self.cocktail)
         # it should always exist, but just in case the user deleted it or some other weird thing happened
         if self.system_image_path.exists():
-            default_pixmap = QPixmap(str(self.system_image_path))
-            self.picture_system.setPixmap(default_pixmap)
+            self.system_pixmap = QPixmap(str(self.system_image_path))
         self.user_image_path = find_user_cocktail_image(self.cocktail)
         # no image provided by the user, or the image was deleted, return
-        if self.user_image_path is None or not self.user_image_path.exists():
-            return
-        user_pixmap = QPixmap(str(self.user_image_path))
-        self.picture_user.setPixmap(user_pixmap)
-        self.picture_user.setPixmap(user_pixmap)
+        if self.user_image_path is not None and self.user_image_path.exists():
+            self.user_pixmap = QPixmap(str(self.user_image_path))
+        self._update_pixmaps()

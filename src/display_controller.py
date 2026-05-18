@@ -592,12 +592,6 @@ class DisplayController(DialogHandler):
         w.cocktail_view.populate_cocktails()
         w.switch_to_cocktail_list()
 
-    # Some more "specific" function, not using generic but specified field sets
-    def set_label_bottles(self, w: Ui_MainWindow, label_names: list[str]) -> None:
-        """Set the bottle label text to given names."""
-        labels = self.get_label_bottles(w)
-        self.fill_multiple_lineedit(labels, label_names)  # type: ignore
-
     # Migration from supporter.py
     def get_pushbuttons_newbottle(self, w: Ui_MainWindow, get_all: bool = False) -> list[QPushButton]:
         """Return all new bottles toggle button objects."""
@@ -640,11 +634,6 @@ class DisplayController(DialogHandler):
             w.check_ingredient_do_not_revert,
         )
 
-    def get_label_bottles(self, w: Ui_MainWindow, get_all: bool = False) -> list[QLabel]:
-        """Return all bottles label objects."""
-        number = cfg.choose_bottle_number(get_all)
-        return [getattr(w, f"LBelegung{x}") for x in range(1, number + 1)]
-
     def get_labels_maker_volume(self, w: Ui_MainWindow) -> list[QLabel]:
         """Return all maker label objects for volumes of ingredients."""
         return [getattr(w, f"LMZutat{x}") for x in range(1, 10)]
@@ -673,7 +662,6 @@ class DisplayController(DialogHandler):
             self.get_pushbuttons_newbottle(w, True),
             self.get_levelbar_bottles(w, True),
             comboboxes_bottles,
-            self.get_label_bottles(w, True),
             self.get_number_label_bottles(w, True),
         ]
         for elements in to_adjust:

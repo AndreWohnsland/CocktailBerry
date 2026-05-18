@@ -68,7 +68,6 @@ def __register_bottles(w: MainScreen) -> None:
     ingredient_names = DP_CONTROLLER.get_current_combobox_items(combobox_bottles)
     DB_COMMANDER.set_bottle_order(ingredient_names)
 
-    refresh_bottle_information(w)
     DP_CONTROLLER.update_maker_view(w)
     set_fill_level_bars(w)
 
@@ -78,13 +77,6 @@ def read_in_bottles(w: MainScreen) -> None:
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     ingredient_names = DB_COMMANDER.get_ingredient_names_at_bottles()
     DP_CONTROLLER.set_multiple_combobox_items(combobox_bottles, ingredient_names)
-
-
-def refresh_bottle_information(w: MainScreen) -> None:
-    """Load or updates the Labels of the Bottles (volume level)."""
-    label_names = DB_COMMANDER.get_ingredient_names_at_bottles()
-    label_names = [f"  {x}:" if x else "  -  " for x in label_names]
-    DP_CONTROLLER.set_label_bottles(w, label_names)
 
 
 @logerror

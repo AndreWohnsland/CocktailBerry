@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QListWidget, QMainWindow
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.ui.icons import IconSetter
 from src.ui_elements.available import Ui_available
 
 if TYPE_CHECKING:
@@ -31,6 +32,8 @@ class AvailableWindow(QMainWindow, Ui_available):
         DP_CONTROLLER.fill_list_widget(self.LWVorhanden, ingredient_available)
         DP_CONTROLLER.fill_list_widget(self.LWAlle, entry_list)
         UI_LANGUAGE.adjust_available_windows(self)
+        icons = IconSetter()
+        icons.set_available_window_icons(self)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
