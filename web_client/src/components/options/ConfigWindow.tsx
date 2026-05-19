@@ -2,6 +2,7 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaSave } from 'react-icons/fa';
+import { useQueryClient } from 'react-query';
 import { updateOptions, useConfig } from '../../api/options';
 import { useConfig as useConfigProvider } from '../../providers/ConfigProvider';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
@@ -44,6 +45,7 @@ const ConfigWindow: React.FC = () => {
   const { refetchConfig, changeTheme, isConfigBlacklisted } = useConfigProvider();
   const { restrictedModeActive } = useRestrictedMode();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   // Sync configData when data from API changes - this is intentional external state sync
   useEffect(() => {
@@ -396,6 +398,12 @@ const ConfigWindow: React.FC = () => {
     executeAndShow(() => updateOptions(configData)).then((success) => {
       if (success) {
         changeTheme(configData.MAKER_THEME as string);
+        // Invalidate the react-query 'options' cache so the useEffect re-syncs `configData`
+        // from the freshly-fetched server data. `refetchConfig` only refreshes the
+        // ConfigProvider's lighter `getConfigValues` view, leaving the 'options' cache stale —
+        // and any unrelated change to ConfigProvider state would otherwise re-fire the sync
+        // effect with stale data and visually revert the edits the user just saved.
+        queryClient.invalidateQueries('options');
         refetchConfig();
       }
     });
