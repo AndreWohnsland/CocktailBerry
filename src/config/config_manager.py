@@ -265,7 +265,7 @@ class ConfigManager:
                             {
                                 **SHARED_PUMP_FIELDS,
                                 "pin_type": ChooseOptions.pin,
-                                "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
+                                "board_number": IntType([build_number_limiter(1, 99)], prefix="Board Nr.", default=1),
                                 "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                             },
                             DCPumpConfig,
@@ -295,7 +295,7 @@ class ConfigManager:
                 DictType(
                     {
                         "device_type": ChooseOptions.i2c,
-                        "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
+                        "board_number": IntType([build_number_limiter(1, 99)], prefix="Board Nr.", default=1),
                         "enabled": BoolType(check_name="Enabled", default=True),
                         "address": StringType([validate_i2c_address], prefix="0x", default="20"),
                         "inverted": BoolType(check_name="Inverted"),
@@ -318,7 +318,7 @@ class ConfigManager:
                         {
                             **SHARED_REVERSION_FIELDS,
                             "pin_type": ChooseOptions.pin,
-                            "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
+                            "board_number": IntType([build_number_limiter(1, 99)], prefix="Board Nr.", default=1),
                             "pin": IntType([build_number_limiter(0)], default=0, prefix="Pin:"),
                             "inverted": BoolType(check_name="Inverted", default=False),
                         },
@@ -349,7 +349,7 @@ class ConfigManager:
                             {
                                 **SHARED_LED_FIELDS,
                                 "pin_type": ChooseOptions.pin,
-                                "board_number": IntType([build_number_limiter(1, 99)], prefix="#", default=1),
+                                "board_number": IntType([build_number_limiter(1, 99)], prefix="Board Nr.", default=1),
                                 "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                             },
                             NormalLedConfig,
