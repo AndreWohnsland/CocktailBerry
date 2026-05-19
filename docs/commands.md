@@ -176,6 +176,101 @@ Creates a file containing the base structure to get started with your addon.
 The file is placed in the `addons` folder.
 File name will be the name converted to lower case, spaces are replaced with underscores and stripped of special characters.
 
+## Creating Hardware Extension Base Files
+
+Similar to addon files, you can use the CLI to generate skeleton files for each type of hardware extension.
+The file is placed in the corresponding subfolder under `addons/`.
+File name will be the name converted to lower case, spaces are replaced with underscores and stripped of special characters.
+
+### Dispenser Extension
+
+```bash
+uv run runme.py create-dispenser DISPENSER_NAME
+
+# Arguments:
+#   DISPENSER_NAME  [required]
+
+# Options:
+#   --help  Show help
+```
+
+Creates a base file in `addons/dispensers/` for a custom pump or valve driver.
+Once added, the new dispenser type appears in the pump configuration dropdown.
+
+### Hardware Context Extension
+
+```bash
+uv run runme.py create-hardware HARDWARE_NAME
+
+# Arguments:
+#   HARDWARE_NAME  [required]
+
+# Options:
+#   --help  Show help
+```
+
+Creates a base file in `addons/hardware/` for shared hardware (e.g. a UART board or SPI bus) that multiple dispenser extensions can access at runtime.
+
+### Scale Extension
+
+```bash
+uv run runme.py create-scale SCALE_NAME
+
+# Arguments:
+#   SCALE_NAME  [required]
+
+# Options:
+#   --help  Show help
+```
+
+Creates a base file in `addons/scales/` for a custom load-cell amplifier or weighing hardware driver.
+Once added, the new scale type appears in the scale configuration dropdown.
+
+### Carriage Extension
+
+```bash
+uv run runme.py create-carriage CARRIAGE_NAME
+
+# Arguments:
+#   CARRIAGE_NAME  [required]
+
+# Options:
+#   --help  Show help
+```
+
+Creates a base file in `addons/carriages/` for a custom linear positioning driver that moves the glass between dispenser slots.
+Once added, the new carriage type appears in the carriage configuration dropdown.
+
+### RFID Extension
+
+```bash
+uv run runme.py create-rfid RFID_NAME
+
+# Arguments:
+#   RFID_NAME  [required]
+
+# Options:
+#   --help  Show help
+```
+
+Creates a base file in `addons/rfid/` for a custom NFC/RFID reader driver.
+Once added, the new reader type appears in the RFID configuration dropdown.
+
+### LED Extension
+
+```bash
+uv run runme.py create-led LED_NAME
+
+# Arguments:
+#   LED_NAME  [required]
+
+# Options:
+#   --help  Show help
+```
+
+Creates a base file in `addons/leds/` for a custom LED or lighting driver.
+Once added, the new LED type appears in the LED configuration dropdown.
+
 ## Setup the Microservice
 
 You can also use CocktailBerry to set up the [microservice](advanced.md#cocktailberry-microservice) and change the env variables.
