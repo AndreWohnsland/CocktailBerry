@@ -13,11 +13,12 @@ from src.config.config_types import (
     BoolType,
     ChooseType,
     ConfigClass,
+    DCGPIOPumpConfig,
     DictType,
     FloatType,
+    I2CExpanderConfig,
     IntType,
     ListType,
-    PumpConfig,
     StringType,
 )
 from src.config.errors import ConfigError
@@ -364,36 +365,36 @@ class TestDictType:
 
     def test_validation_success(self) -> None:
         """Test that valid dictionaries pass validation."""
-        dict_type = DictType({"name": StringType(), "age": IntType()}, PumpConfig)
+        dict_type = DictType({"name": StringType(), "age": IntType()}, DCGPIOPumpConfig)
         dict_type.validate("test_config", {"name": "John", "age": 30})
 
     def test_validation_fails_for_invalid_value_type(self) -> None:
         """Test that dictionaries with wrong value types fail validation."""
-        dict_type = DictType({"name": StringType(), "age": IntType()}, PumpConfig)
+        dict_type = DictType({"name": StringType(), "age": IntType()}, DCGPIOPumpConfig)
         with pytest.raises(ConfigError, match="is not of type"):
             dict_type.validate("test_config", {"name": "John", "age": "thirty"})
 
     def test_serialization(self) -> None:
-        """Test dict serialization (to_config) using PumpConfig."""
+        """Test dict serialization (to_config) using DCGPIOPumpConfig."""
         dict_type = DictType(
             {"pin": IntType(), "volume_flow": FloatType(), "tube_volume": IntType()},
-            PumpConfig,
+            DCGPIOPumpConfig,
         )
-        pump = PumpConfig(pin=1, volume_flow=2.5, tube_volume=10)
+        pump = DCGPIOPumpConfig(pin=1, volume_flow=2.5, tube_volume=10)
         result = dict_type.to_config(pump)
         assert result["pin"] == 1
         assert result["volume_flow"] == pytest.approx(2.5)
         assert result["tube_volume"] == 10
 
     def test_deserialization(self) -> None:
-        """Test dict deserialization (from_config) creates PumpConfig."""
+        """Test dict deserialization (from_config) creates DCGPIOPumpConfig."""
         dict_type = DictType(
             {"pin": IntType(), "volume_flow": FloatType(), "tube_volume": IntType()},
-            PumpConfig,
+            DCGPIOPumpConfig,
         )
         config_dict = {"pin": 1, "volume_flow": 2.5, "tube_volume": 10}
         result = dict_type.from_config(config_dict)
-        assert isinstance(result, PumpConfig)
+        assert isinstance(result, DCGPIOPumpConfig)
         assert result.pin == 1
         assert result.volume_flow == pytest.approx(2.5)
         assert result.tube_volume == 10
@@ -402,19 +403,42 @@ class TestDictType:
         """Test get_default returns dict with default values."""
         dict_type = DictType(
             {"name": StringType(), "age": IntType()},
-            PumpConfig,
+            DCGPIOPumpConfig,
         )
         default = dict_type.get_default()
         assert default == {"name": "", "age": 0}
 
+    def test_get_default_uses_to_config_field_order(self) -> None:
+        """``get_default`` keys must follow the config class's ``to_config`` ordering.
+
+        Regression: the UI renders fields by ``Object.keys`` order. If ``get_default``
+        used the DictType declaration order while existing items came back in
+        ``to_config`` order, a newly-added list item would render its fields in a
+        different sequence than items already on disk.
+        """
+        # I2C_CONFIG mirrors the production declaration order (device_type first).
+        dict_type = DictType(
+            {
+                "device_type": ChooseType(allowed=["MCP23017", "PCF8574"], default="PCF8574"),
+                "board_number": IntType(default=1),
+                "enabled": BoolType(default=True),
+                "address": StringType(default="20"),
+                "inverted": BoolType(default=False),
+            },
+            I2CExpanderConfig,
+        )
+        # I2CExpanderConfig.to_config() emits in this order:
+        expected_order = ["enabled", "device_type", "board_number", "address", "inverted"]
+        assert list(dict_type.get_default().keys()) == expected_order
+
     def test_get_default_config_class_with_pump_config(self) -> None:
-        """Test get_default_config_class creates PumpConfig with proper defaults."""
+        """Test get_default_config_class creates DCGPIOPumpConfig with proper defaults."""
         dict_type = DictType(
             {"pin": IntType(), "volume_flow": FloatType(), "tube_volume": IntType()},
-            PumpConfig,
+            DCGPIOPumpConfig,
         )
         pump = dict_type.get_default_config_class()
-        assert isinstance(pump, PumpConfig)
+        assert isinstance(pump, DCGPIOPumpConfig)
         assert pump.pin == 0
         assert pump.volume_flow == pytest.approx(0.0)
         assert pump.tube_volume == 0
@@ -427,10 +451,10 @@ class TestDictType:
                 "volume_flow": FloatType(default=30.0),
                 "tube_volume": IntType(default=5),
             },
-            PumpConfig,
+            DCGPIOPumpConfig,
         )
         pump = dict_type.get_default_config_class()
-        assert isinstance(pump, PumpConfig)
+        assert isinstance(pump, DCGPIOPumpConfig)
         assert pump.pin == 14
         assert pump.volume_flow == pytest.approx(30.0)
         assert pump.tube_volume == 5
@@ -515,7 +539,7 @@ class TestEdgeCases:
         Edge case: Config files might have extra keys from future versions.
         """
         dict_types = {"required": StringType()}
-        dict_type = DictType(dict_types, PumpConfig)
+        dict_type = DictType(dict_types, DCGPIOPumpConfig)
         # Should not fail even with extra keys
         dict_type.validate("test_config", {"required": "value", "extra": "ignored"})
 

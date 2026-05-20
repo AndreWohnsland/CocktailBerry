@@ -11,7 +11,14 @@ import pytest
 import yaml
 
 from src.config.config_manager import ConfigManager
-from src.config.config_types import DCPumpConfig, IntType, ListType, StepperPumpConfig
+from src.config.config_types import (
+    DCGPIOPumpConfig,
+    DCI2CPumpConfig,
+    DCPumpConfig,
+    IntType,
+    ListType,
+    StepperPumpConfig,
+)
 from src.config.errors import ConfigError
 
 
@@ -152,7 +159,14 @@ class TestConfigManagerSetConfig:
                 {
                     "MAKER_NUMBER_BOTTLES": 1,
                     "PUMP_CONFIG": [
-                        {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 1}
+                        {
+                            "pump_type": "DC over I2C",
+                            "pin": 0,
+                            "volume_flow": 30.0,
+                            "tube_volume": 5,
+                            "pin_type": "MCP23017",
+                            "board_number": 1,
+                        }
                     ],
                     "I2C_CONFIG": [],
                 },
@@ -166,7 +180,14 @@ class TestConfigManagerSetConfig:
             {
                 "MAKER_NUMBER_BOTTLES": 1,
                 "PUMP_CONFIG": [
-                    {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 1}
+                    {
+                        "pump_type": "DC over I2C",
+                        "pin": 0,
+                        "volume_flow": 30.0,
+                        "tube_volume": 5,
+                        "pin_type": "MCP23017",
+                        "board_number": 1,
+                    }
                 ],
                 "I2C_CONFIG": [
                     {
@@ -182,7 +203,7 @@ class TestConfigManagerSetConfig:
         )
         assert len(config.PUMP_CONFIG) == 1
         pump_config = config.PUMP_CONFIG[0]
-        assert isinstance(pump_config, DCPumpConfig)
+        assert isinstance(pump_config, DCI2CPumpConfig)
         assert pump_config.pin_type == "MCP23017"
 
     def test_set_config_i2c_pump_with_disabled_i2c_config_fails(self) -> None:
@@ -193,7 +214,14 @@ class TestConfigManagerSetConfig:
                 {
                     "MAKER_NUMBER_BOTTLES": 1,
                     "PUMP_CONFIG": [
-                        {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "PCA9535", "board_number": 1}
+                        {
+                            "pump_type": "DC over I2C",
+                            "pin": 0,
+                            "volume_flow": 30.0,
+                            "tube_volume": 5,
+                            "pin_type": "PCA9535",
+                            "board_number": 1,
+                        }
                     ],
                     "I2C_CONFIG": [
                         {
@@ -221,8 +249,8 @@ class TestConfigManagerSetConfig:
         )
         assert len(config.PUMP_CONFIG) == 1
         pump_config = config.PUMP_CONFIG[0]
-        assert isinstance(pump_config, DCPumpConfig)
-        assert pump_config.pin_type == "GPIO"
+        # GPIO routing is encoded by the concrete variant subclass; no `pin_type` attribute.
+        assert isinstance(pump_config, DCGPIOPumpConfig)
 
     def test_set_config_i2c_config_rejects_duplicate_device_type_and_board(self) -> None:
         """Test that I2C_CONFIG rejects duplicate (device_type, board_number) combinations."""
@@ -338,7 +366,14 @@ class TestConfigManagerSetConfig:
                 {
                     "MAKER_NUMBER_BOTTLES": 1,
                     "PUMP_CONFIG": [
-                        {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 2}
+                        {
+                            "pump_type": "DC over I2C",
+                            "pin": 0,
+                            "volume_flow": 30.0,
+                            "tube_volume": 5,
+                            "pin_type": "MCP23017",
+                            "board_number": 2,
+                        }
                     ],
                     "I2C_CONFIG": [
                         {
@@ -362,7 +397,7 @@ class TestConfigManagerSetConfig:
                     "MAKER_NUMBER_BOTTLES": 2,
                     "PUMP_CONFIG": [
                         {
-                            "pump_type": "DC",
+                            "pump_type": "DC over I2C",
                             "pin": 0,
                             "volume_flow": 30.0,
                             "tube_volume": 5,
@@ -370,7 +405,7 @@ class TestConfigManagerSetConfig:
                             "board_number": 1,
                         },
                         {
-                            "pump_type": "DC",
+                            "pump_type": "DC over I2C",
                             "pin": 0,
                             "volume_flow": 25.0,
                             "tube_volume": 3,
@@ -403,7 +438,7 @@ class TestConfigManagerSetConfig:
                     "MAKER_NUMBER_BOTTLES": 2,
                     "PUMP_CONFIG": [
                         {
-                            "pump_type": "DC",
+                            "pump_type": "DC over GPIO",
                             "pin": 0,
                             "volume_flow": 30.0,
                             "tube_volume": 5,
@@ -432,7 +467,7 @@ class TestConfigManagerSetConfig:
                 "MAKER_NUMBER_BOTTLES": 2,
                 "PUMP_CONFIG": [
                     {
-                        "pump_type": "DC",
+                        "pump_type": "DC over I2C",
                         "pin": 0,
                         "volume_flow": 30.0,
                         "tube_volume": 5,
@@ -472,8 +507,22 @@ class TestConfigManagerSetConfig:
             {
                 "MAKER_NUMBER_BOTTLES": 2,
                 "PUMP_CONFIG": [
-                    {"pin": 0, "volume_flow": 30.0, "tube_volume": 5, "pin_type": "MCP23017", "board_number": 1},
-                    {"pin": 0, "volume_flow": 25.0, "tube_volume": 3, "pin_type": "MCP23017", "board_number": 2},
+                    {
+                        "pump_type": "DC over I2C",
+                        "pin": 0,
+                        "volume_flow": 30.0,
+                        "tube_volume": 5,
+                        "pin_type": "MCP23017",
+                        "board_number": 1,
+                    },
+                    {
+                        "pump_type": "DC over I2C",
+                        "pin": 0,
+                        "volume_flow": 25.0,
+                        "tube_volume": 3,
+                        "pin_type": "MCP23017",
+                        "board_number": 2,
+                    },
                 ],
                 "I2C_CONFIG": [
                     {
@@ -497,10 +546,50 @@ class TestConfigManagerSetConfig:
         assert len(config.PUMP_CONFIG) == 2
         first_config = config.PUMP_CONFIG[0]
         second_config = config.PUMP_CONFIG[1]
-        assert isinstance(first_config, DCPumpConfig)
-        assert isinstance(second_config, DCPumpConfig)
+        assert isinstance(first_config, DCI2CPumpConfig)
+        assert isinstance(second_config, DCI2CPumpConfig)
         assert first_config.board_number == 1
         assert second_config.board_number == 2
+
+    def test_set_config_i2c_reversion_requires_matching_i2c_board(self) -> None:
+        """`Global over I2C` reversion must reference an enabled I2C_CONFIG board."""
+        config = ConfigManager()
+        with pytest.raises(ConfigError):
+            config.set_config(
+                {
+                    "MAKER_PUMP_REVERSION_CONFIG": {
+                        "reversion_type": "Global over I2C",
+                        "enabled": True,
+                        "pin": 0,
+                        "pin_type": "MCP23017",
+                        "board_number": 2,
+                        "inverted": False,
+                    },
+                    "I2C_CONFIG": [],
+                },
+                validate=True,
+            )
+
+    def test_set_config_i2c_led_requires_matching_i2c_board(self) -> None:
+        """`Normal over I2C` LED entries must reference an enabled I2C_CONFIG board."""
+        config = ConfigManager()
+        with pytest.raises(ConfigError):
+            config.set_config(
+                {
+                    "LED_CONFIG": [
+                        {
+                            "led_type": "Normal over I2C",
+                            "pin": 5,
+                            "pin_type": "PCF8574",
+                            "board_number": 3,
+                            "default_on": False,
+                            "preparation_state": "Effect",
+                        }
+                    ],
+                    "I2C_CONFIG": [],
+                },
+                validate=True,
+            )
 
 
 class TestConfigManagerReadLocalConfig:
@@ -787,7 +876,7 @@ class TestIntegrationConfigDumpAndLoad:
         assert config2.MAKER_NAME == "MyCustomMaker"
 
     def test_dump_and_load_pump_config(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Test that complex PumpConfig objects survive dump and load cycle."""
+        """Test that complex pump config objects survive dump and load cycle."""
         config_file = tmp_path / "test_config.yaml"
         monkeypatch.setattr("src.config.config_manager.CUSTOM_CONFIG_FILE", config_file)
 

@@ -31,18 +31,21 @@ from src.config.config_types import (
     ChooseOptions,
     ChooseType,
     ConfigInterface,
-    DCPumpConfig,
+    DCGPIOPumpConfig,
+    DCI2CPumpConfig,
     DictType,
     DiscriminatedDictType,
     DispenserControlledReversionConfig,
     FloatType,
-    GlobalReversionConfig,
+    GlobalGPIOReversionConfig,
+    GlobalI2CReversionConfig,
     HX711ScaleConfig,
     I2CExpanderConfig,
     IntType,
     ListType,
     NAU7802ScaleConfig,
-    NormalLedConfig,
+    NormalGPIOLedConfig,
+    NormalI2CLedConfig,
     StepperPumpConfig,
     StringType,
     WS281xLedConfig,
@@ -150,7 +153,8 @@ class ConfigManager:
     UI_PICTURE_SIZE: int = 240
     UI_ONLY_MAKER_TAB: bool = False
     PUMP_CONFIG: ClassVar[list[BasePumpConfig]] = [
-        DCPumpConfig(pin, flow, 0, "GPIO") for pin, flow in zip(_default_pins, _default_volume_flow)
+        DCGPIOPumpConfig(pin=pin, volume_flow=flow, tube_volume=0)
+        for pin, flow in zip(_default_pins, _default_volume_flow)
     ]
     # Inverts the pin signal (on is low, off is high)
     MAKER_PINS_INVERTED: bool = True
@@ -169,9 +173,7 @@ class ConfigManager:
     # Base multiplier for alcohol in the recipe
     MAKER_ALCOHOL_FACTOR: int = 100
     # Reversion for cleaning
-    MAKER_PUMP_REVERSION_CONFIG = GlobalReversionConfig(
-        enabled=False, pin=0, pin_type="GPIO", board_number=1, inverted=False
-    )
+    MAKER_PUMP_REVERSION_CONFIG = GlobalGPIOReversionConfig(enabled=False, pin=0, inverted=False)
     # If the maker should check automatically for updates
     MAKER_SEARCH_UPDATES: bool = True
     # If the maker should check if there is enough in the bottle before making a cocktail
@@ -261,14 +263,21 @@ class ConfigManager:
                 DiscriminatedDictType(
                     "pump_type",
                     {
-                        "DC": DictType(
+                        "DC over GPIO": DictType(
                             {
                                 **SHARED_PUMP_FIELDS,
-                                "pin_type": ChooseOptions.pin,
+                                "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
+                            },
+                            DCGPIOPumpConfig,
+                        ),
+                        "DC over I2C": DictType(
+                            {
+                                **SHARED_PUMP_FIELDS,
+                                "pin_type": ChooseOptions.i2c,
                                 "board_number": IntType([build_number_limiter(1, 99)], prefix="Board Nr.", default=1),
                                 "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                             },
-                            DCPumpConfig,
+                            DCI2CPumpConfig,
                         ),
                         "Stepper": DictType(
                             {
@@ -281,7 +290,7 @@ class ConfigManager:
                             StepperPumpConfig,
                         ),
                     },
-                    default_variant="DC",
+                    default_variant="DC over GPIO",
                 ),
                 lambda: self.choose_bottle_number(ignore_limits=True),
                 [
@@ -314,15 +323,23 @@ class ConfigManager:
             "MAKER_PUMP_REVERSION_CONFIG": DiscriminatedDictType(
                 "reversion_type",
                 {
-                    "Global": DictType(
+                    "Global over GPIO": DictType(
                         {
                             **SHARED_REVERSION_FIELDS,
-                            "pin_type": ChooseOptions.pin,
+                            "pin": IntType([build_number_limiter(0)], default=0, prefix="Pin:"),
+                            "inverted": BoolType(check_name="Inverted", default=False),
+                        },
+                        GlobalGPIOReversionConfig,
+                    ),
+                    "Global over I2C": DictType(
+                        {
+                            **SHARED_REVERSION_FIELDS,
+                            "pin_type": ChooseOptions.i2c,
                             "board_number": IntType([build_number_limiter(1, 99)], prefix="Board Nr.", default=1),
                             "pin": IntType([build_number_limiter(0)], default=0, prefix="Pin:"),
                             "inverted": BoolType(check_name="Inverted", default=False),
                         },
-                        GlobalReversionConfig,
+                        GlobalI2CReversionConfig,
                     ),
                     "Dispenser Controlled": DictType(
                         {
@@ -331,7 +348,7 @@ class ConfigManager:
                         DispenserControlledReversionConfig,
                     ),
                 },
-                default_variant="Global",
+                default_variant="Global over GPIO",
             ),
             "MAKER_SEARCH_UPDATES": BoolType(check_name="Search for Updates"),
             "MAKER_CHECK_BOTTLE": BoolType(check_name="Check Bottle Volume"),
@@ -345,14 +362,21 @@ class ConfigManager:
                 DiscriminatedDictType(
                     "led_type",
                     {
-                        "Normal": DictType(
+                        "Normal over GPIO": DictType(
                             {
                                 **SHARED_LED_FIELDS,
-                                "pin_type": ChooseOptions.pin,
+                                "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
+                            },
+                            NormalGPIOLedConfig,
+                        ),
+                        "Normal over I2C": DictType(
+                            {
+                                **SHARED_LED_FIELDS,
+                                "pin_type": ChooseOptions.i2c,
                                 "board_number": IntType([build_number_limiter(1, 99)], prefix="Board Nr.", default=1),
                                 "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                             },
-                            NormalLedConfig,
+                            NormalI2CLedConfig,
                         ),
                         "WSLED": DictType(
                             {
@@ -365,7 +389,7 @@ class ConfigManager:
                             WS281xLedConfig,
                         ),
                     },
-                    default_variant="Normal",
+                    default_variant="Normal over GPIO",
                 ),
                 0,
             ),
@@ -623,11 +647,21 @@ class ConfigManager:
         self._validate_scale_config(validate)
 
     def _validate_i2c_boards(self, validate: bool) -> None:
-        # Collect all I2C (pin_type, board_number) pairs used in PUMP_CONFIG (excluding GPIO)
+        # Collect all I2C (pin_type, board_number) pairs used by any config that routes
+        # through an I2C expander: PUMP_CONFIG, MAKER_PUMP_REVERSION_CONFIG, LED_CONFIG.
+        # The variant subclasses (DCI2CPumpConfig, GlobalI2CReversionConfig, NormalI2CLedConfig)
+        # are the only ones carrying pin_type/board_number — so isinstance is enough.
         required_i2c_boards: set[tuple[str, int]] = set()
         for pump in self.PUMP_CONFIG:
-            if isinstance(pump, DCPumpConfig) and pump.pin_type != "GPIO":
+            if isinstance(pump, DCI2CPumpConfig):
                 required_i2c_boards.add((pump.pin_type, pump.board_number))
+        if isinstance(self.MAKER_PUMP_REVERSION_CONFIG, GlobalI2CReversionConfig):
+            required_i2c_boards.add(
+                (self.MAKER_PUMP_REVERSION_CONFIG.pin_type, self.MAKER_PUMP_REVERSION_CONFIG.board_number)
+            )
+        for led in self.LED_CONFIG:
+            if isinstance(led, NormalI2CLedConfig):
+                required_i2c_boards.add((led.pin_type, led.board_number))
 
         # Get enabled I2C (device_type, board_number) pairs from I2C_CONFIG
         enabled_i2c_boards = {(cfg.device_type, cfg.board_number) for cfg in self.I2C_CONFIG if cfg.enabled}
@@ -637,7 +671,7 @@ class ConfigManager:
         if missing_boards:
             readable = ", ".join(f"{t} board {n}" for t, n in missing_boards)
             error_msg = (
-                f"PUMP_CONFIG uses I2C boards {readable} but I2C_CONFIG "
+                f"Config uses I2C boards {readable} but I2C_CONFIG "
                 "has no enabled devices for them. Add enabled entries to I2C_CONFIG."
             )
             _logger.error(f"Config Error: {error_msg}")

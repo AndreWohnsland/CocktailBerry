@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from src.config.config_manager import CONFIG
-from src.config.config_types import PumpConfig
+from src.config.config_types import DCGPIOPumpConfig
 from src.machine.controller import MachineController
 from src.machine.dispensers.base import BaseDispenser
 from src.machine.dispensers.scheduler import (
@@ -41,8 +41,8 @@ class TestController:
 
         try:
             CONFIG.PUMP_CONFIG = [  # type: ignore
-                PumpConfig(pin=1, volume_flow=10.0, tube_volume=0),
-                PumpConfig(pin=2, volume_flow=20.0, tube_volume=0),
+                DCGPIOPumpConfig(pin=1, volume_flow=10.0, tube_volume=0),
+                DCGPIOPumpConfig(pin=2, volume_flow=20.0, tube_volume=0),
             ]
             CONFIG.MAKER_NUMBER_BOTTLES = 2
 

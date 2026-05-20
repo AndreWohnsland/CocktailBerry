@@ -137,6 +137,11 @@ class Migrator:
                 add_disallow_pump_back_column_to_ingredients,
                 _migrate_reversion_use_reversion_to_enabled,
             ],
+            "4.2.0": [
+                _migrate_dc_pump_to_split_variants,
+                _migrate_global_reversion_to_split_variants,
+                _migrate_normal_led_to_split_variants,
+            ],
         }
 
         for version, actions in version_actions.items():
@@ -338,6 +343,83 @@ def _migrate_rfid_reader_to_discriminated_config() -> None:
     with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
     _logger.info(f"Migrated RFID_READER='{old_value}' to RFID_CONFIG")
+
+
+def _migrate_dc_pump_to_split_variants() -> None:
+    """Rewrite legacy ``pump_type: "DC"`` entries to ``"DC over GPIO"`` / ``"DC over I2C"``.
+
+    Old shape: ``{pump_type: "DC", pin_type: <GPIO|I2C-chip>, board_number: <n>, pin: <n>, ...}``
+    New shape: ``pump_type: "DC over GPIO"`` (when pin_type was GPIO) or ``"DC over I2C"`` (otherwise).
+    The remaining fields (pin_type, board_number, pin) are kept; the dispenser layer still
+    reads them via ``DCPumpConfig`` for both variants.
+    """
+    configuration = _get_local_config("PUMP_CONFIG")
+    if configuration is None:
+        return
+    pumps = configuration.get("PUMP_CONFIG")
+    if not isinstance(pumps, list):
+        return
+    changed = False
+    for entry in pumps:
+        if not isinstance(entry, dict) or entry.get("pump_type") != "DC":
+            continue
+        entry["pump_type"] = "DC over GPIO" if entry.get("pin_type", "GPIO") == "GPIO" else "DC over I2C"
+        changed = True
+    if not changed:
+        return
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+    _logger.info("Migrated PUMP_CONFIG DC entries to split GPIO/I2C variants")
+
+
+def _migrate_normal_led_to_split_variants() -> None:
+    """Rewrite legacy ``led_type: "Normal"`` LED entries to ``"Normal over GPIO"`` / ``"Normal over I2C"``.
+
+    Old shape: ``{led_type: "Normal", pin_type: <GPIO|I2C-chip>, board_number: <n>, pin: <n>, ...}``
+    New shape: ``led_type: "Normal over GPIO"`` (when pin_type was GPIO) or ``"Normal over I2C"``.
+    WSLED entries are untouched.
+    """
+    configuration = _get_local_config("LED_CONFIG")
+    if configuration is None:
+        return
+    leds = configuration.get("LED_CONFIG")
+    if not isinstance(leds, list):
+        return
+    changed = False
+    for entry in leds:
+        if not isinstance(entry, dict) or entry.get("led_type") != "Normal":
+            continue
+        entry["led_type"] = "Normal over GPIO" if entry.get("pin_type", "GPIO") == "GPIO" else "Normal over I2C"
+        changed = True
+    if not changed:
+        return
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+    _logger.info("Migrated LED_CONFIG Normal entries to split GPIO/I2C variants")
+
+
+def _migrate_global_reversion_to_split_variants() -> None:
+    """Rewrite legacy ``reversion_type: "Global"`` to ``"Global over GPIO"`` / ``"Global over I2C"``.
+
+    Old shape: ``MAKER_PUMP_REVERSION_CONFIG: {reversion_type: "Global", pin_type: <GPIO|I2C-chip>, ...}``
+    New shape: ``reversion_type: "Global over GPIO"`` (when pin_type was GPIO) or ``"Global over I2C"``.
+    The remaining fields are kept; ``GlobalReversionConfig.__init__`` will normalize
+    pin_type / board_number for the GPIO variant on load.
+    """
+    configuration = _get_local_config("MAKER_PUMP_REVERSION_CONFIG")
+    if configuration is None:
+        return
+    reversion_config = configuration.get("MAKER_PUMP_REVERSION_CONFIG")
+    if not isinstance(reversion_config, dict):
+        return
+    if reversion_config.get("reversion_type") != "Global":
+        return
+    reversion_config["reversion_type"] = (
+        "Global over GPIO" if reversion_config.get("pin_type", "GPIO") == "GPIO" else "Global over I2C"
+    )
+    with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
+        yaml.dump(configuration, stream, default_flow_style=False)
+    _logger.info("Migrated MAKER_PUMP_REVERSION_CONFIG Global entry to split GPIO/I2C variant")
 
 
 def _migrate_reversion_use_reversion_to_enabled() -> None:
