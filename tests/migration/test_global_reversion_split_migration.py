@@ -2,34 +2,22 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
-import yaml
 
 from src.migration import migrator
 
 
-def _write_yaml(path: Path, data: dict) -> None:
-    with path.open("w", encoding="UTF-8") as stream:
-        yaml.dump(data, stream, default_flow_style=False)
-
-
-def _read_yaml(path: Path) -> dict:
-    with path.open(encoding="UTF-8") as stream:
-        return yaml.safe_load(stream)
-
-
-@pytest.fixture
-def config_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    path = tmp_path / "custom_config.yaml"
-    monkeypatch.setattr(migrator, "CUSTOM_CONFIG_FILE", path)
-    return path
-
-
 class TestMigrateGlobalReversionToSplitVariants:
-    def test_gpio_entry_migrates_to_global_over_gpio(self, config_path: Path) -> None:
-        _write_yaml(
+    def test_gpio_entry_migrates_to_global_over_gpio(
+        self,
+        config_path: Path,
+        write_yaml: Callable[[Path, dict], None],
+        read_yaml: Callable[[Path], dict],
+    ) -> None:
+        write_yaml(
             config_path,
             {
                 "MAKER_PUMP_REVERSION_CONFIG": {
@@ -43,12 +31,17 @@ class TestMigrateGlobalReversionToSplitVariants:
             },
         )
         migrator._migrate_global_reversion_to_split_variants()
-        result = _read_yaml(config_path)
+        result = read_yaml(config_path)
         assert result["MAKER_PUMP_REVERSION_CONFIG"]["reversion_type"] == "Global over GPIO"
         assert result["MAKER_PUMP_REVERSION_CONFIG"]["pin"] == 14
 
-    def test_i2c_entry_migrates_to_global_over_i2c(self, config_path: Path) -> None:
-        _write_yaml(
+    def test_i2c_entry_migrates_to_global_over_i2c(
+        self,
+        config_path: Path,
+        write_yaml: Callable[[Path, dict], None],
+        read_yaml: Callable[[Path], dict],
+    ) -> None:
+        write_yaml(
             config_path,
             {
                 "MAKER_PUMP_REVERSION_CONFIG": {
@@ -62,31 +55,46 @@ class TestMigrateGlobalReversionToSplitVariants:
             },
         )
         migrator._migrate_global_reversion_to_split_variants()
-        result = _read_yaml(config_path)
+        result = read_yaml(config_path)
         assert result["MAKER_PUMP_REVERSION_CONFIG"]["reversion_type"] == "Global over I2C"
         assert result["MAKER_PUMP_REVERSION_CONFIG"]["pin_type"] == "PCF8574"
         assert result["MAKER_PUMP_REVERSION_CONFIG"]["board_number"] == 2
 
-    def test_missing_pin_type_defaults_to_gpio(self, config_path: Path) -> None:
-        _write_yaml(
+    def test_missing_pin_type_defaults_to_gpio(
+        self,
+        config_path: Path,
+        write_yaml: Callable[[Path, dict], None],
+        read_yaml: Callable[[Path], dict],
+    ) -> None:
+        write_yaml(
             config_path,
             {"MAKER_PUMP_REVERSION_CONFIG": {"reversion_type": "Global", "enabled": False, "pin": 0}},
         )
         migrator._migrate_global_reversion_to_split_variants()
-        result = _read_yaml(config_path)
+        result = read_yaml(config_path)
         assert result["MAKER_PUMP_REVERSION_CONFIG"]["reversion_type"] == "Global over GPIO"
 
-    def test_dispenser_controlled_untouched(self, config_path: Path) -> None:
-        _write_yaml(
+    def test_dispenser_controlled_untouched(
+        self,
+        config_path: Path,
+        write_yaml: Callable[[Path, dict], None],
+        read_yaml: Callable[[Path], dict],
+    ) -> None:
+        write_yaml(
             config_path,
             {"MAKER_PUMP_REVERSION_CONFIG": {"reversion_type": "Dispenser Controlled", "enabled": True}},
         )
         migrator._migrate_global_reversion_to_split_variants()
-        result = _read_yaml(config_path)
+        result = read_yaml(config_path)
         assert result["MAKER_PUMP_REVERSION_CONFIG"]["reversion_type"] == "Dispenser Controlled"
 
-    def test_already_migrated_untouched(self, config_path: Path) -> None:
-        _write_yaml(
+    def test_already_migrated_untouched(
+        self,
+        config_path: Path,
+        write_yaml: Callable[[Path, dict], None],
+        read_yaml: Callable[[Path], dict],
+    ) -> None:
+        write_yaml(
             config_path,
             {
                 "MAKER_PUMP_REVERSION_CONFIG": {
@@ -100,7 +108,7 @@ class TestMigrateGlobalReversionToSplitVariants:
             },
         )
         migrator._migrate_global_reversion_to_split_variants()
-        result = _read_yaml(config_path)
+        result = read_yaml(config_path)
         assert result["MAKER_PUMP_REVERSION_CONFIG"]["reversion_type"] == "Global over I2C"
 
     def test_no_config_file_is_noop(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
