@@ -49,6 +49,10 @@ SUPPORTED_SCALE_DRIVERS = list(get_args(SupportedScaleDriverType))
 SUPPORTED_CARRIAGE_TYPES = list(get_args(SupportedCarriageType))
 SUPPORTED_LED_DRIVERS = list(get_args(SupportedLedDriverType))
 
+REVERSION_DEFAULT_VARIANT: SupportedReversionType = "Global over GPIO"
+LED_DEFAULT_VARIANT: SupportedLedDriverType = "Normal over GPIO"
+DC_DISPENSER_DEFAULT_VARIANT: SupportedDispenserType = "DC over GPIO"
+
 
 class ConfigInterface[T](Protocol):
     """Interface for config values."""
@@ -157,14 +161,14 @@ class ChooseOptions:
     payment = ChooseType(allowed=SUPPORTED_PAYMENT)
     pin = ChooseType(allowed=SUPPORTED_PIN_CONTROL, default="GPIO")
     i2c = ChooseType(allowed=SUPPORTED_I2C_EXPANDERS, default="PCF8574")
-    dispenser = ChooseType(allowed=SUPPORTED_DISPENSERS, default="DC over GPIO")
+    dispenser = ChooseType(allowed=SUPPORTED_DISPENSERS, default=DC_DISPENSER_DEFAULT_VARIANT)
     stepper_driver = ChooseType(allowed=SUPPORTED_STEPPER_DRIVERS, default="A4988")
     stepper_step_type = ChooseType(allowed=SUPPORTED_STEPPER_STEP_TYPES, default="Full")
     consumption_estimation = ChooseType(allowed=SUPPORTED_CONSUMPTION_ESTIMATIONS, default="time")
     scale_driver = ChooseType(allowed=SUPPORTED_SCALE_DRIVERS, default="HX711")
     carriage_type = ChooseType(allowed=SUPPORTED_CARRIAGE_TYPES, default="NoCarriage")
-    led_driver = ChooseType(allowed=SUPPORTED_LED_DRIVERS, default="Normal over GPIO")
-    reversion_type = ChooseType(allowed=SUPPORTED_REVERSIONS, default="Global over GPIO")
+    led_driver = ChooseType(allowed=SUPPORTED_LED_DRIVERS, default=LED_DEFAULT_VARIANT)
+    reversion_type = ChooseType(allowed=SUPPORTED_REVERSIONS, default=REVERSION_DEFAULT_VARIANT)
 
 
 class StringType(_ConfigType[str]):
@@ -449,7 +453,7 @@ class BasePumpConfig(ConfigClass):
 
     def __init__(
         self,
-        pump_type: str = "DC over GPIO",
+        pump_type: str = DC_DISPENSER_DEFAULT_VARIANT,
         volume_flow: float = 30.0,
         tube_volume: int = 0,
         consumption_estimation: ConsumptionEstimationType = "time",
@@ -490,7 +494,7 @@ class DCPumpConfig(BasePumpConfig):
         pin: int = 0,
         volume_flow: float = 30.0,
         tube_volume: int = 0,
-        pump_type: SupportedDispenserType = "DC over GPIO",
+        pump_type: SupportedDispenserType = DC_DISPENSER_DEFAULT_VARIANT,
         consumption_estimation: ConsumptionEstimationType = "time",
         carriage_position: int = 0,
         **kwargs: Any,
@@ -522,7 +526,7 @@ class DCGPIOPumpConfig(DCPumpConfig):
         pin: int = 0,
         volume_flow: float = 30.0,
         tube_volume: int = 0,
-        pump_type: SupportedDispenserType = "DC over GPIO",
+        pump_type: SupportedDispenserType = DC_DISPENSER_DEFAULT_VARIANT,
         consumption_estimation: ConsumptionEstimationType = "time",
         carriage_position: int = 0,
         **kwargs: Any,
@@ -818,7 +822,7 @@ class GlobalReversionConfig(BaseReversionConfig):
         enabled: bool = False,
         pin: int = 0,
         inverted: bool = False,
-        reversion_type: SupportedReversionType = "Global over GPIO",
+        reversion_type: SupportedReversionType = REVERSION_DEFAULT_VARIANT,
         **kwargs: Any,
     ) -> None:
         super().__init__(reversion_type=reversion_type, enabled=enabled)
@@ -846,7 +850,7 @@ class GlobalGPIOReversionConfig(GlobalReversionConfig):
         enabled: bool = False,
         pin: int = 0,
         inverted: bool = False,
-        reversion_type: SupportedReversionType = "Global over GPIO",
+        reversion_type: SupportedReversionType = REVERSION_DEFAULT_VARIANT,
         **kwargs: Any,
     ) -> None:
         super().__init__(enabled=enabled, pin=pin, inverted=inverted, reversion_type=reversion_type)
@@ -917,7 +921,7 @@ class BaseLedConfig(ConfigClass):
 
     def __init__(
         self,
-        led_type: str = "Normal over GPIO",
+        led_type: str = LED_DEFAULT_VARIANT,
         default_on: bool = False,
         preparation_state: SupportedLedStatesType = "Effect",
         **kwargs: Any,
@@ -949,7 +953,7 @@ class NormalLedConfig(BaseLedConfig):
         pin: int = 0,
         default_on: bool = False,
         preparation_state: SupportedLedStatesType = "Effect",
-        led_type: str = "Normal over GPIO",
+        led_type: str = LED_DEFAULT_VARIANT,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -977,7 +981,7 @@ class NormalGPIOLedConfig(NormalLedConfig):
         pin: int = 0,
         default_on: bool = False,
         preparation_state: SupportedLedStatesType = "Effect",
-        led_type: str = "Normal over GPIO",
+        led_type: str = LED_DEFAULT_VARIANT,
         **kwargs: Any,
     ) -> None:
         super().__init__(
