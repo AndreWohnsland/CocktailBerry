@@ -60,6 +60,7 @@ features = [
   "announce.dismiss",
   "content.tabs.link",
   "navigation.indexes",
+  "content.tooltips",
 ]
 
 [[project.theme.palette]]
