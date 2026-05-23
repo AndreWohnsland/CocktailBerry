@@ -14,7 +14,7 @@ The following components were used within the showcase for the Machines (Cocktai
 - Official [Touch Screen](https://amzn.to/4pnDPmj) also works
 - 1x Micro [SD-Card](https://amzn.to/3JY3Dqn) (16-32 GB is enough, depending on what else you want to store)
 - 1x 5V Power supply for the [Raspberry Pi 3](https://amzn.to/3XbImwj) or [Raspberry Pi 4](https://amzn.to/48axtjp)
-- 1-2x [8 Channel](https://amzn.to/49ya120) or [16 Channel](https://amzn.to/49xgxGe) Relay-Boards depending on pump count (important to have 5V input control)
+- 1-2x [8 Channel](https://amzn.to/49ya120) or other RPi (needs 3.3V Logic Level, 5V will NOT WORK!!!) Relay-Boards depending on pump count (important to have 5V input control)
 - 6-24x Pumps, it should be food safe, examples are:
 - [membrane pump](https://amzn.to/4ocmw6S) or [this one](https://amzn.to/4a6PfXl)
 - [peristaltic pump](https://amzn.to/3LSyTrh)
@@ -74,3 +74,5 @@ The only restriction by the software is that the GPIO pins are turned on / off v
 
 When the PCB is in an acceptable state, there will also be a new design fitting for that PCB.
 In the future we are planning to provide the files here or a link to their origin.
+
+*[5V will NOT WORK]: The relay board input control must use 3.3V logic level (RPi GPIO output), look that they are compatible with the RPi. Also, 16 Relay boards are known to cause issues, so try to avoid them.
