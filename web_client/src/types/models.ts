@@ -211,16 +211,25 @@ export interface CarriageConfig {
   wait_after_dispense: number;
 }
 
-export interface DCPumpConfig {
-  pump_type: 'DC';
+interface BaseDCPumpConfig {
   pin: number;
-  pin_type: string;
-  board_number: number;
   volume_flow: number;
   tube_volume: number;
   consumption_estimation: 'time' | 'weight';
   carriage_position: number;
 }
+
+export interface DCGPIOPumpConfig extends BaseDCPumpConfig {
+  pump_type: 'DC over GPIO';
+}
+
+export interface DCI2CPumpConfig extends BaseDCPumpConfig {
+  pump_type: 'DC over I2C';
+  pin_type: string;
+  board_number: number;
+}
+
+export type DCPumpConfig = DCGPIOPumpConfig | DCI2CPumpConfig;
 
 export interface StepperPumpConfig {
   pump_type: 'Stepper';
@@ -245,17 +254,26 @@ export interface CustomColors {
 }
 
 export interface BaseReversionConfig {
-  reversion_type: 'Global' | 'Dispenser Controlled';
+  reversion_type: 'Global over GPIO' | 'Global over I2C' | 'Dispenser Controlled';
   enabled: boolean;
 }
 
-export interface GlobalReversionConfig extends BaseReversionConfig {
-  reversion_type: 'Global';
+interface BaseGlobalReversionConfig extends BaseReversionConfig {
   pin: number;
-  pin_type: string;
   inverted: boolean;
+}
+
+export interface GlobalGPIOReversionConfig extends BaseGlobalReversionConfig {
+  reversion_type: 'Global over GPIO';
+}
+
+export interface GlobalI2CReversionConfig extends BaseGlobalReversionConfig {
+  reversion_type: 'Global over I2C';
+  pin_type: string;
   board_number: number;
 }
+
+export type GlobalReversionConfig = GlobalGPIOReversionConfig | GlobalI2CReversionConfig;
 
 export interface DispenserControlledReversionConfig extends BaseReversionConfig {
   reversion_type: 'Dispenser Controlled';
@@ -277,12 +295,21 @@ export interface BaseLedConfig {
   preparation_state: 'Effect' | 'On' | 'Off';
 }
 
-export interface NormalLedConfig extends BaseLedConfig {
-  led_type: 'Normal';
+interface BaseNormalLedConfig extends BaseLedConfig {
   pin: number;
+}
+
+export interface NormalGPIOLedConfig extends BaseNormalLedConfig {
+  led_type: 'Normal over GPIO';
+}
+
+export interface NormalI2CLedConfig extends BaseNormalLedConfig {
+  led_type: 'Normal over I2C';
   pin_type: string;
   board_number: number;
 }
+
+export type NormalLedConfig = NormalGPIOLedConfig | NormalI2CLedConfig;
 
 export interface WS281xLedConfig extends BaseLedConfig {
   led_type: 'WSLED';

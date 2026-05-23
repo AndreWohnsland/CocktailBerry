@@ -12,10 +12,14 @@ from src.config.config_types import (
     ChooseOptions,
     ChooseType,
     ConfigClass,
+    DCGPIOPumpConfig,
+    DCI2CPumpConfig,
     DCPumpConfig,
     DictType,
     DiscriminatedDictType,
     FloatType,
+    GlobalGPIOReversionConfig,
+    GlobalI2CReversionConfig,
     IntType,
     ListType,
     StepperPumpConfig,
@@ -29,16 +33,25 @@ def _build_pump_discriminated_type() -> DiscriminatedDictType:
     return DiscriminatedDictType(
         "pump_type",
         {
-            "DC": DictType(
+            "DC over GPIO": DictType(
                 {
                     "pump_type": ChooseOptions.dispenser,
-                    "pin_type": ChooseOptions.pin,
+                    "pin": IntType(),
+                    "volume_flow": FloatType(),
+                    "tube_volume": IntType(),
+                },
+                DCGPIOPumpConfig,
+            ),
+            "DC over I2C": DictType(
+                {
+                    "pump_type": ChooseOptions.dispenser,
+                    "pin_type": ChooseOptions.i2c,
                     "board_number": IntType(default=1),
                     "pin": IntType(),
                     "volume_flow": FloatType(),
                     "tube_volume": IntType(),
                 },
-                DCPumpConfig,
+                DCI2CPumpConfig,
             ),
             "Stepper": DictType(
                 {
@@ -58,22 +71,44 @@ def _build_pump_discriminated_type() -> DiscriminatedDictType:
 
 
 class TestDiscriminatedDictType:
-    def test_dc_dispatch(self) -> None:
+    def test_dc_gpio_dispatch(self) -> None:
         dt = _build_pump_discriminated_type()
         config_dict = {
-            "pump_type": "DC",
-            "pin_type": "GPIO",
-            "board_number": 1,
+            "pump_type": "DC over GPIO",
             "pin": 14,
             "volume_flow": 30.0,
             "tube_volume": 5,
         }
         dt.validate("test", config_dict)
         result = dt.from_config(config_dict)
+        # GPIO variant resolves to the dedicated subclass (still an isinstance match on the base).
+        assert isinstance(result, DCGPIOPumpConfig)
         assert isinstance(result, DCPumpConfig)
         assert result.pin == 14
         assert result.volume_flow == pytest.approx(30.0)
-        assert result.pump_type == "DC"
+        assert result.pump_type == "DC over GPIO"
+        # The GPIO subclass does not carry pin_type / board_number as attributes.
+        assert not hasattr(result, "pin_type")
+        assert not hasattr(result, "board_number")
+
+    def test_dc_i2c_dispatch(self) -> None:
+        dt = _build_pump_discriminated_type()
+        config_dict = {
+            "pump_type": "DC over I2C",
+            "pin_type": "MCP23017",
+            "board_number": 2,
+            "pin": 5,
+            "volume_flow": 30.0,
+            "tube_volume": 5,
+        }
+        dt.validate("test", config_dict)
+        result = dt.from_config(config_dict)
+        assert isinstance(result, DCI2CPumpConfig)
+        assert isinstance(result, DCPumpConfig)
+        assert result.pin == 5
+        assert result.pump_type == "DC over I2C"
+        assert result.pin_type == "MCP23017"
+        assert result.board_number == 2
 
     def test_stepper_dispatch(self) -> None:
         dt = _build_pump_discriminated_type()
@@ -117,16 +152,45 @@ class TestDiscriminatedDictType:
         with pytest.raises(ConfigError, match="dir_pin"):
             dt.validate("test", config_dict)
 
-    def test_dc_round_trip(self) -> None:
+    def test_dc_gpio_round_trip(self) -> None:
         dt = _build_pump_discriminated_type()
-        original = DCPumpConfig(pin=14, volume_flow=30.0, tube_volume=5, pin_type="GPIO", board_number=1)
+        original = DCGPIOPumpConfig(pin=14, volume_flow=30.0, tube_volume=5)
         serialized = dt.to_config(original)
-        assert serialized["pump_type"] == "DC"
+        assert serialized["pump_type"] == "DC over GPIO"
         assert serialized["pin"] == 14
+        # The GPIO subclass intentionally does not emit pin_type / board_number — the variant
+        # discriminator alone tells the system how to route.
+        assert "pin_type" not in serialized
+        assert "board_number" not in serialized
         restored = dt.from_config(serialized)
-        assert isinstance(restored, DCPumpConfig)
+        assert isinstance(restored, DCGPIOPumpConfig)
         assert restored.pin == original.pin
         assert restored.volume_flow == pytest.approx(original.volume_flow)
+
+    def test_dc_i2c_round_trip(self) -> None:
+        dt = _build_pump_discriminated_type()
+        original = DCI2CPumpConfig(pin=5, volume_flow=30.0, tube_volume=5, pin_type="MCP23017", board_number=2)
+        serialized = dt.to_config(original)
+        assert serialized["pump_type"] == "DC over I2C"
+        assert serialized["pin"] == 5
+        assert serialized["pin_type"] == "MCP23017"
+        assert serialized["board_number"] == 2
+        restored = dt.from_config(serialized)
+        assert isinstance(restored, DCI2CPumpConfig)
+        assert restored.pin == original.pin
+        assert restored.pin_type == "MCP23017"
+        assert restored.board_number == 2
+
+    def test_dc_gpio_pin_id_is_routed_via_gpio(self) -> None:
+        # The class structure encodes the routing — DCGPIOPumpConfig's pin_id always uses GPIO.
+        assert DCGPIOPumpConfig(pin=14).pin_id.pin_type == "GPIO"
+        assert DCGPIOPumpConfig(pin=14).pin_id.board_number == 1
+
+    def test_dc_i2c_pin_id_uses_configured_expander(self) -> None:
+        pin_id = DCI2CPumpConfig(pin=5, pin_type="MCP23017", board_number=2).pin_id
+        assert pin_id.pin_type == "MCP23017"
+        assert pin_id.board_number == 2
+        assert pin_id.pin == 5
 
     def test_stepper_round_trip(self) -> None:
         dt = _build_pump_discriminated_type()
@@ -154,17 +218,23 @@ class TestDiscriminatedDictType:
 
 
 class TestBasePumpConfig:
-    def test_dc_is_base(self) -> None:
-        dc = DCPumpConfig(pin=14, volume_flow=30.0, tube_volume=5)
+    def test_dc_gpio_is_base(self) -> None:
+        dc = DCGPIOPumpConfig(pin=14, volume_flow=30.0, tube_volume=5)
+        assert isinstance(dc, DCPumpConfig)
+        assert isinstance(dc, BasePumpConfig)
+
+    def test_dc_i2c_is_base(self) -> None:
+        dc = DCI2CPumpConfig(pin=5, volume_flow=30.0, tube_volume=5)
+        assert isinstance(dc, DCPumpConfig)
         assert isinstance(dc, BasePumpConfig)
 
     def test_stepper_is_base(self) -> None:
         stepper = StepperPumpConfig(pin=17, dir_pin=27)
         assert isinstance(stepper, BasePumpConfig)
 
-    def test_dc_shared_fields(self) -> None:
-        dc = DCPumpConfig(pin=14, volume_flow=30.0, tube_volume=5, pump_type="DC")
-        assert dc.pump_type == "DC"
+    def test_dc_gpio_shared_fields(self) -> None:
+        dc = DCGPIOPumpConfig(pin=14, volume_flow=30.0, tube_volume=5)
+        assert dc.pump_type == "DC over GPIO"
         assert dc.volume_flow == pytest.approx(30.0)
         assert dc.tube_volume == 5
 
@@ -173,6 +243,29 @@ class TestBasePumpConfig:
         assert stepper.pump_type == "Stepper"
         assert stepper.volume_flow == pytest.approx(25.0)
         assert stepper.tube_volume == 3
+
+
+class TestGlobalReversionConfig:
+    def test_global_gpio_pin_id_is_routed_via_gpio(self) -> None:
+        # The GPIO routing is encoded by the class — no pin_type / board_number on the subclass.
+        config = GlobalGPIOReversionConfig(enabled=True, pin=14, inverted=False)
+        assert config.pin_id.pin_type == "GPIO"
+        assert config.pin_id.board_number == 1
+        assert not hasattr(config, "pin_type")
+        assert not hasattr(config, "board_number")
+        serialized = config.to_config()
+        assert "pin_type" not in serialized
+        assert "board_number" not in serialized
+
+    def test_global_i2c_pin_id_uses_configured_expander(self) -> None:
+        config = GlobalI2CReversionConfig(enabled=True, pin=5, inverted=False, pin_type="PCF8574", board_number=2)
+        assert config.pin_type == "PCF8574"
+        assert config.board_number == 2
+        assert config.pin_id.pin_type == "PCF8574"
+        assert config.pin_id.board_number == 2
+        serialized = config.to_config()
+        assert serialized["pin_type"] == "PCF8574"
+        assert serialized["board_number"] == 2
 
 
 # --- Helpers for add_discriminator_variant tests ---

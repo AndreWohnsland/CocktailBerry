@@ -21,6 +21,7 @@ from src import (
     SupportedLedStatesType,
     SupportedPaymentOptions,
     SupportedPinControlType,
+    SupportedReversionType,
     SupportedRfidType,
     SupportedScaleDriverType,
     SupportedStepperDriverType,
@@ -28,6 +29,9 @@ from src import (
     SupportedThemesType,
 )
 from src.config.errors import ConfigError
+from src.logger_handler import LoggerHandler
+
+_logger = LoggerHandler("config_types")
 
 SUPPORTED_LANGUAGES = list(get_args(SupportedLanguagesType))
 SUPPORTED_THEMES = list(get_args(SupportedThemesType))
@@ -37,12 +41,17 @@ SUPPORTED_PAYMENT = list(get_args(SupportedPaymentOptions))
 SUPPORTED_PIN_CONTROL = list(get_args(SupportedPinControlType))
 SUPPORTED_I2C_EXPANDERS = list(get_args(I2CExpanderType))
 SUPPORTED_DISPENSERS = list(get_args(SupportedDispenserType))
+SUPPORTED_REVERSIONS = list(get_args(SupportedReversionType))
 SUPPORTED_STEPPER_DRIVERS = list(get_args(SupportedStepperDriverType))
 SUPPORTED_STEPPER_STEP_TYPES = list(get_args(SupportedStepperStepType))
 SUPPORTED_CONSUMPTION_ESTIMATIONS = list(get_args(ConsumptionEstimationType))
 SUPPORTED_SCALE_DRIVERS = list(get_args(SupportedScaleDriverType))
 SUPPORTED_CARRIAGE_TYPES = list(get_args(SupportedCarriageType))
 SUPPORTED_LED_DRIVERS = list(get_args(SupportedLedDriverType))
+
+REVERSION_DEFAULT_VARIANT: SupportedReversionType = "Global over GPIO"
+LED_DEFAULT_VARIANT: SupportedLedDriverType = "Normal over GPIO"
+DC_DISPENSER_DEFAULT_VARIANT: SupportedDispenserType = "DC over GPIO"
 
 
 class ConfigInterface[T](Protocol):
@@ -152,14 +161,14 @@ class ChooseOptions:
     payment = ChooseType(allowed=SUPPORTED_PAYMENT)
     pin = ChooseType(allowed=SUPPORTED_PIN_CONTROL, default="GPIO")
     i2c = ChooseType(allowed=SUPPORTED_I2C_EXPANDERS, default="PCF8574")
-    dispenser = ChooseType(allowed=SUPPORTED_DISPENSERS, default="DC")
+    dispenser = ChooseType(allowed=SUPPORTED_DISPENSERS, default=DC_DISPENSER_DEFAULT_VARIANT)
     stepper_driver = ChooseType(allowed=SUPPORTED_STEPPER_DRIVERS, default="A4988")
     stepper_step_type = ChooseType(allowed=SUPPORTED_STEPPER_STEP_TYPES, default="Full")
     consumption_estimation = ChooseType(allowed=SUPPORTED_CONSUMPTION_ESTIMATIONS, default="time")
     scale_driver = ChooseType(allowed=SUPPORTED_SCALE_DRIVERS, default="HX711")
     carriage_type = ChooseType(allowed=SUPPORTED_CARRIAGE_TYPES, default="NoCarriage")
-    led_driver = ChooseType(allowed=SUPPORTED_LED_DRIVERS, default="Normal")
-    reversion_type = ChooseType(allowed=["Global", "Dispenser Controlled"], default="Global")
+    led_driver = ChooseType(allowed=SUPPORTED_LED_DRIVERS, default=LED_DEFAULT_VARIANT)
+    reversion_type = ChooseType(allowed=SUPPORTED_REVERSIONS, default=REVERSION_DEFAULT_VARIANT)
 
 
 class StringType(_ConfigType[str]):
@@ -331,8 +340,28 @@ class DictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
         return config_class.to_config()
 
     def get_default(self) -> dict[str, Any]:
-        """Get the default value - dict with default values for all fields."""
-        return {key: value_type.get_default() for key, value_type in self.dict_types.items()}
+        """Get the default value - dict with default values for all declared fields.
+
+        Keys are reordered to match the config class's ``to_config()`` output so the
+        default used to build a new list item matches the shape of items already loaded
+        from disk. Without this alignment, a freshly-added item would render its fields
+        in a different order than existing ones (the frontend renders by ``Object.keys``).
+        Any keys ``to_config`` does not emit fall back to the DictType declaration order.
+        """
+        raw_defaults = {key: value_type.get_default() for key, value_type in self.dict_types.items()}
+        try:
+            to_config_order = list(self.config_class.from_config(raw_defaults).to_config().keys())
+        except Exception as exc:
+            _logger.warning(
+                f"DictType.get_default could not derive to_config order for "
+                f"{self.config_class.__name__}, falling back to declaration order: {exc}"
+            )
+            return raw_defaults
+        ordered: dict[str, Any] = {k: raw_defaults[k] for k in to_config_order if k in raw_defaults}
+        for key, value in raw_defaults.items():
+            if key not in ordered:
+                ordered[key] = value
+        return ordered
 
     def get_default_config_class(self) -> ConfigClassT:
         """Get the default config class instance."""
@@ -409,7 +438,12 @@ class PinId:
 
 
 class BasePumpConfig(ConfigClass):
-    """Base configuration shared by all dispenser types."""
+    """Base configuration shared by all dispenser types.
+
+    ``pump_type`` is a plain ``str`` to allow custom dispenser extensions to
+    register their own variants (see ``src/programs/addons/dispenser_extensions.py``).
+    Built-in drivers still default to one of :data:`SUPPORTED_DISPENSERS`.
+    """
 
     pump_type: str
     volume_flow: float
@@ -419,7 +453,7 @@ class BasePumpConfig(ConfigClass):
 
     def __init__(
         self,
-        pump_type: str = "DC",
+        pump_type: str = DC_DISPENSER_DEFAULT_VARIANT,
         volume_flow: float = 30.0,
         tube_volume: int = 0,
         consumption_estimation: ConsumptionEstimationType = "time",
@@ -443,22 +477,27 @@ class BasePumpConfig(ConfigClass):
 
 
 class DCPumpConfig(BasePumpConfig):
-    """Configuration for DC pump dispensers."""
+    """Abstract base for DC pump dispensers.
 
-    pin_type: SupportedPinControlType
+    Concrete variants — :class:`DCGPIOPumpConfig` and :class:`DCI2CPumpConfig` —
+    differ only in how the pin is routed (direct GPIO vs. through an I2C
+    expander). Both carry the shared ``pin`` field; the routing is exposed
+    through the variant-specific :attr:`pin_id` property, so the hardware layer
+    can stay polymorphic and use ``isinstance(pump, DCPumpConfig)`` to recognise
+    any DC pump regardless of variant.
+    """
+
     pin: int
-    board_number: int
 
     def __init__(
         self,
         pin: int = 0,
         volume_flow: float = 30.0,
         tube_volume: int = 0,
-        pin_type: SupportedPinControlType = "GPIO",
-        board_number: int = 1,
-        pump_type: SupportedDispenserType = "DC",
+        pump_type: SupportedDispenserType = DC_DISPENSER_DEFAULT_VARIANT,
         consumption_estimation: ConsumptionEstimationType = "time",
         carriage_position: int = 0,
+        **kwargs: Any,
     ) -> None:
         super().__init__(
             pump_type=pump_type,
@@ -467,24 +506,82 @@ class DCPumpConfig(BasePumpConfig):
             consumption_estimation=consumption_estimation,
             carriage_position=carriage_position,
         )
-        self.pin_type = pin_type
         self.pin = pin
+
+    @property
+    def pin_id(self) -> PinId:
+        raise NotImplementedError("DCPumpConfig is abstract; use DCGPIOPumpConfig or DCI2CPumpConfig")
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config["pin"] = self.pin
+        return config
+
+
+class DCGPIOPumpConfig(DCPumpConfig):
+    """DC pump driven directly via a Raspberry Pi GPIO pin (no I2C expander)."""
+
+    def __init__(
+        self,
+        pin: int = 0,
+        volume_flow: float = 30.0,
+        tube_volume: int = 0,
+        pump_type: SupportedDispenserType = DC_DISPENSER_DEFAULT_VARIANT,
+        consumption_estimation: ConsumptionEstimationType = "time",
+        carriage_position: int = 0,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            pin=pin,
+            volume_flow=volume_flow,
+            tube_volume=tube_volume,
+            pump_type=pump_type,
+            consumption_estimation=consumption_estimation,
+            carriage_position=carriage_position,
+        )
+
+    @property
+    def pin_id(self) -> PinId:
+        return PinId("GPIO", 1, self.pin)
+
+
+class DCI2CPumpConfig(DCPumpConfig):
+    """DC pump driven through an I2C GPIO expander."""
+
+    pin_type: I2CExpanderType
+    board_number: int
+
+    def __init__(
+        self,
+        pin: int = 0,
+        volume_flow: float = 30.0,
+        tube_volume: int = 0,
+        pin_type: I2CExpanderType = "PCF8574",
+        board_number: int = 1,
+        pump_type: SupportedDispenserType = "DC over I2C",
+        consumption_estimation: ConsumptionEstimationType = "time",
+        carriage_position: int = 0,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            pin=pin,
+            volume_flow=volume_flow,
+            tube_volume=tube_volume,
+            pump_type=pump_type,
+            consumption_estimation=consumption_estimation,
+            carriage_position=carriage_position,
+        )
+        self.pin_type = pin_type
         self.board_number = board_number
 
     @property
     def pin_id(self) -> PinId:
-        """Build PinId from this config's pin_type, board_number and pin."""
         return PinId(self.pin_type, self.board_number, self.pin)
 
     def to_config(self) -> dict[str, Any]:
         config = super().to_config()
-        config.update(
-            {
-                "pin_type": self.pin_type,
-                "board_number": self.board_number,
-                "pin": self.pin,
-            }
-        )
+        config["pin_type"] = self.pin_type
+        config["board_number"] = self.board_number
         return config
 
 
@@ -710,11 +807,63 @@ class BaseReversionConfig(ConfigClass):
 
 
 class GlobalReversionConfig(BaseReversionConfig):
-    """Configuration for global (single shared pin) pump reversion."""
+    """Abstract base for global (single shared pin) pump reversion.
+
+    Concrete variants: :class:`GlobalGPIOReversionConfig` (direct GPIO pin) and
+    :class:`GlobalI2CReversionConfig` (routed through an I2C expander). The hardware
+    layer uses ``isinstance(cfg, GlobalReversionConfig)`` to recognise either variant.
+    """
 
     pin: int
     inverted: bool
-    pin_type: SupportedPinControlType
+
+    def __init__(
+        self,
+        enabled: bool = False,
+        pin: int = 0,
+        inverted: bool = False,
+        reversion_type: SupportedReversionType = REVERSION_DEFAULT_VARIANT,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(reversion_type=reversion_type, enabled=enabled)
+        self.pin = pin
+        self.inverted = inverted
+
+    @property
+    def pin_id(self) -> PinId:
+        raise NotImplementedError(
+            "GlobalReversionConfig is abstract; use GlobalGPIOReversionConfig or GlobalI2CReversionConfig"
+        )
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config["pin"] = self.pin
+        config["inverted"] = self.inverted
+        return config
+
+
+class GlobalGPIOReversionConfig(GlobalReversionConfig):
+    """Global pump reversion driven directly via a Raspberry Pi GPIO pin."""
+
+    def __init__(
+        self,
+        enabled: bool = False,
+        pin: int = 0,
+        inverted: bool = False,
+        reversion_type: SupportedReversionType = REVERSION_DEFAULT_VARIANT,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(enabled=enabled, pin=pin, inverted=inverted, reversion_type=reversion_type)
+
+    @property
+    def pin_id(self) -> PinId:
+        return PinId("GPIO", 1, self.pin)
+
+
+class GlobalI2CReversionConfig(GlobalReversionConfig):
+    """Global pump reversion driven through an I2C GPIO expander."""
+
+    pin_type: I2CExpanderType
     board_number: int
 
     def __init__(
@@ -722,32 +871,23 @@ class GlobalReversionConfig(BaseReversionConfig):
         enabled: bool = False,
         pin: int = 0,
         inverted: bool = False,
-        pin_type: SupportedPinControlType = "GPIO",
+        pin_type: I2CExpanderType = "PCF8574",
         board_number: int = 1,
-        reversion_type: str = "Global",
+        reversion_type: SupportedReversionType = "Global over I2C",
         **kwargs: Any,
     ) -> None:
-        super().__init__(reversion_type=reversion_type, enabled=enabled)
-        self.pin = pin
+        super().__init__(enabled=enabled, pin=pin, inverted=inverted, reversion_type=reversion_type)
         self.pin_type = pin_type
-        self.inverted = inverted
         self.board_number = board_number
 
     @property
     def pin_id(self) -> PinId:
-        """Build PinId from this config's pin_type, board_number and pin."""
         return PinId(self.pin_type, self.board_number, self.pin)
 
     def to_config(self) -> dict[str, Any]:
         config = super().to_config()
-        config.update(
-            {
-                "pin_type": self.pin_type,
-                "board_number": self.board_number,
-                "pin": self.pin,
-                "inverted": self.inverted,
-            }
-        )
+        config["pin_type"] = self.pin_type
+        config["board_number"] = self.board_number
         return config
 
 
@@ -761,7 +901,7 @@ class DispenserControlledReversionConfig(BaseReversionConfig):
     def __init__(
         self,
         enabled: bool = False,
-        reversion_type: str = "Dispenser Controlled",
+        reversion_type: SupportedReversionType = "Dispenser Controlled",
         **kwargs: Any,
     ) -> None:
         super().__init__(reversion_type=reversion_type, enabled=enabled)
@@ -781,7 +921,7 @@ class BaseLedConfig(ConfigClass):
 
     def __init__(
         self,
-        led_type: str = "Normal",
+        led_type: str = LED_DEFAULT_VARIANT,
         default_on: bool = False,
         preparation_state: SupportedLedStatesType = "Effect",
         **kwargs: Any,
@@ -799,20 +939,21 @@ class BaseLedConfig(ConfigClass):
 
 
 class NormalLedConfig(BaseLedConfig):
-    """Configuration for normal (non-WS281x) LEDs."""
+    """Abstract base for non-WS281x ("normal") LEDs.
+
+    Concrete variants: :class:`NormalGPIOLedConfig` (direct GPIO pin) and
+    :class:`NormalI2CLedConfig` (routed through an I2C expander). The hardware
+    layer uses ``isinstance(cfg, NormalLedConfig)`` to recognise either variant.
+    """
 
     pin: int
-    pin_type: SupportedPinControlType
-    board_number: int
 
     def __init__(
         self,
         pin: int = 0,
         default_on: bool = False,
         preparation_state: SupportedLedStatesType = "Effect",
-        pin_type: SupportedPinControlType = "GPIO",
-        board_number: int = 1,
-        led_type: str = "Normal",
+        led_type: str = LED_DEFAULT_VARIANT,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -821,23 +962,73 @@ class NormalLedConfig(BaseLedConfig):
             preparation_state=preparation_state,
         )
         self.pin = pin
+
+    @property
+    def pin_id(self) -> PinId:
+        raise NotImplementedError("NormalLedConfig is abstract; use NormalGPIOLedConfig or NormalI2CLedConfig")
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config["pin"] = self.pin
+        return config
+
+
+class NormalGPIOLedConfig(NormalLedConfig):
+    """Normal LED driven directly via a Raspberry Pi GPIO pin."""
+
+    def __init__(
+        self,
+        pin: int = 0,
+        default_on: bool = False,
+        preparation_state: SupportedLedStatesType = "Effect",
+        led_type: str = LED_DEFAULT_VARIANT,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            pin=pin,
+            default_on=default_on,
+            preparation_state=preparation_state,
+            led_type=led_type,
+        )
+
+    @property
+    def pin_id(self) -> PinId:
+        return PinId("GPIO", 1, self.pin)
+
+
+class NormalI2CLedConfig(NormalLedConfig):
+    """Normal LED driven through an I2C GPIO expander."""
+
+    pin_type: I2CExpanderType
+    board_number: int
+
+    def __init__(
+        self,
+        pin: int = 0,
+        default_on: bool = False,
+        preparation_state: SupportedLedStatesType = "Effect",
+        pin_type: I2CExpanderType = "PCF8574",
+        board_number: int = 1,
+        led_type: str = "Normal over I2C",
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            pin=pin,
+            default_on=default_on,
+            preparation_state=preparation_state,
+            led_type=led_type,
+        )
         self.pin_type = pin_type
         self.board_number = board_number
 
     @property
     def pin_id(self) -> PinId:
-        """Build PinId from this config's pin_type, board_number and pin."""
         return PinId(self.pin_type, self.board_number, self.pin)
 
     def to_config(self) -> dict[str, Any]:
         config = super().to_config()
-        config.update(
-            {
-                "pin_type": self.pin_type,
-                "board_number": self.board_number,
-                "pin": self.pin,
-            }
-        )
+        config["pin_type"] = self.pin_type
+        config["board_number"] = self.board_number
         return config
 
 

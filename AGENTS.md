@@ -67,3 +67,17 @@ Key modules use singletons — never instantiate new copies, always import the e
 ## Global vs Local imports
 
 Try to always use top level imports and not runtime imports, except this would create a circular import, then you can use runtime imports to break the cycle.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live on GitHub (`AndreWohnsland/CocktailBerry`); use the `gh` CLI. See `agents/issue-tracker.md`.
+
+### Triage labels
+
+Five canonical triage roles. `needs-info` is mapped to the existing `incomplete` label; the other four use the canonical strings. See `agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout: root `CONTEXT.md` + `docs/adr/`. Neither exists yet — skills create them lazily. See `agents/domain.md`.
