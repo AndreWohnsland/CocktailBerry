@@ -630,6 +630,49 @@ class StepperPumpConfig(BasePumpConfig):
         return config
 
 
+class DCMotorKitPumpConfig(BasePumpConfig):
+    """DC pump driven through an Adafruit MotorKit (PCA9685-based) board over I2C.
+
+    ``pin`` is the motor channel number (1-4) on the board.
+    ``address`` is the I2C address of the MotorKit board as a hex string (e.g. ``"60"``).
+    Multiple pump slots sharing the same address reuse the same board instance.
+    """
+
+    pin: int
+    address: str
+
+    def __init__(
+        self,
+        pin: int = 1,
+        address: str = "60",
+        volume_flow: float = 30.0,
+        tube_volume: int = 0,
+        pump_type: SupportedDispenserType = "DC over MotorKit",
+        consumption_estimation: ConsumptionEstimationType = "time",
+        carriage_position: int = 0,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            pump_type=pump_type,
+            volume_flow=volume_flow,
+            tube_volume=tube_volume,
+            consumption_estimation=consumption_estimation,
+            carriage_position=carriage_position,
+        )
+        self.pin = pin
+        self.address = address.upper()
+
+    @property
+    def address_hex(self) -> int:
+        return int(self.address, 16)
+
+    def to_config(self) -> dict[str, Any]:
+        config = super().to_config()
+        config["pin"] = self.pin
+        config["address"] = self.address
+        return config
+
+
 # Backwards compatibility alias
 PumpConfig = DCPumpConfig
 

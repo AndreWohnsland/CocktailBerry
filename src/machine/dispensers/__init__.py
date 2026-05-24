@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from src.config.config_types import BasePumpConfig, DCPumpConfig, StepperPumpConfig
+from src.config.config_types import BasePumpConfig, DCMotorKitPumpConfig, DCPumpConfig, StepperPumpConfig
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser
 from src.machine.dispensers.dc import DCDispenser
+from src.machine.dispensers.motorkit_dc import DCMotorKitDispenser
 from src.machine.dispensers.stepper import StepperDispenser
 from src.machine.hardware import HardwareContext
 
@@ -21,6 +22,12 @@ def create_dispenser(slot: int, pump_config: BasePumpConfig, hardware: HardwareC
             "falling back to time-based estimation",
         )
     match pump_config:
+        case DCMotorKitPumpConfig():
+            return DCMotorKitDispenser(
+                slot,
+                pump_config,
+                hardware,
+            )
         case DCPumpConfig():
             return DCDispenser(
                 slot,

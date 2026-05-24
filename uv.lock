@@ -64,6 +64,49 @@ wheels = [
 ]
 
 [[package]]
+name = "adafruit-circuitpython-motor"
+version = "3.4.20"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "adafruit-blinka" },
+    { name = "adafruit-circuitpython-typing" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/82/70/2d16d190ce52476e4d1faea1762ad0ecf3f88909426b415ba588692c6f59/adafruit_circuitpython_motor-3.4.20.tar.gz", hash = "sha256:b141786eb70855fa821e11ba01137a8a0859a23d55ce24817b19f9e6be7c4bd2", size = 31055, upload-time = "2026-04-23T21:23:12.769Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/c0/13ba2153523b4d01e9861cb5a572e971a91e1c3c4c94da297aad31d19bdb/adafruit_circuitpython_motor-3.4.20-py3-none-any.whl", hash = "sha256:f6deed7e421211050643d793429e84be56e57233ae392fec4610db190a8e42db", size = 10929, upload-time = "2026-04-23T21:23:11.758Z" },
+]
+
+[[package]]
+name = "adafruit-circuitpython-motorkit"
+version = "1.6.21"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "adafruit-blinka" },
+    { name = "adafruit-circuitpython-busdevice" },
+    { name = "adafruit-circuitpython-motor" },
+    { name = "adafruit-circuitpython-pca9685" },
+    { name = "adafruit-circuitpython-register" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/da/73/db211b7fc6aba67443f2ca3f4b0f271e8f7e6beec72e2e39e72b76bf6df8/adafruit_circuitpython_motorkit-1.6.21.tar.gz", hash = "sha256:0e76675382081c11cd32618d2f288ca4d0664155cdaf9ea32efc25a322115922", size = 4041295, upload-time = "2026-04-23T21:23:17.505Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b1/a6/d2377242b8249f43c350ef95c11dc4a1309b23696b97b8fbc1041dc44108/adafruit_circuitpython_motorkit-1.6.21-py3-none-any.whl", hash = "sha256:5523156b8e8d8777cbb10b559996a1d7a7d6767ccf7a0636d1aa8d81400a7997", size = 6054, upload-time = "2026-04-23T21:23:16.257Z" },
+]
+
+[[package]]
+name = "adafruit-circuitpython-pca9685"
+version = "3.4.22"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "adafruit-blinka" },
+    { name = "adafruit-circuitpython-busdevice" },
+    { name = "adafruit-circuitpython-register" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/63/2f/823d7079a05396819fc4eff52ee506c1bf8e1795dd041ea1d815043bbca6/adafruit_circuitpython_pca9685-3.4.22.tar.gz", hash = "sha256:a0524af794b1b2f2478b4e41444f415afa2d4e87d17a4bb1b5667eaa8a5c79a3", size = 24973, upload-time = "2026-04-23T21:03:44.506Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2d/39/4dba82570bca8be871f9ce36658fe97f23c332a9d041b159439381f1121f/adafruit_circuitpython_pca9685-3.4.22-py3-none-any.whl", hash = "sha256:5b5b80bf9beb244760cbe0b4cfe1c6c332999aa8288556d1fc71622676103dbb", size = 6015, upload-time = "2026-04-23T21:03:43.577Z" },
+]
+
+[[package]]
 name = "adafruit-circuitpython-pcf8574"
 version = "1.0.17"
 source = { registry = "https://pypi.org/simple" }
@@ -331,6 +374,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "adafruit-circuitpython-busdevice" },
     { name = "adafruit-circuitpython-mcp230xx" },
+    { name = "adafruit-circuitpython-motorkit" },
     { name = "adafruit-circuitpython-pcf8574" },
     { name = "alembic" },
     { name = "cedargrove-nau7802" },
@@ -388,6 +432,7 @@ pi-hardware = [
 requires-dist = [
     { name = "adafruit-circuitpython-busdevice", specifier = ">=5.2.17" },
     { name = "adafruit-circuitpython-mcp230xx", specifier = ">=2.6.2" },
+    { name = "adafruit-circuitpython-motorkit", specifier = ">=1.6.21" },
     { name = "adafruit-circuitpython-pcf8574", specifier = ">=1.0.17" },
     { name = "alembic", specifier = ">=1.18.4" },
     { name = "cedargrove-nau7802", specifier = ">=2.1.4" },

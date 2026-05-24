@@ -33,6 +33,7 @@ from src.config.config_types import (
     ConfigInterface,
     DCGPIOPumpConfig,
     DCI2CPumpConfig,
+    DCMotorKitPumpConfig,
     DictType,
     DiscriminatedDictType,
     DispenserControlledReversionConfig,
@@ -278,6 +279,14 @@ class ConfigManager:
                                 "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
                             },
                             DCI2CPumpConfig,
+                        ),
+                        "DC over MotorKit": DictType(
+                            {
+                                **SHARED_PUMP_FIELDS,
+                                "address": StringType([validate_i2c_address], prefix="0x", default="60"),
+                                "pin": IntType([build_number_limiter(1, 4)], prefix="Motor:"),
+                            },
+                            DCMotorKitPumpConfig,
                         ),
                         "Stepper": DictType(
                             {
