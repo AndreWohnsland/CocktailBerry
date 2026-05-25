@@ -6,11 +6,10 @@ from typing import TYPE_CHECKING
 
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser, DispenseContext
-from src.machine.i2c.MotorKit import create_motorkit
+from src.machine.i2c.MotorKit import get_motorkit
 
 if TYPE_CHECKING:
     from adafruit_motor.motor import DCMotor
-    from adafruit_motorkit import MotorKit
 
     from src.config.config_types import DCMotorKitPumpConfig
     from src.machine.hardware import HardwareContext
@@ -19,10 +18,6 @@ _logger = LoggerHandler("DCMotorKitDispenser")
 
 _LOOP_INTERVAL = 0.01
 """Sleep interval in seconds for the dispense loop (~100Hz)."""
-
-# allow None since we might not be able to initialize the MotorKit board
-_motorkit_boards: dict[int, MotorKit | None] = {}
-"""Module-level cache of address -> MotorKit instance, shared across all slots."""
 
 
 class DCMotorKitDispenser(BaseDispenser):
@@ -42,9 +37,7 @@ class DCMotorKitDispenser(BaseDispenser):
         super().__init__(slot, config, hardware)
         self._motor_number = config.pin  # 1-4
         self._address = config.address_hex
-        if self._address not in _motorkit_boards:
-            _motorkit_boards[self._address] = create_motorkit(self._address)
-        self._kit = _motorkit_boards[self._address]
+        self._kit = get_motorkit(self._address)
         if self._kit is None:
             _logger.warning(
                 f"Slot {self.slot}: MotorKit board at 0x{self._address:02x} is not available. "

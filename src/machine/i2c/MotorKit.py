@@ -12,6 +12,22 @@ except (ModuleNotFoundError, RuntimeError):
 
 _logger = LoggerHandler("MotorKit")
 
+# allow None since we might not be able to initialize the MotorKit board
+_motorkit_boards: dict[int, MotorKit | None] = {}
+"""Module-level cache of address -> MotorKit instance, shared across all dispensers."""
+
+
+def get_motorkit(address: int) -> MotorKit | None:
+    """Return the MotorKit instance for the given I2C address, creating it if needed.
+
+    Subsequent calls with the same address return the cached instance without
+    reinitialising the hardware.
+    """
+    if address in _motorkit_boards:
+        return _motorkit_boards[address]
+    _motorkit_boards[address] = create_motorkit(address)
+    return _motorkit_boards[address]
+
 
 def create_motorkit(address: int) -> MotorKit | None:
     """Create and return a new MotorKit instance at the given I2C address.
