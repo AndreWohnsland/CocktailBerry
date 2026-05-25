@@ -27,6 +27,7 @@ dependencies = [
     "adafruit-circuitpython-mcp230xx>=2.6.2",
     "adafruit-circuitpython-pcf8574>=1.0.17",
     "adafruit-circuitpython-busdevice>=5.2.17",
+    "adafruit-circuitpython-motorkit>=1.6.21",
     "rpimotorlib>=4.0.0",
     "cedargrove-nau7802>=2.1.4",
     "inquirerprompt>=0.3.4",

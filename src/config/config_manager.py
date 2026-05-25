@@ -33,6 +33,7 @@ from src.config.config_types import (
     ConfigInterface,
     DCGPIOPumpConfig,
     DCI2CPumpConfig,
+    DCMotorKitPumpConfig,
     DictType,
     DiscriminatedDictType,
     DispenserControlledReversionConfig,
@@ -46,6 +47,7 @@ from src.config.config_types import (
     NAU7802ScaleConfig,
     NormalGPIOLedConfig,
     NormalI2CLedConfig,
+    StepperMotorKitPumpConfig,
     StepperPumpConfig,
     StringType,
     WS281xLedConfig,
@@ -279,6 +281,14 @@ class ConfigManager:
                             },
                             DCI2CPumpConfig,
                         ),
+                        "DC over MotorKit": DictType(
+                            {
+                                **SHARED_PUMP_FIELDS,
+                                "address": StringType([validate_i2c_address], prefix="0x", default="60"),
+                                "pin": IntType([build_number_limiter(1, 4)], prefix="Motor:"),
+                            },
+                            DCMotorKitPumpConfig,
+                        ),
                         "Stepper": DictType(
                             {
                                 **SHARED_PUMP_FIELDS,
@@ -288,6 +298,14 @@ class ConfigManager:
                                 "step_type": ChooseOptions.stepper_step_type,
                             },
                             StepperPumpConfig,
+                        ),
+                        "Stepper over MotorKit": DictType(
+                            {
+                                **SHARED_PUMP_FIELDS,
+                                "address": StringType([validate_i2c_address], prefix="0x", default="60"),
+                                "pin": IntType([build_number_limiter(1, 2)], prefix="Stepper:"),
+                            },
+                            StepperMotorKitPumpConfig,
                         ),
                     },
                     default_variant="DC over GPIO",

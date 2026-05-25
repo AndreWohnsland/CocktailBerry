@@ -1,9 +1,17 @@
 from __future__ import annotations
 
-from src.config.config_types import BasePumpConfig, DCPumpConfig, StepperPumpConfig
+from src.config.config_types import (
+    BasePumpConfig,
+    DCMotorKitPumpConfig,
+    DCPumpConfig,
+    StepperMotorKitPumpConfig,
+    StepperPumpConfig,
+)
 from src.logger_handler import LoggerHandler
 from src.machine.dispensers.base import BaseDispenser
 from src.machine.dispensers.dc import DCDispenser
+from src.machine.dispensers.motorkit_dc import DCMotorKitDispenser
+from src.machine.dispensers.motorkit_stepper import StepperMotorKitDispenser
 from src.machine.dispensers.stepper import StepperDispenser
 from src.machine.hardware import HardwareContext
 
@@ -21,11 +29,23 @@ def create_dispenser(slot: int, pump_config: BasePumpConfig, hardware: HardwareC
             "falling back to time-based estimation",
         )
     match pump_config:
+        case DCMotorKitPumpConfig():
+            return DCMotorKitDispenser(
+                slot=slot,
+                config=pump_config,
+                hardware=hardware,
+            )
+        case StepperMotorKitPumpConfig():
+            return StepperMotorKitDispenser(
+                slot=slot,
+                config=pump_config,
+                hardware=hardware,
+            )
         case DCPumpConfig():
             return DCDispenser(
-                slot,
-                pump_config,
-                hardware,
+                slot=slot,
+                config=pump_config,
+                hardware=hardware,
             )
         case StepperPumpConfig():
             return StepperDispenser(
@@ -38,6 +58,10 @@ def create_dispenser(slot: int, pump_config: BasePumpConfig, hardware: HardwareC
 
             entry = DISPENSER_ADDONS.entries.get(pump_config.pump_type)
             if entry is not None:
-                return entry.implementation_class(slot, pump_config, hardware)
+                return entry.implementation_class(
+                    slot=slot,
+                    config=pump_config,
+                    hardware=hardware,
+                )
             msg = f"Unknown pump config type: {type(pump_config)}"
             raise ValueError(msg)
