@@ -283,7 +283,11 @@ class DisplayController(DialogHandler):
         self.force_bold_fonts(window_object)
         icon_path = str(APP_ICON_FILE)
         window_object.setWindowIcon(QIcon(icon_path))
-        window_object.move(x_pos, y_pos)
+        window_size = window_object.sizeHint()
+        # make sure we do not "push" the window out of the screen (in case no full screen/shift)
+        clamped_x = min(x_pos, max(0, cfg.UI_WIDTH - window_size.width()))
+        clamped_y = min(y_pos, max(0, cfg.UI_HEIGHT - window_size.height()))
+        window_object.move(clamped_x, clamped_y)
 
     def inject_stylesheet(self, window_object: QWidget) -> None:
         """Add the central stylesheet to the gui."""
