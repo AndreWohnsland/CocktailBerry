@@ -351,7 +351,7 @@ type PossibleUiInformation = {
   value: PossibleConfigValue;
   default: PossibleConfigValue;
   description: string;
-  label: string;
+  readable_name: string;
   prefix?: string;
   suffix?: string;
   immutable?: boolean;
