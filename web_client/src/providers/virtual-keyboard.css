@@ -1,0 +1,68 @@
+.virtual-keyboard-root {
+  background: var(--background-color);
+  border-top: 1px solid var(--primary-color);
+}
+
+.virtual-keyboard-root .hg-theme-default {
+  background: transparent;
+  padding: 4px;
+  font-family: inherit;
+}
+
+.virtual-keyboard-root .hg-row {
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.virtual-keyboard-root .hg-row:last-child {
+  margin-bottom: 0;
+}
+
+.virtual-keyboard-root .hg-button {
+  background: var(--background-color);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-bottom-width: 1px;
+  border-radius: 8px;
+  height: 52px;
+  font-size: 20px;
+  font-weight: 600;
+  box-shadow: none;
+  transition: background-color 0.05s ease;
+}
+
+.virtual-keyboard-root .hg-button:active,
+.virtual-keyboard-root .hg-button.hg-activeButton {
+  background: var(--primary-color);
+  color: var(--background-color);
+}
+
+.virtual-keyboard-root .hg-button-space {
+  max-width: none;
+  flex-grow: 6;
+}
+
+.virtual-keyboard-root .hg-button-shift,
+.virtual-keyboard-root .hg-button-bksp {
+  color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.virtual-keyboard-root .hg-button-shift:active,
+.virtual-keyboard-root .hg-button-shift.hg-activeButton,
+.virtual-keyboard-root .hg-button-bksp:active,
+.virtual-keyboard-root .hg-button-bksp.hg-activeButton {
+  background: var(--secondary-color);
+  color: var(--background-color);
+}
+
+.virtual-keyboard-root .hg-button-close {
+  color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+.virtual-keyboard-root .hg-button-close:active,
+.virtual-keyboard-root .hg-button-close.hg-activeButton {
+  background: var(--danger-color);
+  color: var(--background-color);
+}

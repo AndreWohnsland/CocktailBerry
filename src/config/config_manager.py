@@ -154,6 +154,8 @@ class ConfigManager:
     UI_HEIGHT: int = 480
     UI_PICTURE_SIZE: int = 240
     UI_ONLY_MAKER_TAB: bool = False
+    # v2 only: show an in-browser virtual keyboard on input focus (touchscreen/kiosk setups)
+    UI_VIRTUAL_KEYBOARD: bool = False
     PUMP_CONFIG: ClassVar[list[BasePumpConfig]] = [
         DCGPIOPumpConfig(pin=pin, volume_flow=flow, tube_volume=0)
         for pin, flow in zip(_default_pins, _default_volume_flow)
@@ -260,6 +262,7 @@ class ConfigManager:
             "UI_HEIGHT": IntType([build_number_limiter(1, 3000)]),
             "UI_PICTURE_SIZE": IntType([build_number_limiter(100, 1000)]),
             "UI_ONLY_MAKER_TAB": BoolType(check_name="Only Maker Tab Accessible"),
+            "UI_VIRTUAL_KEYBOARD": BoolType(check_name="V2 custom keyboard"),
             "MAKER_PINS_INVERTED": BoolType(check_name="Inverted"),
             "PUMP_CONFIG": ListType(
                 DiscriminatedDictType(
