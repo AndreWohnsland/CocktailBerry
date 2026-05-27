@@ -93,11 +93,18 @@ const VirtualKeyboard = () => {
   const openedAt = useRef<number>(0);
   const targetRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const mirrorValueElRef = useRef<HTMLSpanElement | null>(null);
+  const layoutNameRef = useRef<LayoutName>(layoutName);
+  const lastKeyPressAt = useRef<number>(0);
 
-  // Keep a ref in sync so document-level listeners see the latest target without re-registering.
+  // Keep refs in sync so document-level listeners and a stable onKeyPress see the latest
+  // values without re-registering (and without giving react-simple-keyboard a new prop
+  // identity on every layout toggle, which was triggering odd re-init behavior).
   useEffect(() => {
     targetRef.current = target;
   }, [target]);
+  useEffect(() => {
+    layoutNameRef.current = layoutName;
+  }, [layoutName]);
 
   // Mirror the current target's value live so the user can see what they're typing
   // even when the keyboard overlaps the input. Listens to the target's input events so
@@ -155,12 +162,14 @@ const VirtualKeyboard = () => {
       const t = targetRef.current;
       if (!t) return;
       if (Date.now() - openedAt.current < 300) return;
+      // react-simple-keyboard fires onKeyPress synchronously inside its own pointerdown
+      // handler (target phase), before our document-level handler (bubble phase). If a
+      // key press just happened, this pointerdown is its source — never close on it.
+      if (Date.now() - lastKeyPressAt.current < 50) return;
       const tgt = e.target as Element | null;
       if (!tgt) return;
-      // Tap inside keyboard or on something that will (re)focus an input — leave it open.
       if (tgt.closest('.virtual-keyboard-root')) return;
       if (tgt.closest('input, textarea, label')) return;
-      // User tapped a non-input area — close the keyboard regardless of where browser focus stays.
       setTarget(null);
       t.blur();
     };
@@ -174,34 +183,30 @@ const VirtualKeyboard = () => {
     };
   }, []);
 
-  const onKeyPress = useCallback(
-    (button: string) => {
-      const t = targetRef.current;
-      if (!t) return;
-      if (button === '{shift}') {
-        setLayoutName((current) => (current === 'shift' ? 'default' : 'shift'));
-        // Refocus so any modal focus trap stays happy.
-        t.focus({ preventScroll: true });
-        return;
-      }
-      if (button === '{close}') {
-        dismissedUntil.current = Date.now() + 500;
-        setTarget(null);
-        t.blur();
-        return;
-      }
-      const current = t.value ?? '';
-      let next = current;
-      if (button === '{bksp}') next = current.slice(0, -1);
-      else if (button === '{space}') next = `${current} `;
-      else next = `${current}${button}`;
-      setNativeValue(t, next);
-      if (layoutName === 'shift') setLayoutName('default');
-      // Belt-and-suspenders: restore focus in case the tap on the key transferred it.
-      t.focus({ preventScroll: true });
-    },
-    [layoutName],
-  );
+  const onKeyPress = useCallback((button: string) => {
+    lastKeyPressAt.current = Date.now();
+    const t = targetRef.current;
+    if (!t) return;
+    if (button === '{shift}') {
+      setLayoutName((current) => (current === 'shift' ? 'default' : 'shift'));
+      return;
+    }
+    if (button === '{close}') {
+      dismissedUntil.current = Date.now() + 500;
+      setTarget(null);
+      t.blur();
+      return;
+    }
+    const current = t.value ?? '';
+    let next: string;
+    if (button === '{bksp}') next = current.slice(0, -1);
+    else if (button === '{space}') next = `${current} `;
+    else next = `${current}${button}`;
+    setNativeValue(t, next);
+    if (layoutNameRef.current === 'shift') setLayoutName('default');
+    // Belt-and-suspenders: restore focus in case the tap on the key transferred it.
+    t.focus({ preventScroll: true });
+  }, []);
 
   const containerStyle = useMemo<React.CSSProperties>(
     () => ({
