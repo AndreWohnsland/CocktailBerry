@@ -5,13 +5,13 @@
 
 .virtual-keyboard-root .hg-theme-default {
   background: transparent;
-  padding: 4px;
+  padding: 4px 0;
   font-family: inherit;
 }
 
 .virtual-keyboard-root .hg-row {
-  gap: 6px;
-  margin-bottom: 6px;
+  gap: 0px;
+  margin-bottom: 3px;
 }
 
 .virtual-keyboard-root .hg-row:last-child {
@@ -65,4 +65,62 @@
 .virtual-keyboard-root .hg-button-close.hg-activeButton {
   background: var(--danger-color);
   color: var(--background-color);
+}
+
+.virtual-keyboard-mirror {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  margin: 0 2px 4px;
+  min-height: 36px;
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
+  background: var(--background-color);
+  color: var(--primary-color);
+  font-size: 18px;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.virtual-keyboard-mirror-hint {
+  color: var(--neutral-color);
+  font-weight: 400;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.virtual-keyboard-mirror-hint::after {
+  content: ':';
+}
+
+.virtual-keyboard-mirror-value {
+  display: inline-flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.virtual-keyboard-mirror-value::-webkit-scrollbar {
+  display: none;
+}
+
+.virtual-keyboard-mirror-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--secondary-color);
+  flex-shrink: 0;
+  animation: vk-caret-blink 1s steps(1) infinite;
+}
+
+@keyframes vk-caret-blink {
+  50% {
+    opacity: 0;
+  }
 }

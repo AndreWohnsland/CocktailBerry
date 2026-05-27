@@ -71,18 +71,63 @@ const setNativeValue = (el: HTMLInputElement | HTMLTextAreaElement, value: strin
   el.dispatchEvent(new Event('input', { bubbles: true }));
 };
 
+const deriveHint = (el: HTMLInputElement | HTMLTextAreaElement): string => {
+  if (el.placeholder) return el.placeholder;
+  const ariaLabel = el.getAttribute('aria-label');
+  if (ariaLabel) return ariaLabel;
+  const labelledBy = el.getAttribute('aria-labelledby');
+  if (labelledBy) {
+    const labelEl = document.getElementById(labelledBy);
+    if (labelEl?.textContent) return labelEl.textContent.trim();
+  }
+  return '';
+};
+
 const VirtualKeyboard = () => {
   const [target, setTarget] = useState<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const [layoutName, setLayoutName] = useState<LayoutName>('default');
+  const [mirrorValue, setMirrorValue] = useState('');
+  const [mirrorHint, setMirrorHint] = useState('');
   const keyboardRef = useRef<unknown>(null);
   const dismissedUntil = useRef<number>(0);
   const openedAt = useRef<number>(0);
   const targetRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+  const mirrorValueElRef = useRef<HTMLSpanElement | null>(null);
 
   // Keep a ref in sync so document-level listeners see the latest target without re-registering.
   useEffect(() => {
     targetRef.current = target;
   }, [target]);
+
+  // Mirror the current target's value live so the user can see what they're typing
+  // even when the keyboard overlaps the input. Listens to the target's input events so
+  // both virtual-keyboard and external value changes stay in sync.
+  useEffect(() => {
+    if (!target) {
+      setMirrorValue('');
+      setMirrorHint('');
+      return;
+    }
+    setMirrorValue(target.value ?? '');
+    setMirrorHint(deriveHint(target));
+    // Defer one frame so controlled components have committed their normalized value
+    // (e.g. number inputs stripping leading zeros) before we mirror it.
+    const onInput = () => {
+      requestAnimationFrame(() => setMirrorValue(target.value ?? ''));
+    };
+    target.addEventListener('input', onInput);
+    return () => target.removeEventListener('input', onInput);
+  }, [target]);
+
+  // Keep the right edge (where the caret is) visible when the value overflows.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mirrorValue is used as a re-run trigger, not read inside.
+  useEffect(() => {
+    const el = mirrorValueElRef.current;
+    if (el) el.scrollLeft = el.scrollWidth;
+  }, [mirrorValue]);
+
+  const isPassword = target instanceof HTMLInputElement && target.type === 'password';
+  const displayValue = isPassword ? '•'.repeat(mirrorValue.length) : mirrorValue;
 
   useEffect(() => {
     const onFocus = (e: FocusEvent) => {
@@ -165,7 +210,7 @@ const VirtualKeyboard = () => {
       left: 0,
       right: 0,
       zIndex: 9999,
-      padding: '8px',
+      padding: '8px 2px',
       boxShadow: '0 -2px 12px rgba(0, 0, 0, 0.5)',
       display: target ? 'block' : 'none',
     }),
@@ -176,6 +221,13 @@ const VirtualKeyboard = () => {
   // react-modal portal, so modals' aria-hidden and focus-trap don't reach it.
   return createPortal(
     <div className='virtual-keyboard-root' style={containerStyle}>
+      <div className='virtual-keyboard-mirror'>
+        {mirrorHint && <span className='virtual-keyboard-mirror-hint'>{mirrorHint}</span>}
+        <span className='virtual-keyboard-mirror-value' ref={mirrorValueElRef}>
+          {displayValue}
+          <span className='virtual-keyboard-mirror-caret' />
+        </span>
+      </div>
       <Keyboard
         keyboardRef={(r) => {
           keyboardRef.current = r;

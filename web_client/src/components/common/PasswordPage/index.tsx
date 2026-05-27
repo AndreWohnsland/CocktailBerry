@@ -33,7 +33,13 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthentica
       <TextHeader text={t('password.passwordNeeded', { passwordName })} />
       <p className='w-full text-center'>{t('password.passwordProtectedBy', { passwordName })}</p>
       <p className='mt-2 w-full text-center'>{t('password.enterThePassword')}</p>
-      <form className='w-full mt-4'>
+      <form
+        className='w-full mt-4'
+        onSubmit={(e) => {
+          e.preventDefault();
+          handlePasswordSubmit();
+        }}
+      >
         <TextInput
           type='password'
           value={password}
@@ -41,7 +47,7 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ passwordName, setAuthentica
           placeholder={t('password.enterPassword')}
         />
         {showNfcHint && <p className='mt-2 w-full text-center text-sm italic'>{t('password.nfcHint')}</p>}
-        <Button label={t('submit')} filled onClick={handlePasswordSubmit} className='w-full mt-6' />
+        <Button label={t('submit')} filled type='submit' className='w-full mt-6' />
       </form>
     </div>
   );
