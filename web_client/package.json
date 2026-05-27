@@ -27,6 +27,7 @@
     "react-modal": "^3.16.3",
     "react-query": "^3.39.3",
     "react-router": "^7.15.0",
+    "react-simple-keyboard": "^3.8.217",
     "react-toastify": "^11.1.0",
     "recharts": "^3.8.1"
   },

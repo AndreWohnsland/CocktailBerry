@@ -958,6 +958,10 @@ ui:
       en: 'Disable all other tabs than the maker one; You will only be prompted at program start if you want to go to config window with master password'
       de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
       pl: 'Wyłącz wszystkie zakładki poza Makere. Przy starcie programu zostaniesz zapytany tylko, czy chcesz przejść do konfiguracji z hasłem głównym'
+    UI_VIRTUAL_KEYBOARD:
+      en: 'Web only: show an in-browser virtual keyboard when an input field is focused. Recommended for Raspberry Pi touchscreen/kiosk setups where the system on-screen keyboard does not appear over fullscreen Chromium. Leave disabled for tablet/phone use, since those devices already provide their own keyboard.'
+      de: 'Nur Web: zeigt eine im Browser eingebettete Bildschirmtastatur, wenn ein Eingabefeld fokussiert wird. Empfohlen für Raspberry Pi Touchscreen-/Kiosk-Setups, bei denen die System-Bildschirmtastatur nicht über dem Vollbild-Chromium erscheint. Für Tablet-/Smartphone-Nutzung deaktiviert lassen, da diese Geräte bereits eine eigene Tastatur bereitstellen.'
+      pl: 'Tylko web: pokazuje wbudowaną w przeglądarce wirtualną klawiaturę po wybraniu pola wprowadzania. Zalecane dla konfiguracji Raspberry Pi z ekranem dotykowym/kiosku, gdzie systemowa klawiatura ekranowa nie pojawia się nad pełnoekranowym Chromium. Pozostaw wyłączone na tabletach/telefonach, ponieważ urządzenia te mają już własną klawiaturę.'
     PUMP_CONFIG:
       en: 'Setting for each dispenser: Dispenser type (DC over GPIO, DC over I2C, DC over MotorKit or Stepper), pin connected to the dispenser, volume flow in ml/s, tube volume in ml, consumption estimation method (time or weight based) and carriage position (0-100%). "DC over GPIO" and "DC over I2C" both drive relay-style dispensers (membrane, peristaltic, valves); the I2C variant additionally lets you choose the expander chip and board number. Stepper is for stepper motor driven dispensers. I2C pins start at 0-7 or 0-15 depending on the board type. "DC over MotorKit" is for DC motors connected to an Adafruit DC & Stepper Motor HAT or compatible PCA9685-based board, identified by its I2C address and motor channel (1-4).'
       de: 'Einstellung für jeden Dispenser: Dispenser-Typ (DC über GPIO, DC über I2C, DC über MotorKit oder Stepper), Pin verbunden mit dem Dispenser, Volumenstrom in ml/s, Schlauchvolumen in ml, Verbrauchsermittlung (zeit- oder gewichtsbasiert) und Schlittenposition (0-100%). "DC über GPIO" und "DC über I2C" steuern beide relais-basierte Dispenser (Membran-, Schlauchdispenser, Ventile); die I2C-Variante erlaubt zusätzlich die Wahl des Expander-Chips und der Board-Nummer. Stepper ist für Schrittmotor-betriebene Dispenser. I2C-Pins beginnen bei 0-7 oder 0-15 je nach Board-Typ. "DC über MotorKit" ist für DC-Motoren, die an ein Adafruit DC & Stepper Motor HAT oder ein kompatibles PCA9685-basiertes Board angeschlossen sind, identifiziert durch I2C-Adresse und Motorkanal (1-4).'
@@ -1204,6 +1208,10 @@ ui:
       en: 'Only Show Maker Tab'
       de: 'Nur Maker-Tab anzeigen'
       pl: 'Pokaż tylko zakładkę Maker'
+    UI_VIRTUAL_KEYBOARD:
+      en: 'V2 custom keyboard'
+      de: 'V2 eigene Tastatur'
+      pl: 'Niestandardowa klawiatura V2'
     PUMP_CONFIG:
       en: 'Dispenser Configuration'
       de: 'Dispenser-Konfiguration'

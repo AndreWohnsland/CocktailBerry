@@ -5,15 +5,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import (
-    QBoxLayout,
-    QCheckBox,
-    QComboBox,
-    QHBoxLayout,
-    QMainWindow,
-    QPushButton,
-    QVBoxLayout,
-)
+from PyQt6.QtWidgets import QBoxLayout, QCheckBox, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QVBoxLayout
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_types import (
@@ -86,6 +78,7 @@ CONFIG_TO_SKIP = (
     "CUSTOM_COLOR_BACKGROUND",
     "CUSTOM_COLOR_DANGER",
     "EXP_DEMO_MODE",
+    "UI_VIRTUAL_KEYBOARD",
 )
 
 
@@ -175,7 +168,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
     def _choose_display_style(self, config_name: str, config_setting: ConfigInterface) -> None:
         """Create the input face for the according config types."""
         # Add the elements header to the view
-        label_text = UI_LANGUAGE.get_config_label(config_name) or config_name
+        label_text = UI_LANGUAGE.get_config_readable_name(config_name) or config_name
         header = create_label(f"{label_text}:", font_size=LARGE_FONT, bold=True)
         vbox = self._choose_tab_container(config_name)
         vbox.addWidget(header)

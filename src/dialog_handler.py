@@ -755,7 +755,7 @@ class UiLanguage:
             config_description = {"en": config_description}
         self.dialogs["settings_dialog"][config_name] = config_description
 
-    def get_config_label(self, config_name: str) -> str:
+    def get_config_readable_name(self, config_name: str) -> str:
         """Return the human-readable label for the configuration.
 
         Returns empty string if there was nothing found, callers should fall back to the config name.

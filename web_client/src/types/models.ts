@@ -142,6 +142,7 @@ export interface DefinedConfigData {
   UI_HEIGHT: number;
   UI_PICTURE_SIZE: number;
   UI_ONLY_MAKER_TAB: boolean;
+  UI_VIRTUAL_KEYBOARD?: boolean;
   PUMP_CONFIG: PumpConfig[];
   MAKER_PINS_INVERTED: boolean;
   I2C_CONFIG: I2CConfig[];
@@ -350,7 +351,7 @@ type PossibleUiInformation = {
   value: PossibleConfigValue;
   default: PossibleConfigValue;
   description: string;
-  label: string;
+  readable_name: string;
   prefix?: string;
   suffix?: string;
   immutable?: boolean;

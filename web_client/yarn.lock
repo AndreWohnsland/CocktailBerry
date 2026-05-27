@@ -2220,6 +2220,11 @@ react-router@^7.15.0:
     cookie "^1.0.1"
     set-cookie-parser "^2.6.0"
 
+react-simple-keyboard@^3.8.217:
+  version "3.8.217"
+  resolved "https://registry.yarnpkg.com/react-simple-keyboard/-/react-simple-keyboard-3.8.217.tgz#9396d2344afa0ebc49670b5ff8ca9d63ac124cf6"
+  integrity sha512-vnsTXLtj8F9t7dkd9EO4leNiWdKhJ1NgYwoA5mrYJC8kIIHHQgCfh96v3akeMEtK9AvX5sHVVLB3lTBcroIOZg==
+
 react-toastify@^11.1.0:
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-11.1.0.tgz#3d3c73a44d5cac868ee9a52e0f90dd706532c4a4"

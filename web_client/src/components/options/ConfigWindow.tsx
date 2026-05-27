@@ -411,7 +411,7 @@ const ConfigWindow: React.FC = () => {
 
   const renderConfigEntry = (key: string) => (
     <div key={key} className='mb-4 flex flex-col items-center'>
-      <h3 className='text-secondary text-lg font-bold mb-1'>{data?.[key]?.label || key}</h3>
+      <h3 className='text-secondary text-lg font-bold mb-1'>{data?.[key]?.readable_name || key}</h3>
       {data && <p className='text-neutral mb-2 text-center'>{data[key].description}</p>}
       {renderInputField(key, configData[key])}
     </div>
