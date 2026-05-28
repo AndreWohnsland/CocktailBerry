@@ -91,7 +91,7 @@
 }
 
 .virtual-keyboard-mirror-hint::after {
-  content: ':';
+  content: ":";
 }
 
 .virtual-keyboard-mirror-value {
