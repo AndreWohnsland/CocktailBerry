@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaEdit, FaPlus, FaTrashAlt } from 'react-icons/fa';
+import { FaEdit, FaPlus, FaSave, FaTimes, FaTrashAlt } from 'react-icons/fa';
 import { useRoles } from '../../../api/roles';
 import { createWaiter, deleteWaiter, updateWaiter, useWaiters, useWaiterWebSocket } from '../../../api/waiters';
 import { useConfig } from '../../../providers/ConfigProvider';
@@ -174,8 +174,14 @@ const ManagementTab: React.FC = () => {
                     handleInputChange={setEditName}
                     placeholder={t('waiter.namePlaceholder')}
                   />
-                  <Button filled label={t('save')} className='px-4' onClick={() => handleSaveEdit(waiter.nfc_id)} />
-                  <Button label={t('cancel')} className='px-4' onClick={handleCancelEdit} />
+                  <Button
+                    filled
+                    icon={FaSave}
+                    label=''
+                    className='px-4'
+                    onClick={() => handleSaveEdit(waiter.nfc_id)}
+                  />
+                  <Button icon={FaTimes} label='' className='px-4' onClick={handleCancelEdit} />
                 </div>
                 <p className='text-sm text-neutral mb-2'>{t('waiter.roleLabel')}</p>
                 <DropDown
@@ -196,17 +202,17 @@ const ManagementTab: React.FC = () => {
               description={waiter.nfc_id}
               highlighted={isActive}
               actions={
-                <>
-                  <Button icon={FaEdit} label={t('edit')} className='px-4' onClick={() => handleEdit(waiter)} />
+                <div className='flex flex-row gap-2'>
+                  <Button icon={FaEdit} label='' className='px-4' onClick={() => handleEdit(waiter)} />
                   <Button
                     style='danger'
                     filled
                     icon={FaTrashAlt}
-                    label={t('delete')}
+                    label=''
                     className='px-4'
                     onClick={() => handleDelete(waiter)}
                   />
-                </>
+                </div>
               }
             >
               <div className='flex flex-wrap gap-2 mt-2'>
