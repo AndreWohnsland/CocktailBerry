@@ -14,7 +14,7 @@ import yaml
 try:
     from PyQt6.QtCore import Qt
     from PyQt6.QtGui import QIcon
-    from PyQt6.QtWidgets import QApplication, QDialog, QFileDialog, QInputDialog, QWidget
+    from PyQt6.QtWidgets import QApplication, QDialog, QFileDialog, QWidget
 except ModuleNotFoundError:
     pass
 
@@ -55,6 +55,7 @@ if TYPE_CHECKING:
         Ui_RFIDWriterWindow,
         Ui_SumupWindow,
         Ui_Teamselection,
+        Ui_UpdateWindow,
         Ui_WaiterWindow,
         Ui_WiFiWindow,
     )
@@ -589,33 +590,23 @@ class DialogHandler:
     # Methods for prompting ####
     ############################
 
-    def ask_to_update(self, release_information: str, major_update: bool = False) -> bool:
+    def ask_to_update(self, release_information: str) -> bool:
         """Asks the user if he wants to get the latest update."""
         message = self._choose_language("update_available")
         message = f"{message}\n\n{release_information}"
-        if major_update:
-            major_warning = self._choose_language("update_available_major_warning")
-            message = f"{major_warning}\n\n{message}"
         return self.user_okay(message)
 
     def ask_to_update_version(self, versions: list[VersionInfo]) -> str | None:
-        """Show a dropdown of available versions, return the selected tag or None.
+        """Show a combined window with version dropdown and release notes preview.
 
-        Versions that cross a major boundary are flagged in the list so the user can
-        deliberately step to a safe version before crossing a major update.
+        Versions that cross a major boundary are flagged in the list. The window
+        also shows a major-update warning and the release notes for the selected
+        version. Returns the chosen tag or None.
         """
+        from src.ui.setup_update_window import UpdateWindow
+
         major_marker = self._choose_language("update_major_marker")
-        label_to_tag: dict[str, str] = {}
-        for version in versions:
-            label = f"{version.version}  ⚠ {major_marker}" if version.is_major else version.version
-            label_to_tag[label] = version.version
-        labels = list(label_to_tag)
-        title = self._choose_language("update_select_version_header")
-        prompt = self._choose_language("update_select_version")
-        selected_label, confirmed = QInputDialog.getItem(None, title, prompt, labels, len(labels) - 1, False)
-        if not confirmed:
-            return None
-        return label_to_tag.get(selected_label)
+        return UpdateWindow(versions, major_marker).exec()
 
     def ask_to_start_cleaning(self) -> bool:
         """Asks the user if he wants to start the cleaning process."""
@@ -948,6 +939,15 @@ class UiLanguage:
         """Translate all the labels from the password window."""
         w.yes_button.setText(self._choose_language("yes_button"))
         w.no_button.setText(self._choose_language("no_button"))
+
+    def adjust_update_window(self, w: Ui_UpdateWindow) -> None:
+        """Translate all text elements of the update window."""
+        window = "update_window"
+        w.yes_button.setText(self._choose_language("yes_button"))
+        w.no_button.setText(self._choose_language("no_button"))
+        w.label_prompt.setText(self._choose_language("prompt", window))
+        w.label_warning.setText(self._choose_language("major_warning", window))
+        w.label_warning.setVisible(False)
 
     def adjust_log_window(self, w: Ui_LogWindow) -> None:
         """Translate the elements from the logs window."""

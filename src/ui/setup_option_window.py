@@ -315,12 +315,6 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         selected = DP_CONTROLLER.ask_to_update_version(info.versions)
         if selected is None:
             return
-        target_info = next(v for v in info.versions if v.version == selected)
-        if not DP_CONTROLLER.ask_to_update(
-            release_information=f"{selected}\n\n{target_info.release_notes}",
-            major_update=target_info.is_major,
-        ):
-            return
         if not updater.update(selected):
             DP_CONTROLLER.say_update_failed()
 

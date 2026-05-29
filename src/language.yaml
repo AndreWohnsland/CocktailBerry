@@ -175,14 +175,6 @@ dialog:
     en: 'There is a new update available. Do you want to pull it from GitHub? The program will be restarted afterwards.'
     de: 'Es ist ein neues Update verfügbar. Update von GitHub pullen? Das Programm wird danach neu gestartet.'
     pl: 'Dostępna jest nowa aktualizacja. Czy chcesz pobrać ją z GitHub? Program zostanie następnie uruchomiony ponownie.'
-  update_available_major_warning:
-    en: 'WARNING: This is a major update and have probably breaking changes.\nPlease check the changelog before updating.\nSee https://github.com/AndreWohnsland/CocktailBerry/releases for more information.'
-    de: 'WARNUNG: Dies ist ein Major Update und hat wahrscheinlich Breaking Changes.\nBitte schaue dir das Changelog vor dem Update an.\nSiehe https://github.com/AndreWohnsland/CocktailBerry/releases für mehr Informationen.'
-    pl: 'OSTRZEŻENIE: To jest duża aktualizacja, która może zawierać niekompatybilne zmiany.\nSprawdź changelog przed aktualizacją.\nWięcej informacji: https://github.com/AndreWohnsland/CocktailBerry/releases'
-  update_select_version_header:
-    en: 'Select update version'
-    de: 'Update-Version wählen'
-    pl: 'Wybierz wersję aktualizacji'
   update_select_version:
     en: 'Select the version you want to update to. You can step to a version before a major update to migrate safely.'
     de: 'Wähle die Version, auf die du aktualisieren möchtest. Du kannst vor einem Major-Update auf eine Zwischenversion gehen, um sicher zu migrieren.'
@@ -524,6 +516,16 @@ ui:
       en: 'Next >'
       de: 'Weiter >'
       pl: 'Dalej >'
+  # update window
+  update_window:
+    prompt:
+      en: 'Select the version you want to update to. You can step to a version before a major update to migrate safely.'
+      de: 'Wähle die Version, auf die du aktualisieren möchtest. Du kannst vor einem Major-Update auf eine Zwischenversion gehen, um sicher zu migrieren.'
+      pl: 'Wybierz wersję, do której chcesz zaktualizować. Możesz przejść do wersji przed dużą aktualizacją, aby bezpiecznie migrować.'
+    major_warning:
+      en: "WARNING: This is a major update and have probably breaking changes.\nPlease check the changelog before updating.\nSee https://github.com/AndreWohnsland/CocktailBerry/releases for more information."
+      de: "WARNUNG: Dies ist ein Major Update und hat wahrscheinlich Breaking Changes.\nBitte schaue dir das Changelog vor dem Update an.\nSiehe https://github.com/AndreWohnsland/CocktailBerry/releases für mehr Informationen."
+      pl: "OSTRZEŻENIE: To jest duża aktualizacja, która może zawierać niekompatybilne zmiany.\nSprawdź changelog przed aktualizacją.\nWięcej informacji: https://github.com/AndreWohnsland/CocktailBerry/releases"
   # dynamic values for maker tab
   maker:
     add_self:
