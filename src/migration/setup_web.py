@@ -89,15 +89,25 @@ def get_ip() -> str:
         return "127.0.0.1"
 
 
-def download_latest_web_client() -> None:
-    """Download the latest web client from the GitHub release page."""
+def download_web_client(version: str = "latest") -> None:
+    """Download the web client build for the given release tag from GitHub.
+
+    ``version`` is a release tag (e.g. ``"v4.3.0"``). The default ``"latest"`` resolves
+    to the most recent release and is used by the initial install, where the checkout
+    is already pinned to the latest tag. ``curl -f`` makes a missing asset fail fast so
+    callers can abort the update instead of serving a broken frontend.
+    """
     # Create the web root directory if it doesn't exist
     web_root = Path("/var/www/cocktailberry_web_client")
     web_root.mkdir(parents=True, exist_ok=True)
     # Download the tar.gz file to the tmp directory, extract it into the web root directory, remove the tar.gz file
     tmp_path = Path("/tmp/cocktailberry_web_client.tar.gz")
-    url = "https://github.com/AndreWohnsland/CocktailBerry/releases/latest/download/cocktailberry_web_client.tar.gz"
-    subprocess.run(["sudo", "curl", "-L", "-o", str(tmp_path), url], check=True)
+    base_url = "https://github.com/AndreWohnsland/CocktailBerry/releases"
+    if version == "latest":
+        url = f"{base_url}/latest/download/cocktailberry_web_client.tar.gz"
+    else:
+        url = f"{base_url}/download/{version}/cocktailberry_web_client.tar.gz"
+    subprocess.run(["sudo", "curl", "-L", "-f", "-o", str(tmp_path), url], check=True)
     # Clean up existing files with sudo since they may be owned by root
     subprocess.run(f"sudo rm -rf {web_root}/*", shell=True, check=False)
     subprocess.run(["sudo", "tar", "-xzf", str(tmp_path), "-C", str(web_root)], check=True)
@@ -184,6 +194,11 @@ if __name__ == "__main__":
         default=False,
         help="Use SSL for the Nginx configuration.",
     )
+    parser.add_argument(
+        "--version",
+        default="latest",
+        help="Release tag to download the web client for (defaults to the latest release).",
+    )
     args = parser.parse_args()
-    download_latest_web_client()
+    download_web_client(args.version)
     setup_nginx(args.ssl)

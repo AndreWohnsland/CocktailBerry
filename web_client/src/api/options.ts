@@ -14,6 +14,7 @@ import type {
   ResourceStats,
   SumupReader,
   SumupReaderCreate,
+  UpdateAvailability,
   WifiData,
 } from '../types/models';
 import { axiosInstance } from './common';
@@ -67,8 +68,12 @@ export const updateSystem = async (): Promise<{ message: string }> => {
   return axiosInstance.post<{ message: string }>(`${optionsUrl}/update/system`).then((res) => res.data);
 };
 
-export const updateSoftware = async (): Promise<{ message: string }> => {
-  return axiosInstance.post<{ message: string }>(`${optionsUrl}/update/software`).then((res) => res.data);
+export const listSoftwareUpdates = async (): Promise<UpdateAvailability> => {
+  return axiosInstance.get<UpdateAvailability>(`${optionsUrl}/update/software`).then((res) => res.data);
+};
+
+export const updateSoftware = async (version: string): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${optionsUrl}/update/software`, { version }).then((res) => res.data);
 };
 
 export const createBackup = async (): Promise<{ data: Blob; fileName: string }> => {

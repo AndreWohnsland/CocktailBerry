@@ -148,6 +148,22 @@ class AboutInfo(BaseModel):
     version: str
 
 
+class UpdateVersion(BaseModel):
+    version: str
+    release_notes: str
+    is_major: bool
+
+
+class UpdateAvailability(BaseModel):
+    status: str
+    message: str
+    versions: list[UpdateVersion]
+
+
+class UpdateRequest(BaseModel):
+    version: str
+
+
 class SumupReaderResponse(BaseModel):
     id: str
     name: str

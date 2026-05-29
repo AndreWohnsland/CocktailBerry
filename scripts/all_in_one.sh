@@ -187,6 +187,16 @@ cd ~/CocktailBerry
 if [[ "$DEV_FLAG" = true ]]; then
   echo "~~ [INFO] DEV flag is set, checking out the dev branch ~~"
   git checkout dev
+else
+  # Pin to the latest release tag so a fresh install lands on the exact released
+  # state, not on master HEAD (which may carry un-released commits between releases).
+  # Resetting while staying on master keeps the in-app updater's "on master" guard valid.
+  git fetch --tags
+  LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
+  if [[ -n "$LATEST_TAG" ]]; then
+    echo "~~ Pinning to latest release tag: $LATEST_TAG ~~"
+    git reset --hard "$LATEST_TAG"
+  fi
 fi
 
 # Copy the English default database to the working database, then localize

@@ -179,6 +179,18 @@ dialog:
     en: 'WARNING: This is a major update and have probably breaking changes.\nPlease check the changelog before updating.\nSee https://github.com/AndreWohnsland/CocktailBerry/releases for more information.'
     de: 'WARNUNG: Dies ist ein Major Update und hat wahrscheinlich Breaking Changes.\nBitte schaue dir das Changelog vor dem Update an.\nSiehe https://github.com/AndreWohnsland/CocktailBerry/releases für mehr Informationen.'
     pl: 'OSTRZEŻENIE: To jest duża aktualizacja, która może zawierać niekompatybilne zmiany.\nSprawdź changelog przed aktualizacją.\nWięcej informacji: https://github.com/AndreWohnsland/CocktailBerry/releases'
+  update_select_version_header:
+    en: 'Select update version'
+    de: 'Update-Version wählen'
+    pl: 'Wybierz wersję aktualizacji'
+  update_select_version:
+    en: 'Select the version you want to update to. You can step to a version before a major update to migrate safely.'
+    de: 'Wähle die Version, auf die du aktualisieren möchtest. Du kannst vor einem Major-Update auf eine Zwischenversion gehen, um sicher zu migrieren.'
+    pl: 'Wybierz wersję, do której chcesz zaktualizować. Możesz przejść do wersji przed dużą aktualizacją, aby bezpiecznie migrować.'
+  update_major_marker:
+    en: 'major'
+    de: 'Major'
+    pl: 'duża'
   restart_config:
     en: 'Restart the program to apply new configuration?'
     de: 'Programm neu starten, um die geänderten Einstellungen zu laden?'
@@ -999,9 +1011,9 @@ ui:
       de: 'Konfiguration für Pumpen Umkehrung. Wähle "Global über GPIO" oder "Global über I2C" für einen gemeinsamen Relais-Pin (die I2C-Variante erlaubt zusätzlich die Wahl des Expander-Chips und der Board-Nummer) oder "Dispenser Controlled", damit jeder Dispenser die Richtung selbst steuert — Dispenser ohne Unterstützung überspringen die Umkehrung. Aktivieren, um die Umkehrung beim Reinigen zu nutzen.'
       pl: 'Konfiguracja zmiany kierunku pompy. Wybierz "Global over GPIO" lub "Global over I2C" dla wspólnego pinu przekaźnika (wariant I2C dodatkowo pozwala wybrać układ ekspandera i numer płytki) lub "Dispenser Controlled", aby każdy dozownik sam kontrolował kierunek — dozowniki bez obsługi pominią odwracanie. Aktywuj, aby włączyć odwracanie podczas czyszczenia.'
     MAKER_SEARCH_UPDATES:
-      en: 'Search for updates, if available internet connection'
-      de: 'Sucht nach Updates, wenn Internetverbindung besteht'
-      pl: 'Sprawdza dostępność aktualizacji, jeśli jest połączenie z internetem'
+      en: 'Search for updates on startup when an internet connection is available. The desktop app (v1) prompts you to install the latest minor release; the web app (v2) installs it automatically. Major releases are never applied automatically — install those manually via the update option.'
+      de: 'Sucht beim Start nach Updates, wenn eine Internetverbindung besteht. Die Desktop-App (v1) fragt nach, ob das neueste Minor-Release installiert werden soll; die Web-App (v2) installiert es automatisch. Major-Releases werden nie automatisch installiert — diese bitte manuell über die Update-Option einspielen.'
+      pl: 'Sprawdza aktualizacje przy starcie, jeśli jest połączenie z internetem. Aplikacja desktopowa (v1) pyta o instalację najnowszego wydania minor; aplikacja webowa (v2) instaluje je automatycznie. Wydania major nigdy nie są instalowane automatycznie — należy je zainstalować ręcznie przez opcję aktualizacji.'
     MAKER_CHECK_BOTTLE:
       en: 'Checks before each cocktail if there is enough volume in the needed bottles. Aborts with a warning if there is not. Disable to ignore fill level.'
       de: 'Prüft vor dem Cocktail ob genug in den benötigten Flasche ist, bricht mit Warnung ab falls nicht. Ausschalten ignoriert Füllstand.'

@@ -463,6 +463,18 @@ export interface AboutInfo {
   version: string;
 }
 
+export interface UpdateVersion {
+  version: string;
+  release_notes: string;
+  is_major: boolean;
+}
+
+export interface UpdateAvailability {
+  status: string;
+  message: string;
+  versions: UpdateVersion[];
+}
+
 export interface TabPermission {
   maker: boolean;
   ingredients: boolean;

@@ -14,7 +14,7 @@ import yaml
 try:
     from PyQt6.QtCore import Qt
     from PyQt6.QtGui import QIcon
-    from PyQt6.QtWidgets import QApplication, QDialog, QFileDialog, QWidget
+    from PyQt6.QtWidgets import QApplication, QDialog, QFileDialog, QInputDialog, QWidget
 except ModuleNotFoundError:
     pass
 
@@ -58,6 +58,7 @@ if TYPE_CHECKING:
         Ui_WaiterWindow,
         Ui_WiFiWindow,
     )
+    from src.updater import VersionInfo
 
 _logger = LoggerHandler("dialog_handler")
 
@@ -596,6 +597,25 @@ class DialogHandler:
             major_warning = self._choose_language("update_available_major_warning")
             message = f"{major_warning}\n\n{message}"
         return self.user_okay(message)
+
+    def ask_to_update_version(self, versions: list[VersionInfo]) -> str | None:
+        """Show a dropdown of available versions, return the selected tag or None.
+
+        Versions that cross a major boundary are flagged in the list so the user can
+        deliberately step to a safe version before crossing a major update.
+        """
+        major_marker = self._choose_language("update_major_marker")
+        label_to_tag: dict[str, str] = {}
+        for version in versions:
+            label = f"{version.version}  ⚠ {major_marker}" if version.is_major else version.version
+            label_to_tag[label] = version.version
+        labels = list(label_to_tag)
+        title = self._choose_language("update_select_version_header")
+        prompt = self._choose_language("update_select_version")
+        selected_label, confirmed = QInputDialog.getItem(None, title, prompt, labels, len(labels) - 1, False)
+        if not confirmed:
+            return None
+        return label_to_tag.get(selected_label)
 
     def ask_to_start_cleaning(self) -> bool:
         """Asks the user if he wants to start the cleaning process."""
