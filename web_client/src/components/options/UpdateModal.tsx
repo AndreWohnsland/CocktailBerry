@@ -20,7 +20,7 @@ interface UpdateModalProps {
 const pickDefault = (versions: UpdateVersion[]): string => {
   const nonMajor = versions.filter((v) => !v.is_major);
   const pool = nonMajor.length > 0 ? nonMajor : versions;
-  return pool[pool.length - 1]?.version ?? '';
+  return pool.at(-1)?.version ?? '';
 };
 
 const UpdateModal = ({ isOpen, onClose, info }: UpdateModalProps) => {
