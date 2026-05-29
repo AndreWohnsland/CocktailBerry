@@ -32,6 +32,14 @@ $picture-view-active-color: $secondary;
   color: $neutral;
 }
 
+*[cssClass~='destructive'] {
+  color: $destructive;
+}
+
+*[cssClass~='secondary'] {
+  color: $secondary;
+}
+
 *[cssClass~='center'] {
   text-align: center;
 }

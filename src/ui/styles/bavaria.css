@@ -18,6 +18,12 @@
 *[cssClass~='neutral'] {
   color: #44648d; }
 
+*[cssClass~='destructive'] {
+  color: #d00000; }
+
+*[cssClass~='secondary'] {
+  color: #01276a; }
+
 *[cssClass~='center'] {
   text-align: center; }
 
