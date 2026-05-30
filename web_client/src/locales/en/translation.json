@@ -118,6 +118,15 @@
     "updateCocktailBerry": "Update CocktailBerry",
     "updateSystem": "Update System",
     "updateTheSystem": "Do you want to update the System?",
+    "update": {
+      "title": "Update CocktailBerry",
+      "checking": "Checking for updates...",
+      "upToDate": "CocktailBerry is up to date.",
+      "selectHint": "Select the version to update to. You can step to a version before a major update to migrate safely.",
+      "major": "major",
+      "majorWarning": "This is a major update and may contain breaking changes. Check the changelog first.",
+      "updateTo": "Update to {{version}}"
+    },
     "wifi": "WiFi",
     "waiters": "Waiters",
     "rfid": "RFID"

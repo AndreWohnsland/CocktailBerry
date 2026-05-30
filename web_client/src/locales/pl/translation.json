@@ -118,6 +118,15 @@
     "updateCocktailBerry": "Aktualizuj oprogramowanie CocktailBerry",
     "updateSystem": "Aktualizuj system",
     "updateTheSystem": "Czy chcesz zaktualizować system?",
+    "update": {
+      "title": "Aktualizuj CocktailBerry",
+      "checking": "Sprawdzanie aktualizacji...",
+      "upToDate": "CocktailBerry jest aktualny.",
+      "selectHint": "Wybierz wersję, do której chcesz zaktualizować. Możesz przejść do wersji przed dużą aktualizacją, aby bezpiecznie migrować.",
+      "major": "duża",
+      "majorWarning": "To jest duża aktualizacja i może zawierać niekompatybilne zmiany. Najpierw sprawdź changelog.",
+      "updateTo": "Aktualizuj do {{version}}"
+    },
     "wifi": "WiFi",
     "waiters": "Obsługa",
     "rfid": "RFID"

@@ -55,9 +55,11 @@ if TYPE_CHECKING:
         Ui_RFIDWriterWindow,
         Ui_SumupWindow,
         Ui_Teamselection,
+        Ui_UpdateWindow,
         Ui_WaiterWindow,
         Ui_WiFiWindow,
     )
+    from src.updater import VersionInfo
 
 _logger = LoggerHandler("dialog_handler")
 
@@ -588,14 +590,23 @@ class DialogHandler:
     # Methods for prompting ####
     ############################
 
-    def ask_to_update(self, release_information: str, major_update: bool = False) -> bool:
+    def ask_to_update(self, release_information: str) -> bool:
         """Asks the user if he wants to get the latest update."""
         message = self._choose_language("update_available")
         message = f"{message}\n\n{release_information}"
-        if major_update:
-            major_warning = self._choose_language("update_available_major_warning")
-            message = f"{major_warning}\n\n{message}"
         return self.user_okay(message)
+
+    def ask_to_update_version(self, versions: list[VersionInfo]) -> str | None:
+        """Show a combined window with version dropdown and release notes preview.
+
+        Versions that cross a major boundary are flagged in the list. The window
+        also shows a major-update warning and the release notes for the selected
+        version. Returns the chosen tag or None.
+        """
+        from src.ui.setup_update_window import UpdateWindow
+
+        major_marker = self._choose_language("update_major_marker")
+        return UpdateWindow(versions, major_marker).exec()
 
     def ask_to_start_cleaning(self) -> bool:
         """Asks the user if he wants to start the cleaning process."""
@@ -928,6 +939,15 @@ class UiLanguage:
         """Translate all the labels from the password window."""
         w.yes_button.setText(self._choose_language("yes_button"))
         w.no_button.setText(self._choose_language("no_button"))
+
+    def adjust_update_window(self, w: Ui_UpdateWindow) -> None:
+        """Translate all text elements of the update window."""
+        window = "update_window"
+        w.yes_button.setText(self._choose_language("yes_button"))
+        w.no_button.setText(self._choose_language("no_button"))
+        w.label_prompt.setText(self._choose_language("prompt", window))
+        w.label_warning.setText(self._choose_language("major_warning", window))
+        w.label_warning.setVisible(False)
 
     def adjust_log_window(self, w: Ui_LogWindow) -> None:
         """Translate the elements from the logs window."""

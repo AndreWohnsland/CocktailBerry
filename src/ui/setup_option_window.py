@@ -303,7 +303,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         )
 
     def _update_software(self) -> None:
-        """First asks and then updates the software."""
+        """Let the user pick a version from the available updates, then update."""
         updater = Updater()
         info = updater.check_for_updates()
         if info.status == UpdateInfo.Status.UP_TO_DATE:
@@ -312,11 +312,11 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if info.status == UpdateInfo.Status.ERROR:
             DP_CONTROLLER.standard_box(info.message)
             return
-        if DP_CONTROLLER.ask_to_update(
-            release_information=info.message,
-            major_update=info.status == UpdateInfo.Status.MAJOR_UPDATE,
-        ):
-            updater.update()
+        selected = DP_CONTROLLER.ask_to_update_version(info.versions)
+        if selected is None:
+            return
+        if not updater.update(selected):
+            DP_CONTROLLER.say_update_failed()
 
     def _finish_update_worker(self) -> None:
         """End the spinner, checks if installation was successful."""

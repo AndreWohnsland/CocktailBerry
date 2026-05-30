@@ -191,15 +191,23 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         apply_responsive_layouts(self.width(), [self.layout_ingredients, self.layout_recipes])
 
     def update_check(self) -> None:
-        """Check if there is an update and asks to update, if exists."""
+        """At startup, offer the latest non-major version (low friction).
+
+        Major bumps are not offered here; the user crosses them deliberately via the
+        version dropdown in the options window.
+        """
         info = can_update()
-        if info.status != UpdateInfo.Status.UPDATE_AVAILABLE:
+        if info.status != UpdateInfo.Status.UPDATES_AVAILABLE:
             return
-        if not DP_CONTROLLER.ask_to_update(info.message):
+        target = info.auto_update_version()
+        if target is None:
+            return
+        target_info = next((v for v in info.versions if v.version == target), None)
+        release_information = f"{target}\n\n{target_info.release_notes}" if target_info else info.message
+        if not DP_CONTROLLER.ask_to_update(release_information):
             return
         updater = Updater()
-        success = updater.update()
-        if not success:
+        if not updater.update(target):
             DP_CONTROLLER.say_update_failed()
 
     def _connection_check(self) -> None:

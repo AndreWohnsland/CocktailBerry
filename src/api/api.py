@@ -22,7 +22,6 @@ from src.database_commander import DatabaseTransactionError
 from src.filepath import CUSTOM_CONFIG_FILE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
-from src.migration.setup_web import download_latest_web_client
 from src.programs.addons.addons import ADDONS, CouldNotInstallAddonError
 from src.programs.addons.bootstrap import initialize_addon_configs
 from src.resource_stats import start_resource_tracker
@@ -39,6 +38,27 @@ from src.updater import UpdateInfo, Updater
 from src.utils import get_platform_data
 
 _logger = LoggerHandler("CocktailBerry_API")
+
+
+def _startup_auto_update() -> None:
+    """Auto-update at startup, but only within the current major.
+
+    Major bumps are left for a deliberate manual choice via the options window.
+    update() downloads the matching web build itself before resetting the code.
+    """
+    update_info = can_update()
+    if update_info.status != UpdateInfo.Status.UPDATES_AVAILABLE:
+        return
+    target = update_info.auto_update_version()
+    if target is None:
+        _logger.info("Only major updates available, skipping automatic update")
+        return
+    _logger.info(f"Update available, performing update to {target}...")
+    try:
+        Updater().update(target)
+    except Exception as e:
+        _logger.error(f"Update failed: {e}")
+        _logger.log_exception(e)
 
 
 @asynccontextmanager
@@ -71,17 +91,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         _logger.warning(f"Waiter mode check failed: {waiter_check.reason}. Disabling waiter mode.")
         cfg.WAITER_MODE = False
         shared.startup_waiter_issue.set_issue(message=waiter_check.reason)
-    update_info = can_update()
-    if update_info.status == UpdateInfo.Status.UPDATE_AVAILABLE:
-        _logger.info("Update available, performing update...")
-        try:
-            # need to get also latest web build
-            download_latest_web_client()
-            updater = Updater()
-            updater.update()
-        except Exception as e:
-            _logger.error(f"Update failed: {e}")
-            _logger.log_exception(e)
+    _startup_auto_update()
     ADDONS.start_trigger_loop()
     if cfg.cocktailberry_payment:
         NFCPaymentService().start_continuous_sensing()

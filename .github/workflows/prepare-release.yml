@@ -1,0 +1,65 @@
+name: Prepare Release
+run-name: Prepare release version bump PR
+
+# Reads the current release-drafter draft, bumps the version in pyproject.toml and
+# uv.lock to the drafted version, and opens a PR to master. The maintainer approves
+# and merges it, then publishes the draft so the release tag points at a commit that
+# already contains its own version (required by the tag-tracking updater).
+on:
+  workflow_dispatch:
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Resolve drafted version
+        id: get_version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=$(gh api "repos/${{ github.repository }}/releases" \
+            --jq '[.[] | select(.draft == true)][0].tag_name')
+          if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
+            echo "No draft release found. Nothing to prepare." >&2
+            exit 1
+          fi
+          VERSION=${TAG#v}
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i "/^version = \".*\"$/s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" pyproject.toml
+
+      - name: Update version in uv.lock for cocktailberry
+        run: |
+          sed -i "/name = \"cocktailberry\"/,/version = \".*\"/ s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" uv.lock
+
+      - name: Commit changes and open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH_NAME="update-version-${{ steps.get_version.outputs.tag }}"
+          git checkout -b "$BRANCH_NAME"
+          if git diff --quiet; then
+            echo "Version already set to ${{ steps.get_version.outputs.version }}, nothing to commit."
+            exit 0
+          fi
+          git commit -am "Update version to ${{ steps.get_version.outputs.tag }}"
+          git push origin "$BRANCH_NAME"
+          gh pr create \
+            --title "Update version to ${{ steps.get_version.outputs.tag }}" \
+            --body "Bumps the version to ${{ steps.get_version.outputs.tag }} before publishing the release. Merge this, then publish the draft so the tag points at a commit that contains its own version." \
+            --head "$BRANCH_NAME" \
+            --base master

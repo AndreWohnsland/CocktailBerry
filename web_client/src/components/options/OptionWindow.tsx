@@ -17,14 +17,15 @@ import { MdEventNote, MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterD
 import { RiShutDownLine } from 'react-icons/ri';
 import { TiDocumentAdd } from 'react-icons/ti';
 import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 import {
   checkInternetConnection,
   cleanMachine,
   createBackup,
+  listSoftwareUpdates,
   rebootSystem,
   shutdownSystem,
   updateOptions,
-  updateSoftware,
   updateSystem,
   uploadBackup,
   useAboutInfo,
@@ -32,18 +33,21 @@ import {
 import { useAuth } from '../../providers/AuthProvider';
 import { useConfig } from '../../providers/ConfigProvider';
 import { useWaiter } from '../../providers/WaiterProvider';
-import type { OptionTileName } from '../../types/models';
-import { askYesNo, confirmAndExecute, executeAndShow } from '../../utils';
+import type { OptionTileName, UpdateAvailability } from '../../types/models';
+import { askYesNo, confirmAndExecute, errorToast, executeAndShow } from '../../utils';
 import DropDown from '../common/DropDown';
 import ProgressModal from '../common/ProgressModal';
 import TileButton from '../common/TileButton';
 import AboutModal from './AboutModal';
+import UpdateModal from './UpdateModal';
 
 const OptionWindow = () => {
   const { theme, changeTheme, config, isTileBlacklisted } = useConfig();
   const navigate = useNavigate();
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [updateInfo, setUpdateInfo] = useState<UpdateAvailability>();
   const { data: aboutInfo } = useAboutInfo();
   const themes = ['default', 'berry', 'bavaria', 'alien', 'tropical', 'purple', 'custom'];
   const { t } = useTranslation();
@@ -129,6 +133,22 @@ const OptionWindow = () => {
   const themeSelect = async (theme: string) => {
     const success = await executeAndShow(() => updateOptions({ MAKER_THEME: theme }));
     if (success) changeTheme(theme);
+  };
+
+  // Only open the version picker when there is actually something to pick;
+  // otherwise (up to date, error, disabled) just toast the reason, like before.
+  const updateSoftwareClick = async () => {
+    try {
+      const info = await listSoftwareUpdates();
+      if (info.status === 'updates_available' && info.versions.length > 0) {
+        setUpdateInfo(info);
+        setIsUpdateModalOpen(true);
+      } else {
+        toast(info.message || t('options.update.upToDate'), { toastId: 'update-check' });
+      }
+    } catch (error) {
+      errorToast(error);
+    }
   };
 
   return (
@@ -237,7 +257,7 @@ const OptionWindow = () => {
               filled
               icon={FaCocktail}
               className='md:col-span-2'
-              onClick={() => executeAndShow(updateSoftware)}
+              onClick={updateSoftwareClick}
             />
           )}
           {showTile('wifi') && <TileButton label={t('options.wifi')} icon={FaWifi} onClick={() => navigate('wifi')} />}
@@ -285,6 +305,7 @@ const OptionWindow = () => {
         </div>
       </div>
       <AboutModal isOpen={isAboutModalOpen} onClose={() => setIsAboutModalOpen(false)} aboutInfo={aboutInfo} />
+      <UpdateModal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)} info={updateInfo} />
     </>
   );
 };

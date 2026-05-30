@@ -8,7 +8,16 @@ on:
   workflow_dispatch:
 
 jobs:
+  verify-version:
+    # Only relevant for releases (this workflow also runs on workflow_dispatch).
+    if: github.event_name == 'release'
+    uses: ./.github/workflows/verify-release-version.yml
+
   build-and-upload:
+    needs: verify-version
+    # Run after a successful guard (release) or when the guard was skipped
+    # (workflow_dispatch); skip only when the guard actually failed.
+    if: ${{ always() && needs.verify-version.result != 'failure' }}
     runs-on: ubuntu-latest
 
     steps:

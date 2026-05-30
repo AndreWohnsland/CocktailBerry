@@ -1,0 +1,37 @@
+name: Verify release version
+
+# Reusable guard (called via `uses` from the release workflows). The version bump is
+# manual, so this checks the published tag matches the code's version. On mismatch it
+# re-drafts the release (hiding the tag from check_for_updates) and deletes the stale
+# tag, then fails so the caller's build jobs (which `needs` this) are skipped.
+on:
+  workflow_call:
+
+jobs:
+  verify-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: ⤵️ Check out the released tag
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: 🔍 Verify pyproject version matches the release tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          EXPECTED="${TAG#v}"
+          ACTUAL=$(sed -n 's/^version = "\(.*\)"$/\1/p' pyproject.toml | head -n 1)
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "::error::pyproject version '$ACTUAL' does not match release tag '$EXPECTED'. Re-drafting release and deleting tag."
+            gh release edit "$TAG" --draft --repo "${{ github.repository }}"
+            # Delete the stale tag too: re-drafting alone keeps the tag at the wrong
+            # commit, which would block a clean re-publish. `|| true` tolerates the
+            # parallel caller having already deleted it.
+            gh api --method DELETE "repos/${{ github.repository }}/git/refs/tags/$TAG" || true
+            exit 1
+          fi
+          echo "Version matches: $ACTUAL"

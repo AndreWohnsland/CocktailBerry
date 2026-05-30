@@ -28,6 +28,9 @@ from src.api.models import (
     PasswordInput,
     SumupReaderCreate,
     SumupReaderResponse,
+    UpdateAvailability,
+    UpdateRequest,
+    UpdateVersion,
     WifiData,
 )
 from src.config.config_manager import CONFIG as cfg
@@ -330,16 +333,30 @@ async def update_system(background_tasks: BackgroundTasks) -> ApiMessage:
     return ApiMessage(message="System update started")
 
 
+@protected_router.get("/update/software", summary="List available CocktailBerry software updates")
+async def list_software_updates() -> UpdateAvailability:
+    info = Updater().check_for_updates()
+    return UpdateAvailability(
+        status=info.status.value,
+        message=info.message,
+        versions=[
+            UpdateVersion(version=v.version, release_notes=v.release_notes, is_major=v.is_major) for v in info.versions
+        ],
+    )
+
+
 @protected_router.post("/update/software", summary="Update CocktailBerry software", dependencies=[not_on_demo])
-async def update_software() -> ApiMessage:
+async def update_software(update: UpdateRequest) -> ApiMessage:
     updater = Updater()
     info = updater.check_for_updates()
     if info.status == UpdateInfo.Status.UP_TO_DATE:
         return ApiMessage(message=DH.get_translation("cocktailberry_up_to_date"))
     if info.status == UpdateInfo.Status.ERROR:
         return ApiMessage(message=info.message or "Error: could not check for updates")
-    success = updater.update()
-    if not success:
+    # only allow versions the check actually offered (no downgrade / arbitrary tag)
+    if update.version not in {v.version for v in info.versions}:
+        raise HTTPException(400, detail=f"Version {update.version} is not an available update")
+    if not updater.update(update.version):
         raise HTTPException(400, detail=DH.get_translation("update_failed"))
     return ApiMessage(message="Software update started")
 

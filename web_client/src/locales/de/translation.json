@@ -118,6 +118,15 @@
     "updateCocktailBerry": "CocktailBerry aktualisieren",
     "updateSystem": "System aktualisieren",
     "updateTheSystem": "Möchtest du das System aktualisieren?",
+    "update": {
+      "title": "CocktailBerry aktualisieren",
+      "checking": "Suche nach Updates...",
+      "upToDate": "CocktailBerry ist auf dem neuesten Stand.",
+      "selectHint": "Wähle die Version, auf die du aktualisieren möchtest. Du kannst vor einem Major-Update auf eine Zwischenversion gehen, um sicher zu migrieren.",
+      "major": "Major",
+      "majorWarning": "Dies ist ein Major-Update und kann Breaking Changes enthalten. Bitte prüfe zuerst das Changelog.",
+      "updateTo": "Auf {{version}} aktualisieren"
+    },
     "wifi": "WLAN",
     "waiters": "Servicepersonal",
     "rfid": "RFID"
