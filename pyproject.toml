@@ -1,6 +1,6 @@
 [project]
 name = "CocktailBerry"
-version = "4.5.1"
+version = "4.5.2"
 description = "A Python and Qt based App for a Cocktail Machine on a Raspberry Pi. Easily serve Cocktails with Raspberry Pi and Python"
 authors = [{ name= "Andre Wohnsland" , email =  "info@cocktailberry.org" }]
 readme = "readme.md"
