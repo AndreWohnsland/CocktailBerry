@@ -15,6 +15,7 @@ The following components were used within the showcase for the Machines (Cocktai
 - 1x Micro [SD-Card](https://amzn.to/3JY3Dqn) (16-32 GB is enough, depending on what else you want to store)
 - 1x 5V Power supply for the [Raspberry Pi 3](https://amzn.to/3XbImwj) or [Raspberry Pi 4](https://amzn.to/48axtjp)
 - 1-2x [8 Channel](https://amzn.to/49ya120) or other RPi (needs 3.3V Logic Level, 5V will NOT WORK!!!) Relay-Boards depending on pump count (important to have 5V input control)
+- *Alternative*: Motor shields [AZDelivery](https://amzn.to/3SbQiOE) or [Adafruit](https://amzn.to/4vE6uaf) 4 DC or 2 Stepper Motors per shield, has reversion build in
 - 6-24x Pumps, it should be food safe, examples are:
 - [membrane pump](https://amzn.to/4ocmw6S) or [this one](https://amzn.to/4a6PfXl)
 - [peristaltic pump](https://amzn.to/3LSyTrh)
