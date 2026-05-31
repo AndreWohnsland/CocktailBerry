@@ -318,6 +318,7 @@ class ConfigManager:
                     build_distinct_validator(
                         ["pin_type", "board_number", "pin"],
                         fallback={"pin_type": "GPIO", "board_number": 1},
+                        mapped_keys={"board_number": "address"},
                     )
                 ],
             ),
