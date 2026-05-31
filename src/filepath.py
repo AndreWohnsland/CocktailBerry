@@ -26,6 +26,7 @@ SCRIPTS_FOLDER = ROOT_PATH / "scripts"
 USER_IMAGE_FOLDER = ROOT_PATH / "display_images_user"
 DEFAULT_IMAGE_FOLDER = ROOT_PATH / "default_cocktail_images"
 DEFAULT_COCKTAIL_IMAGE = DEFAULT_IMAGE_FOLDER / "default.jpg"
+INGREDIENT_IMAGE = DEFAULT_IMAGE_FOLDER / "ingredient.jpg"
 DATABASE_PATH = ROOT_PATH / "Cocktail_database.db"
 DEFAULT_DATABASE_PATH = ROOT_PATH / "cocktail_data_en.db"
 

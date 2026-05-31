@@ -96,7 +96,7 @@ const CocktailList: React.FC = () => {
     <button
       type='button'
       onClick={() => setShowOnlyVirginPossible(!showOnlyVirginPossible)}
-      className={`h-10 w-10 flex items-center justify-center p-2 !border pointer-events-auto ${
+      className={`h-10 w-10 flex items-center justify-center p-2 border! pointer-events-auto ${
         showOnlyVirginPossible ? 'button-secondary' : 'button-primary'
       }`}
     >
@@ -186,7 +186,7 @@ const CocktailList: React.FC = () => {
             <p className='text-center py-1 flex items-center justify-center'>{t('cocktails.singleIngredient')}</p>
             <div className='relative w-full' style={{ paddingTop: '100%' }}>
               <img
-                src={`${API_URL}/static/default/default.jpg`}
+                src={`${API_URL}/static/default/ingredient.jpg`}
                 alt='Single Ingredient'
                 className='absolute top-0 left-0 w-full h-full object-cover'
               />

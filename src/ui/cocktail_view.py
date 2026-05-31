@@ -10,7 +10,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.filepath import DEFAULT_COCKTAIL_IMAGE
+from src.filepath import DEFAULT_COCKTAIL_IMAGE, INGREDIENT_IMAGE
 from src.image_utils import find_cocktail_image
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
@@ -103,7 +103,7 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
         button.setIconSize(QSize(20, 20))
     label = ClickableLabel(name_label)
     label.setProperty("cssClass", "cocktail-picture-view")
-    cocktail_image = DEFAULT_COCKTAIL_IMAGE if cocktail is None else find_cocktail_image(cocktail)
+    cocktail_image = INGREDIENT_IMAGE if cocktail is None else find_cocktail_image(cocktail)
     pixmap = QPixmap(str(cocktail_image))
     label.setPixmap(pixmap)
     label.setScaledContents(True)
