@@ -4,6 +4,7 @@ import { FaCreditCard } from 'react-icons/fa';
 import Modal from 'react-modal';
 import { cancelPayment, getCocktailStatus, stopCocktail } from '../../api/cocktails';
 import { useConfig } from '../../providers/ConfigProvider';
+import type { CocktailStatus } from '../../types/models';
 import { errorToast } from '../../utils';
 import ProgressBar from './ProgressBar';
 import TextHeader from './TextHeader';
@@ -13,7 +14,7 @@ interface ProgressModalProps {
   onRequestClose: () => void;
   progress: number;
   displayName: string;
-  triggerOnClose?: (status: string) => void;
+  triggerOnClose?: (status: CocktailStatus) => void;
 }
 
 const ProgressModal: React.FC<ProgressModalProps> = ({
@@ -29,15 +30,19 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     config.PAYMENT_TYPE !== 'Disabled' ? 'WAITING_FOR_PAYMENT' : 'IN_PROGRESS',
   );
   const [message, setMessage] = useState<string | null>(null);
+  const [latestStatus, setLatestStatus] = useState<CocktailStatus>({
+    progress,
+    status: config.PAYMENT_TYPE !== 'Disabled' ? 'WAITING_FOR_PAYMENT' : 'IN_PROGRESS',
+  });
   const { t } = useTranslation();
 
   const closeWindow = React.useCallback(
-    (finalStatus?: string) => {
+    (finalStatus?: CocktailStatus) => {
       setCurrentProgress(0);
       setMessage(null);
       onRequestClose();
       if (triggerOnClose) {
-        triggerOnClose(finalStatus ?? 'CANCELED');
+        triggerOnClose(finalStatus ?? { progress: 0, status: 'CANCELED' });
       }
     },
     [onRequestClose, triggerOnClose],
@@ -46,7 +51,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
   const handleCancelPayment = async () => {
     try {
       await cancelPayment();
-      closeWindow('CANCELED');
+      closeWindow({ progress: 0, status: 'CANCELED' });
     } catch (error) {
       errorToast(error);
     }
@@ -65,17 +70,22 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     if (isOpen && !intervalId) {
       intervalId = setInterval(async () => {
         const cocktailStatus = await getCocktailStatus();
+        setLatestStatus(cocktailStatus);
         setCurrentStatus(cocktailStatus.status);
         setCurrentProgress(cocktailStatus.progress);
         if (cocktailStatus.status === 'IN_PROGRESS' || cocktailStatus.status === 'WAITING_FOR_PAYMENT') {
           return;
         }
         cancelInterval();
+        if (cocktailStatus.hand_adds?.length) {
+          closeWindow(cocktailStatus);
+          return;
+        }
         if (cocktailStatus.message) {
           const formattedMessage = cocktailStatus.message.replaceAll('\n', '<br />');
           setMessage(formattedMessage);
         } else {
-          closeWindow(cocktailStatus.status);
+          closeWindow(cocktailStatus);
         }
       }, 250);
     }
@@ -103,7 +113,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         <button
           type='button'
           className='mt-4 px-4 py-2 button-primary w-1/2'
-          onClick={() => closeWindow(currentStatus)}
+          onClick={() => closeWindow(latestStatus)}
         >
           {t('close')}
         </button>

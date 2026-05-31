@@ -652,6 +652,34 @@ ui:
       en: 'Ingredients for hand add'
       de: 'Zutaten selbst hinzufügen'
       pl: 'Składniki do ręcznego dodania'
+    instruction:
+      en: 'Add {ingredient} {amount} {unit}'
+      de: '{ingredient} {amount} {unit} hinzufügen'
+      pl: 'Dodaj {ingredient} {amount} {unit}'
+    measure:
+      en: 'Measure'
+      de: 'Messen'
+      pl: 'Mierz'
+    mark_done:
+      en: 'Done'
+      de: 'Erledigt'
+      pl: 'Gotowe'
+    finish:
+      en: 'Finish'
+      de: 'Abschließen'
+      pl: 'Zakończ'
+    measure_title:
+      en: 'Measure {ingredient}'
+      de: '{ingredient} messen'
+      pl: 'Odmierz {ingredient}'
+    measure_target:
+      en: 'Target: {amount} g'
+      de: 'Ziel: {amount} g'
+      pl: 'Cel: {amount} g'
+    measure_current:
+      en: 'Current: {amount} g'
+      de: 'Aktuell: {amount} g'
+      pl: 'Aktualnie: {amount} g'
 
   ##### PROCESS SCREEN #####
   # all values for process screen
@@ -1048,6 +1076,10 @@ ui:
       en: 'Adds a random cocktail tile to the maker tab that picks a surprise cocktail on prepare'
       de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
       pl: 'Dodaje kafelek Losowy koktajl w zakładce Maker, który podczas przygotowania losuje napój.'
+    MAKER_HANDADD_SCALE_ASSIST:
+      en: 'After automatic dispensing, show a hand-add helper window and use the scale to guide measurable manual additions.'
+      de: 'Zeigt nach dem automatischen Ausschank ein Hand-Zutaten-Fenster an und nutzt die Waage zur Führung messbarer manueller Zugaben.'
+      pl: 'Po automatycznym nalewaniu pokazuje okno ręcznych dodatków i używa wagi do prowadzenia mierzalnych ręcznych składników.'
     LED_CONFIG:
       en: 'List with config for each LED. Choose the LED type (Normal or WSLED) per entry. Normal (non-addressable): pin type, board number (# only relevant for I2C), pin, default on state, preparation state (on/off/effects). WSLED (WS281x, addressable, GPIO only): pin, brightness, LED count, number of daisy chained rings, default on state, preparation state.'
       de: 'Liste mit Einstellung für jeden LED. Wähle den LED-Typ pro Eintrag (Normal oder WSLED). Normal (nicht ansteuerbar): Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). WSLED (WS281x, ansteuerbar, nur GPIO): Pin, Helligkeit, LED-Anzahl, Anzahl in Serie verbundener Ringe, Standard an-Zustand, Zustand bei Zubereitung.'
@@ -1298,6 +1330,10 @@ ui:
       en: 'Random Cocktail Button'
       de: 'Zufallscocktail-Button'
       pl: 'Przycisk losowego koktajlu'
+    MAKER_HANDADD_SCALE_ASSIST:
+      en: 'Hand-Add Scale Assist'
+      de: 'Hand-Zutaten mit Waage'
+      pl: 'Wsparcie wagi dla ręcznych dodatków'
     LED_CONFIG:
       en: 'LED Configuration'
       de: 'LED-Konfiguration'

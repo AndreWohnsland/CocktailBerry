@@ -60,6 +60,17 @@ class CocktailStatus:
     progress: int = 0
     message: str | None = None
     status: PrepareResult = PrepareResult.FINISHED
+    hand_adds: list["HandAddAssistItem"] = field(default_factory=list)
+
+
+@pydantic_dataclass
+class HandAddAssistItem:
+    item_id: str
+    name: str
+    display_amount: int | float
+    display_unit: str
+    measurable: bool = False
+    target_weight_grams: float | None = None
 
 
 @functools.total_ordering

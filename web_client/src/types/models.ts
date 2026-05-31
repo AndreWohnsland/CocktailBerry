@@ -90,6 +90,16 @@ export interface CocktailStatus {
   progress: number;
   message?: string;
   status: PrepareResult;
+  hand_adds?: HandAddAssistItem[];
+}
+
+export interface HandAddAssistItem {
+  item_id: string;
+  name: string;
+  display_amount: number;
+  display_unit: string;
+  measurable: boolean;
+  target_weight_grams?: number | null;
 }
 
 export interface ApiError {
@@ -161,6 +171,7 @@ export interface DefinedConfigData {
   MAKER_USE_RECIPE_VOLUME: boolean;
   MAKER_ADD_SINGLE_INGREDIENT: boolean;
   MAKER_RANDOM_COCKTAIL: boolean;
+  MAKER_HANDADD_SCALE_ASSIST: boolean;
   LED_CONFIG: LedConfig[];
   RFID_CONFIG: RfidConfig;
   MICROSERVICE_ACTIVE: boolean;

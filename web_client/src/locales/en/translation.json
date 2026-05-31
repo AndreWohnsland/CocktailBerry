@@ -171,6 +171,16 @@
     "recalibrate": "Recalibrate",
     "backToTare": "Back to Tare"
   },
+  "handAddAssist": {
+    "title": "Finish Hand-Adds",
+    "instruction": "Add {{ingredient}} {{amount}} {{unit}}",
+    "measure": "Measure",
+    "markDone": "Done",
+    "finish": "Finish",
+    "measureTitle": "Measure {{ingredient}}",
+    "target": "Target: {{amount}} g",
+    "current": "Current: {{amount}} g"
+  },
   "data": {
     "data": "Data",
     "noData": "No Data",

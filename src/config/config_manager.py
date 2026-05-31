@@ -194,6 +194,8 @@ class ConfigManager:
     MAKER_ADD_SINGLE_INGREDIENT: bool = False
     # Option to show a random cocktail tile in the maker tab
     MAKER_RANDOM_COCKTAIL: bool = False
+    # Option to show a post-dispense hand-add helper with scale guidance
+    MAKER_HANDADD_SCALE_ASSIST: bool = False
     # List of LED configurations (discriminated by ``led_type``: Normal or WSLED)
     LED_CONFIG: ClassVar[list[BaseLedConfig]] = []
     # RFID reader configuration (discriminated by ``rfid_type``)
@@ -380,6 +382,7 @@ class ConfigManager:
             "MAKER_USE_RECIPE_VOLUME": BoolType(check_name="Use Recipe Volume"),
             "MAKER_ADD_SINGLE_INGREDIENT": BoolType(check_name="Can Spend Single Ingredient"),
             "MAKER_RANDOM_COCKTAIL": BoolType(check_name="Random Cocktail Option"),
+            "MAKER_HANDADD_SCALE_ASSIST": BoolType(check_name="Hand-add Scale Assist"),
             "LED_CONFIG": ListType(
                 DiscriminatedDictType(
                     "led_type",

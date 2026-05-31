@@ -8,10 +8,11 @@ import { prepareCocktail } from '../../api/cocktails';
 import { API_URL } from '../../api/common';
 import { Tabs } from '../../constants/tabs';
 import { useConfig } from '../../providers/ConfigProvider';
-import type { Cocktail, PrepareResult } from '../../types/models';
+import type { Cocktail, CocktailStatus, PrepareResult } from '../../types/models';
 import { errorToast, scaleCocktail } from '../../utils';
 import CloseButton from '../common/CloseButton';
 import ProgressModal from '../common/ProgressModal';
+import HandAddAssistModal from './HandAddAssistModal';
 import RefillPrompt from './RefillPrompt';
 import ServingSizeButtons from './ServingSizeButtons';
 import TeamSelection from './TeamSelection';
@@ -43,6 +44,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   const [alcohol, setAlcohol] = useState<alcoholState>('normal');
   const [displayCocktail, setDisplayCocktail] = useState<Cocktail>(selectedCocktail);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [handAddStatus, setHandAddStatus] = useState<CocktailStatus | null>(null);
   // Refill state
   const [isRefillOpen, setIsRefillOpen] = useState(false);
   const [refillMessage, setRefillMessage] = useState('');
@@ -126,6 +128,14 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
     const decimalPlaces = (roundTo.toString().split('.')[1] || '').length;
     const formatted = price.toFixed(decimalPlaces).replace(/\.?0+$/, '');
     return `: ${formatted}€`;
+  };
+
+  const handlePreparationFinished = (status: CocktailStatus) => {
+    if (status.hand_adds?.length) {
+      setHandAddStatus(status);
+      return;
+    }
+    handleCloseModal();
   };
 
   return (
@@ -248,7 +258,16 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
         onRequestClose={() => setIsProgressModalOpen(false)}
         progress={0}
         displayName={`${alcohol === 'virgin' ? 'Virgin ' : ''}${displayCocktail.name}`}
-        triggerOnClose={handleCloseModal}
+        triggerOnClose={handlePreparationFinished}
+      />
+      <HandAddAssistModal
+        isOpen={!!handAddStatus?.hand_adds?.length}
+        items={handAddStatus?.hand_adds ?? []}
+        introMessage={handAddStatus?.message}
+        onFinish={() => {
+          setHandAddStatus(null);
+          handleCloseModal();
+        }}
       />
       <TeamSelection
         isOpen={isTeamOpen}

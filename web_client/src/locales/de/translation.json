@@ -171,6 +171,16 @@
     "recalibrate": "Erneut kalibrieren",
     "backToTare": "Zurück zum Tarieren"
   },
+  "handAddAssist": {
+    "title": "Hand-Zutaten abschließen",
+    "instruction": "{{ingredient}} {{amount}} {{unit}} hinzufügen",
+    "measure": "Messen",
+    "markDone": "Erledigt",
+    "finish": "Fertigstellen",
+    "measureTitle": "{{ingredient}} messen",
+    "target": "Ziel: {{amount}} g",
+    "current": "Aktuell: {{amount}} g"
+  },
   "data": {
     "data": "Daten",
     "noData": "Keine Daten",

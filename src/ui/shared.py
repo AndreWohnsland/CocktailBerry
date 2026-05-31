@@ -16,6 +16,7 @@ from src.service.booking import CocktailBooking
 from src.service.nfc_payment_service import NFCPaymentService, UserLookup
 from src.service.sumup_payment_service import Err, SumupPaymentService
 from src.tabs import bottles, maker
+from src.ui.hand_add_assist import run_hand_add_assist_dialog
 from src.ui.qt_worker import run_with_spinner
 
 if TYPE_CHECKING:
@@ -61,6 +62,8 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
     # show dialog in case of cancel or if there are handadds
     if result == PrepareResult.CANCELED:
         DP_CONTROLLER.say_cocktail_canceled()
+    elif shared.cocktail_status.hand_adds:
+        run_hand_add_assist_dialog(w, shared.cocktail_status.hand_adds, intro_message=message)
     elif len(message) > 0:
         DP_CONTROLLER.standard_box(message, close_time=60)
 

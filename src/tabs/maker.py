@@ -12,6 +12,7 @@ from src.config.config_manager import Tab, shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
+from src.hand_add_assist import build_hand_add_assist_items, build_hand_add_comment, should_use_hand_add_scale_assist
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.models import Cocktail, CocktailStatus, EventType, Ingredient, PrepareResult
@@ -27,23 +28,7 @@ _logger = LoggerHandler("maker_module")
 
 def _build_comment_maker(cocktail: Cocktail) -> str:
     """Build the additional comment for the completion message (if there are handadds)."""
-    comment = ""
-    hand_add = cocktail.handadds
-    # sort by descending length of the name and unit combined
-    length_desc = sorted(hand_add, key=lambda x: len(x.name) + len(x.unit), reverse=True)
-    for ing in length_desc:
-        amount: int | float = ing.amount
-        if ing.unit != "ml":
-            amount = ing.amount * cfg.EXP_MAKER_FACTOR
-        # usually show decimal places, up to 8, but if not ml is used clip decimal place
-        threshold = 8 if ing.unit == "ml" else 0
-        amount = int(round(amount, 1)) if amount >= threshold else round(amount, 1)
-        if amount <= 0:
-            continue
-        unit = cfg.EXP_MAKER_UNIT if ing.unit == "ml" else ing.unit
-        comment += f"\n~{amount} {unit} {ing.name}"
-
-    return comment
+    return build_hand_add_comment(cocktail)
 
 
 def prepare_cocktail(
@@ -60,12 +45,14 @@ def prepare_cocktail(
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
     ingredients_machine = [x for x in cocktail.machineadds if x.amount > 0]
     _logger.info(f"Preparing {cocktail.adjusted_amount} ml {cocktail.display_name}")
-    comment = _build_comment_maker(cocktail)
+    mc = MachineController()
+    hand_add_items = build_hand_add_assist_items(cocktail)
+    use_hand_add_assist = should_use_hand_add_scale_assist(cocktail, mc.has_scale)
+    comment = "" if use_hand_add_assist else _build_comment_maker(cocktail)
 
     # only use separator if we got both messages
     separator = "\n" if additional_message and comment else ""
-    add_message = additional_message + separator + DH.cocktail_ready(comment)
-    mc = MachineController()
+    add_message = additional_message if use_hand_add_assist else additional_message + separator + DH.cocktail_ready(comment)
     result = mc.make_cocktail(w, ingredients_machine, cocktail.display_name, finish_message=add_message)
     DBC = DatabaseCommander()
     # single ingredient got represented as a cocktail with one ingredient, but no id, skip recipe increment
@@ -93,11 +80,13 @@ def prepare_cocktail(
         WaiterService().logout_waiter()
 
     if shared.cocktail_status.status == PrepareResult.CANCELED:
+        shared.cocktail_status.hand_adds = []
         DBC.save_event(EventType.COCKTAIL_CANCELED, f"{cocktail.display_name}")
         return PrepareResult.CANCELED, DH.get_translation("cocktail_canceled")
 
     DBC.save_event(EventType.COCKTAIL_PREPARATION, f"{cocktail.display_name}")
     shared.cocktail_status.status = PrepareResult.FINISHED
+    shared.cocktail_status.hand_adds = hand_add_items if use_hand_add_assist else []
     return PrepareResult.FINISHED, add_message
 
 
