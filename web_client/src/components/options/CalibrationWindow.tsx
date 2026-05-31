@@ -81,7 +81,7 @@ const CalibrationWindow = () => {
     setIsProgressModalOpen(true);
   };
 
-  const handleProgressClose = (status: string) => {
+  const handleProgressClose = ({ status }: { status: string }) => {
     setIsProgressModalOpen(false);
     if (status === 'FINISHED') {
       setTargetVolume((prev) => prev + pendingAmount);

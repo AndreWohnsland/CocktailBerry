@@ -23,6 +23,7 @@ const HandAddMeasureModal = ({ isOpen, item, onClose, onComplete }: HandAddMeasu
       setCurrentWeight(0);
       return;
     }
+    const targetWeight = item.target_weight_grams;
 
     let canceled = false;
     let intervalId: ReturnType<typeof setInterval> | null = null;
@@ -45,7 +46,7 @@ const HandAddMeasureModal = ({ isOpen, item, onClose, onComplete }: HandAddMeasu
             }
             const weight = Math.max(0, reading.data);
             setCurrentWeight(weight);
-            if (weight >= item.target_weight_grams) {
+            if (weight >= targetWeight) {
               cancelInterval();
               onComplete(item.item_id);
             }
@@ -74,7 +75,8 @@ const HandAddMeasureModal = ({ isOpen, item, onClose, onComplete }: HandAddMeasu
     return null;
   }
 
-  const progress = Math.min(100, Math.round((currentWeight / item.target_weight_grams) * 100));
+  const targetWeight = item.target_weight_grams;
+  const progress = Math.min(100, Math.round((currentWeight / targetWeight) * 100));
 
   return (
     <Modal
@@ -89,9 +91,7 @@ const HandAddMeasureModal = ({ isOpen, item, onClose, onComplete }: HandAddMeasu
       <div className='flex h-full flex-col justify-between gap-6'>
         <div>
           <TextHeader text={t('handAddAssist.measureTitle', { ingredient: item.name })} />
-          <p className='mb-3 text-center text-text'>
-            {t('handAddAssist.target', { amount: item.target_weight_grams.toFixed(1) })}
-          </p>
+          <p className='mb-3 text-center text-text'>{t('handAddAssist.target', { amount: targetWeight.toFixed(1) })}</p>
           <p className='mb-6 text-center text-neutral'>
             {t('handAddAssist.current', { amount: currentWeight.toFixed(1) })}
           </p>

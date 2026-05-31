@@ -110,11 +110,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       );
     } else {
       return (
-        <button
-          type='button'
-          className='mt-4 px-4 py-2 button-primary w-1/2'
-          onClick={() => closeWindow(latestStatus)}
-        >
+        <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={() => closeWindow(latestStatus)}>
           {t('close')}
         </button>
       );
