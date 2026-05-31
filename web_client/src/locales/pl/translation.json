@@ -1,5 +1,5 @@
 {
-  "new": "Nowy",
+  "new": "Nowa",
   "create": "Utwórz",
   "apply": "Zastosuj",
   "save": "Zapisz",
@@ -38,7 +38,7 @@
     "applyRefill": "Zastosuj uzupełnienie",
     "singleIngredient": "Pojedynczy składnik",
     "selectIngredient": "Wybierz składnik",
-    "spend": "Wydatek",
+    "spend": "Wydaj",
     "selectTeam": "Wybierz zespół",
     "randomCocktail": "Losowy koktajl",
     "beSurprised": "Daj się zaskoczyć!"
@@ -73,7 +73,7 @@
     "enableAll": "Włącz wszystkie",
     "name": "Nazwa",
     "enabled": "Włączony",
-    "virginAvailable": "Dostępna jest wersja bezalkoholowa",
+    "virginAvailable": "Wersja bezalkoholowa",
     "price": "Cena",
     "addIngredient": "Dodaj składnik",
     "selectIngredient": "Wybierz składnik",
@@ -82,7 +82,7 @@
     "deleteExistingImage": "Czy chcesz usunąć istniejący obraz użytkownika?"
   },
   "bottles": {
-    "applyNew": "Zastosuj nowe",
+    "applyNew": "Potwierdź wybrane",
     "available": "Dostępne",
     "possibleToAdd": "Możliwe do dodania",
     "adjustHeader": "Dostosuj poziom napełnienia butelki, maksymalnie {{maximum}}"
@@ -115,7 +115,7 @@
     "useReversion": "Czy odwrócić kierunek pompy? Aktywuje pin zmiany kierunku przepływu. Składniki oznaczone jako 'Nigdy nie pompuj z powrotem' zostaną pominięte.",
     "sumup": "SumUp",
     "systemResourceUsage": "Zużycie zasobów",
-    "updateCocktailBerry": "Aktualizuj oprogramowanie CocktailBerry",
+    "updateCocktailBerry": "Aktualizuj CocktailBerry",
     "updateSystem": "Aktualizuj system",
     "updateTheSystem": "Czy chcesz zaktualizować system?",
     "update": {

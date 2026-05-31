@@ -971,7 +971,7 @@ ui:
     UI_ONLY_MAKER_TAB:
       en: 'Disable all other tabs than the maker one; You will only be prompted at program start if you want to go to config window with master password'
       de: 'Alle anderen Tabs als den Maker-Tab deaktivieren; Du wirst nur beim Programmstart gefragt, ob du mit dem Master-Passwort zum Konfigurationsfenster gehen möchtest'
-      pl: 'Wyłącz wszystkie zakładki poza Makere. Przy starcie programu zostaniesz zapytany tylko, czy chcesz przejść do konfiguracji z hasłem głównym'
+      pl: 'Wyłącz wszystkie zakładki poza Maker. Przy starcie programu zostaniesz zapytany tylko, czy chcesz przejść do konfiguracji z hasłem głównym'
     UI_VIRTUAL_KEYBOARD:
       en: 'Web only: show an in-browser virtual keyboard when an input field is focused. Recommended for Raspberry Pi touchscreen/kiosk setups where the system on-screen keyboard does not appear over fullscreen Chromium. Leave disabled for tablet/phone use, since those devices already provide their own keyboard.'
       de: 'Nur Web: zeigt eine im Browser eingebettete Bildschirmtastatur, wenn ein Eingabefeld fokussiert wird. Empfohlen für Raspberry Pi Touchscreen-/Kiosk-Setups, bei denen die System-Bildschirmtastatur nicht über dem Vollbild-Chromium erscheint. Für Tablet-/Smartphone-Nutzung deaktiviert lassen, da diese Geräte bereits eine eigene Tastatur bereitstellen.'
@@ -1011,7 +1011,7 @@ ui:
     MAKER_PUMP_REVERSION_CONFIG:
       en: 'Configuration for pump reversion. Select "Global over GPIO" or "Global over I2C" for a shared relay pin (the I2C variant additionally lets you pick the expander chip and board number), or "Dispenser Controlled" to let each dispenser handle its own direction — dispensers that do not support reversion will skip it. Activate to enable reversion during cleaning.'
       de: 'Konfiguration für Pumpen Umkehrung. Wähle "Global über GPIO" oder "Global über I2C" für einen gemeinsamen Relais-Pin (die I2C-Variante erlaubt zusätzlich die Wahl des Expander-Chips und der Board-Nummer) oder "Dispenser Controlled", damit jeder Dispenser die Richtung selbst steuert — Dispenser ohne Unterstützung überspringen die Umkehrung. Aktivieren, um die Umkehrung beim Reinigen zu nutzen.'
-      pl: 'Konfiguracja zmiany kierunku pompy. Wybierz "Global over GPIO" lub "Global over I2C" dla wspólnego pinu przekaźnika (wariant I2C dodatkowo pozwala wybrać układ ekspandera i numer płytki) lub "Dispenser Controlled", aby każdy dozownik sam kontrolował kierunek — dozowniki bez obsługi pominią odwracanie. Aktywuj, aby włączyć odwracanie podczas czyszczenia.'
+      pl: 'Konfiguracja zmiany kierunku pompy. Wybierz "Global over GPIO" lub "Global over I2C" dla wspólnego pinu przekaźnika (wariant I2C dodatkowo pozwala wybrać układ ekspandera i numer płytki) lub "Dispenser Controlled", aby każdy dozownik sam kontrolował kierunek — dozowniki bez obsługi pominią odwracanie. Aktywuj, aby włączyć zmianę kierunku podczas programu czyszczenia.'
     MAKER_SEARCH_UPDATES:
       en: 'Search for updates on startup when an internet connection is available. The desktop app (v1) prompts you to install the latest minor release; the web app (v2) installs it automatically. Major releases are never applied automatically — install those manually via the update option.'
       de: 'Sucht beim Start nach Updates, wenn eine Internetverbindung besteht. Die Desktop-App (v1) fragt nach, ob das neueste Minor-Release installiert werden soll; die Web-App (v2) installiert es automatisch. Major-Releases werden nie automatisch installiert — diese bitte manuell über die Update-Option einspielen.'
@@ -1047,7 +1047,7 @@ ui:
     MAKER_RANDOM_COCKTAIL:
       en: 'Adds a random cocktail tile to the maker tab that picks a surprise cocktail on prepare'
       de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
-      pl: 'Dodaje kafelek Losowy koktajl w zakładce Maker, który podczas przygotowania losuje napój.'
+      pl: 'Dodaje kafelek "Losowy koktajl" w zakładce Maker, który podczas przygotowania losuje napój.'
     LED_CONFIG:
       en: 'List with config for each LED. Choose the LED type (Normal or WSLED) per entry. Normal (non-addressable): pin type, board number (# only relevant for I2C), pin, default on state, preparation state (on/off/effects). WSLED (WS281x, addressable, GPIO only): pin, brightness, LED count, number of daisy chained rings, default on state, preparation state.'
       de: 'Liste mit Einstellung für jeden LED. Wähle den LED-Typ pro Eintrag (Normal oder WSLED). Normal (nicht ansteuerbar): Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). WSLED (WS281x, ansteuerbar, nur GPIO): Pin, Helligkeit, LED-Anzahl, Anzahl in Serie verbundener Ringe, Standard an-Zustand, Zustand bei Zubereitung.'
@@ -1139,7 +1139,7 @@ ui:
     WAITER_AUTO_LOGOUT_S:
       en: 'Time in seconds before the service personnel is automatically logged out, use 0 to disable'
       de: 'Zeit in Sekunden bis das Servicepersonal automatisch abgemeldet wird, verwende 0 zum Deaktivieren'
-      pl: 'Czas w sekundach do automatycznego wylogowania personelu, 0 wyłącza'
+      pl: 'Czas w sekundach automatycznego wylogowania personelu, 0 wyłącza'
     CUSTOM_COLOR_PRIMARY:
       en: 'Custom primary (most elements) color if custom theme is selected'
       de: 'Eigene primäre (meisten Elemente) Farbe, wenn custom Theme ausgewählt ist'
@@ -1261,7 +1261,7 @@ ui:
     MAKER_PUMP_REVERSION_CONFIG:
       en: 'Pump Reversion'
       de: 'Pumpenrücklauf'
-      pl: 'Cofanie pomp'
+      pl: 'Zmiana kierunku obrotów silnika pompy'
     MAKER_SEARCH_UPDATES:
       en: 'Check for Updates'
       de: 'Nach Updates suchen'
@@ -1281,7 +1281,7 @@ ui:
     MAKER_MAX_HAND_INGREDIENTS:
       en: 'Max Hand-Add Ingredients'
       de: 'Max. Hand-Zutaten'
-      pl: 'Maks. składników dodawanych ręcznie'
+      pl: 'Maks. liczba składników dodawanych ręcznie'
     MAKER_CHECK_INTERNET:
       en: 'Check Internet Connection'
       de: 'Internetverbindung prüfen'
@@ -1357,7 +1357,7 @@ ui:
     PAYMENT_SECRET_KEY:
       en: 'Payment Secret Key'
       de: 'Bezahl-Schlüssel'
-      pl: 'Klucz płatności'
+      pl: 'Klucz API płatności'
     PAYMENT_SUMUP_API_KEY:
       en: 'SumUp API Key'
       de: 'SumUp-API-Schlüssel'
@@ -1385,7 +1385,7 @@ ui:
     WAITER_LOGOUT_AFTER_COCKTAIL:
       en: 'Waiter Logout After Cocktail'
       de: 'Kellner-Logout nach Cocktail'
-      pl: 'Wylogowanie kelnera po koktajlu'
+      pl: 'Wylogowanie kelnera po przygotowaniu koktajlu'
     WAITER_AUTO_LOGOUT_S:
       en: 'Waiter Auto Logout (s)'
       de: 'Automatischer Kellner-Logout (s)'
