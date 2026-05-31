@@ -23,20 +23,36 @@ def build_number_limiter(min_val: float = 1, max_val: float = 100) -> Callable[[
     return limit_number
 
 
-def build_distinct_validator(keys: list[str], fallback: dict[str, Any] = {}) -> Callable[[str, list[dict]], None]:
+def build_distinct_validator(
+    keys: list[str],
+    fallback: dict[str, Any] | None = None,
+    mapped_keys: dict[str, str] | None = None,
+) -> Callable[[str, list[dict]], None]:
     """Build a validator that checks list items have distinct values across the given keys.
 
     Each combination of values for the specified keys must be unique across all items in the list.
     Can provide fallback values for missing keys to ensure they are included in the uniqueness check.
+    ``mapped_keys`` allows mapping expected keys to alternate keys in the input item before
+    applying fallback values.
     This is useful for sealed classes where different types may have different key sets.
     """
+    fallback = fallback or {}
+    mapped_keys = mapped_keys or {}
+
+    def _get_value(item: dict[str, Any], key: str) -> Any:
+        if key in item:
+            return item[key]
+        mapped_key = mapped_keys.get(key)
+        if mapped_key and mapped_key in item:
+            return item[mapped_key]
+        return fallback.get(key, "undefined")
 
     def validate_distinct(configname: str, data: list[dict]) -> None:
         seen: list[tuple] = []
         for item in data:
-            key_tuple = tuple(item.get(k, fallback.get(k, "undefined")) for k in keys)
+            key_tuple = tuple(_get_value(item, key) for key in keys)
             if key_tuple in seen:
-                readable = ", ".join(f"{k}={item.get(k, 'undefined')}" for k in keys)
+                readable = ", ".join(f"{key}={_get_value(item, key)}" for key in keys)
                 raise ConfigError(
                     f"{configname} has duplicate entries for ({readable}). "
                     f"Each combination of {', '.join(keys)} must be unique."

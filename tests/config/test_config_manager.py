@@ -14,6 +14,7 @@ from src.config.config_manager import ConfigManager
 from src.config.config_types import (
     DCGPIOPumpConfig,
     DCI2CPumpConfig,
+    DCMotorKitPumpConfig,
     DCPumpConfig,
     IntType,
     ListType,
@@ -550,6 +551,39 @@ class TestConfigManagerSetConfig:
         assert isinstance(second_config, DCI2CPumpConfig)
         assert first_config.board_number == 1
         assert second_config.board_number == 2
+
+    def test_set_config_pump_config_allows_same_pin_different_motorkit_addresses(self) -> None:
+        """Test that MotorKit pumps can share channel numbers on different I2C addresses."""
+        config = ConfigManager()
+        config.set_config(
+            {
+                "MAKER_NUMBER_BOTTLES": 2,
+                "PUMP_CONFIG": [
+                    {
+                        "pump_type": "DC over MotorKit",
+                        "pin": 1,
+                        "address": "60",
+                        "volume_flow": 30.0,
+                        "tube_volume": 5,
+                    },
+                    {
+                        "pump_type": "DC over MotorKit",
+                        "pin": 1,
+                        "address": "61",
+                        "volume_flow": 25.0,
+                        "tube_volume": 3,
+                    },
+                ],
+            },
+            validate=True,
+        )
+        assert len(config.PUMP_CONFIG) == 2
+        first_config = config.PUMP_CONFIG[0]
+        second_config = config.PUMP_CONFIG[1]
+        assert isinstance(first_config, DCMotorKitPumpConfig)
+        assert isinstance(second_config, DCMotorKitPumpConfig)
+        assert first_config.address == "60"
+        assert second_config.address == "61"
 
     def test_set_config_i2c_reversion_requires_matching_i2c_board(self) -> None:
         """`Global over I2C` reversion must reference an enabled I2C_CONFIG board."""
