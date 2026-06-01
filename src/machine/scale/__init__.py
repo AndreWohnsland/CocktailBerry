@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import contextlib
 import multiprocessing
+import sys
+import threading
 from typing import TYPE_CHECKING
 
 from src.logger_handler import LoggerHandler
@@ -34,12 +36,16 @@ def _health_check(scale: ScaleInterface) -> ScaleInterface | None:
 
     Returns the scale on success, or None (after cleanup) if the call blocks
     or raises — indicating the hardware is not connected or not working.
-    The check runs in a forked subprocess so it can be forcefully killed if
-    the driver blocks indefinitely (e.g. HX711 with no hardware present).
+    On Unix the check runs in a forked subprocess so it can be forcefully
+    killed if the driver blocks indefinitely (e.g. HX711 with no hardware
+    present).  On Windows (where fork is unavailable) a daemon thread is used
+    instead; the thread cannot be killed but it will be abandoned on timeout.
     """
+    if sys.platform == "win32":
+        return _health_check_threaded(scale)
     ctx = multiprocessing.get_context("fork")
     queue: multiprocessing.Queue = ctx.Queue()  # type: ignore[type-arg]
-    proc = ctx.Process(target=_forked_read, args=(scale, queue), daemon=True)  # ty:ignore[unresolved-attribute]
+    proc = ctx.Process(target=_forked_read, args=(scale, queue), daemon=True)
     proc.start()
     proc.join(timeout=_SCALE_HEALTH_CHECK_TIMEOUT)
     if proc.is_alive():
@@ -55,6 +61,37 @@ def _health_check(scale: ScaleInterface) -> ScaleInterface | None:
         return None
     success = not queue.empty() and queue.get_nowait()
     if not success:
+        _logger.log_event("ERROR", "Scale health check failed — Deactivating scale.")
+        with contextlib.suppress(Exception):
+            scale.cleanup()
+        return None
+    return scale
+
+
+def _health_check_threaded(scale: ScaleInterface) -> ScaleInterface | None:
+    """Windows-compatible health check using a daemon thread with a timeout."""
+    result: list[bool | None] = [None]
+
+    def _thread_read() -> None:
+        try:
+            scale.read_raw(1)
+            result[0] = True
+        except Exception:
+            result[0] = False
+
+    thread = threading.Thread(target=_thread_read, daemon=True)
+    thread.start()
+    thread.join(timeout=_SCALE_HEALTH_CHECK_TIMEOUT)
+    if thread.is_alive():
+        _logger.log_event(
+            "ERROR",
+            f"Scale health check timed out after {_SCALE_HEALTH_CHECK_TIMEOUT}s — "
+            "no hardware connected? Deactivating scale.",
+        )
+        with contextlib.suppress(Exception):
+            scale.cleanup()
+        return None
+    if result[0] is not True:
         _logger.log_event("ERROR", "Scale health check failed — Deactivating scale.")
         with contextlib.suppress(Exception):
             scale.cleanup()
