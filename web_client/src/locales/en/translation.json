@@ -43,9 +43,10 @@
     "randomCocktail": "Random Cocktail",
     "beSurprised": "Be Surprised!",
     "handAdd": {
+      "intro": "To finish the cocktail, add these ingredients yourself.",
       "finish": "Finish",
-      "withScale": "Add with Scale Support",
-      "manually": "Add manually"
+      "withScale": "Weigh on the scale",
+      "manually": "Add yourself"
     }
   },
   "lockScreen": {

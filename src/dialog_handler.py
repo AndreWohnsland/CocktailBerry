@@ -95,6 +95,7 @@ allowed_keys = Literal[
     "cocktail_canceled",
     "hand_add_by_hand",
     "hand_add_finish_button",
+    "hand_add_intro",
     "hand_add_title",
     "cocktail_in_progress",
     "cocktail_not_possible",

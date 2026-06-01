@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QCloseEvent, QFont
-from PyQt6.QtWidgets import QGridLayout, QMainWindow, QProgressBar, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QProgressBar, QPushButton, QVBoxLayout, QWidget
 
+from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.display_controller import DP_CONTROLLER
 from src.machine.controller import MachineController
@@ -56,9 +57,14 @@ class HandAddMeasureScreen(QMainWindow):
         self._mc = MachineController()
         self._icons = IconSetter()
         # data model: rebuilt into the grid whenever a row is resolved
+        # ml items get a measure button only when the scale feature is on and a scale is present;
+        # otherwise (and for non-ml items) they are confirmed by hand via a check button
+        scale_measuring = bool(cfg.MAKER_SCALE_FOR_HAND_ADDS and self._mc.has_scale)
         hand_adds = [i for i in cocktail.handadds if i.amount > 0]
-        self._pending = [i for i in hand_adds if i.unit == "ml"]
-        self._text_only = [i for i in hand_adds if i.unit != "ml"]
+        self._pending = [i for i in hand_adds if i.unit == "ml" and scale_measuring]
+        self._text_only = [i for i in hand_adds if not (i.unit == "ml" and scale_measuring)]
+        # stable for the cocktail's lifetime (does not change as measure rows complete)
+        self._has_measurable = bool(self._pending)
         self._active: Ingredient | None = None
         self._active_progress: QProgressBar | None = None
         self._rows: dict[int, _MeasureRow] = {}
@@ -69,10 +75,27 @@ class HandAddMeasureScreen(QMainWindow):
         layout.addWidget(
             create_label(cocktail.display_name, FontSize.HEADER, bold=True, centered=True, css_class="secondary")
         )
+        layout.addWidget(
+            create_label(
+                DH.get_translation("hand_add_intro"),
+                FontSize.MEDIUM,
+                centered=True,
+                css_class="neutral",
+                word_wrap=True,
+            )
+        )
         self._grid = QGridLayout()
-        # the progress column expands, the action/amount/name columns stay compact
-        self._grid.setColumnStretch(_COL_PROGRESS, 1)
-        layout.addLayout(self._grid)
+        if self._has_measurable:
+            # the progress column fills the row; rows stay left-aligned with the bar reaching the edge
+            self._grid.setColumnStretch(_COL_PROGRESS, 1)
+            layout.addLayout(self._grid)
+        else:
+            # no progress column to align to: center the content-sized grid (matches v2's manual-only)
+            centered_row = QHBoxLayout()
+            centered_row.addStretch()
+            centered_row.addLayout(self._grid)
+            centered_row.addStretch()
+            layout.addLayout(centered_row)
         layout.addStretch()
         finish_button = create_button(DH.get_translation("hand_add_finish_button"), font_size=FontSize.LARGE)
         finish_button.clicked.connect(self._finish)

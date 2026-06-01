@@ -71,9 +71,11 @@ export const WithTextOnlyAdds: Story = {
   },
 };
 
-export const SingleMeasurable: Story = {
+export const ManualOnly: Story = {
   args: {
-    handAdds: [{ name: 'Cream', amount: 30, unit: 'ml', measurable: true }],
-    ...makeScaleSim(2),
+    handAdds: [
+      { name: 'Mint', amount: 6, unit: 'pieces', measurable: false },
+      { name: 'Bitters', amount: 3, unit: 'dash', measurable: false },
+    ],
   },
 };

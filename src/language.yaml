@@ -355,14 +355,18 @@ dialog:
     en: 'The preparation was cancelled.'
     de: 'Die Zubereitung wurde abgebrochen.'
     pl: 'Przygotowanie zostało anulowane.'
+  hand_add_intro:
+    en: 'To finish the cocktail, add these ingredients yourself.'
+    de: 'Um den Cocktail fertigzustellen, füge diese Zutaten selbst hinzu.'
+    pl: 'Aby dokończyć koktajl, dodaj te składniki samodzielnie.'
   hand_add_title:
-    en: 'Add with Scale Support'
-    de: 'Mit Waage hinzufügen'
-    pl: 'Dodaj za pomocą wagi'
+    en: 'Weigh on the scale'
+    de: 'Mit Waage abwiegen'
+    pl: 'Zważ na wadze'
   hand_add_by_hand:
-    en: 'Add manually'
-    de: 'Manuell hinzufügen'
-    pl: 'Dodaj ręcznie'
+    en: 'Add yourself'
+    de: 'Selbst hinzufügen'
+    pl: 'Dodaj samodzielnie'
   hand_add_finish_button:
     en: 'Finish'
     de: 'Fertig'

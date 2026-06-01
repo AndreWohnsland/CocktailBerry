@@ -43,9 +43,10 @@
     "randomCocktail": "Losowy koktajl",
     "beSurprised": "Daj się zaskoczyć!",
     "handAdd": {
+      "intro": "Aby dokończyć koktajl, dodaj te składniki samodzielnie.",
       "finish": "Zakończ",
-      "withScale": "Dodaj za pomocą wagi",
-      "manually": "Dodaj ręcznie"
+      "withScale": "Zważ na wadze",
+      "manually": "Dodaj samodzielnie"
     }
   },
   "lockScreen": {

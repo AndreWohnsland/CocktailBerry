@@ -57,21 +57,17 @@ EVENT_TYPE_LEGACY_ALIASES: dict[str, str] = {
 
 @pydantic_dataclass
 class HandAddMeasure:
-    """One hand-add ingredient surfaced to the scale-assisted hand-add window.
+    """One hand-add ingredient surfaced to the hand-add guidance window.
 
-    ``measurable`` is derived from the unit: weighable (ml) ingredients get a measure
-    button; non-ml ingredients (e.g. pieces, dashes) are shown as static instructions.
+    ``measurable`` is set by the preparation flow: True only when the scale feature is on and a
+    scale is present for a weighable (ml) ingredient (it gets a measure button); everything else is
+    confirmed by hand via a check button.
     """
 
     name: str
     amount: int
     unit: str
-
-    @computed_field
-    @property
-    def measurable(self) -> bool:
-        """Whether the ingredient can be weighed on the scale (only ml is weighable)."""
-        return self.unit == "ml"
+    measurable: bool
 
 
 @pydantic_dataclass

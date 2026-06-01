@@ -43,9 +43,10 @@
     "randomCocktail": "Zufalls-Cocktail",
     "beSurprised": "Lass dich überraschen!",
     "handAdd": {
+      "intro": "Um den Cocktail fertigzustellen, füge diese Zutaten selbst hinzu.",
       "finish": "Fertig",
-      "withScale": "Mit Waage hinzufügen",
-      "manually": "Manuell hinzufügen"
+      "withScale": "Mit Waage abwiegen",
+      "manually": "Selbst hinzufügen"
     }
   },
   "lockScreen": {

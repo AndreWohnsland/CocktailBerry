@@ -62,7 +62,7 @@ def _run_prepare(cocktail: Cocktail, *, feature_on: bool, has_scale: bool) -> li
     return shared.cocktail_status.hand_adds
 
 
-def test_hand_adds_attached_with_ml_hand_adds_and_feature_on():
+def test_ml_hand_add_is_measurable_with_feature_on_and_scale():
     cocktail = _cocktail(
         [
             _ingredient(1, "Gin", bottle=1, amount=40),
@@ -73,34 +73,38 @@ def test_hand_adds_attached_with_ml_hand_adds_and_feature_on():
     assert [(h.name, h.measurable) for h in hand_adds] == [("Lime", True)]
 
 
-def test_no_hand_adds_attached_when_feature_off():
+def test_hand_adds_attached_but_not_measurable_when_feature_off():
     cocktail = _cocktail(
         [
             _ingredient(1, "Gin", bottle=1, amount=40),
             _ingredient(2, "Lime", bottle=None, amount=10, unit="ml"),
         ]
     )
-    assert _run_prepare(cocktail, feature_on=False, has_scale=True) == []
+    # the window still lists the hand-add, but it is a check (not a scale measure)
+    hand_adds = _run_prepare(cocktail, feature_on=False, has_scale=True)
+    assert [(h.name, h.measurable) for h in hand_adds] == [("Lime", False)]
 
 
-def test_no_hand_adds_attached_without_scale():
+def test_ml_hand_add_not_measurable_without_scale():
     cocktail = _cocktail(
         [
             _ingredient(1, "Gin", bottle=1, amount=40),
             _ingredient(2, "Lime", bottle=None, amount=10, unit="ml"),
         ]
     )
-    assert _run_prepare(cocktail, feature_on=True, has_scale=False) == []
+    hand_adds = _run_prepare(cocktail, feature_on=True, has_scale=False)
+    assert [(h.name, h.measurable) for h in hand_adds] == [("Lime", False)]
 
 
-def test_no_hand_adds_attached_for_non_ml_hand_adds_only():
+def test_non_ml_hand_add_is_never_measurable():
     cocktail = _cocktail(
         [
             _ingredient(1, "Gin", bottle=1, amount=40),
             _ingredient(2, "Mint", bottle=None, amount=6, unit="pieces"),
         ]
     )
-    assert _run_prepare(cocktail, feature_on=True, has_scale=True) == []
+    hand_adds = _run_prepare(cocktail, feature_on=True, has_scale=True)
+    assert [(h.name, h.measurable) for h in hand_adds] == [("Mint", False)]
 
 
 def test_config_validation_requires_enabled_scale():

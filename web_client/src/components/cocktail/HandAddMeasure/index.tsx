@@ -43,6 +43,8 @@ const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
   const manualIndices = handAdds.map((ha, i) => (ha.measurable ? -1 : i)).filter((i) => i >= 0);
   const pendingMeasurable = measurableIndices.filter((i) => !doneIndices.has(i));
   const pendingManual = manualIndices.filter((i) => !doneIndices.has(i));
+  // with no measure rows there is no progress column to align to, so drop it and center the rest
+  const hasMeasurable = measurableIndices.length > 0;
 
   const triggerFinish = useCallback(() => {
     if (finishedRef.current) return;
@@ -116,11 +118,16 @@ const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
     // grow + center keeps the rows in the middle of the modal body; the Finish button is
     // rendered by the modal's own bottom button slot (see ProgressModal). One grid aligns the
     // action / amount / name / progress columns across both sections; headers span all columns.
-    <div className='flex flex-col grow w-full max-w-2xl mx-auto justify-center px-2'>
-      <div className='grid grid-cols-[auto_auto_auto_minmax(120px,1fr)] items-center gap-x-3 gap-y-3 overflow-y-auto'>
+    <div className='flex flex-col grow w-full max-w-lg mx-auto justify-center px-2'>
+      <p className='text-neutral text-center mb-4'>{t('cocktails.handAdd.intro')}</p>
+      <div
+        className={`grid items-center gap-x-3 gap-y-1 overflow-y-auto ${
+          hasMeasurable ? 'grid-cols-[auto_auto_auto_minmax(120px,1fr)]' : 'grid-cols-[auto_auto_auto] justify-center'
+        }`}
+      >
         {pendingMeasurable.length > 0 && (
           <div className='col-span-full'>
-            <TextHeader subheader space={0} text={t('cocktails.handAdd.withScale')} />
+            <TextHeader subheader space={4} text={t('cocktails.handAdd.withScale')} />
           </div>
         )}
         {pendingMeasurable.map((i) => {
@@ -157,28 +164,22 @@ const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
           );
         })}
         {pendingManual.length > 0 && (
-          <div className='col-span-full'>
-            <TextHeader subheader space={0} text={t('cocktails.handAdd.manually')} />
+          <div className='col-span-full mt-4'>
+            <TextHeader subheader space={hasMeasurable ? 2 : 4} text={t('cocktails.handAdd.manually')} />
           </div>
         )}
         {pendingManual.map((i) => {
           const ha = handAdds[i];
           return (
             <Fragment key={`t-${ha.name}-${i}`}>
-              <Button
-                icon={FaCheck}
-                label=''
-                iconSize={22}
-                filled
-                className='w-14 h-11'
-                onClick={() => confirmManual(i)}
-              />
+              <Button icon={FaCheck} label='' iconSize={22} className='w-14 h-11' onClick={() => confirmManual(i)} />
               <span className='text-right text-secondary whitespace-nowrap'>
                 {ha.amount} {ha.unit}
               </span>
               <span className='text-text whitespace-nowrap'>{ha.name}</span>
-              {/* empty progress cell keeps the manual rows aligned with the measured ones */}
-              <span aria-hidden />
+              {/* empty progress cell aligns manual rows with measure rows; omitted (no progress
+                  column) when there are no measure rows so the manual-only grid stays centered */}
+              {hasMeasurable && <span aria-hidden />}
             </Fragment>
           );
         })}
