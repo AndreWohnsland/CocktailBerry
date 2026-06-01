@@ -371,18 +371,10 @@ dialog:
     en: 'Also add by hand:'
     de: 'Zusätzlich von Hand hinzufügen:'
     pl: 'Dodaj również ręcznie:'
-  hand_add_measure:
-    en: 'Measure'
-    de: 'Messen'
-    pl: 'Zmierz'
   hand_add_finish_button:
     en: 'Finish'
     de: 'Fertig'
     pl: 'Zakończ'
-  hand_add_cancel:
-    en: 'Cancel'
-    de: 'Abbrechen'
-    pl: 'Anuluj'
   image_deleted:
     en: 'Image deleted successfully.'
     de: 'Bild erfolgreich gelöscht.'
