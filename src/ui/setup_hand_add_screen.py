@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 # cap the ingredient name so it does not eat half the row; the progress column gets the rest
-_NAME_LABEL_MAX_WIDTH = 200
+_NAME_LABEL_MAX_WIDTH = 300
 # shared height for the action buttons and the progress bar, so a row looks uniform
 _ROW_HEIGHT = 70
 # grid columns (mirrors the v2 layout: action | amount | name | progress)
@@ -140,7 +140,7 @@ class HandAddMeasureScreen(QMainWindow):
 
     def _amount_label(self, ingredient: Ingredient) -> QWidget:
         return create_label(
-            text=f"{ingredient.amount} {ingredient.unit}  ",
+            text=f"  {ingredient.amount} {ingredient.unit}",
             font_size=FontSize.LARGE,
             bold=True,
             css_class="secondary",
