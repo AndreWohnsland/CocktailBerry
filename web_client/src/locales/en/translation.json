@@ -44,7 +44,8 @@
     "beSurprised": "Be Surprised!",
     "handAdd": {
       "finish": "Finish",
-      "alsoAdd": "Also add by hand:"
+      "withScale": "Add with Scale Support",
+      "manually": "Add manually"
     }
   },
   "lockScreen": {

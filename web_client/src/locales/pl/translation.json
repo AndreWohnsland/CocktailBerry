@@ -44,7 +44,8 @@
     "beSurprised": "Daj się zaskoczyć!",
     "handAdd": {
       "finish": "Zakończ",
-      "alsoAdd": "Dodaj również ręcznie:"
+      "withScale": "Dodaj za pomocą wagi",
+      "manually": "Dodaj ręcznie"
     }
   },
   "lockScreen": {

@@ -4,10 +4,10 @@ import { fn } from 'storybook/test';
 import HandAddMeasure from '.';
 
 // NOTE: the Finish button is intentionally NOT part of this component — in the app it is
-// rendered by the surrounding ProgressModal's bottom button slot. These stories therefore
-// only exercise the measuring rows and the auto-finish path (onFinish fires once every
-// measurable row is done and there are no text-only rows). The `WithTextOnlyAdds` story has
-// no way to "finish" in isolation by design, since text-only rows require the modal's Finish.
+// rendered by the surrounding ProgressModal's bottom button slot. These stories exercise the
+// measuring rows (scale sim) and the manual check rows; `onFinish` (a fn() spy here) fires via
+// auto-finish once every row is resolved — measure the ml rows and tap the check on the manual
+// rows to see it trigger.
 
 /**
  * Simulates a scale: each `read` adds a few grams so the progress bar visibly fills,

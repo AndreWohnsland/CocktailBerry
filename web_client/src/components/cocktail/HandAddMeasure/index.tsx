@@ -1,12 +1,13 @@
 import type React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaTimes } from 'react-icons/fa';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import { FaScaleUnbalanced } from 'react-icons/fa6';
 import { readHandAdd, tareHandAdd } from '../../../api/cocktails';
 import type { HandAddMeasure as HandAddItem } from '../../../types/models';
 import Button from '../../common/Button';
 import ProgressBar from '../../common/ProgressBar';
+import TextHeader from '../../common/TextHeader';
 
 interface HandAddMeasureProps {
   handAdds: HandAddItem[];
@@ -19,11 +20,11 @@ interface HandAddMeasureProps {
 }
 
 /**
- * Scale-assisted hand-add window (v2). Lists weighable (ml) hand adds with a measure
- * button each and non-ml hand adds as static instructions. Tapping measure tares, then
- * tracks current grams / target ml on a progress bar until the target is reached (rows can
- * be measured in any order). Auto-finishes when every weighable row is done and there are
- * no text-only rows; Finish is always available to complete early.
+ * Scale-assisted hand-add window (v2). One aligned grid holds both sections: weighable (ml)
+ * hand adds get a measure button + progress bar (tap to tare, then track grams/target ml),
+ * and non-ml hand adds get a check button to confirm they were added by hand. Rows can be
+ * resolved in any order; the window auto-finishes once every row is resolved. Finish (in the
+ * modal footer) is always available to complete early.
  */
 const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
   handAdds,
@@ -39,8 +40,9 @@ const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
   const finishedRef = useRef(false);
 
   const measurableIndices = handAdds.map((ha, i) => (ha.measurable ? i : -1)).filter((i) => i >= 0);
-  const textOnly = handAdds.filter((ha) => !ha.measurable);
-  const allMeasurableDone = measurableIndices.every((i) => doneIndices.has(i));
+  const manualIndices = handAdds.map((ha, i) => (ha.measurable ? -1 : i)).filter((i) => i >= 0);
+  const pendingMeasurable = measurableIndices.filter((i) => !doneIndices.has(i));
+  const pendingManual = manualIndices.filter((i) => !doneIndices.has(i));
 
   const triggerFinish = useCallback(() => {
     if (finishedRef.current) return;
@@ -48,13 +50,13 @@ const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
     onFinish();
   }, [onFinish]);
 
-  // auto-finish when everything weighable is done and nothing needs manual confirmation;
-  // require at least one measurable row so an (unexpected) empty list never auto-finishes on mount
+  // auto-finish once every row (measured + manually confirmed) is resolved; require at least
+  // one row so an (unexpected) empty list never auto-finishes on mount
   useEffect(() => {
-    if (activeIndex === null && measurableIndices.length > 0 && allMeasurableDone && textOnly.length === 0) {
+    if (activeIndex === null && handAdds.length > 0 && pendingMeasurable.length === 0 && pendingManual.length === 0) {
       triggerFinish();
     }
-  }, [activeIndex, measurableIndices.length, allMeasurableDone, textOnly.length, triggerFinish]);
+  }, [activeIndex, handAdds.length, pendingMeasurable.length, pendingManual.length, triggerFinish]);
 
   // poll the scale while a measurement is active
   useEffect(() => {
@@ -100,6 +102,10 @@ const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
     setGrams(0);
   };
 
+  const confirmManual = (index: number) => {
+    setDoneIndices((prev) => new Set(prev).add(index));
+  };
+
   const progressPercent = (index: number) => {
     const target = handAdds[index].amount;
     if (target <= 0) return 0;
@@ -108,18 +114,21 @@ const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
 
   return (
     // grow + center keeps the rows in the middle of the modal body; the Finish button is
-    // rendered by the modal's own bottom button slot (see ProgressModal) so it sits at the
-    // bottom alongside the other modal actions. Auto-finish still flows through onFinish.
-    <div className='flex flex-col grow w-full justify-center px-2'>
-      <div className='flex flex-col gap-3 min-h-0 overflow-y-auto'>
-        {measurableIndices
-          .filter((i) => !doneIndices.has(i))
-          .map((i) => {
-            const ha = handAdds[i];
-            return activeIndex === i ? (
-              <div key={`${ha.name}-${i}`} className='flex items-center gap-3'>
-                <span className='shrink-0 text-text'>{ha.name}</span>
-                <ProgressBar className='grow h-9' fillPercent={progressPercent(i)} />
+    // rendered by the modal's own bottom button slot (see ProgressModal). One grid aligns the
+    // action / amount / name / progress columns across both sections; headers span all columns.
+    <div className='flex flex-col grow w-full max-w-2xl mx-auto justify-center px-2'>
+      <div className='grid grid-cols-[auto_auto_auto_minmax(120px,1fr)] items-center gap-x-3 gap-y-3 overflow-y-auto'>
+        {pendingMeasurable.length > 0 && (
+          <div className='col-span-full'>
+            <TextHeader subheader space={0} text={t('cocktails.handAdd.withScale')} />
+          </div>
+        )}
+        {pendingMeasurable.map((i) => {
+          const ha = handAdds[i];
+          const isActive = activeIndex === i;
+          return (
+            <Fragment key={`m-${ha.name}-${i}`}>
+              {isActive ? (
                 <Button
                   icon={FaTimes}
                   label=''
@@ -128,13 +137,7 @@ const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
                   className='w-14 h-11'
                   onClick={cancelMeasure}
                 />
-              </div>
-            ) : (
-              <div key={`${ha.name}-${i}`} className='flex items-center gap-4'>
-                <span className='flex-1 min-w-0 text-text'>{ha.name}</span>
-                <span className='w-16 shrink-0 text-right text-secondary'>
-                  {ha.amount} {ha.unit}
-                </span>
+              ) : (
                 <Button
                   icon={FaScaleUnbalanced}
                   label=''
@@ -144,22 +147,41 @@ const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
                   onClick={() => startMeasure(i)}
                   disabled={activeIndex !== null}
                 />
-              </div>
-            );
-          })}
-        {textOnly.length > 0 && (
-          <>
-            <p className='text-neutral mt-2'>{t('cocktails.handAdd.alsoAdd')}</p>
-            {textOnly.map((ha) => (
-              <div key={`text-${ha.name}-${ha.unit}-${ha.amount}`} className='flex items-center gap-4'>
-                <span className='flex-1 min-w-0 text-text'>{ha.name}</span>
-                <span className='w-16 shrink-0 text-right text-secondary'>
-                  {ha.amount} {ha.unit}
-                </span>
-              </div>
-            ))}
-          </>
+              )}
+              <span className='text-right text-secondary whitespace-nowrap'>
+                {ha.amount} {ha.unit}
+              </span>
+              <span className='text-text whitespace-nowrap'>{ha.name}</span>
+              <ProgressBar className='w-full h-11' fillPercent={isActive ? progressPercent(i) : 0} />
+            </Fragment>
+          );
+        })}
+        {pendingManual.length > 0 && (
+          <div className='col-span-full'>
+            <TextHeader subheader space={0} text={t('cocktails.handAdd.manually')} />
+          </div>
         )}
+        {pendingManual.map((i) => {
+          const ha = handAdds[i];
+          return (
+            <Fragment key={`t-${ha.name}-${i}`}>
+              <Button
+                icon={FaCheck}
+                label=''
+                iconSize={22}
+                filled
+                className='w-14 h-11'
+                onClick={() => confirmManual(i)}
+              />
+              <span className='text-right text-secondary whitespace-nowrap'>
+                {ha.amount} {ha.unit}
+              </span>
+              <span className='text-text whitespace-nowrap'>{ha.name}</span>
+              {/* empty progress cell keeps the manual rows aligned with the measured ones */}
+              <span aria-hidden />
+            </Fragment>
+          );
+        })}
       </div>
     </div>
   );

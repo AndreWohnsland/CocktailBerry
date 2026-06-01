@@ -364,13 +364,13 @@ dialog:
     de: 'Nicht in der Handzugabe-Phase.'
     pl: 'Nie w fazie ręcznego dodawania.'
   hand_add_title:
-    en: 'Add by Scale'
+    en: 'Add with Scale Support'
     de: 'Mit Waage hinzufügen'
     pl: 'Dodaj za pomocą wagi'
   hand_add_by_hand:
-    en: 'Also add by hand:'
-    de: 'Zusätzlich von Hand hinzufügen:'
-    pl: 'Dodaj również ręcznie:'
+    en: 'Add manually'
+    de: 'Manuell hinzufügen'
+    pl: 'Dodaj ręcznie'
   hand_add_finish_button:
     en: 'Finish'
     de: 'Fertig'
