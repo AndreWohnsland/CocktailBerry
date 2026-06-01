@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtGui import QCloseEvent, QFont
 from PyQt6.QtWidgets import QGridLayout, QMainWindow, QProgressBar, QPushButton, QVBoxLayout, QWidget
 
 from src.dialog_handler import DIALOG_HANDLER as DH
@@ -97,7 +97,17 @@ class HandAddMeasureScreen(QMainWindow):
             grid_row += 1
         if self._text_only:
             self._grid.addWidget(
-                create_label(DH.get_translation("hand_add_by_hand"), FontSize.MEDIUM, bold=True), grid_row, 0, 1, 4
+                create_label(
+                    DH.get_translation("hand_add_by_hand"),
+                    FontSize.MEDIUM,
+                    bold=True,
+                    css_class="neutral",
+                    centered=True,
+                ),
+                grid_row,
+                column=0,
+                rowSpan=1,
+                columnSpan=4,
             )
             grid_row += 1
             for ingredient in self._text_only:
@@ -122,15 +132,24 @@ class HandAddMeasureScreen(QMainWindow):
         button = create_button(
             "", font_size=FontSize.LARGE, min_w=90, max_w=120, min_h=_ROW_HEIGHT, css_class=css_class
         )
-        icon = self._icons.generate_icon(icon_name, self._icons.color.background)
-        self._icons.set_icon(button, icon, no_text=True, size=LARGE_BUTTON_SIZE)
+        self._icons.set_icon(
+            button,
+            self._icons.generate_icon(icon_name, self._icons.color.background),
+            no_text=True,
+            size=LARGE_BUTTON_SIZE,
+        )
         return button
 
     def _build_measure_row(self, ingredient: Ingredient, grid_row: int) -> _MeasureRow:
         progress = QProgressBar()
         progress.setRange(0, 100)
         progress.setValue(0)
-        progress.setMinimumHeight(_ROW_HEIGHT)  # match the action buttons' height
+        progress.setMinimumSize(QSize(0, _ROW_HEIGHT))
+        progress.setMaximumSize(QSize(16777215, 200))
+        font = QFont()
+        font.setPointSize(FontSize.LARGE)
+        font.setBold(True)
+        progress.setFont(font)
         progress.hide()
         measure_button = self._icon_button(self._icons.presets.measure, "btn-inverted")
         cancel_button = self._icon_button(self._icons.presets.close, "btn-inverted destructive")
