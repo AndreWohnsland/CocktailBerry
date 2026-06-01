@@ -35,7 +35,7 @@ from src.startup_checks import (
     connection_okay,
     is_python_deprecated,
 )
-from src.tabs import bottles, ingredients, maker, recipes
+from src.tabs import bottles, ingredients, recipes
 from src.tabs.qt_tab_index import TabIndex
 from src.ui.cocktail_view import CocktailView
 from src.ui.creation_utils import apply_responsive_layouts
@@ -78,6 +78,11 @@ _PERMISSION_BY_TAB_INDEX: dict[int, PermissionKey] = {
     int(TabIndex.BOTTLES): "bottles",
 }
 
+# auto-close the (non-blocking) hand-add guidance window if the user walks away; allow more time
+# when the scale is involved (measuring takes longer than just checking off manual adds)
+_HAND_ADD_MANUAL_TIMEOUT_S = 60
+_HAND_ADD_MEASURE_TIMEOUT_S = 120
+
 
 class MainScreen(QMainWindow, Ui_MainWindow):
     """Creates the Mainscreen."""
@@ -110,8 +115,6 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.datepicker: DatePicker | None = None
         self.picture_window: PictureWindow | None = None
         self.refill_dialog: RefillDialog | None = None
-        # Wire the v1 scale-assisted hand-add runner into the shared preparation flow
-        maker.HAND_ADD_RUNNER = self.run_hand_add_measure
         # Holds the background worker that references the carriage after the GUI is up.
         self._carriage_ref_worker: CallableWorker[None] | None = None
         self.cocktail_view = CocktailView(self)
@@ -365,16 +368,23 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.progress_window.hide()
 
     def run_hand_add_measure(self, cocktail: Cocktail) -> None:
-        """Run the scale-assisted hand-add window and block until the user finishes.
+        """Show the scale-assisted hand-add guidance window until finished or timed out.
 
-        Mirrors how ``make_cocktail`` keeps the GUI responsive: a synchronous loop on the
-        main thread that pumps Qt events and polls the scale via the window's ``tick``.
+        The cocktail is already finalized by this point, so this is pure guidance. Mirrors how
+        ``make_cocktail`` keeps the GUI responsive: a synchronous loop on the main thread that
+        pumps Qt events and polls the scale via the window's ``tick``. A timeout auto-closes the
+        window if the user walks away (restores the old completion-dialog auto-close behaviour).
         """
         from src.ui.setup_hand_add_screen import HandAddMeasureScreen
 
         screen = HandAddMeasureScreen(self, cocktail)
+        # use the already-gated hand-add list (only carries measurable items when the feature is on
+        # and a scale is present) so the longer timeout only applies when the scale is actually used
+        has_scale_interaction = any(h.measurable for h in shared.cocktail_status.hand_adds)
+        timeout_s = _HAND_ADD_MEASURE_TIMEOUT_S if has_scale_interaction else _HAND_ADD_MANUAL_TIMEOUT_S
+        deadline = time.time() + timeout_s
         try:
-            while not screen.finished:
+            while not screen.finished and time.time() < deadline:
                 screen.tick()
                 QApplication.processEvents()
                 time.sleep(0.05)

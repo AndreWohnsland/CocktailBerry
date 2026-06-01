@@ -40,6 +40,23 @@ def _waiter_has_options_permission() -> bool:
     return waiter.permissions.options
 
 
+def _has_master_privilege(master_password: str | None) -> bool:
+    """Whether the caller presented admin credentials, used to let master also satisfy maker auth.
+
+    Unlike :func:`master_protected_dependency`, a *disabled* master password (0) does NOT grant this
+    — it must not silently bypass a maker-locked tab. Requires a presented valid master key, or a
+    waiter holding the options permission.
+    """
+    if cfg.waiter_mode_active and _waiter_has_options_permission():
+        return True
+    if master_password is None or cfg.UI_MASTERPASSWORD == 0:
+        return False
+    try:
+        return int(master_password) == cfg.UI_MASTERPASSWORD
+    except ValueError:
+        return False
+
+
 def master_protected_dependency(master_password: str | None = Security(master_password_header)) -> None:
     if cfg.UI_MASTERPASSWORD == 0:
         return
@@ -50,13 +67,19 @@ def master_protected_dependency(master_password: str | None = Security(master_pa
         raise HTTPException(status_code=403, detail="Invalid Master Password")
 
 
-def maker_protected(tab: Tab) -> Callable[[str], None]:
-    def dependency(maker_password: str | None = Security(maker_password_header)) -> None:
+def maker_protected(tab: Tab) -> Callable[..., None]:
+    def dependency(
+        maker_password: str | None = Security(maker_password_header),
+        master_password: str | None = Security(master_password_header),
+    ) -> None:
         if cfg.UI_MAKER_PASSWORD == 0:
             return
         if not cfg.UI_LOCKED_TABS[tab]:
             return
         if cfg.waiter_mode_active and _waiter_has_tab_permission(tab):
+            return
+        # an admin (valid master key) can do anything an operator can, so master auth satisfies maker
+        if _has_master_privilege(master_password):
             return
         password = _parse_password(maker_password)
         if password != cfg.UI_MAKER_PASSWORD:

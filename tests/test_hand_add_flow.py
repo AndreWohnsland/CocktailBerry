@@ -1,4 +1,8 @@
-"""Tests for the scale-assisted hand-add flow gating in ``maker.prepare_cocktail``."""
+"""Tests for the scale-assisted hand-add gating in ``maker.prepare_cocktail``.
+
+The cocktail is finalized immediately; when the scale flow applies the hand-adds are attached to
+``shared.cocktail_status.hand_adds`` so the UI can show the (non-blocking) guidance window.
+"""
 
 from unittest.mock import MagicMock, patch
 
@@ -6,7 +10,7 @@ import pytest
 
 from src.config.config_manager import CONFIG, shared
 from src.config.errors import ConfigError
-from src.models import Cocktail, Ingredient, PreparationResult, PrepareResult
+from src.models import Cocktail, HandAddMeasure, Ingredient, PrepareResult, PreparationResult
 
 
 def _ingredient(id: int, name: str, *, bottle: int | None, amount: int, unit: str = "ml") -> Ingredient:
@@ -37,9 +41,8 @@ def _cocktail(ingredients: list[Ingredient]) -> Cocktail:
     )
 
 
-def _run_prepare(cocktail: Cocktail, *, feature_on: bool, has_scale: bool) -> MagicMock:
-    """Run prepare_cocktail with all heavy collaborators mocked; return the runner mock."""
-    runner = MagicMock()
+def _run_prepare(cocktail: Cocktail, *, feature_on: bool, has_scale: bool) -> list[HandAddMeasure]:
+    """Run prepare_cocktail with heavy collaborators mocked; return the resulting hand_adds list."""
     mc_instance = MagicMock()
     mc_instance.has_scale = has_scale
     # empty result -> completion_ratio 0, so the service hooks are skipped
@@ -54,52 +57,50 @@ def _run_prepare(cocktail: Cocktail, *, feature_on: bool, has_scale: bool) -> Ma
         from src.tabs import maker
 
         shared.current_waiter_nfc_id = None
-        maker.prepare_cocktail(cocktail, hand_add_runner=runner)
-    return runner
+        result, _ = maker.prepare_cocktail(cocktail)
+    assert result == PrepareResult.FINISHED
+    return shared.cocktail_status.hand_adds
 
 
-def test_runner_called_with_ml_hand_adds_and_feature_on():
+def test_hand_adds_attached_with_ml_hand_adds_and_feature_on():
     cocktail = _cocktail(
         [
             _ingredient(1, "Gin", bottle=1, amount=40),
             _ingredient(2, "Lime", bottle=None, amount=10, unit="ml"),
         ]
     )
-    runner = _run_prepare(cocktail, feature_on=True, has_scale=True)
-    runner.assert_called_once_with(cocktail)
+    hand_adds = _run_prepare(cocktail, feature_on=True, has_scale=True)
+    assert [(h.name, h.measurable) for h in hand_adds] == [("Lime", True)]
 
 
-def test_runner_not_called_when_feature_off():
+def test_no_hand_adds_attached_when_feature_off():
     cocktail = _cocktail(
         [
             _ingredient(1, "Gin", bottle=1, amount=40),
             _ingredient(2, "Lime", bottle=None, amount=10, unit="ml"),
         ]
     )
-    runner = _run_prepare(cocktail, feature_on=False, has_scale=True)
-    runner.assert_not_called()
+    assert _run_prepare(cocktail, feature_on=False, has_scale=True) == []
 
 
-def test_runner_not_called_without_scale():
+def test_no_hand_adds_attached_without_scale():
     cocktail = _cocktail(
         [
             _ingredient(1, "Gin", bottle=1, amount=40),
             _ingredient(2, "Lime", bottle=None, amount=10, unit="ml"),
         ]
     )
-    runner = _run_prepare(cocktail, feature_on=True, has_scale=False)
-    runner.assert_not_called()
+    assert _run_prepare(cocktail, feature_on=True, has_scale=False) == []
 
 
-def test_runner_not_called_for_non_ml_hand_adds_only():
+def test_no_hand_adds_attached_for_non_ml_hand_adds_only():
     cocktail = _cocktail(
         [
             _ingredient(1, "Gin", bottle=1, amount=40),
             _ingredient(2, "Mint", bottle=None, amount=6, unit="pieces"),
         ]
     )
-    runner = _run_prepare(cocktail, feature_on=True, has_scale=True)
-    runner.assert_not_called()
+    assert _run_prepare(cocktail, feature_on=True, has_scale=True) == []
 
 
 def test_config_validation_requires_enabled_scale():

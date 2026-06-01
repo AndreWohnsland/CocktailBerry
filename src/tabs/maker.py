@@ -5,7 +5,6 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from src.config.config_manager import CONFIG as cfg
@@ -15,7 +14,7 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
-from src.models import Cocktail, CocktailStatus, EventType, Ingredient, PrepareResult
+from src.models import Cocktail, CocktailStatus, EventType, HandAddMeasure, Ingredient, PrepareResult
 from src.programs.addons.addons import ADDONS
 from src.service.waiter_service import WaiterService
 from src.service_handler import SERVICE_HANDLER
@@ -25,21 +24,15 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("maker_module")
 
-# Frontend-specific runner for the scale-assisted hand-add measure phase, registered
-# once at startup (v1: Qt window loop, v2: wait on a finish event). Kept as a module
-# fallback so the many prepare_cocktail call sites need not thread it through; the
-# explicit ``hand_add_runner`` param still wins (used by tests).
-HAND_ADD_RUNNER: Callable[[Cocktail], None] | None = None
 
-
-def _build_finish_message(cocktail: Cocktail, additional_message: str, *, use_scale_handadd: bool) -> str:
+def _build_finish_message(cocktail: Cocktail, additional_message: str, *, show_handadd_window: bool) -> str:
     """Build the completion message returned and shown after a cocktail is prepared.
 
-    In the scale-assisted flow the dedicated measure window already guided the hand adds, so only
-    the caller's ``additional_message`` (e.g. a payment note) is returned. Otherwise the message is
-    that note plus the "cocktail ready" text listing the hand adds to add manually.
+    When the scale-assisted hand-add window is shown it already guides the hand adds, so only the
+    caller's ``additional_message`` (e.g. a payment note) is returned. Otherwise the message is that
+    note plus the "cocktail ready" text listing the hand adds to add manually.
     """
-    if use_scale_handadd:
+    if show_handadd_window:
         return additional_message
 
     # list hand adds (longest name + unit first), dropping any that round down to <= 0
@@ -62,9 +55,13 @@ def prepare_cocktail(
     cocktail: Cocktail,
     w: MainScreen | None = None,
     additional_message: str = "",
-    hand_add_runner: Callable[[Cocktail], None] | None = None,
 ) -> tuple[PrepareResult, str]:
-    """Prepare a Cocktail, if not already another one is in production and enough ingredients are available."""
+    """Prepare a Cocktail, if not already another one is in production and enough ingredients are available.
+
+    The cocktail is finalized immediately after pumping. When the scale-assisted hand-add flow
+    applies, the hand-adds are attached to ``shared.cocktail_status`` so the UI can show the measure
+    window as a (non-blocking) guidance step afterwards; finalization never waits on it.
+    """
     # Capture current waiter at preparation start (immune to logout during prep)
     waiter_nfc_id = shared.current_waiter_nfc_id
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
@@ -75,34 +72,14 @@ def prepare_cocktail(
     _logger.info(f"Preparing {cocktail.adjusted_amount} ml {cocktail.display_name}")
     mc = MachineController()
 
-    # The scale-assisted hand-add flow guides the hand adds in a dedicated window (instead of a
-    # text comment, with no "cocktail ready" message after). It applies when the feature is on, a
-    # scale is present, and there is at least one weighable (ml) hand add to measure.
-    runner = hand_add_runner or HAND_ADD_RUNNER
+    # The scale-assisted hand-add window guides the hand adds (instead of a text comment). It applies
+    # when the feature is on, a scale is present, and there is at least one weighable (ml) hand add.
+    # When shown, the hand-adds move into the window; otherwise they are listed in the text message.
     has_measurable_handadds = any(x.unit == "ml" and x.amount > 0 for x in cocktail.handadds)
-    scale_handadd_applicable = bool(cfg.MAKER_SCALE_FOR_HAND_ADDS and mc.has_scale and has_measurable_handadds)
-    use_scale_handadd = scale_handadd_applicable and runner is not None
-    if scale_handadd_applicable and runner is None:
-        _logger.debug(
-            "MAKER_SCALE_FOR_HAND_ADDS is on with measurable hand adds, but no hand-add runner is "
-            "registered; falling back to the text completion message."
-        )
+    show_handadd_window = bool(cfg.MAKER_SCALE_FOR_HAND_ADDS and mc.has_scale and has_measurable_handadds)
 
-    finish_message = _build_finish_message(cocktail, additional_message, use_scale_handadd=use_scale_handadd)
-    # in the scale case leave the status as IN_PROGRESS so it never flips to FINISHED before the
-    # runner atomically switches it to WAITING_FOR_HAND_ADD (avoids a poll-race that closes the modal)
-    finish_status = PrepareResult.IN_PROGRESS if use_scale_handadd else PrepareResult.FINISHED
-    result = mc.make_cocktail(
-        w,
-        ingredient_list=ingredients_machine,
-        recipe=cocktail.display_name,
-        finish_message=finish_message,
-        finish_status=finish_status,
-    )
-
-    # Interactive measure phase (blocks) runs before any finalization, unless prep was canceled
-    if use_scale_handadd and shared.cocktail_status.status != PrepareResult.CANCELED:
-        runner(cocktail)
+    finish_message = _build_finish_message(cocktail, additional_message, show_handadd_window=show_handadd_window)
+    result = mc.make_cocktail(w, ingredient_list=ingredients_machine, recipe=cocktail.display_name)
 
     DBC = DatabaseCommander()
     # single ingredient got represented as a cocktail with one ingredient, but no id, skip recipe increment
@@ -136,6 +113,12 @@ def prepare_cocktail(
     DBC.save_event(EventType.COCKTAIL_PREPARATION, f"{cocktail.display_name}")
     shared.cocktail_status.status = PrepareResult.FINISHED
     shared.cocktail_status.message = finish_message or None
+    # attach the hand-adds so the UI can show the (non-blocking) scale guidance window; the
+    # cocktail is already fully finalized, so closing/skipping the window has no data impact
+    if show_handadd_window:
+        shared.cocktail_status.hand_adds = [
+            HandAddMeasure(name=x.name, amount=x.amount, unit=x.unit) for x in cocktail.handadds if x.amount > 0
+        ]
     return PrepareResult.FINISHED, finish_message
 
 

@@ -3,7 +3,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { FaScaleUnbalanced } from 'react-icons/fa6';
-import { readHandAdd, tareHandAdd } from '../../../api/cocktails';
+import { readScale, tareScale } from '../../../api/scale';
 import type { HandAddMeasure as HandAddItem } from '../../../types/models';
 import Button from '../../common/Button';
 import ProgressBar from '../../common/ProgressBar';
@@ -29,8 +29,8 @@ interface HandAddMeasureProps {
 const HandAddMeasure: React.FC<HandAddMeasureProps> = ({
   handAdds,
   onFinish,
-  tare = tareHandAdd,
-  read = readHandAdd,
+  tare = tareScale,
+  read = async () => (await readScale()).data,
   pollIntervalMs = 250,
 }) => {
   const { t } = useTranslation();

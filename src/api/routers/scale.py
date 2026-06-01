@@ -28,14 +28,16 @@ async def get_scale_status() -> ApiMessageWithData[bool]:
     return ApiMessageWithData(message="Scale status", data=mc.has_scale)
 
 
-@protected_router.post("/tare", summary="Tare (zero) the scale.")
+# tare/read are non-destructive live reads (like status), used by both the hand-add guidance and the
+# calibration screen, so they are left open; only the config-mutating calibrate is master-protected.
+@router.post("/tare", summary="Tare (zero) the scale.")
 async def tare_scale(samples: int = 3) -> ApiMessageWithData[float]:
     mc = _require_scale()
     offset = mc.scale_tare(samples)
     return ApiMessageWithData(message=DH.get_translation("scale_tared"), data=offset)
 
 
-@protected_router.post("/read", summary="Read current weight in grams.")
+@router.get("/read", summary="Read current weight in grams.")
 async def read_scale() -> ApiMessageWithData[float]:
     mc = _require_scale()
     weight = mc.scale_read_grams()

@@ -42,7 +42,6 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MachineController
 from src.models import Cocktail as DbCocktail
 from src.models import CocktailStatus, PrepareResult
 from src.payment_utils import filter_cocktails_by_user
@@ -173,48 +172,8 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 @protected_maker_router.post("/prepare/stop", tags=["preparation"], summary="Stop the current cocktail preparation")
 async def stop_cocktail() -> ApiMessage:
     shared.cocktail_status.status = PrepareResult.CANCELED
-    # also release a pending hand-add wait so the background task can finalize
-    shared.hand_add_finished.set()
     _logger.info("Cocktail Canceled over the API!")
     return ApiMessage(message=DH.get_translation("preparation_cancelled"))
-
-
-def _require_hand_add_phase() -> MachineController:
-    """Ensure we are in the scale-assisted hand-add phase with a working scale."""
-    if shared.cocktail_status.status != PrepareResult.WAITING_FOR_HAND_ADD:
-        raise HTTPException(status_code=409, detail=DH.get_translation("not_in_hand_add_phase"))
-    mc = MachineController()
-    if not mc.has_scale:
-        raise HTTPException(status_code=400, detail=DH.get_translation("no_scale_available"))
-    return mc
-
-
-# NOTE: This is currently quite similar but still distinct from the tare and read endpoints in the scale module,
-# as those are more low-level and also used for the regular scale, while these are specifically for the hand-add phase.
-
-
-@protected_maker_router.post(
-    "/prepare/handadd/tare", tags=["preparation"], summary="Tare the scale for the next hand-add measurement"
-)
-async def tare_hand_add() -> ApiMessageWithData[float]:
-    mc = _require_hand_add_phase()
-    return ApiMessageWithData(message=DH.get_translation("scale_tared"), data=float(mc.scale_tare()))
-
-
-@protected_maker_router.get(
-    "/prepare/handadd/read", tags=["preparation"], summary="Read the current scale weight (grams) while measuring"
-)
-async def read_hand_add() -> ApiMessageWithData[float]:
-    mc = _require_hand_add_phase()
-    return ApiMessageWithData(message="Scale reading", data=round(mc.scale_read_grams(), 1))
-
-
-@protected_maker_router.post(
-    "/prepare/handadd/finish", tags=["preparation"], summary="Finish the hand-add phase and complete preparation"
-)
-async def finish_hand_add() -> ApiMessage:
-    shared.hand_add_finished.set()
-    return ApiMessage(message=DH.get_translation("hand_add_finished"))
 
 
 @protected_maker_router.post(

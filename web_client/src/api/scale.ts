@@ -28,7 +28,7 @@ export const tareScale = async (samples: number = 3): Promise<ScaleReading> => {
 };
 
 export const readScale = async (): Promise<ScaleReading> => {
-  return axiosInstance.post<ScaleReading>(`${scale_url}/read`).then((response) => response.data);
+  return axiosInstance.get<ScaleReading>(`${scale_url}/read`).then((response) => response.data);
 };
 
 export const calibrateScale = async (knownWeightGrams: number, zeroRawOffset: number): Promise<ScaleReading> => {

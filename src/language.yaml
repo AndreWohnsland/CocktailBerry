@@ -355,14 +355,6 @@ dialog:
     en: 'The preparation was cancelled.'
     de: 'Die Zubereitung wurde abgebrochen.'
     pl: 'Przygotowanie zostało anulowane.'
-  hand_add_finished:
-    en: 'Hand adds finished.'
-    de: 'Handzugaben abgeschlossen.'
-    pl: 'Dodawanie ręczne zakończone.'
-  not_in_hand_add_phase:
-    en: 'Not in the hand-add phase.'
-    de: 'Nicht in der Handzugabe-Phase.'
-    pl: 'Nie w fazie ręcznego dodawania.'
   hand_add_title:
     en: 'Add with Scale Support'
     de: 'Mit Waage hinzufügen'

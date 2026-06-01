@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import contextlib
 import random
-import threading
 from collections.abc import Callable
 from enum import IntEnum
 from typing import TYPE_CHECKING, Any, ClassVar
@@ -863,8 +862,6 @@ class Shared:
         self.is_v1 = False
         self.restricted_mode_active = False
         self.cocktail_status = CocktailStatus()
-        # Set by the frontend to release the scale-assisted hand-add wait (v2 background task)
-        self.hand_add_finished = threading.Event()
         # Waiter mode state
         self.current_waiter_nfc_id: str | None = None
         self.current_waiter: WaiterResponse | None = None
