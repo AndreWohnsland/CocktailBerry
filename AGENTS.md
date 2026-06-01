@@ -80,4 +80,4 @@ Five canonical triage roles. `needs-info` is mapped to the existing `incomplete`
 
 ### Domain docs
 
-Single-context layout: root `CONTEXT.md` + `docs/adr/`. Neither exists yet — skills create them lazily. See `agents/domain.md`.
+Single-context layout: root `CONTEXT.md` + `agents/adr/`. ADRs live under `agents/` (developer-facing); `docs/` is the user-facing documentation site and must not hold ADRs. `CONTEXT.md` is created lazily by the skills. See `agents/domain.md`.

@@ -53,6 +53,18 @@ REVERSION_DEFAULT_VARIANT: SupportedReversionType = "Global over GPIO"
 LED_DEFAULT_VARIANT: SupportedLedDriverType = "Normal over GPIO"
 DC_DISPENSER_DEFAULT_VARIANT: SupportedDispenserType = "DC over GPIO"
 
+# Acronyms kept upper-cased when turning a CONFIG_KEY into a human-readable label.
+_CONFIG_NAME_ACRONYMS = frozenset({"UI", "NFC", "RFID", "LED", "I2C", "API", "URL", "GPIO", "DC", "WS"})
+
+
+def humanize_config_name(name: str) -> str:
+    """Turn a ``CONFIG_KEY`` into a friendlier label for error messages (e.g. 'Maker Number Bottles').
+
+    A pure string transform, deliberately independent of the language/translation module so this
+    validation layer stays standalone. Known acronyms keep their upper-case form.
+    """
+    return " ".join(word if word in _CONFIG_NAME_ACRONYMS else word.capitalize() for word in name.split("_"))
+
 
 class ConfigInterface[T](Protocol):
     """Interface for config values."""

@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaCreditCard } from 'react-icons/fa';
 import Modal from 'react-modal';
-import { cancelPayment, getCocktailStatus, stopCocktail } from '../../api/cocktails';
+import { cancelPayment, finishHandAdd, getCocktailStatus, stopCocktail } from '../../api/cocktails';
 import { useConfig } from '../../providers/ConfigProvider';
+import type { HandAddMeasure as HandAddItem } from '../../types/models';
 import { errorToast } from '../../utils';
+import HandAddMeasure from '../cocktail/HandAddMeasure';
 import ProgressBar from './ProgressBar';
 import TextHeader from './TextHeader';
 
@@ -29,12 +31,14 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     config.PAYMENT_TYPE !== 'Disabled' ? 'WAITING_FOR_PAYMENT' : 'IN_PROGRESS',
   );
   const [message, setMessage] = useState<string | null>(null);
+  const [handAdds, setHandAdds] = useState<HandAddItem[]>([]);
   const { t } = useTranslation();
 
   const closeWindow = React.useCallback(
     (finalStatus?: string) => {
       setCurrentProgress(0);
       setMessage(null);
+      setHandAdds([]);
       onRequestClose();
       if (triggerOnClose) {
         triggerOnClose(finalStatus ?? 'CANCELED');
@@ -67,6 +71,11 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         const cocktailStatus = await getCocktailStatus();
         setCurrentStatus(cocktailStatus.status);
         setCurrentProgress(cocktailStatus.progress);
+        if (cocktailStatus.status === 'WAITING_FOR_HAND_ADD') {
+          // capture the list once; keep polling so the FINISHED transition closes the modal
+          setHandAdds((prev) => (prev.length ? prev : (cocktailStatus.hand_adds ?? [])));
+          return;
+        }
         if (cocktailStatus.status === 'IN_PROGRESS' || cocktailStatus.status === 'WAITING_FOR_PAYMENT') {
           return;
         }
@@ -90,6 +99,16 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       return (
         <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={handleCancelPayment}>
           {t('cancel')}
+        </button>
+      );
+    } else if (status === 'WAITING_FOR_HAND_ADD') {
+      return (
+        <button
+          type='button'
+          className='mt-4 px-4 py-2 button-primary w-1/2'
+          onClick={() => finishHandAdd().catch(errorToast)}
+        >
+          {t('cocktails.handAdd.finish')}
         </button>
       );
     } else if (status === 'IN_PROGRESS') {
@@ -131,6 +150,13 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
               <p className='text-lg text-text'>{t('payment.holdCard')}</p>
             </div>
           </div>
+        ) : currentStatus === 'WAITING_FOR_HAND_ADD' ? (
+          <HandAddMeasure
+            handAdds={handAdds}
+            onFinish={() => {
+              finishHandAdd().catch(errorToast);
+            }}
+          />
         ) : message ? (
           // biome-ignore lint/security/noDangerouslySetInnerHtml: it is from our backend, so its okay for now
           <div className='text-neutral text-center' dangerouslySetInnerHTML={{ __html: message }} />

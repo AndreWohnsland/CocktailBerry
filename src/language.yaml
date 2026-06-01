@@ -355,6 +355,34 @@ dialog:
     en: 'The preparation was cancelled.'
     de: 'Die Zubereitung wurde abgebrochen.'
     pl: 'Przygotowanie zostało anulowane.'
+  hand_add_finished:
+    en: 'Hand adds finished.'
+    de: 'Handzugaben abgeschlossen.'
+    pl: 'Dodawanie ręczne zakończone.'
+  not_in_hand_add_phase:
+    en: 'Not in the hand-add phase.'
+    de: 'Nicht in der Handzugabe-Phase.'
+    pl: 'Nie w fazie ręcznego dodawania.'
+  hand_add_title:
+    en: 'Add by Scale'
+    de: 'Mit Waage hinzufügen'
+    pl: 'Dodaj za pomocą wagi'
+  hand_add_by_hand:
+    en: 'Also add by hand:'
+    de: 'Zusätzlich von Hand hinzufügen:'
+    pl: 'Dodaj również ręcznie:'
+  hand_add_measure:
+    en: 'Measure'
+    de: 'Messen'
+    pl: 'Zmierz'
+  hand_add_finish_button:
+    en: 'Finish'
+    de: 'Fertig'
+    pl: 'Zakończ'
+  hand_add_cancel:
+    en: 'Cancel'
+    de: 'Abbrechen'
+    pl: 'Anuluj'
   image_deleted:
     en: 'Image deleted successfully.'
     de: 'Bild erfolgreich gelöscht.'
@@ -1048,6 +1076,10 @@ ui:
       en: 'Adds a random cocktail tile to the maker tab that picks a surprise cocktail on prepare'
       de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
       pl: 'Dodaje kafelek "Losowy koktajl" w zakładce Maker, który podczas przygotowania losuje napój.'
+    MAKER_SCALE_FOR_HAND_ADDS:
+      en: 'Guides hand adds with the scale: after machine preparation, weighable (ml) ingredients are added by pouring while a progress bar tracks the weight. Requires an enabled scale.'
+      de: 'Führt mit der Waage durch die Handzugaben: Nach der Maschinenzubereitung werden wägbare (ml) Zutaten durch Eingießen hinzugefügt, während ein Fortschrittsbalken das Gewicht verfolgt. Erfordert eine aktivierte Waage.'
+      pl: 'Prowadzi przez ręczne dodawanie za pomocą wagi: po przygotowaniu maszynowym składniki mierzalne (ml) dodaje się, nalewając je, podczas gdy pasek postępu śledzi wagę. Wymaga włączonej wagi.'
     LED_CONFIG:
       en: 'List with config for each LED. Choose the LED type (Normal or WSLED) per entry. Normal (non-addressable): pin type, board number (# only relevant for I2C), pin, default on state, preparation state (on/off/effects). WSLED (WS281x, addressable, GPIO only): pin, brightness, LED count, number of daisy chained rings, default on state, preparation state.'
       de: 'Liste mit Einstellung für jeden LED. Wähle den LED-Typ pro Eintrag (Normal oder WSLED). Normal (nicht ansteuerbar): Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). WSLED (WS281x, ansteuerbar, nur GPIO): Pin, Helligkeit, LED-Anzahl, Anzahl in Serie verbundener Ringe, Standard an-Zustand, Zustand bei Zubereitung.'
@@ -1298,6 +1330,10 @@ ui:
       en: 'Random Cocktail Button'
       de: 'Zufallscocktail-Button'
       pl: 'Przycisk losowego koktajlu'
+    MAKER_SCALE_FOR_HAND_ADDS:
+      en: 'Scale-Assisted Hand Adds'
+      de: 'Handzugaben mit Waage'
+      pl: 'Ręczne dodawanie z wagą'
     LED_CONFIG:
       en: 'LED Configuration'
       de: 'LED-Konfiguration'

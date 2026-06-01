@@ -75,9 +75,17 @@ export type PrepareResult =
   | 'NOT_ENOUGH_INGREDIENTS'
   | 'ADDON_ERROR'
   | 'WAITING_FOR_PAYMENT'
+  | 'WAITING_FOR_HAND_ADD'
   | 'NO_WAITER_LOGGED_IN'
   | 'NO_GLASS_DETECTED'
   | 'UNDEFINED';
+
+export interface HandAddMeasure {
+  name: string;
+  amount: number;
+  unit: string;
+  measurable: boolean;
+}
 
 export interface UserAuth {
   uid: string | null;
@@ -90,6 +98,7 @@ export interface CocktailStatus {
   progress: number;
   message?: string;
   status: PrepareResult;
+  hand_adds?: HandAddMeasure[];
 }
 
 export interface ApiError {
@@ -161,6 +170,7 @@ export interface DefinedConfigData {
   MAKER_USE_RECIPE_VOLUME: boolean;
   MAKER_ADD_SINGLE_INGREDIENT: boolean;
   MAKER_RANDOM_COCKTAIL: boolean;
+  MAKER_SCALE_FOR_HAND_ADDS: boolean;
   LED_CONFIG: LedConfig[];
   RFID_CONFIG: RfidConfig;
   MICROSERVICE_ACTIVE: boolean;

@@ -41,7 +41,11 @@
     "spend": "Spend",
     "selectTeam": "Select Team",
     "randomCocktail": "Random Cocktail",
-    "beSurprised": "Be Surprised!"
+    "beSurprised": "Be Surprised!",
+    "handAdd": {
+      "finish": "Finish",
+      "alsoAdd": "Also add by hand:"
+    }
   },
   "lockScreen": {
     "defaultTitle": "Locked",

@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from src import PROJECT_NAME, __version__
 from src.api.api_config import DESCRIPTION, TAGS_METADATA, Tags
 from src.api.internal.log_config import log_config
+from src.api.internal.preparation import web_hand_add_runner
 from src.api.internal.validation import ValidationError
 from src.api.models import AboutInfo, ApiMessage
 from src.api.routers import blacklist, bottles, cocktails, ingredients, options, roles, scale, waiters
@@ -34,6 +35,7 @@ from src.startup_checks import (
     connection_okay,
     is_python_deprecated,
 )
+from src.tabs import maker
 from src.updater import UpdateInfo, Updater
 from src.utils import get_platform_data
 
@@ -80,6 +82,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     # check (payment, waiter) inspects it via RFIDReader().
     mc = MachineController()
     mc.init_machine()
+    # Wire the v2 scale-assisted hand-add runner into the shared preparation flow
+    maker.HAND_ADD_RUNNER = web_hand_add_runner
     ADDONS.setup_addons()
     payment_check = check_payment_service()
     if not payment_check.ok:

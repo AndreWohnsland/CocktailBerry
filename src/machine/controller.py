@@ -122,11 +122,17 @@ class MachineController:
         recipe: str = "",
         is_cocktail: bool = True,
         finish_message: str = "",
+        finish_status: PrepareResult = PrepareResult.FINISHED,
     ) -> PreparationResult:
         """RPI Logic to prepare the cocktail.
 
         Calculates needed time for each slot according to data and config.
         Updates Progressbar status. Returns data for DB updates.
+
+        ``finish_status`` is the status set once pumping completes (when not canceled).
+        Callers that have a follow-up phase (e.g. scale-assisted hand adds) pass
+        ``IN_PROGRESS`` so the status never momentarily flips to ``FINISHED`` before
+        that phase takes over.
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
         if w is not None:
@@ -148,7 +154,7 @@ class MachineController:
         if w is not None:
             w.close_progression_window()
         if shared.cocktail_status.status != PrepareResult.CANCELED:
-            shared.cocktail_status.status = PrepareResult.FINISHED
+            shared.cocktail_status.status = finish_status
             shared.cocktail_status.message = finish_message
         return PreparationResult(
             ingredients=machine_ingredients,

@@ -16,7 +16,7 @@ def execute_raw_sql(query: str, params: tuple = ()) -> None:
     if not DATABASE_PATH.exists():
         _logger.log_event("INFO", f"Copying default database from {DEFAULT_DATABASE_PATH} to {DATABASE_PATH}")
         shutil.copyfile(DEFAULT_DATABASE_PATH, DATABASE_PATH)
-    with sqlite3.connect(DATABASE_PATH) as connection:
+    with contextlib.closing(sqlite3.connect(DATABASE_PATH)) as connection:
         cursor = connection.cursor()
         cursor.execute(query, params)
         connection.commit()
@@ -24,7 +24,7 @@ def execute_raw_sql(query: str, params: tuple = ()) -> None:
 
 def _select_all(query: str, params: tuple = ()) -> list[tuple]:
     """Run a SELECT and return all rows. Migration helper, no auto-copy of default DB."""
-    with sqlite3.connect(DATABASE_PATH) as connection:
+    with contextlib.closing(sqlite3.connect(DATABASE_PATH)) as connection:
         cursor = connection.cursor()
         cursor.execute(query, params)
         return list(cursor.fetchall())
@@ -49,7 +49,7 @@ def _column_exists(table_name: str, column_name: str) -> bool:
 
 def _execute_returning_lastrowid(query: str, params: tuple = ()) -> int:
     """Execute INSERT and return the new row id."""
-    with sqlite3.connect(DATABASE_PATH) as connection:
+    with contextlib.closing(sqlite3.connect(DATABASE_PATH)) as connection:
         cursor = connection.cursor()
         cursor.execute(query, params)
         connection.commit()

@@ -5,6 +5,7 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from src.config.config_manager import CONFIG as cfg
@@ -24,18 +25,28 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("maker_module")
 
+# Frontend-specific runner for the scale-assisted hand-add measure phase, registered
+# once at startup (v1: Qt window loop, v2: wait on a finish event). Kept as a module
+# fallback so the many prepare_cocktail call sites need not thread it through; the
+# explicit ``hand_add_runner`` param still wins (used by tests).
+HAND_ADD_RUNNER: Callable[[Cocktail], None] | None = None
 
-def _build_comment_maker(cocktail: Cocktail) -> str:
-    """Build the additional comment for the completion message (if there are handadds)."""
+
+def _build_finish_message(cocktail: Cocktail, additional_message: str, *, use_scale_handadd: bool) -> str:
+    """Build the completion message returned and shown after a cocktail is prepared.
+
+    In the scale-assisted flow the dedicated measure window already guided the hand adds, so only
+    the caller's ``additional_message`` (e.g. a payment note) is returned. Otherwise the message is
+    that note plus the "cocktail ready" text listing the hand adds to add manually.
+    """
+    if use_scale_handadd:
+        return additional_message
+
+    # list hand adds (longest name + unit first), dropping any that round down to <= 0
     comment = ""
-    hand_add = cocktail.handadds
-    # sort by descending length of the name and unit combined
-    length_desc = sorted(hand_add, key=lambda x: len(x.name) + len(x.unit), reverse=True)
-    for ing in length_desc:
-        amount: int | float = ing.amount
-        if ing.unit != "ml":
-            amount = ing.amount * cfg.EXP_MAKER_FACTOR
-        # usually show decimal places, up to 8, but if not ml is used clip decimal place
+    for ing in sorted(cocktail.handadds, key=lambda x: len(x.name) + len(x.unit), reverse=True):
+        amount: int | float = ing.amount * cfg.EXP_MAKER_FACTOR if ing.unit != "ml" else ing.amount
+        # show up to one decimal for ml, clip decimals for other units
         threshold = 8 if ing.unit == "ml" else 0
         amount = int(round(amount, 1)) if amount >= threshold else round(amount, 1)
         if amount <= 0:
@@ -43,13 +54,15 @@ def _build_comment_maker(cocktail: Cocktail) -> str:
         unit = cfg.EXP_MAKER_UNIT if ing.unit == "ml" else ing.unit
         comment += f"\n~{amount} {unit} {ing.name}"
 
-    return comment
+    separator = "\n" if additional_message and comment else ""
+    return additional_message + separator + DH.cocktail_ready(comment)
 
 
 def prepare_cocktail(
     cocktail: Cocktail,
     w: MainScreen | None = None,
     additional_message: str = "",
+    hand_add_runner: Callable[[Cocktail], None] | None = None,
 ) -> tuple[PrepareResult, str]:
     """Prepare a Cocktail, if not already another one is in production and enough ingredients are available."""
     # Capture current waiter at preparation start (immune to logout during prep)
@@ -60,13 +73,37 @@ def prepare_cocktail(
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
     ingredients_machine = [x for x in cocktail.machineadds if x.amount > 0]
     _logger.info(f"Preparing {cocktail.adjusted_amount} ml {cocktail.display_name}")
-    comment = _build_comment_maker(cocktail)
-
-    # only use separator if we got both messages
-    separator = "\n" if additional_message and comment else ""
-    add_message = additional_message + separator + DH.cocktail_ready(comment)
     mc = MachineController()
-    result = mc.make_cocktail(w, ingredients_machine, cocktail.display_name, finish_message=add_message)
+
+    # The scale-assisted hand-add flow guides the hand adds in a dedicated window (instead of a
+    # text comment, with no "cocktail ready" message after). It applies when the feature is on, a
+    # scale is present, and there is at least one weighable (ml) hand add to measure.
+    runner = hand_add_runner or HAND_ADD_RUNNER
+    has_measurable_handadds = any(x.unit == "ml" and x.amount > 0 for x in cocktail.handadds)
+    scale_handadd_applicable = bool(cfg.MAKER_SCALE_FOR_HAND_ADDS and mc.has_scale and has_measurable_handadds)
+    use_scale_handadd = scale_handadd_applicable and runner is not None
+    if scale_handadd_applicable and runner is None:
+        _logger.debug(
+            "MAKER_SCALE_FOR_HAND_ADDS is on with measurable hand adds, but no hand-add runner is "
+            "registered; falling back to the text completion message."
+        )
+
+    finish_message = _build_finish_message(cocktail, additional_message, use_scale_handadd=use_scale_handadd)
+    # in the scale case leave the status as IN_PROGRESS so it never flips to FINISHED before the
+    # runner atomically switches it to WAITING_FOR_HAND_ADD (avoids a poll-race that closes the modal)
+    finish_status = PrepareResult.IN_PROGRESS if use_scale_handadd else PrepareResult.FINISHED
+    result = mc.make_cocktail(
+        w,
+        ingredient_list=ingredients_machine,
+        recipe=cocktail.display_name,
+        finish_message=finish_message,
+        finish_status=finish_status,
+    )
+
+    # Interactive measure phase (blocks) runs before any finalization, unless prep was canceled
+    if use_scale_handadd and shared.cocktail_status.status != PrepareResult.CANCELED:
+        runner(cocktail)
+
     DBC = DatabaseCommander()
     # single ingredient got represented as a cocktail with one ingredient, but no id, skip recipe increment
     if cocktail.id != 0:
@@ -98,7 +135,8 @@ def prepare_cocktail(
 
     DBC.save_event(EventType.COCKTAIL_PREPARATION, f"{cocktail.display_name}")
     shared.cocktail_status.status = PrepareResult.FINISHED
-    return PrepareResult.FINISHED, add_message
+    shared.cocktail_status.message = finish_message or None
+    return PrepareResult.FINISHED, finish_message
 
 
 def interrupt_cocktail() -> None:

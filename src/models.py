@@ -24,6 +24,7 @@ class PrepareResult(Enum):
     NOT_ENOUGH_INGREDIENTS = "NOT_ENOUGH_INGREDIENTS"
     ADDON_ERROR = "ADDON_ERROR"
     WAITING_FOR_PAYMENT = "WAITING_FOR_PAYMENT"
+    WAITING_FOR_HAND_ADD = "WAITING_FOR_HAND_ADD"
     NO_WAITER_LOGGED_IN = "NO_WAITER_LOGGED_IN"
     NO_GLASS_DETECTED = "NO_GLASS_DETECTED"
 
@@ -56,10 +57,30 @@ EVENT_TYPE_LEGACY_ALIASES: dict[str, str] = {
 
 
 @pydantic_dataclass
+class HandAddMeasure:
+    """One hand-add ingredient surfaced to the scale-assisted hand-add window.
+
+    ``measurable`` is derived from the unit: weighable (ml) ingredients get a measure
+    button; non-ml ingredients (e.g. pieces, dashes) are shown as static instructions.
+    """
+
+    name: str
+    amount: int
+    unit: str
+
+    @computed_field
+    @property
+    def measurable(self) -> bool:
+        """Whether the ingredient can be weighed on the scale (only ml is weighable)."""
+        return self.unit == "ml"
+
+
+@pydantic_dataclass
 class CocktailStatus:
     progress: int = 0
     message: str | None = None
     status: PrepareResult = PrepareResult.FINISHED
+    hand_adds: list[HandAddMeasure] = field(default_factory=list)
 
 
 @functools.total_ordering

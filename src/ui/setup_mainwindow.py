@@ -6,13 +6,15 @@ Also defines the Mode for controls.
 # pylint: disable=unnecessary-lambda
 from __future__ import annotations
 
+import contextlib
 import os
 import platform
+import time
 from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QEvent, QEventLoop, QObject
 from PyQt6.QtGui import QIntValidator, QMouseEvent, QResizeEvent
-from PyQt6.QtWidgets import QLineEdit, QMainWindow
+from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import CONFIG as cfg
@@ -33,7 +35,7 @@ from src.startup_checks import (
     connection_okay,
     is_python_deprecated,
 )
-from src.tabs import bottles, ingredients, recipes
+from src.tabs import bottles, ingredients, maker, recipes
 from src.tabs.qt_tab_index import TabIndex
 from src.ui.cocktail_view import CocktailView
 from src.ui.creation_utils import apply_responsive_layouts
@@ -108,6 +110,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         self.datepicker: DatePicker | None = None
         self.picture_window: PictureWindow | None = None
         self.refill_dialog: RefillDialog | None = None
+        # Wire the v1 scale-assisted hand-add runner into the shared preparation flow
+        maker.HAND_ADD_RUNNER = self.run_hand_add_measure
         # Holds the background worker that references the carriage after the GUI is up.
         self._carriage_ref_worker: CallableWorker[None] | None = None
         self.cocktail_view = CocktailView(self)
@@ -359,6 +363,25 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self.progress_window is None:
             return
         self.progress_window.hide()
+
+    def run_hand_add_measure(self, cocktail: Cocktail) -> None:
+        """Run the scale-assisted hand-add window and block until the user finishes.
+
+        Mirrors how ``make_cocktail`` keeps the GUI responsive: a synchronous loop on the
+        main thread that pumps Qt events and polls the scale via the window's ``tick``.
+        """
+        from src.ui.setup_hand_add_screen import HandAddMeasureScreen
+
+        screen = HandAddMeasureScreen(self, cocktail)
+        try:
+            while not screen.finished:
+                screen.tick()
+                QApplication.processEvents()
+                time.sleep(0.05)
+        finally:
+            # the window may already be gone if the user closed it via the window manager
+            with contextlib.suppress(RuntimeError):
+                screen.close()
 
     def open_team_window(self) -> None:
         self.team_window = TeamScreen(self)

@@ -63,6 +63,23 @@ export const getCocktailStatus = async (): Promise<CocktailStatus> => {
     });
 };
 
+interface ScaleReadingResponse {
+  message: string;
+  data: number;
+}
+
+export const tareHandAdd = async (): Promise<number> => {
+  return axiosInstance.post<ScaleReadingResponse>(`${cocktail_url}/prepare/handadd/tare`).then((res) => res.data.data);
+};
+
+export const readHandAdd = async (): Promise<number> => {
+  return axiosInstance.get<ScaleReadingResponse>(`${cocktail_url}/prepare/handadd/read`).then((res) => res.data.data);
+};
+
+export const finishHandAdd = async (): Promise<void> => {
+  return axiosInstance.post<void>(`${cocktail_url}/prepare/handadd/finish`).then((res) => res.data);
+};
+
 export const stopCocktail = async (): Promise<void> => {
   return axiosInstance
     .post<void>(`${cocktail_url}/prepare/stop`)

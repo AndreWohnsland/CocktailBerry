@@ -41,7 +41,11 @@
     "spend": "Wydaj",
     "selectTeam": "Wybierz zespół",
     "randomCocktail": "Losowy koktajl",
-    "beSurprised": "Daj się zaskoczyć!"
+    "beSurprised": "Daj się zaskoczyć!",
+    "handAdd": {
+      "finish": "Zakończ",
+      "alsoAdd": "Dodaj również ręcznie:"
+    }
   },
   "lockScreen": {
     "defaultTitle": "Zablokowane",
