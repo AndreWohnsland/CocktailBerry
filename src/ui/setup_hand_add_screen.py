@@ -12,7 +12,7 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.display_controller import DP_CONTROLLER
 from src.machine.controller import MachineController
 from src.models import Cocktail, Ingredient
-from src.ui.creation_utils import FontSize, create_button, create_label
+from src.ui.creation_utils import FontSize, create_button, create_label, create_spacer
 from src.ui.icons import LARGE_BUTTON_SIZE, IconSetter
 
 if TYPE_CHECKING:
@@ -84,6 +84,8 @@ class HandAddMeasureScreen(QMainWindow):
                 word_wrap=True,
             )
         )
+        # breathing room between the instruction and the rows below
+        layout.addItem(create_spacer(20))
         self._grid = QGridLayout()
         if self._has_measurable:
             # the progress column fills the row; rows stay left-aligned with the bar reaching the edge
@@ -168,7 +170,6 @@ class HandAddMeasureScreen(QMainWindow):
         font.setPointSize(FontSize.LARGE)
         font.setBold(True)
         progress.setFont(font)
-        progress.hide()
         measure_button = self._icon_button(self._icons.presets.measure, "btn-inverted")
         cancel_button = self._icon_button(self._icons.presets.close, "btn-inverted destructive")
         cancel_button.hide()
@@ -220,7 +221,6 @@ class HandAddMeasureScreen(QMainWindow):
         self._active = ingredient
         self._active_progress = row.progress
         row.progress.setValue(0)
-        row.progress.show()
         row.cancel_button.show()
         row.measure_button.hide()
         # lock the other rows' actions while one measurement runs (avoids a rebuild mid-measure)
@@ -230,7 +230,7 @@ class HandAddMeasureScreen(QMainWindow):
         if self._active is None:
             return
         row = self._rows[id(self._active)]
-        row.progress.hide()
+        row.progress.setValue(0)
         row.cancel_button.hide()
         row.measure_button.show()
         self._active = None
