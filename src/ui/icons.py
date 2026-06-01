@@ -38,6 +38,7 @@ _UPLOAD_ICON = "fa5s.upload"
 _QUESTION_ICON = "fa5.question-circle"
 _BORDER_ICON = "fa5.square"
 _CROSS = "mdi.close"
+_MEASURE_ICON = "mdi6.scale-balance"
 LARGE_BUTTON_SIZE = QSize(48, 48)
 BUTTON_SIZE = QSize(36, 36)
 SMALL_BUTTON_SIZE = QSize(24, 24)
@@ -66,6 +67,7 @@ class PresetIcon:
     easy: str = _EASY
     border: str = _BORDER_ICON
     close: str = _CROSS
+    measure: str = _MEASURE_ICON
 
 
 @dataclass

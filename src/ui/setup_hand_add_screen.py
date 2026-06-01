@@ -18,13 +18,11 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 # cap the ingredient name so it does not eat half the row; the progress column gets the rest
-_NAME_LABEL_MAX_WIDTH = 320
-# qtawesome name for the new measure (scale) icon
-_MEASURE_ICON = "mdi6.scale-balance"
+_NAME_LABEL_MAX_WIDTH = 200
 # grid columns
 _COL_NAME = 0
-_COL_AMOUNT = 1
-_COL_PROGRESS = 2
+_COL_PROGRESS = 1
+_COL_AMOUNT = 2
 _COL_ACTION = 3
 
 
@@ -103,10 +101,16 @@ class HandAddMeasureScreen(QMainWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def _name_label(self, ingredient: Ingredient) -> QWidget:
-        return create_label(ingredient.name, FontSize.LARGE, max_w=_NAME_LABEL_MAX_WIDTH, word_wrap=True)
+        return create_label(f"  {ingredient.name} ", FontSize.LARGE, bold=True, max_w=_NAME_LABEL_MAX_WIDTH)
 
     def _amount_label(self, ingredient: Ingredient) -> QWidget:
-        return create_label(f"{ingredient.amount} {ingredient.unit}", FontSize.LARGE, css_class="secondary")
+        return create_label(
+            text=f"{ingredient.amount} {ingredient.unit}  ",
+            font_size=FontSize.LARGE,
+            bold=True,
+            css_class="secondary",
+            centered=True,
+        )
 
     def _icon_button(self, icon_name: str, css_class: str) -> QPushButton:
         """Build a filled, icon-only action button (icon tinted to contrast the filled background)."""
@@ -122,7 +126,7 @@ class HandAddMeasureScreen(QMainWindow):
         progress.setRange(0, 100)
         progress.setValue(0)
         progress.hide()
-        measure_button = self._icon_button(_MEASURE_ICON, "btn-inverted")
+        measure_button = self._icon_button(self._icons.presets.measure, "btn-inverted")
         cancel_button = self._icon_button(self._icons.presets.close, "btn-inverted destructive")
         cancel_button.hide()
 
