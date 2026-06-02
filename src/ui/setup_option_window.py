@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import atexit
 import datetime
-import os
 import shutil
+import subprocess
 from typing import TYPE_CHECKING
 
 from PyQt6.QtGui import QResizeEvent
@@ -181,7 +181,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         DatabaseCommander().save_event(EventType.REBOOT)
         atexit._run_exitfuncs()  # pylint: disable=protected-access
-        os.system("sudo reboot")
+        subprocess.run(["sudo", "reboot"], check=False)
         self.close()
 
     def _shutdown_system(self) -> None:
@@ -192,7 +192,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         DatabaseCommander().save_event(EventType.SHUTDOWN)
         atexit._run_exitfuncs()  # pylint: disable=protected-access
-        os.system("sudo shutdown now")
+        subprocess.run(["sudo", "shutdown", "now"], check=False)
         self.close()
 
     def _data_insights(self) -> None:
@@ -321,7 +321,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
     def _finish_update_worker(self) -> None:
         """End the spinner, checks if installation was successful."""
         atexit._run_exitfuncs()  # pylint: disable=protected-access
-        os.system("sudo reboot")
+        subprocess.run(["sudo", "reboot"], check=False)
 
     def _is_windows(self, action: str) -> bool:
         """Linux things cannot be done on windows.
