@@ -93,6 +93,7 @@ allowed_keys = Literal[
     "box_title",
     "cleaning_started",
     "cocktail_canceled",
+    "hand_add_all_done",
     "hand_add_by_hand",
     "hand_add_finish_button",
     "hand_add_intro",

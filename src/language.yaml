@@ -371,6 +371,10 @@ dialog:
     en: 'Finish'
     de: 'Fertig'
     pl: 'Zakończ'
+  hand_add_all_done:
+    en: 'All ingredients have been added. This window will close shortly.'
+    de: 'Alle Zutaten wurden hinzugefügt. Dieses Fenster schließt sich in Kürze.'
+    pl: 'Wszystkie składniki zostały dodane. To okno wkrótce się zamknie.'
   image_deleted:
     en: 'Image deleted successfully.'
     de: 'Bild erfolgreich gelöscht.'

@@ -82,6 +82,9 @@ _PERMISSION_BY_TAB_INDEX: dict[int, PermissionKey] = {
 # when the scale is involved (measuring takes longer than just checking off manual adds)
 _HAND_ADD_MANUAL_TIMEOUT_S = 60
 _HAND_ADD_MEASURE_TIMEOUT_S = 120
+# once every row is resolved, linger on the completion message this long before closing; the user
+# can close sooner via Finish (Finish / window-manager / walk-away-timeout closes do not linger)
+_HAND_ADD_LINGER_S = 5.0
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -388,6 +391,13 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 screen.tick()
                 QApplication.processEvents()
                 time.sleep(0.05)
+            # every row resolved: linger on the completion message before closing, unless the user
+            # closes sooner via Finish (Finish / window-manager / timeout close without lingering)
+            if screen.finished and screen.linger_before_close:
+                linger_deadline = time.time() + _HAND_ADD_LINGER_S
+                while time.time() < linger_deadline and not screen.close_requested:
+                    QApplication.processEvents()
+                    time.sleep(0.05)
         finally:
             # the window may already be gone if the user closed it via the window manager
             with contextlib.suppress(RuntimeError):

@@ -40,6 +40,7 @@ _BORDER_ICON = "fa5.square"
 _CROSS = "mdi.close"
 _MEASURE_ICON = "mdi6.scale-balance"
 _CHECK_ICON = "mdi6.check"
+_CIRCLE_OUTLINE_ICON = "mdi6.circle-outline"
 LARGE_BUTTON_SIZE = QSize(48, 48)
 BUTTON_SIZE = QSize(36, 36)
 SMALL_BUTTON_SIZE = QSize(24, 24)
@@ -70,6 +71,7 @@ class PresetIcon:
     close: str = _CROSS
     measure: str = _MEASURE_ICON
     check: str = _CHECK_ICON
+    circle: str = _CIRCLE_OUTLINE_ICON
 
 
 @dataclass

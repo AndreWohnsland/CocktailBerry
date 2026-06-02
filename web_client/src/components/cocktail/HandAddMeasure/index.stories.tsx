@@ -64,6 +64,7 @@ export const WithTextOnlyAdds: Story = {
   args: {
     handAdds: [
       { name: 'Lime Juice', amount: 10, unit: 'ml', measurable: true },
+      { name: 'Sirup', amount: 10, unit: 'ml', measurable: true },
       { name: 'Mint', amount: 6, unit: 'pieces', measurable: false },
       { name: 'Bitters', amount: 3, unit: 'dash', measurable: false },
     ],

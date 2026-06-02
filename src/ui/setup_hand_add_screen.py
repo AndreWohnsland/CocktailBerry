@@ -5,14 +5,29 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QCloseEvent, QFont
-from PyQt6.QtWidgets import QGridLayout, QHBoxLayout, QMainWindow, QProgressBar, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QProgressBar,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.display_controller import DP_CONTROLLER
 from src.machine.controller import MachineController
 from src.models import Cocktail, Ingredient
-from src.ui.creation_utils import FontSize, create_button, create_label, create_spacer
+from src.ui.creation_utils import (
+    FontSize,
+    create_button,
+    create_label,
+    create_spacer,
+    set_strike_through,
+)
 from src.ui.icons import LARGE_BUTTON_SIZE, IconSetter
 
 if TYPE_CHECKING:
@@ -37,86 +52,126 @@ class _MeasureRow:
     progress: QProgressBar
     measure_button: QPushButton
     cancel_button: QPushButton
+    done_check: QPushButton
+    amount_label: QWidget
+    name_label: QWidget
+
+
+@dataclass
+class _ManualRow:
+    """The widgets of one by-hand (non-measured) hand-add row."""
+
+    check_button: QPushButton
+    done_check: QPushButton
+    amount_label: QWidget
+    name_label: QWidget
 
 
 class HandAddMeasureScreen(QMainWindow):
-    """Scale-assisted hand-add window (v1).
+    """Scale-assisted hand-add window (v1), mirroring v2.
 
-    One aligned grid holds both sections (mirroring v2): weighable (ml) hand adds get a measure
-    button + progress bar (the owning loop calls :meth:`tick` to poll the scale during an active
-    measurement; a re-tare runs on each measure click, so rows can be done in any order), and
-    non-ml hand adds get a check button to confirm they were added by hand. Resolving a row drops
-    it and rebuilds the grid. Sets :attr:`finished` when the user taps Finish, closes the window,
-    or every row is resolved.
+    Weighable (ml) hand adds get a measure button + progress bar (the run loop calls :meth:`tick`
+    to poll the scale; rows resolve in any order); non-ml hand adds get a confirm button. Resolving
+    a row keeps it in place: the action becomes a borderless secondary check, the labels are struck
+    through, and a measure row's bar fills to 100%. When all rows resolve, they are replaced by a
+    completion message that the run loop lingers on before closing. Sets :attr:`finished` on Finish,
+    window close, or full resolution.
     """
 
     def __init__(self, parent: MainScreen, cocktail: Cocktail) -> None:
         super().__init__()
         self.mainscreen = parent
         self.finished = False
+        # set on auto-finish (all rows resolved): the run loop lingers on the completion message
+        self.linger_before_close = False
+        # set on a deliberate close (Finish / window close) to skip / interrupt the linger
+        self.close_requested = False
         self._mc = MachineController()
         self._icons = IconSetter()
-        # data model: rebuilt into the grid whenever a row is resolved
         # ml items get a measure button only when the scale feature is on and a scale is present;
-        # otherwise (and for non-ml items) they are confirmed by hand via a check button
+        # everything else is confirmed by hand. `_done` tracks resolved ingredients (keyed by id()).
         scale_measuring = bool(cfg.MAKER_SCALE_FOR_HAND_ADDS and self._mc.has_scale)
         hand_adds = [i for i in cocktail.handadds if i.amount > 0]
         self._pending = [i for i in hand_adds if i.unit == "ml" and scale_measuring]
         self._text_only = [i for i in hand_adds if not (i.unit == "ml" and scale_measuring)]
-        # stable for the cocktail's lifetime (does not change as measure rows complete)
         self._has_measurable = bool(self._pending)
         self._active: Ingredient | None = None
         self._active_progress: QProgressBar | None = None
+        self._done: set[int] = set()
         self._rows: dict[int, _MeasureRow] = {}
-        self._manual_buttons: list[QPushButton] = []
+        self._manual_rows: dict[int, _ManualRow] = {}
 
         central = QWidget()
         layout = QVBoxLayout(central)
         layout.addWidget(
             create_label(cocktail.display_name, FontSize.HEADER, bold=True, centered=True, css_class="secondary")
         )
-        layout.addWidget(
-            create_label(
-                DH.get_translation("hand_add_intro"),
-                FontSize.MEDIUM,
-                centered=True,
-                css_class="neutral",
-                word_wrap=True,
-            )
+        self._intro_label = create_label(
+            DH.get_translation("hand_add_intro"),
+            FontSize.MEDIUM,
+            centered=True,
+            css_class="neutral",
+            word_wrap=True,
         )
-        # breathing room between the instruction and the rows below
+        layout.addWidget(self._intro_label)
         layout.addItem(create_spacer(20))
+        # rows in their own widget so they can be hidden as a unit on completion
+        self._rows_widget = QWidget()
         self._grid = QGridLayout()
         if self._has_measurable:
-            # the progress column fills the row; rows stay left-aligned with the bar reaching the edge
             self._grid.setColumnStretch(_COL_PROGRESS, 1)
-            layout.addLayout(self._grid)
+            self._rows_widget.setLayout(self._grid)
         else:
-            # no progress column to align to: center the content-sized grid (matches v2's manual-only)
-            centered_row = QHBoxLayout()
+            # no progress column to align to: center the content-sized grid
+            centered_row = QHBoxLayout(self._rows_widget)
             centered_row.addStretch()
             centered_row.addLayout(self._grid)
             centered_row.addStretch()
-            layout.addLayout(centered_row)
+        layout.addWidget(self._rows_widget)
+        # shown in place of the rows once every row is resolved
+        self._completion_widget = self._build_completion_widget()
+        self._completion_widget.hide()
+        layout.addWidget(self._completion_widget)
         layout.addStretch()
         finish_button = create_button(DH.get_translation("hand_add_finish_button"), font_size=FontSize.LARGE)
-        finish_button.clicked.connect(self._finish)
+        finish_button.clicked.connect(self._finish_now)
         layout.addWidget(finish_button)
-        self._rebuild_grid()
+        self._build_grid()
 
         self.setCentralWidget(central)
         DP_CONTROLLER.initialize_window_object(self)
-        # the run loop owns this window's lifetime (it calls close() in its finally), so disable
-        # auto-delete-on-close to avoid closing a window whose C++ object was already deleted
+        # the run loop closes this window in its finally; don't auto-delete on close (avoids double-free)
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, False)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
 
-    def _rebuild_grid(self) -> None:
-        """Rebuild the grid from the current data model (clean recompute, no stale rows)."""
-        DP_CONTROLLER.delete_items_of_layout(self._grid)
-        self._rows = {}
-        self._manual_buttons = []
+    def _build_completion_widget(self) -> QWidget:
+        """Build the "all done" message (secondary check icon above the text) shown once resolved."""
+        widget = QWidget()
+        completion_layout = QVBoxLayout(widget)
+        completion_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        icon_label = QLabel()
+        icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        check_icon = self._icons.generate_icon(self._icons.presets.check, self._icons.color.secondary)
+        icon_label.setPixmap(check_icon.pixmap(LARGE_BUTTON_SIZE))
+        text_label = create_label(
+            DH.get_translation("hand_add_all_done"),
+            FontSize.LARGE,
+            centered=True,
+            word_wrap=True,
+        )
+        completion_layout.addWidget(icon_label)
+        completion_layout.addWidget(text_label)
+        return widget
+
+    def _show_completion(self) -> None:
+        """Replace the resolved rows with the completion message."""
+        self._intro_label.hide()
+        self._rows_widget.hide()
+        self._completion_widget.show()
+
+    def _build_grid(self) -> None:
+        """Build the grid once from the data model. Rows are resolved in place, never rebuilt."""
         grid_row = 0
         if self._pending:
             grid_row = self._add_section_header(DH.get_translation("hand_add_title"), grid_row)
@@ -126,7 +181,7 @@ class HandAddMeasureScreen(QMainWindow):
         if self._text_only:
             grid_row = self._add_section_header(DH.get_translation("hand_add_by_hand"), grid_row)
             for ingredient in self._text_only:
-                self._build_manual_row(ingredient, grid_row)
+                self._manual_rows[id(ingredient)] = self._build_manual_row(ingredient, grid_row)
                 grid_row += 1
 
     def _add_section_header(self, text: str, grid_row: int) -> int:
@@ -160,6 +215,14 @@ class HandAddMeasureScreen(QMainWindow):
         )
         return button
 
+    def _flat_icon_button(self, icon_name: str, color: str) -> QPushButton:
+        """Build a borderless icon-only button (glyph tinted with its own color, no fill/border)."""
+        button = create_button(
+            "", font_size=FontSize.LARGE, min_w=90, max_w=120, min_h=_ROW_HEIGHT, css_class="no-border"
+        )
+        self._icons.set_icon(button, self._icons.generate_icon(icon_name, color), no_text=True, size=LARGE_BUTTON_SIZE)
+        return button
+
     def _build_measure_row(self, ingredient: Ingredient, grid_row: int) -> _MeasureRow:
         progress = QProgressBar()
         progress.setRange(0, 100)
@@ -173,26 +236,51 @@ class HandAddMeasureScreen(QMainWindow):
         measure_button = self._icon_button(self._icons.presets.measure, "btn-inverted")
         cancel_button = self._icon_button(self._icons.presets.close, "btn-inverted destructive")
         cancel_button.hide()
+        # done marker; inert (no slot connected)
+        done_check = self._flat_icon_button(self._icons.presets.check, self._icons.color.secondary)
+        done_check.hide()
+        amount_label = self._amount_label(ingredient)
+        name_label = self._name_label(ingredient)
 
+        # measure / cancel / done-check share the action cell; one visible at a time
         self._grid.addWidget(measure_button, grid_row, _COL_ACTION)
-        # measure and cancel share the action cell; only one is visible at a time
         self._grid.addWidget(cancel_button, grid_row, _COL_ACTION)
-        self._grid.addWidget(self._amount_label(ingredient), grid_row, _COL_AMOUNT)
-        self._grid.addWidget(self._name_label(ingredient), grid_row, _COL_NAME)
+        self._grid.addWidget(done_check, grid_row, _COL_ACTION)
+        self._grid.addWidget(amount_label, grid_row, _COL_AMOUNT)
+        self._grid.addWidget(name_label, grid_row, _COL_NAME)
         self._grid.addWidget(progress, grid_row, _COL_PROGRESS)
 
         measure_button.clicked.connect(lambda: self._start_measure(ingredient))
         cancel_button.clicked.connect(self._cancel_measure)
-        return _MeasureRow(progress=progress, measure_button=measure_button, cancel_button=cancel_button)
+        return _MeasureRow(
+            progress=progress,
+            measure_button=measure_button,
+            cancel_button=cancel_button,
+            done_check=done_check,
+            amount_label=amount_label,
+            name_label=name_label,
+        )
 
-    def _build_manual_row(self, ingredient: Ingredient, grid_row: int) -> None:
-        # same columns as a measure row, minus the progress bar (its column stays empty)
-        check_button = self._icon_button(self._icons.presets.check, "btn-inverted")
+    def _build_manual_row(self, ingredient: Ingredient, grid_row: int) -> _ManualRow:
+        # empty-circle "to-do" affordance (mirrors v2's FaRegCircle); no progress column for manual rows
+        check_button = self._flat_icon_button(self._icons.presets.circle, self._icons.color.primary)
+        # done marker; inert (no slot connected)
+        done_check = self._flat_icon_button(self._icons.presets.check, self._icons.color.secondary)
+        done_check.hide()
+        amount_label = self._amount_label(ingredient)
+        name_label = self._name_label(ingredient)
         check_button.clicked.connect(lambda: self._confirm_manual(ingredient))
+        # check / done-check share the action cell; one visible at a time
         self._grid.addWidget(check_button, grid_row, _COL_ACTION)
-        self._grid.addWidget(self._amount_label(ingredient), grid_row, _COL_AMOUNT)
-        self._grid.addWidget(self._name_label(ingredient), grid_row, _COL_NAME)
-        self._manual_buttons.append(check_button)
+        self._grid.addWidget(done_check, grid_row, _COL_ACTION)
+        self._grid.addWidget(amount_label, grid_row, _COL_AMOUNT)
+        self._grid.addWidget(name_label, grid_row, _COL_NAME)
+        return _ManualRow(
+            check_button=check_button,
+            done_check=done_check,
+            amount_label=amount_label,
+            name_label=name_label,
+        )
 
     def tick(self) -> None:
         """Poll the scale once and advance the active measurement (called by the run loop)."""
@@ -223,7 +311,7 @@ class HandAddMeasureScreen(QMainWindow):
         row.progress.setValue(0)
         row.cancel_button.show()
         row.measure_button.hide()
-        # lock the other rows' actions while one measurement runs (avoids a rebuild mid-measure)
+        # lock the other rows' actions while one measurement runs (single scale, one at a time)
         self._set_actions_enabled(enabled=False)
 
     def _cancel_measure(self) -> None:
@@ -240,34 +328,71 @@ class HandAddMeasureScreen(QMainWindow):
     def _complete_active(self) -> None:
         if self._active is None:
             return
-        self._pending.remove(self._active)
+        ingredient = self._active
         self._active = None
         self._active_progress = None
-        # rebuild so the finished row is gone and the remaining rows are laid out cleanly
-        self._rebuild_grid()
+        self._set_actions_enabled(enabled=True)
+        self._resolve_row(ingredient)
         self._check_auto_finish()
 
     def _confirm_manual(self, ingredient: Ingredient) -> None:
-        self._text_only.remove(ingredient)
-        self._rebuild_grid()
+        self._resolve_row(ingredient)
         self._check_auto_finish()
 
+    def _resolve_row(self, ingredient: Ingredient) -> None:
+        """Mark a row done in place: swap to the borderless secondary check and strike out the labels."""
+        self._done.add(id(ingredient))
+        measure_row = self._rows.get(id(ingredient))
+        if measure_row is not None:
+            measure_row.measure_button.hide()
+            measure_row.cancel_button.hide()
+            measure_row.done_check.show()
+            measure_row.progress.setValue(100)
+            self._mark_done(measure_row.amount_label, measure_row.name_label)
+        manual_row = self._manual_rows.get(id(ingredient))
+        if manual_row is not None:
+            manual_row.check_button.hide()
+            manual_row.done_check.show()
+            self._mark_done(manual_row.amount_label, manual_row.name_label)
+
+    def _mark_done(self, *labels: QWidget) -> None:
+        """Dim (neutral) and strike through resolved-row labels."""
+        for label in labels:
+            # restyle to neutral first, then set the strike-out font so the repolish can't drop it
+            label.setProperty("cssClass", "neutral")
+            style = label.style()
+            if style is not None:
+                style.unpolish(label)
+                style.polish(label)
+            set_strike_through(label, True)
+
     def _check_auto_finish(self) -> None:
-        # auto-finish once every row (measured + manually confirmed) is resolved
-        if not self._pending and not self._text_only:
+        # all rows resolved → show the completion message and let the run loop linger before closing
+        if len(self._done) == len(self._pending) + len(self._text_only):
+            self._show_completion()
+            self.linger_before_close = True
             self._finish()
 
     def _set_actions_enabled(self, *, enabled: bool) -> None:
-        for row in self._rows.values():
-            row.measure_button.setEnabled(enabled)
-        for button in self._manual_buttons:
-            button.setEnabled(enabled)
+        # leave resolved rows alone; their interactive button is already hidden
+        for ingredient_id, row in self._rows.items():
+            if ingredient_id not in self._done:
+                row.measure_button.setEnabled(enabled)
+        for ingredient_id, manual_row in self._manual_rows.items():
+            if ingredient_id not in self._done:
+                manual_row.check_button.setEnabled(enabled)
 
     def _finish(self) -> None:
         self.finished = True
 
+    def _finish_now(self) -> None:
+        # user tapped Finish: close immediately (skip / interrupt the completion linger)
+        self.close_requested = True
+        self.finished = True
+
     def closeEvent(self, a0: QCloseEvent | None) -> None:
         # ensure the owning run loop terminates if the window is closed by any means
+        self.close_requested = True
         self.finished = True
         if a0 is not None:
             super().closeEvent(a0)

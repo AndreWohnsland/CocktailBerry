@@ -46,7 +46,8 @@
       "intro": "Aby dokończyć koktajl, dodaj te składniki samodzielnie.",
       "finish": "Zakończ",
       "withScale": "Zważ na wadze",
-      "manually": "Dodaj samodzielnie"
+      "manually": "Dodaj samodzielnie",
+      "allDone": "Wszystkie składniki zostały dodane. To okno wkrótce się zamknie."
     }
   },
   "lockScreen": {
