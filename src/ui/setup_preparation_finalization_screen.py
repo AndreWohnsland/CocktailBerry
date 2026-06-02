@@ -118,6 +118,9 @@ class PreparationFinalizationScreen(QMainWindow):
         layout.addWidget(
             create_label(cocktail.display_name, FontSize.HEADER, bold=True, centered=True, css_class="secondary")
         )
+        # the header stays pinned at the top; this stretch + the trailing one center the visible content
+        # block (the rows while resolving, or the completion view afterwards) vertically, mirroring v2
+        layout.addStretch()
         self._intro_label = create_label(
             DH.get_translation("hand_add_intro"),
             FontSize.MEDIUM,
@@ -163,7 +166,9 @@ class PreparationFinalizationScreen(QMainWindow):
         """Completion view: a check, the all-done line (only if there were hand-adds), then any message."""
         widget = QWidget()
         completion_layout = QVBoxLayout(widget)
-        completion_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # no setAlignment here: a layout-level alignment sizes children to their sizeHint and breaks
+        # height-for-width, clipping the wrapped message. Vertical centering is handled by the outer
+        # layout's stretches; horizontal centering is per-widget (the icon and the centered label).
         icon_label = QLabel()
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         check_icon = self._icons.generate_icon(self._icons.presets.check, self._icons.color.secondary)
@@ -178,11 +183,9 @@ class PreparationFinalizationScreen(QMainWindow):
                     FontSize.LARGE,
                     centered=True,
                     word_wrap=True,
-                    min_h=300,
                     max_h=_MESSAGE_MAX_HEIGHT,
                 )
             )
-        completion_layout.addStretch()
         return widget
 
     def _show_completion(self) -> None:
