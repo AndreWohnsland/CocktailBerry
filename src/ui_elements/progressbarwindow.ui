@@ -56,7 +56,6 @@
       <property name="font">
        <font>
         <pointsize>48</pointsize>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -91,7 +90,6 @@
       <property name="font">
        <font>
         <pointsize>32</pointsize>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -111,7 +109,7 @@
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>300</height>
+        <height>150</height>
        </size>
       </property>
       <property name="value">
@@ -145,7 +143,6 @@
       <property name="font">
        <font>
         <pointsize>24</pointsize>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -154,6 +151,9 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
       </property>
       <property name="cssClass" stdset="0">
        <string>secondary bold</string>
@@ -195,7 +195,6 @@
         <property name="font">
          <font>
           <pointsize>36</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>

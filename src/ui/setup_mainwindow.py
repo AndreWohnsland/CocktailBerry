@@ -124,6 +124,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
         self.cocktail_selection: CocktailSelection | None = None
+        self.finalization_screen: PreparationFinalizationScreen | None = None
 
         # Run payment check before starting NFC so payment gets disabled if needed
         payment_result = check_payment_service()
@@ -379,27 +380,29 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         """
         # the published list is the single source of truth
         hand_adds = shared.cocktail_status.hand_adds
-        screen = PreparationFinalizationScreen(self, cocktail, hand_adds, message)
+        self.finalization_screen = PreparationFinalizationScreen(self, cocktail, hand_adds, message)
         # longer timeout only when the scale is actually used (any measurable row)
         has_scale_interaction = any(h.measurable for h in hand_adds)
         timeout_s = _HAND_ADD_MEASURE_TIMEOUT_S if has_scale_interaction else _HAND_ADD_MANUAL_TIMEOUT_S
         deadline = time.time() + timeout_s
         try:
-            while not screen.finished and time.time() < deadline:
-                screen.tick()
+            while not self.finalization_screen.finished and time.time() < deadline:
+                self.finalization_screen.tick()
                 QApplication.processEvents()
                 time.sleep(0.05)
             # every row resolved: linger on the completion message before closing, unless the user
             # closes sooner via Finish (Finish / window-manager / timeout close without lingering)
-            if screen.finished and screen.linger_before_close:
+            if self.finalization_screen.finished and self.finalization_screen.linger_before_close:
                 linger_deadline = time.time() + _HAND_ADD_LINGER_S
-                while time.time() < linger_deadline and not screen.close_requested:
+                while time.time() < linger_deadline and not self.finalization_screen.close_requested:
                     QApplication.processEvents()
                     time.sleep(0.05)
         finally:
             # the window may already be gone if the user closed it via the window manager
             with contextlib.suppress(RuntimeError):
-                screen.close()
+                self.finalization_screen.close()
+                self.finalization_screen.deleteLater()
+            self.finalization_screen = None
 
     def open_team_window(self) -> None:
         self.team_window = TeamScreen(self)

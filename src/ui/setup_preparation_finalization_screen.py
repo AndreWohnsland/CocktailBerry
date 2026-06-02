@@ -170,19 +170,19 @@ class PreparationFinalizationScreen(QMainWindow):
         icon_label.setPixmap(check_icon.pixmap(LARGE_BUTTON_SIZE))
         completion_layout.addWidget(icon_label)
         if self._pending or self._text_only:
+            message = f"{DH.get_translation('hand_add_all_done')}\n\n{message}"
+        if message:
             completion_layout.addWidget(
                 create_label(
-                    DH.get_translation("hand_add_all_done"),
+                    message,
                     FontSize.LARGE,
                     centered=True,
                     word_wrap=True,
+                    min_h=300,
                     max_h=_MESSAGE_MAX_HEIGHT,
                 )
             )
-        if message:
-            completion_layout.addWidget(
-                create_label(message, FontSize.LARGE, centered=True, word_wrap=True, max_h=_MESSAGE_MAX_HEIGHT)
-            )
+        completion_layout.addStretch()
         return widget
 
     def _show_completion(self) -> None:
