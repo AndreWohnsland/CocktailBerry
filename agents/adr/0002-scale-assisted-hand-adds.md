@@ -39,13 +39,13 @@ re-derived in the browser. The guidance window is purely post-hoc UI; v1/v2 dive
 confined to the two windows, which deliberately mirror each other (gating, mechanics,
 layout, icons):
 
-- **v1** (`MainScreen.run_hand_add_measure` → `HandAddMeasureScreen`): a synchronous
-  `processEvents()` poll loop on the main thread — mirroring how `make_cocktail` keeps the
-  GUI responsive — reads the scale directly via `MachineController`. A walk-away timeout
-  auto-closes it.
-- **v2** (`HandAddMeasure` rendered inside `ProgressModal`): React drives the per-ingredient
-  tare→read→progress loop client-side against the open `/scale/tare` + `/scale/read`
-  endpoints. A walk-away timeout auto-closes it.
+- **v1** (`MainScreen.run_preparation_finalization` → `PreparationFinalizationScreen`): a
+  synchronous `processEvents()` poll loop on the main thread — mirroring how `make_cocktail`
+  keeps the GUI responsive — reads the scale directly via `MachineController`. A walk-away
+  timeout auto-closes it.
+- **v2** (`PreparationFinalize` rendered inside `ProgressModal`): React drives the
+  per-ingredient tare→read→progress loop client-side against the open `/scale/tare` +
+  `/scale/read` endpoints. A walk-away timeout auto-closes it.
 
 **Atomic publish of the terminal status.** The modal acts on *any* terminal status, so the
 hand-add list (and the optional `additional_message`) are written onto
