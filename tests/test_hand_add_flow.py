@@ -59,7 +59,8 @@ def _run_prepare(cocktail: Cocktail, *, feature_on: bool, has_scale: bool) -> li
         shared.current_waiter_nfc_id = None
         result, _ = maker.prepare_cocktail(cocktail)
     assert result == PrepareResult.FINISHED
-    return shared.cocktail_status.hand_adds
+    # the gated list is handed to make_cocktail, which publishes it atomically with the FINISHED flip
+    return mc_instance.make_cocktail.call_args.kwargs["hand_adds"]
 
 
 def test_ml_hand_add_is_measurable_with_feature_on_and_scale():

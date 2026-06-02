@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
-import HandAddMeasure from '.';
+import PreparationFinalize from '.';
 
 // NOTE: the Finish button is intentionally NOT part of this component — in the app it is
 // rendered by the surrounding ProgressModal's bottom button slot. These stories exercise the
@@ -27,9 +27,9 @@ const makeScaleSim = (stepGrams = 4) => {
   };
 };
 
-const meta: Meta<typeof HandAddMeasure> = {
-  title: 'Cocktail/HandAddMeasure',
-  component: HandAddMeasure,
+const meta: Meta<typeof PreparationFinalize> = {
+  title: 'Cocktail/PreparationFinalize',
+  component: PreparationFinalize,
   parameters: {
     layout: 'centered',
   },
@@ -48,7 +48,7 @@ const meta: Meta<typeof HandAddMeasure> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof HandAddMeasure>;
+type Story = StoryObj<typeof PreparationFinalize>;
 
 export const TwoMeasurable: Story = {
   args: {
@@ -78,5 +78,26 @@ export const ManualOnly: Story = {
       { name: 'Mint', amount: 6, unit: 'pieces', measurable: false },
       { name: 'Bitters', amount: 3, unit: 'dash', measurable: false },
     ],
+  },
+};
+
+// no hand-adds, just a completion message (e.g. a payment balance) — renders the completion view
+// directly and auto-closes after the linger
+export const MessageOnly: Story = {
+  args: {
+    handAdds: [],
+    message: 'Payment successful.<br />New balance: 12.50€',
+  },
+};
+
+// hand-adds plus a message: the message shows in the completion view AFTER all rows resolve
+export const MeasurableWithMessage: Story = {
+  args: {
+    handAdds: [
+      { name: 'Lime Juice', amount: 10, unit: 'ml', measurable: true },
+      { name: 'Sugar Syrup', amount: 20, unit: 'ml', measurable: true },
+    ],
+    message: 'Payment successful.<br />New balance: 12.50€',
+    ...makeScaleSim(),
   },
 };

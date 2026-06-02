@@ -20,7 +20,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.display_controller import DP_CONTROLLER
 from src.machine.controller import MachineController
-from src.models import Cocktail, Ingredient
+from src.models import Cocktail, HandAddMeasure
 from src.ui.creation_utils import (
     FontSize,
     create_button,
@@ -43,6 +43,24 @@ _COL_AMOUNT = 1
 _COL_NAME = 2
 _COL_PROGRESS = 3
 _GRID_COLUMNS = 4
+
+
+def _format_hand_add_amount(amount_ml: int, unit: str) -> str:
+    """Render a hand-add amount for display, applying the experimental maker factor/unit to ml.
+
+    Visual only: the measure progress always uses the raw ml amount. Mirrors the rounding used on
+    the cocktail selection screen (integer once the value is large enough, else one decimal).
+    """
+    if unit == "ml":
+        value: float = amount_ml * cfg.EXP_MAKER_FACTOR
+        display_unit = cfg.EXP_MAKER_UNIT
+        threshold = 8
+    else:
+        value = amount_ml
+        display_unit = unit
+        threshold = 0
+    display_amount = int(round(value, 0)) if value >= threshold else round(value, 1)
+    return f"{display_amount} {display_unit}"
 
 
 @dataclass
@@ -78,7 +96,9 @@ class HandAddMeasureScreen(QMainWindow):
     window close, or full resolution.
     """
 
-    def __init__(self, parent: MainScreen, cocktail: Cocktail) -> None:
+    def __init__(
+        self, parent: MainScreen, cocktail: Cocktail, hand_adds: list[HandAddMeasure], message: str = ""
+    ) -> None:
         super().__init__()
         self.mainscreen = parent
         self.finished = False
@@ -88,14 +108,13 @@ class HandAddMeasureScreen(QMainWindow):
         self.close_requested = False
         self._mc = MachineController()
         self._icons = IconSetter()
-        # ml items get a measure button only when the scale feature is on and a scale is present;
-        # everything else is confirmed by hand. `_done` tracks resolved ingredients (keyed by id()).
-        scale_measuring = bool(cfg.MAKER_SCALE_FOR_HAND_ADDS and self._mc.has_scale)
-        hand_adds = [i for i in cocktail.handadds if i.amount > 0]
-        self._pending = [i for i in hand_adds if i.unit == "ml" and scale_measuring]
-        self._text_only = [i for i in hand_adds if not (i.unit == "ml" and scale_measuring)]
+        # rows come straight from the published hand-add list (same source as v2): each item's
+        # `measurable` flag already encodes "feature on + scale present + ml". `_done` tracks resolved
+        # rows (keyed by id()).
+        self._pending = [h for h in hand_adds if h.measurable]
+        self._text_only = [h for h in hand_adds if not h.measurable]
         self._has_measurable = bool(self._pending)
-        self._active: Ingredient | None = None
+        self._active: HandAddMeasure | None = None
         self._active_progress: QProgressBar | None = None
         self._done: set[int] = set()
         self._rows: dict[int, _MeasureRow] = {}
@@ -114,6 +133,9 @@ class HandAddMeasureScreen(QMainWindow):
             word_wrap=True,
         )
         layout.addWidget(self._intro_label)
+        # optional extra info (e.g. payment balance); shown above the rows, hidden when empty
+        if message:
+            layout.addWidget(create_label(message, FontSize.MEDIUM, centered=True, css_class="neutral", word_wrap=True))
         layout.addItem(create_spacer(20))
         # rows in their own widget so they can be hidden as a unit on completion
         self._rows_widget = QWidget()
@@ -175,13 +197,13 @@ class HandAddMeasureScreen(QMainWindow):
         grid_row = 0
         if self._pending:
             grid_row = self._add_section_header(DH.get_translation("hand_add_title"), grid_row)
-            for ingredient in self._pending:
-                self._rows[id(ingredient)] = self._build_measure_row(ingredient, grid_row)
+            for hand_add in self._pending:
+                self._rows[id(hand_add)] = self._build_measure_row(hand_add, grid_row)
                 grid_row += 1
         if self._text_only:
             grid_row = self._add_section_header(DH.get_translation("hand_add_by_hand"), grid_row)
-            for ingredient in self._text_only:
-                self._manual_rows[id(ingredient)] = self._build_manual_row(ingredient, grid_row)
+            for hand_add in self._text_only:
+                self._manual_rows[id(hand_add)] = self._build_manual_row(hand_add, grid_row)
                 grid_row += 1
 
     def _add_section_header(self, text: str, grid_row: int) -> int:
@@ -190,12 +212,12 @@ class HandAddMeasureScreen(QMainWindow):
         self._grid.addWidget(header, grid_row, 0, 1, _GRID_COLUMNS)
         return grid_row + 1
 
-    def _name_label(self, ingredient: Ingredient) -> QWidget:
-        return create_label(f"  {ingredient.name} ", FontSize.LARGE, bold=True, max_w=_NAME_LABEL_MAX_WIDTH)
+    def _name_label(self, hand_add: HandAddMeasure) -> QWidget:
+        return create_label(f"  {hand_add.name} ", FontSize.LARGE, bold=True, max_w=_NAME_LABEL_MAX_WIDTH)
 
-    def _amount_label(self, ingredient: Ingredient) -> QWidget:
+    def _amount_label(self, hand_add: HandAddMeasure) -> QWidget:
         return create_label(
-            text=f"  {ingredient.amount} {ingredient.unit}",
+            text=f"  {_format_hand_add_amount(hand_add.amount, hand_add.unit)}",
             font_size=FontSize.LARGE,
             bold=True,
             css_class="secondary",
@@ -223,7 +245,7 @@ class HandAddMeasureScreen(QMainWindow):
         self._icons.set_icon(button, self._icons.generate_icon(icon_name, color), no_text=True, size=LARGE_BUTTON_SIZE)
         return button
 
-    def _build_measure_row(self, ingredient: Ingredient, grid_row: int) -> _MeasureRow:
+    def _build_measure_row(self, hand_add: HandAddMeasure, grid_row: int) -> _MeasureRow:
         progress = QProgressBar()
         progress.setRange(0, 100)
         progress.setValue(0)
@@ -239,8 +261,8 @@ class HandAddMeasureScreen(QMainWindow):
         # done marker; inert (no slot connected)
         done_check = self._flat_icon_button(self._icons.presets.check, self._icons.color.secondary)
         done_check.hide()
-        amount_label = self._amount_label(ingredient)
-        name_label = self._name_label(ingredient)
+        amount_label = self._amount_label(hand_add)
+        name_label = self._name_label(hand_add)
 
         # measure / cancel / done-check share the action cell; one visible at a time
         self._grid.addWidget(measure_button, grid_row, _COL_ACTION)
@@ -250,7 +272,7 @@ class HandAddMeasureScreen(QMainWindow):
         self._grid.addWidget(name_label, grid_row, _COL_NAME)
         self._grid.addWidget(progress, grid_row, _COL_PROGRESS)
 
-        measure_button.clicked.connect(lambda: self._start_measure(ingredient))
+        measure_button.clicked.connect(lambda: self._start_measure(hand_add))
         cancel_button.clicked.connect(self._cancel_measure)
         return _MeasureRow(
             progress=progress,
@@ -261,15 +283,15 @@ class HandAddMeasureScreen(QMainWindow):
             name_label=name_label,
         )
 
-    def _build_manual_row(self, ingredient: Ingredient, grid_row: int) -> _ManualRow:
+    def _build_manual_row(self, hand_add: HandAddMeasure, grid_row: int) -> _ManualRow:
         # empty-circle "to-do" affordance (mirrors v2's FaRegCircle); no progress column for manual rows
         check_button = self._flat_icon_button(self._icons.presets.circle, self._icons.color.primary)
         # done marker; inert (no slot connected)
         done_check = self._flat_icon_button(self._icons.presets.check, self._icons.color.secondary)
         done_check.hide()
-        amount_label = self._amount_label(ingredient)
-        name_label = self._name_label(ingredient)
-        check_button.clicked.connect(lambda: self._confirm_manual(ingredient))
+        amount_label = self._amount_label(hand_add)
+        name_label = self._name_label(hand_add)
+        check_button.clicked.connect(lambda: self._confirm_manual(hand_add))
         # check / done-check share the action cell; one visible at a time
         self._grid.addWidget(check_button, grid_row, _COL_ACTION)
         self._grid.addWidget(done_check, grid_row, _COL_ACTION)
@@ -296,7 +318,7 @@ class HandAddMeasureScreen(QMainWindow):
         if target > 0 and grams >= target:
             self._complete_active()
 
-    def _start_measure(self, ingredient: Ingredient) -> None:
+    def _start_measure(self, hand_add: HandAddMeasure) -> None:
         if self._active is not None:
             return
         try:
@@ -305,8 +327,8 @@ class HandAddMeasureScreen(QMainWindow):
             # scale became unavailable mid-session; keep the row pending instead of aborting prep
             DP_CONTROLLER.standard_box(DH.get_translation("no_scale_available"), close_time=10)
             return
-        row = self._rows[id(ingredient)]
-        self._active = ingredient
+        row = self._rows[id(hand_add)]
+        self._active = hand_add
         self._active_progress = row.progress
         row.progress.setValue(0)
         row.cancel_button.show()
@@ -328,28 +350,28 @@ class HandAddMeasureScreen(QMainWindow):
     def _complete_active(self) -> None:
         if self._active is None:
             return
-        ingredient = self._active
+        hand_add = self._active
         self._active = None
         self._active_progress = None
         self._set_actions_enabled(enabled=True)
-        self._resolve_row(ingredient)
+        self._resolve_row(hand_add)
         self._check_auto_finish()
 
-    def _confirm_manual(self, ingredient: Ingredient) -> None:
-        self._resolve_row(ingredient)
+    def _confirm_manual(self, hand_add: HandAddMeasure) -> None:
+        self._resolve_row(hand_add)
         self._check_auto_finish()
 
-    def _resolve_row(self, ingredient: Ingredient) -> None:
+    def _resolve_row(self, hand_add: HandAddMeasure) -> None:
         """Mark a row done in place: swap to the borderless secondary check and strike out the labels."""
-        self._done.add(id(ingredient))
-        measure_row = self._rows.get(id(ingredient))
+        self._done.add(id(hand_add))
+        measure_row = self._rows.get(id(hand_add))
         if measure_row is not None:
             measure_row.measure_button.hide()
             measure_row.cancel_button.hide()
             measure_row.done_check.show()
             measure_row.progress.setValue(100)
             self._mark_done(measure_row.amount_label, measure_row.name_label)
-        manual_row = self._manual_rows.get(id(ingredient))
+        manual_row = self._manual_rows.get(id(hand_add))
         if manual_row is not None:
             manual_row.check_button.hide()
             manual_row.done_check.show()

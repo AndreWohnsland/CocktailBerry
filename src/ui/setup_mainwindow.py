@@ -46,6 +46,7 @@ from src.ui.setup_bottle_window import BottleWindow
 from src.ui.setup_cocktail_selection import CocktailSelection
 from src.ui.setup_datepicker import DatePicker
 from src.ui.setup_get_ingredients_window import GetIngredientWindow
+from src.ui.setup_hand_add_screen import HandAddMeasureScreen
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui.setup_option_window import OptionWindow
@@ -370,20 +371,21 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         self.progress_window.hide()
 
-    def run_hand_add_measure(self, cocktail: Cocktail) -> None:
+    def run_hand_add_measure(self, cocktail: Cocktail, message: str = "") -> None:
         """Show the scale-assisted hand-add guidance window until finished or timed out.
 
         The cocktail is already finalized by this point, so this is pure guidance. Mirrors how
         ``make_cocktail`` keeps the GUI responsive: a synchronous loop on the main thread that
         pumps Qt events and polls the scale via the window's ``tick``. A timeout auto-closes the
         window if the user walks away (restores the old completion-dialog auto-close behaviour).
+        ``message`` is any additional info (e.g. payment balance) shown alongside the rows.
         """
-        from src.ui.setup_hand_add_screen import HandAddMeasureScreen
-
-        screen = HandAddMeasureScreen(self, cocktail)
-        # use the already-gated hand-add list (only carries measurable items when the feature is on
-        # and a scale is present) so the longer timeout only applies when the scale is actually used
-        has_scale_interaction = any(h.measurable for h in shared.cocktail_status.hand_adds)
+        # the published hand-add list is the single source of truth (same as v2); the screen reads its
+        # `measurable` flags rather than re-deriving the gating from config + scale presence
+        hand_adds = shared.cocktail_status.hand_adds
+        screen = HandAddMeasureScreen(self, cocktail, hand_adds, message)
+        # longer timeout only when the scale is actually used (any measurable row)
+        has_scale_interaction = any(h.measurable for h in hand_adds)
         timeout_s = _HAND_ADD_MEASURE_TIMEOUT_S if has_scale_interaction else _HAND_ADD_MANUAL_TIMEOUT_S
         deadline = time.time() + timeout_s
         try:

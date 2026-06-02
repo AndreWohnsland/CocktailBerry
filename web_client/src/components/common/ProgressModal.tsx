@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaCreditCard } from 'react-icons/fa';
 import Modal from 'react-modal';
 import { cancelPayment, getCocktailStatus, stopCocktail } from '../../api/cocktails';
 import { useConfig } from '../../providers/ConfigProvider';
 import type { HandAddMeasure as HandAddItem } from '../../types/models';
 import { errorToast } from '../../utils';
-import HandAddMeasure from '../cocktail/HandAddMeasure';
+import PreparationFinalize from '../cocktail/PreparationFinalize';
+import PaymentWaiting from './PaymentWaiting';
 import ProgressBar from './ProgressBar';
 import TextHeader from './TextHeader';
-
-// the cocktail is already finalized when guidance shows, so auto-close it if the user walks away;
-// allow more time when the scale is involved (measuring takes longer than checking off manual adds)
-const HAND_ADD_MANUAL_TIMEOUT_MS = 60_000;
-const HAND_ADD_MEASURE_TIMEOUT_MS = 120_000;
 
 interface ProgressModalProps {
   isOpen: boolean;
@@ -83,10 +78,13 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         // scale guidance window instead of closing; otherwise show the message or just close.
         cancelInterval();
         const adds = cocktailStatus.hand_adds ?? [];
+        const msg = cocktailStatus.message ? cocktailStatus.message.replaceAll('\n', '<br />') : null;
         if (adds.length > 0) {
+          // the guidance window carries the message (e.g. payment balance) so it still shows
           setHandAdds(adds);
-        } else if (cocktailStatus.message) {
-          setMessage(cocktailStatus.message.replaceAll('\n', '<br />'));
+          setMessage(msg);
+        } else if (msg) {
+          setMessage(msg);
         } else {
           closeWindow(cocktailStatus.status);
         }
@@ -98,40 +96,31 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     };
   }, [isOpen, closeWindow]);
 
-  // safety auto-close: guidance is purely informational (cocktail already saved)
-  useEffect(() => {
-    if (handAdds.length === 0) return;
-    const timeoutMs = handAdds.some((h) => h.measurable) ? HAND_ADD_MEASURE_TIMEOUT_MS : HAND_ADD_MANUAL_TIMEOUT_MS;
-    const id = setTimeout(() => closeWindow('FINISHED'), timeoutMs);
-    return () => clearTimeout(id);
-  }, [handAdds, closeWindow]);
+  // the completion view (hand-adds and/or message) owns its own auto-close linger + walk-away timeout
+  const showCompletion = handAdds.length > 0 || message !== null;
 
   const chooseButton = (status: string) => {
     if (status === 'WAITING_FOR_PAYMENT') {
       return (
-        <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={handleCancelPayment}>
+        <button type='button' className='px-4 py-2 button-primary w-1/2' onClick={handleCancelPayment}>
           {t('cancel')}
         </button>
       );
-    } else if (handAdds.length > 0) {
+    } else if (showCompletion) {
       return (
-        <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={() => closeWindow('FINISHED')}>
+        <button type='button' className='px-4 py-2 button-primary w-1/2' onClick={() => closeWindow('FINISHED')}>
           {t('cocktails.handAdd.finish')}
         </button>
       );
     } else if (status === 'IN_PROGRESS') {
       return (
-        <button type='button' className='mt-4 px-4 py-2 button-primary w-1/2' onClick={stopCocktail}>
+        <button type='button' className='px-4 py-2 button-primary w-1/2' onClick={stopCocktail}>
           {t('cancel')}
         </button>
       );
     } else {
       return (
-        <button
-          type='button'
-          className='mt-4 px-4 py-2 button-primary w-1/2'
-          onClick={() => closeWindow(currentStatus)}
-        >
+        <button type='button' className='px-4 py-2 button-primary w-1/2' onClick={() => closeWindow(currentStatus)}>
           {t('close')}
         </button>
       );
@@ -149,25 +138,23 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       preventScroll={true}
     >
       <div className='progress-modal h-full flex flex-col justify-between'>
-        <TextHeader text={displayName} huge />
+        <TextHeader text={displayName} huge space={4} />
         {currentStatus === 'WAITING_FOR_PAYMENT' ? (
-          <div className='flex flex-col items-center justify-center grow gap-8'>
-            <FaCreditCard className='text-primary animate-pulse' size={120} />
-            <div className='text-center'>
-              <p className='text-2xl text-neutral font-bold mb-4'>{t('payment.scanNFC')}</p>
-              <p className='text-lg text-text'>{t('payment.holdCard')}</p>
-            </div>
-          </div>
-        ) : handAdds.length > 0 ? (
-          // scale-assisted hand-add guidance; the cocktail is already finalized, Finish just closes
-          <HandAddMeasure handAdds={handAdds} onFinish={() => closeWindow('FINISHED')} />
-        ) : message ? (
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: it is from our backend, so its okay for now
-          <div className='text-neutral text-center' dangerouslySetInnerHTML={{ __html: message }} />
+          <PaymentWaiting />
+        ) : showCompletion ? (
+          // post-preparation completion: interactive hand-adds (if any) then the optional message.
+          // The cocktail is already finalized, so Finish just closes.
+          <PreparationFinalize
+            handAdds={handAdds}
+            message={message}
+            expFactor={config.EXP_MAKER_FACTOR}
+            expUnit={config.EXP_MAKER_UNIT}
+            onFinish={() => closeWindow('FINISHED')}
+          />
         ) : (
           <ProgressBar className='w-full min-h-20' fillPercent={currentProgress} />
         )}
-        <div className='text-center mt-8'>{chooseButton(currentStatus)}</div>
+        <div className='text-center mt-4'>{chooseButton(currentStatus)}</div>
       </div>
     </Modal>
   );

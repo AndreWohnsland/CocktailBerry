@@ -99,14 +99,6 @@ dialog:
     en: 'No service personnel is logged in. Please scan your NFC tag first.'
     de: 'Kein Servicepersonal angemeldet. Bitte zuerst den NFC-Tag scannen.'
     pl: 'Brak zalogowanej obsługi. Najpierw zeskanuj tag NFC.'
-  cocktail_ready:
-    en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
-    de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nach tropft.{full_comment}'
-    pl: 'Koktajl jest gotowy. Poczekaj chwilę, aż reszta płynu spłynie.{full_comment}'
-  cocktail_ready_add:
-    en: 'Also add:'
-    de: 'Noch hinzufügen:'
-    pl: 'Dodaj również:'
   cocktail_not_possible:
     en: 'Cocktail is not possible to make, not all ingredients are available!'
     de: 'Cocktail zubereiten ist nicht möglich, nicht alle Zutaten sind verfügbar!'

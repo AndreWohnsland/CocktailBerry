@@ -23,7 +23,7 @@ from src.machine.pin_controller import PinController
 from src.machine.reverter import create_reverter
 from src.machine.rfid import RFIDReader, create_rfid
 from src.machine.scale import create_scale
-from src.models import CocktailStatus, EventType, Ingredient, PreparationResult, PrepareResult
+from src.models import CocktailStatus, EventType, HandAddMeasure, Ingredient, PreparationResult, PrepareResult
 from src.programs.addons.hardware_extensions import HARDWARE_ADDONS
 
 if TYPE_CHECKING:
@@ -122,6 +122,7 @@ class MachineController:
         recipe: str = "",
         is_cocktail: bool = True,
         finish_message: str = "",
+        hand_adds: list[HandAddMeasure] | None = None,
     ) -> PreparationResult:
         """RPI Logic to prepare the cocktail.
 
@@ -148,8 +149,11 @@ class MachineController:
         if w is not None:
             w.close_progression_window()
         if shared.cocktail_status.status != PrepareResult.CANCELED:
-            shared.cocktail_status.status = PrepareResult.FINISHED
+            # publish message + hand-adds BEFORE flipping to FINISHED so a status poll never sees a
+            # terminal status without the accompanying guidance list (every reader gates on status first)
             shared.cocktail_status.message = finish_message
+            shared.cocktail_status.hand_adds = hand_adds or []
+            shared.cocktail_status.status = PrepareResult.FINISHED
         return PreparationResult(
             ingredients=machine_ingredients,
         )

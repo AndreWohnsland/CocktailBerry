@@ -57,12 +57,16 @@ def prepare_cocktail(
         if x.amount > 0
     ]
 
-    result = mc.make_cocktail(w, ingredient_list=ingredients_machine, recipe=cocktail.display_name)
-    # publish completion together with the hand-adds right after pumping (the window lists them, so
-    # no text comment is needed) — set atomically so a poll never sees FINISHED without the list
-    if shared.cocktail_status.status != PrepareResult.CANCELED:
-        shared.cocktail_status.message = additional_message or None
-        shared.cocktail_status.hand_adds = hand_adds
+    # hand the guidance list + message to make_cocktail so they are published together with the
+    # FINISHED flip (see make_cocktail: written before the flip, so a poll never sees FINISHED
+    # without the list, and a canceled run never publishes one)
+    result = mc.make_cocktail(
+        w,
+        ingredient_list=ingredients_machine,
+        recipe=cocktail.display_name,
+        finish_message=additional_message,
+        hand_adds=hand_adds,
+    )
 
     DBC = DatabaseCommander()
     # single ingredient got represented as a cocktail with one ingredient, but no id, skip recipe increment
