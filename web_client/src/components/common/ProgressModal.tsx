@@ -74,13 +74,11 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         if (cocktailStatus.status === 'IN_PROGRESS' || cocktailStatus.status === 'WAITING_FOR_PAYMENT') {
           return;
         }
-        // terminal status: the cocktail is finalized. If it carries hand-adds, show the (non-blocking)
-        // scale guidance window instead of closing; otherwise show the message or just close.
+        // terminal: show hand-adds and/or message in PreparationFinalize, else close
         cancelInterval();
         const adds = cocktailStatus.hand_adds ?? [];
         const msg = cocktailStatus.message ? cocktailStatus.message.replaceAll('\n', '<br />') : null;
         if (adds.length > 0) {
-          // the guidance window carries the message (e.g. payment balance) so it still shows
           setHandAdds(adds);
           setMessage(msg);
         } else if (msg) {
@@ -96,7 +94,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     };
   }, [isOpen, closeWindow]);
 
-  // the completion view (hand-adds and/or message) owns its own auto-close linger + walk-away timeout
+  // PreparationFinalize owns its own auto-close timers
   const showCompletion = handAdds.length > 0 || message !== null;
 
   const chooseButton = (status: string) => {
@@ -142,8 +140,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         {currentStatus === 'WAITING_FOR_PAYMENT' ? (
           <PaymentWaiting />
         ) : showCompletion ? (
-          // post-preparation completion: interactive hand-adds (if any) then the optional message.
-          // The cocktail is already finalized, so Finish just closes.
+          // cocktail already finalized; Finish just closes
           <PreparationFinalize
             handAdds={handAdds}
             message={message}

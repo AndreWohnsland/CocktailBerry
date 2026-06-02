@@ -61,12 +61,9 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
     result, message = maker.prepare_cocktail(cocktail, w, additional_message)
     if result == PrepareResult.CANCELED:
         DP_CONTROLLER.say_cocktail_canceled()
-    elif shared.cocktail_status.hand_adds:
-        # scale-assisted hand adds: show the (non-blocking) guidance window instead of the text box.
-        # any additional message (e.g. payment balance) is carried into the window so it still shows
-        w.run_hand_add_measure(cocktail, message)
-    elif len(message) > 0:
-        DP_CONTROLLER.standard_box(message, close_time=60)
+    elif shared.cocktail_status.hand_adds or message:
+        # finalize window: hand-adds and/or the additional message, then auto-closes
+        w.run_preparation_finalization(cocktail, message)
 
     # Otherwise clean up the rest
     bottles.set_fill_level_bars(w)

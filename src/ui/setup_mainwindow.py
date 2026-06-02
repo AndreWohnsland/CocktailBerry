@@ -46,11 +46,11 @@ from src.ui.setup_bottle_window import BottleWindow
 from src.ui.setup_cocktail_selection import CocktailSelection
 from src.ui.setup_datepicker import DatePicker
 from src.ui.setup_get_ingredients_window import GetIngredientWindow
-from src.ui.setup_hand_add_screen import HandAddMeasureScreen
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui.setup_option_window import OptionWindow
 from src.ui.setup_picture_window import PictureWindow
+from src.ui.setup_preparation_finalization_screen import PreparationFinalizationScreen
 from src.ui.setup_progress_screen import ProgressScreen
 from src.ui.setup_refill_dialog import RefillDialog
 from src.ui.setup_team_window import TeamScreen
@@ -83,9 +83,8 @@ _PERMISSION_BY_TAB_INDEX: dict[int, PermissionKey] = {
 # when the scale is involved (measuring takes longer than just checking off manual adds)
 _HAND_ADD_MANUAL_TIMEOUT_S = 60
 _HAND_ADD_MEASURE_TIMEOUT_S = 120
-# once every row is resolved, linger on the completion message this long before closing; the user
-# can close sooner via Finish (Finish / window-manager / walk-away-timeout closes do not linger)
-_HAND_ADD_LINGER_S = 5.0
+# linger on the completion view this long before auto-closing; Finish closes sooner
+_HAND_ADD_LINGER_S = 10.0
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -371,19 +370,16 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         self.progress_window.hide()
 
-    def run_hand_add_measure(self, cocktail: Cocktail, message: str = "") -> None:
-        """Show the scale-assisted hand-add guidance window until finished or timed out.
+    def run_preparation_finalization(self, cocktail: Cocktail, message: str = "") -> None:
+        """Show the finalize window (hand-adds and/or the message) until finished or timed out.
 
-        The cocktail is already finalized by this point, so this is pure guidance. Mirrors how
-        ``make_cocktail`` keeps the GUI responsive: a synchronous loop on the main thread that
-        pumps Qt events and polls the scale via the window's ``tick``. A timeout auto-closes the
-        window if the user walks away (restores the old completion-dialog auto-close behaviour).
-        ``message`` is any additional info (e.g. payment balance) shown alongside the rows.
+        The cocktail is already finalized, so this is pure guidance. Like ``make_cocktail`` it runs a
+        synchronous loop on the main thread that pumps Qt events and polls the scale via ``tick``; a
+        walk-away timeout auto-closes it. ``message`` (e.g. payment balance) shows in the completion view.
         """
-        # the published hand-add list is the single source of truth (same as v2); the screen reads its
-        # `measurable` flags rather than re-deriving the gating from config + scale presence
+        # the published list is the single source of truth
         hand_adds = shared.cocktail_status.hand_adds
-        screen = HandAddMeasureScreen(self, cocktail, hand_adds, message)
+        screen = PreparationFinalizationScreen(self, cocktail, hand_adds, message)
         # longer timeout only when the scale is actually used (any measurable row)
         has_scale_interaction = any(h.measurable for h in hand_adds)
         timeout_s = _HAND_ADD_MEASURE_TIMEOUT_S if has_scale_interaction else _HAND_ADD_MANUAL_TIMEOUT_S

@@ -5,44 +5,27 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QCloseEvent, QFont
-from PyQt6.QtWidgets import (
-    QGridLayout,
-    QHBoxLayout,
-    QLabel,
-    QMainWindow,
-    QProgressBar,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import QGridLayout, QLabel, QMainWindow, QProgressBar, QPushButton, QVBoxLayout, QWidget
 
 from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.display_controller import DP_CONTROLLER
 from src.machine.controller import MachineController
 from src.models import Cocktail, HandAddMeasure
-from src.ui.creation_utils import (
-    FontSize,
-    create_button,
-    create_label,
-    create_spacer,
-    set_strike_through,
-)
+from src.ui.creation_utils import FontSize, create_button, create_label, create_spacer, set_strike_through
 from src.ui.icons import LARGE_BUTTON_SIZE, IconSetter
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
-# cap the ingredient name so it does not eat half the row; the progress column gets the rest
 _NAME_LABEL_MAX_WIDTH = 300
-# shared height for the action buttons and the progress bar, so a row looks uniform
+# uniform action-button / progress-bar height so a row never changes height when the value swaps
 _ROW_HEIGHT = 70
-# grid columns (mirrors the v2 layout: action | amount | name | progress)
+# columns: action | name | value, where the value cell swaps amount <-> progress (mirrors v2)
 _COL_ACTION = 0
-_COL_AMOUNT = 1
-_COL_NAME = 2
-_COL_PROGRESS = 3
-_GRID_COLUMNS = 4
+_COL_NAME = 1
+_COL_VALUE = 2
+_GRID_COLUMNS = 3
 
 
 def _format_hand_add_amount(amount_ml: int, unit: str) -> str:
@@ -85,8 +68,8 @@ class _ManualRow:
     name_label: QWidget
 
 
-class HandAddMeasureScreen(QMainWindow):
-    """Scale-assisted hand-add window (v1), mirroring v2.
+class PreparationFinalizationScreen(QMainWindow):
+    """Scale-assisted hand-add window.
 
     Weighable (ml) hand adds get a measure button + progress bar (the run loop calls :meth:`tick`
     to poll the scale; rows resolve in any order); non-ml hand adds get a confirm button. Resolving
@@ -108,12 +91,9 @@ class HandAddMeasureScreen(QMainWindow):
         self.close_requested = False
         self._mc = MachineController()
         self._icons = IconSetter()
-        # rows come straight from the published hand-add list (same source as v2): each item's
-        # `measurable` flag already encodes "feature on + scale present + ml". `_done` tracks resolved
-        # rows (keyed by id()).
+        # the published list is the single source of truth (same as v2); `measurable` is already gated
         self._pending = [h for h in hand_adds if h.measurable]
         self._text_only = [h for h in hand_adds if not h.measurable]
-        self._has_measurable = bool(self._pending)
         self._active: HandAddMeasure | None = None
         self._active_progress: QProgressBar | None = None
         self._done: set[int] = set()
@@ -133,25 +113,15 @@ class HandAddMeasureScreen(QMainWindow):
             word_wrap=True,
         )
         layout.addWidget(self._intro_label)
-        # optional extra info (e.g. payment balance); shown above the rows, hidden when empty
-        if message:
-            layout.addWidget(create_label(message, FontSize.MEDIUM, centered=True, css_class="neutral", word_wrap=True))
         layout.addItem(create_spacer(20))
         # rows in their own widget so they can be hidden as a unit on completion
         self._rows_widget = QWidget()
-        self._grid = QGridLayout()
-        if self._has_measurable:
-            self._grid.setColumnStretch(_COL_PROGRESS, 1)
-            self._rows_widget.setLayout(self._grid)
-        else:
-            # no progress column to align to: center the content-sized grid
-            centered_row = QHBoxLayout(self._rows_widget)
-            centered_row.addStretch()
-            centered_row.addLayout(self._grid)
-            centered_row.addStretch()
+        self._grid = QGridLayout(self._rows_widget)
+        # the value column fills the row, so swapping amount <-> progress inside it never shifts width
+        self._grid.setColumnStretch(_COL_VALUE, 1)
         layout.addWidget(self._rows_widget)
-        # shown in place of the rows once every row is resolved
-        self._completion_widget = self._build_completion_widget()
+        # completion view shown once resolved: check + (all-done if hand-adds) + optional message
+        self._completion_widget = self._build_completion_widget(message)
         self._completion_widget.hide()
         layout.addWidget(self._completion_widget)
         layout.addStretch()
@@ -166,9 +136,11 @@ class HandAddMeasureScreen(QMainWindow):
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, False)
         self.showFullScreen()
         DP_CONTROLLER.set_display_settings(self)
+        # message-only (no hand-adds) resolves straight to the completion view (0 == 0 done)
+        self._check_auto_finish()
 
-    def _build_completion_widget(self) -> QWidget:
-        """Build the "all done" message (secondary check icon above the text) shown once resolved."""
+    def _build_completion_widget(self, message: str) -> QWidget:
+        """Completion view: a check, the all-done line (only if there were hand-adds), then any message."""
         widget = QWidget()
         completion_layout = QVBoxLayout(widget)
         completion_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -176,14 +148,13 @@ class HandAddMeasureScreen(QMainWindow):
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         check_icon = self._icons.generate_icon(self._icons.presets.check, self._icons.color.secondary)
         icon_label.setPixmap(check_icon.pixmap(LARGE_BUTTON_SIZE))
-        text_label = create_label(
-            DH.get_translation("hand_add_all_done"),
-            FontSize.LARGE,
-            centered=True,
-            word_wrap=True,
-        )
         completion_layout.addWidget(icon_label)
-        completion_layout.addWidget(text_label)
+        if self._pending or self._text_only:
+            completion_layout.addWidget(
+                create_label(DH.get_translation("hand_add_all_done"), FontSize.LARGE, centered=True, word_wrap=True)
+            )
+        if message:
+            completion_layout.addWidget(create_label(message, FontSize.LARGE, centered=True, word_wrap=True))
         return widget
 
     def _show_completion(self) -> None:
@@ -261,16 +232,18 @@ class HandAddMeasureScreen(QMainWindow):
         # done marker; inert (no slot connected)
         done_check = self._flat_icon_button(self._icons.presets.check, self._icons.color.secondary)
         done_check.hide()
+        progress.hide()
         amount_label = self._amount_label(hand_add)
         name_label = self._name_label(hand_add)
 
-        # measure / cancel / done-check share the action cell; one visible at a time
+        align_right = Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter
+        # measure / cancel / done-check share the action cell; amount + progress share the value cell
         self._grid.addWidget(measure_button, grid_row, _COL_ACTION)
         self._grid.addWidget(cancel_button, grid_row, _COL_ACTION)
         self._grid.addWidget(done_check, grid_row, _COL_ACTION)
-        self._grid.addWidget(amount_label, grid_row, _COL_AMOUNT)
         self._grid.addWidget(name_label, grid_row, _COL_NAME)
-        self._grid.addWidget(progress, grid_row, _COL_PROGRESS)
+        self._grid.addWidget(amount_label, grid_row, _COL_VALUE, align_right)
+        self._grid.addWidget(progress, grid_row, _COL_VALUE)
 
         measure_button.clicked.connect(lambda: self._start_measure(hand_add))
         cancel_button.clicked.connect(self._cancel_measure)
@@ -284,19 +257,18 @@ class HandAddMeasureScreen(QMainWindow):
         )
 
     def _build_manual_row(self, hand_add: HandAddMeasure, grid_row: int) -> _ManualRow:
-        # empty-circle "to-do" affordance (mirrors v2's FaRegCircle); no progress column for manual rows
+        # empty-circle "to-do" affordance (mirrors v2's FaRegCircle)
         check_button = self._flat_icon_button(self._icons.presets.circle, self._icons.color.primary)
-        # done marker; inert (no slot connected)
         done_check = self._flat_icon_button(self._icons.presets.check, self._icons.color.secondary)
         done_check.hide()
         amount_label = self._amount_label(hand_add)
         name_label = self._name_label(hand_add)
         check_button.clicked.connect(lambda: self._confirm_manual(hand_add))
-        # check / done-check share the action cell; one visible at a time
+        align_right = Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter
         self._grid.addWidget(check_button, grid_row, _COL_ACTION)
         self._grid.addWidget(done_check, grid_row, _COL_ACTION)
-        self._grid.addWidget(amount_label, grid_row, _COL_AMOUNT)
         self._grid.addWidget(name_label, grid_row, _COL_NAME)
+        self._grid.addWidget(amount_label, grid_row, _COL_VALUE, align_right)
         return _ManualRow(
             check_button=check_button,
             done_check=done_check,
@@ -331,6 +303,9 @@ class HandAddMeasureScreen(QMainWindow):
         self._active = hand_add
         self._active_progress = row.progress
         row.progress.setValue(0)
+        # swap the value cell to the progress bar
+        row.amount_label.hide()
+        row.progress.show()
         row.cancel_button.show()
         row.measure_button.hide()
         # lock the other rows' actions while one measurement runs (single scale, one at a time)
@@ -341,6 +316,9 @@ class HandAddMeasureScreen(QMainWindow):
             return
         row = self._rows[id(self._active)]
         row.progress.setValue(0)
+        # swap the value cell back to the amount
+        row.progress.hide()
+        row.amount_label.show()
         row.cancel_button.hide()
         row.measure_button.show()
         self._active = None
@@ -368,8 +346,10 @@ class HandAddMeasureScreen(QMainWindow):
         if measure_row is not None:
             measure_row.measure_button.hide()
             measure_row.cancel_button.hide()
+            # done shows the struck amount again, not the bar
+            measure_row.progress.hide()
+            measure_row.amount_label.show()
             measure_row.done_check.show()
-            measure_row.progress.setValue(100)
             self._mark_done(measure_row.amount_label, measure_row.name_label)
         manual_row = self._manual_rows.get(id(hand_add))
         if manual_row is not None:

@@ -45,7 +45,7 @@ const ManualCheckButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
 );
 
 /**
- * Post-preparation completion view (v2). Owns the whole terminal display for a finished cocktail:
+ * Post-preparation completion view. Owns the whole terminal display for a finished cocktail:
  *
  * - With hand-adds: weighable rows get a measure button + progress bar, by-hand rows get a confirm
  *   button, and rows resolve in any order (walk-away safety timeout while measuring). Once all rows
@@ -70,15 +70,13 @@ const PreparationFinalize: React.FC<PreparationFinalizeProps> = ({
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [grams, setGrams] = useState(0);
   const finishedRef = useRef(false);
-  // keep the latest read/onFinish in refs so the timeout/poll effects don't resubscribe every render
-  // (the default read prop and the inline onFinish are fresh closures each render)
+  // refs so the timeout/poll effects don't resubscribe each render (read/onFinish are fresh closures)
   const readRef = useRef(read);
   readRef.current = read;
   const onFinishRef = useRef(onFinish);
   onFinishRef.current = onFinish;
 
-  // visual-only display of an amount: ml is scaled by the experimental maker factor/unit, everything
-  // else is shown as-is. The measure math always uses the raw ml amount. Mirrors the v1 rounding.
+  // display only: ml is scaled by the experimental maker factor/unit; the measure math uses raw ml
   const formatAmount = (amountMl: number, unit: string): string => {
     const isMl = unit === 'ml';
     const value = isMl ? amountMl * expFactor : amountMl;
@@ -92,7 +90,6 @@ const PreparationFinalize: React.FC<PreparationFinalizeProps> = ({
   const manualIndices = handAdds.map((ha, i) => (ha.measurable ? -1 : i)).filter((i) => i >= 0);
   const pendingMeasurable = measurableIndices.filter((i) => !doneIndices.has(i));
   const pendingManual = manualIndices.filter((i) => !doneIndices.has(i));
-  // no measure rows → no progress column to align to, so center the rest
   const hasMeasurable = measurableIndices.length > 0;
   // all hand-adds resolved → ready to show the completion view
   const allResolved =
@@ -174,8 +171,7 @@ const PreparationFinalize: React.FC<PreparationFinalizeProps> = ({
     return Math.max(0, Math.min(100, Math.round((grams / target) * 100)));
   };
 
-  // the message arrives already newline->br converted from the backend; rendered in the completion
-  // view styled identically to the "all done" text
+  // already <br>-converted by the backend; styled like the "all done" text
   const messageBlock = message ? (
     <p
       className='text-xl'
@@ -185,12 +181,11 @@ const PreparationFinalize: React.FC<PreparationFinalizeProps> = ({
   ) : null;
 
   return (
-    // one grid aligns action / name / amount across rows; the amount cell swaps to the progress bar
-    // while a row is measuring. Finish lives in ProgressModal
+    // the Finish button is rendered by ProgressModal, not here
     <div className='flex flex-col grow w-full max-w-lg mx-auto justify-center px-2'>
       {inCompletion ? (
         <div className='flex flex-col items-center justify-center text-center gap-5 grow'>
-          {/* the check always caps the finalize view; the all-done line only applies when hand-adds were added */}
+          {/* check always shown; all-done line only when there were hand-adds */}
           <span className='flex items-center justify-center text-secondary mb-4'>
             <FaCheck size={50} />
           </span>
@@ -200,8 +195,7 @@ const PreparationFinalize: React.FC<PreparationFinalizeProps> = ({
       ) : (
         <>
           <p className='text-neutral text-center mb-4'>{t('cocktails.handAdd.intro')}</p>
-          {/* last track fills the row (amount OR progress bar live here); its width is set by the grid,
-              not its content, so swapping amount<->bar never shifts. the h-11 button anchors row height */}
+          {/* value cell fills the row; its grid-set width + the h-11 button keep the amount<->bar swap shift-free */}
           <div className='max-w-sm w-full mx-auto grid items-center gap-x-3 gap-y-1 overflow-y-auto grid-cols-[auto_auto_minmax(0,1fr)]'>
             {measurableIndices.length > 0 && (
               <div className='col-span-full'>
@@ -239,7 +233,7 @@ const PreparationFinalize: React.FC<PreparationFinalizeProps> = ({
                   <span className={`whitespace-nowrap font-bold ${isDone ? 'line-through opacity-50' : ''}`}>
                     {ha.name}
                   </span>
-                  {/* same fixed cell: progress while measuring, otherwise the target amount (no shift) */}
+                  {/* same cell: progress while measuring, else the amount */}
                   {isActive ? (
                     <ProgressBar className='w-full h-11' fillPercent={progressPercent(i)} />
                   ) : (
