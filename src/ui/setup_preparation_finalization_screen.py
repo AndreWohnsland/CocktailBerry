@@ -5,7 +5,16 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QCloseEvent, QFont
-from PyQt6.QtWidgets import QGridLayout, QLabel, QMainWindow, QProgressBar, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QProgressBar,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 from src.config.config_manager import CONFIG as cfg
 from src.dialog_handler import DIALOG_HANDLER as DH
@@ -19,6 +28,10 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 _NAME_LABEL_MAX_WIDTH = 300
+# cap the rows block and center it on wide screens (space | items | space), mirroring v2's mx-auto max-w
+_ROWS_MAX_WIDTH = 600
+# let wrapped completion text grow to its full height instead of being clipped by create_label's 200px default
+_MESSAGE_MAX_HEIGHT = 16777215
 # uniform action-button / progress-bar height so a row never changes height when the value swaps
 _ROW_HEIGHT = 70
 # columns: action | name | value, where the value cell swaps amount <-> progress (mirrors v2)
@@ -116,10 +129,17 @@ class PreparationFinalizationScreen(QMainWindow):
         layout.addItem(create_spacer(20))
         # rows in their own widget so they can be hidden as a unit on completion
         self._rows_widget = QWidget()
+        self._rows_widget.setMaximumWidth(_ROWS_MAX_WIDTH)
         self._grid = QGridLayout(self._rows_widget)
         # the value column fills the row, so swapping amount <-> progress inside it never shifts width
         self._grid.setColumnStretch(_COL_VALUE, 1)
-        layout.addWidget(self._rows_widget)
+        # center the capped-width rows: the high stretch lets them fill up to the cap, then the equal
+        # side stretches split the leftover evenly (space | items | space)
+        rows_row = QHBoxLayout()
+        rows_row.addStretch(1)
+        rows_row.addWidget(self._rows_widget, 100)
+        rows_row.addStretch(1)
+        layout.addLayout(rows_row)
         # completion view shown once resolved: check + (all-done if hand-adds) + optional message
         self._completion_widget = self._build_completion_widget(message)
         self._completion_widget.hide()
@@ -151,10 +171,18 @@ class PreparationFinalizationScreen(QMainWindow):
         completion_layout.addWidget(icon_label)
         if self._pending or self._text_only:
             completion_layout.addWidget(
-                create_label(DH.get_translation("hand_add_all_done"), FontSize.LARGE, centered=True, word_wrap=True)
+                create_label(
+                    DH.get_translation("hand_add_all_done"),
+                    FontSize.LARGE,
+                    centered=True,
+                    word_wrap=True,
+                    max_h=_MESSAGE_MAX_HEIGHT,
+                )
             )
         if message:
-            completion_layout.addWidget(create_label(message, FontSize.LARGE, centered=True, word_wrap=True))
+            completion_layout.addWidget(
+                create_label(message, FontSize.LARGE, centered=True, word_wrap=True, max_h=_MESSAGE_MAX_HEIGHT)
+            )
         return widget
 
     def _show_completion(self) -> None:
