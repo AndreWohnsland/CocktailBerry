@@ -3,12 +3,40 @@ import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { cancelPayment, getCocktailStatus, stopCocktail } from '../../api/cocktails';
 import { useConfig } from '../../providers/ConfigProvider';
-import type { HandAddMeasure as HandAddItem } from '../../types/models';
+import type { HandAddMeasure as HandAddItem, PrepareResult } from '../../types/models';
 import { errorToast } from '../../utils';
 import PreparationFinalize from '../cocktail/PreparationFinalize';
 import PaymentWaiting from './PaymentWaiting';
 import ProgressBar from './ProgressBar';
 import TextHeader from './TextHeader';
+
+// what the modal is currently doing; the body content and its footer button are picked from this
+type ModalPhase = 'payment' | 'completion' | 'inProgress' | 'closing';
+
+// single source of truth for what the modal is doing; both the body and the footer button derive from it
+function getPhase(status: PrepareResult, handAdds: HandAddItem[], message: string | null): ModalPhase {
+  if (status === 'WAITING_FOR_PAYMENT') return 'payment';
+  if (status === 'IN_PROGRESS') return 'inProgress';
+  if (handAdds.length > 0 || message !== null) return 'completion';
+  return 'closing';
+}
+
+// shared footer button; only the action and label differ between phases
+const FooterButton: React.FC<{ onClick: () => void; label: string; filled?: boolean }> = ({
+  onClick,
+  label,
+  filled = false,
+}) => (
+  <div className='text-center mt-4'>
+    <button
+      type='button'
+      className={`px-4 py-2 button-primary${filled ? '-filled' : ''} w-full max-w-md mx-auto`}
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  </div>
+);
 
 interface ProgressModalProps {
   isOpen: boolean;
@@ -27,7 +55,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
 }) => {
   const { config } = useConfig();
   const [currentProgress, setCurrentProgress] = useState(progress);
-  const [currentStatus, setCurrentStatus] = useState<string>(
+  const [currentStatus, setCurrentStatus] = useState<PrepareResult>(
     config.PAYMENT_TYPE !== 'Disabled' ? 'WAITING_FOR_PAYMENT' : 'IN_PROGRESS',
   );
   const [message, setMessage] = useState<string | null>(null);
@@ -66,7 +94,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
       }
     };
 
-    if (isOpen && !intervalId) {
+    if (isOpen) {
       intervalId = setInterval(async () => {
         const cocktailStatus = await getCocktailStatus();
         setCurrentStatus(cocktailStatus.status);
@@ -94,34 +122,46 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     };
   }, [isOpen, closeWindow]);
 
-  // PreparationFinalize owns its own auto-close timers
-  const showCompletion = handAdds.length > 0 || message !== null;
+  const phase = getPhase(currentStatus, handAdds, message);
 
-  const chooseButton = (status: string) => {
-    if (status === 'WAITING_FOR_PAYMENT') {
-      return (
-        <button type='button' className='px-4 py-2 button-primary w-1/2' onClick={handleCancelPayment}>
-          {t('cancel')}
-        </button>
-      );
-    } else if (showCompletion) {
-      return (
-        <button type='button' className='px-4 py-2 button-primary w-1/2' onClick={() => closeWindow('FINISHED')}>
-          {t('cocktails.handAdd.finish')}
-        </button>
-      );
-    } else if (status === 'IN_PROGRESS') {
-      return (
-        <button type='button' className='px-4 py-2 button-primary w-1/2' onClick={stopCocktail}>
-          {t('cancel')}
-        </button>
-      );
-    } else {
-      return (
-        <button type='button' className='px-4 py-2 button-primary w-1/2' onClick={() => closeWindow(currentStatus)}>
-          {t('close')}
-        </button>
-      );
+  // one switch over the phase renders the body and its footer button together
+  const renderPhase = () => {
+    switch (phase) {
+      case 'payment':
+        return (
+          <>
+            <PaymentWaiting />
+            <FooterButton onClick={handleCancelPayment} label={t('cancel')} />
+          </>
+        );
+      case 'completion':
+        // cocktail already finalized; Finish just closes
+        return (
+          <>
+            <PreparationFinalize
+              handAdds={handAdds}
+              message={message}
+              expFactor={config.EXP_MAKER_FACTOR}
+              expUnit={config.EXP_MAKER_UNIT}
+              onFinish={() => closeWindow('FINISHED')}
+            />
+            <FooterButton onClick={() => closeWindow('FINISHED')} label={t('cocktails.handAdd.finish')} filled />
+          </>
+        );
+      case 'inProgress':
+        return (
+          <>
+            <ProgressBar className='w-full min-h-20' fillPercent={currentProgress} />
+            <FooterButton onClick={stopCocktail} label={t('cancel')} />
+          </>
+        );
+      default:
+        return (
+          <>
+            <ProgressBar className='w-full min-h-20' fillPercent={currentProgress} />
+            <FooterButton onClick={() => closeWindow(currentStatus)} label={t('close')} filled />
+          </>
+        );
     }
   };
 
@@ -137,21 +177,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     >
       <div className='progress-modal h-full flex flex-col justify-between'>
         <TextHeader text={displayName} huge space={4} />
-        {currentStatus === 'WAITING_FOR_PAYMENT' ? (
-          <PaymentWaiting />
-        ) : showCompletion ? (
-          // cocktail already finalized; Finish just closes
-          <PreparationFinalize
-            handAdds={handAdds}
-            message={message}
-            expFactor={config.EXP_MAKER_FACTOR}
-            expUnit={config.EXP_MAKER_UNIT}
-            onFinish={() => closeWindow('FINISHED')}
-          />
-        ) : (
-          <ProgressBar className='w-full min-h-20' fillPercent={currentProgress} />
-        )}
-        <div className='text-center mt-4'>{chooseButton(currentStatus)}</div>
+        {renderPhase()}
       </div>
     </Modal>
   );

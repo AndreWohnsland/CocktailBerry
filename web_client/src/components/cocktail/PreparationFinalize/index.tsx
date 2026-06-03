@@ -44,6 +44,31 @@ const ManualCheckButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
   </button>
 );
 
+// action cell for a weighable row: resolved check, cancel while measuring, else start-measure
+const MeasureAction: React.FC<{
+  isDone: boolean;
+  isActive: boolean;
+  disabled: boolean;
+  onStart: () => void;
+  onCancel: () => void;
+}> = ({ isDone, isActive, disabled, onStart, onCancel }) => {
+  if (isDone) return <DoneCheck />;
+  if (isActive) {
+    return <Button icon={FaTimes} label='' iconSize={22} style='danger' className='w-14 h-11' onClick={onCancel} />;
+  }
+  return (
+    <Button
+      icon={FaScaleUnbalanced}
+      label=''
+      iconSize={22}
+      filled
+      className='w-14 h-11'
+      onClick={onStart}
+      disabled={disabled}
+    />
+  );
+};
+
 /**
  * Post-preparation completion view. Owns the whole terminal display for a finished cocktail:
  *
@@ -208,28 +233,13 @@ const PreparationFinalize: React.FC<PreparationFinalizeProps> = ({
               const isDone = doneIndices.has(i);
               return (
                 <Fragment key={`m-${ha.name}-${i}`}>
-                  {isDone ? (
-                    <DoneCheck />
-                  ) : isActive ? (
-                    <Button
-                      icon={FaTimes}
-                      label=''
-                      iconSize={22}
-                      style='danger'
-                      className='w-14 h-11'
-                      onClick={cancelMeasure}
-                    />
-                  ) : (
-                    <Button
-                      icon={FaScaleUnbalanced}
-                      label=''
-                      iconSize={22}
-                      filled
-                      className='w-14 h-11'
-                      onClick={() => startMeasure(i)}
-                      disabled={activeIndex !== null}
-                    />
-                  )}
+                  <MeasureAction
+                    isDone={isDone}
+                    isActive={isActive}
+                    disabled={activeIndex !== null}
+                    onStart={() => startMeasure(i)}
+                    onCancel={cancelMeasure}
+                  />
                   <span className={`whitespace-nowrap font-bold ${isDone ? 'line-through opacity-50' : ''}`}>
                     {ha.name}
                   </span>
