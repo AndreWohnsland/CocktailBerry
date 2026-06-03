@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import asyncio
 import atexit
 import datetime
 import os
 import shutil
-import subprocess
 import tempfile
 import time
 import zipfile
@@ -124,7 +124,7 @@ async def reboot_system() -> ApiMessage:
         raise HTTPException(status_code=400, detail="Cannot reboot on Windows")
     DatabaseCommander().save_event(EventType.REBOOT)
     atexit._run_exitfuncs()  # pylint: disable=protected-access
-    subprocess.run(["sudo", "reboot"], check=False)
+    await asyncio.create_subprocess_exec("sudo", "reboot")
     return ApiMessage(message="System rebooting")
 
 
@@ -134,7 +134,7 @@ async def shutdown_system() -> ApiMessage:
         raise HTTPException(status_code=400, detail="Cannot shutdown on Windows")
     DatabaseCommander().save_event(EventType.SHUTDOWN)
     atexit._run_exitfuncs()  # pylint: disable=protected-access
-    subprocess.run(["sudo", "shutdown", "now"], check=False)
+    await asyncio.create_subprocess_exec("sudo", "shutdown", "now")
     return ApiMessage(message="System shutting down")
 
 
