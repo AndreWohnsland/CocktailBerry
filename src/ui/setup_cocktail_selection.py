@@ -4,7 +4,7 @@ import random
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, QTimer
-from PyQt6.QtGui import QFont, QPixmap, QResizeEvent
+from PyQt6.QtGui import QPixmap, QResizeEvent
 from PyQt6.QtWidgets import QDialog, QLabel, QPushButton, QSizePolicy
 
 from src.config.config_manager import CONFIG as cfg
@@ -90,6 +90,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         apply_responsive_layouts(self.width(), [self.layout_maker_detail])
         self._update_image_spacers()
         QTimer.singleShot(0, self._update_image_size)
+        # Re-scale the fonts to the real rendered window size (deferred so the layout has settled).
+        QTimer.singleShot(0, self.adjust_maker_label_size_cocktaildata)
 
     def _update_image_spacers(self) -> None:
         """Make image spacers expanding in portrait mode (centers image), fixed in landscape."""
@@ -163,9 +165,12 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         fields_volume = self.get_labels_maker_volume()
         for field_ingredient, field_volume in zip(fields_ingredient, fields_volume):
             field_ingredient.setText("")
+            field_ingredient.setVisible(False)
             field_volume.setText("")
+            field_volume.setVisible(False)
         if fields_ingredient:
             fields_ingredient[0].setText(surprise_label)
+            fields_ingredient[0].setVisible(True)
         self._render_prepare_buttons()
 
     def _prepare_random_cocktail(self, amount: int) -> None:
@@ -222,11 +227,15 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             display_data.extend([Ingredient(-1, "", 0, 0, 0, False, 100, 100), *hand])
         fields_ingredient = self.get_labels_maker_ingredients()
         fields_volume = self.get_labels_maker_volume()
-        # clean the ui elements
+        # hide all rows first, then show only the needed ones
         for field_ingredient, field_volume in zip(fields_ingredient, fields_volume):
             field_ingredient.setText("")
+            field_ingredient.setVisible(False)
             field_volume.setText("")
+            field_volume.setVisible(False)
         for field_ingredient, field_volume, ing in zip(fields_ingredient, fields_volume, display_data):
+            field_ingredient.setVisible(True)
+            field_volume.setVisible(True)
             # -1 indicates no ingredient
             if ing.id == -1:
                 ingredient_name = UI_LANGUAGE.get_add_self()
@@ -234,7 +243,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 field_ingredient.setStyleSheet(f"color: {self.icons.color.neutral};")
                 set_underline(field_ingredient, True)
             else:
-                field_ingredient.setProperty("cssClass", None)
+                field_ingredient.setProperty("cssClass", "bold")
                 field_ingredient.setStyleSheet("")
                 set_underline(field_ingredient, False)
                 amount = ing.amount
@@ -274,36 +283,52 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.virgin_toggle.setChecked(self.cocktail.only_virgin)
         for field_ingredient, field_volume in zip(self.get_labels_maker_ingredients(), self.get_labels_maker_volume()):
             field_ingredient.setText("")
+            field_ingredient.setVisible(False)
             field_volume.setText("")
+            field_volume.setVisible(False)
 
     def adjust_maker_label_size_cocktaildata(self) -> None:
-        """Adjust the font size for larger screens."""
+        """Adjust the font size relative to the real rendered window size.
+
+        Scales relative to the actual top-level window (`self.window()`) instead of the
+        configured `UI_WIDTH`/`UI_HEIGHT`, so it stays correct when the OS does not honor the
+        requested fullscreen size or the config does not match the panel. Because both the window
+        geometry and `setPointSize` live in logical pixels, the font-to-window ratio is
+        device-pixel-ratio neutral, i.e. fonts stay a constant fraction of the screen on any DPI.
+        """
         # iterate over all size types and adjust size relative to window height
         # default height was 480 for provided UI
         # so if its larger, the font should also be larger here
-        short_side = min(cfg.UI_HEIGHT, cfg.UI_WIDTH)
+        window = self.window()
+        if window is None:
+            return
+        short_side = min(window.height(), window.width())
         # no need to adjust if its near to the original height
         default_height = 480
         if short_side <= default_height + 20:
             return
-        # creating list of all labels
-        big_labels = [self.LAlkoholname]
-        medium_labels = [self.LAlkoholgehalt]
-        small_labels = self.get_labels_maker_volume()
-        small_labels_bold = self.get_labels_maker_ingredients()
-        all_labels = [big_labels, medium_labels, small_labels_bold, small_labels]
+        prepare_buttons = [btn for _, btn in self._volume_buttons] if self._multi_button else [self.prepare_button]
+        # creating nested list of all labels
+        all_labels = [
+            [self.LAlkoholname],
+            [self.LAlkoholgehalt],
+            self.get_labels_maker_volume() + self.get_labels_maker_ingredients(),
+            prepare_buttons,
+        ]
+        default_sizes = [
+            22,  # title
+            16,  # alcohol
+            15,  # ingredients and volumes
+            18,  # prepare button(s)
+        ]
 
         diff_from_default_height = short_side / default_height
-        # from large to small
-        default_sizes = [22, 16, 12, 12]
-        is_bold_list = [True, True, True, False]
-        for default_size, is_bold, labels in zip(default_sizes, is_bold_list, all_labels):
-            new_size = int(diff_from_default_height * default_size)
-            font = QFont()
-            font.setPointSize(new_size)
-            font.setBold(is_bold)
-            font.setWeight(50 + is_bold * 25)
+        scale_factor = 1.05  # grow a bit faster than the window size to better use the space on larger screens
+        for default_size, labels in zip(default_sizes, all_labels):
+            new_size = int(diff_from_default_height * default_size * scale_factor)
             for label in labels:
+                font = label.font()
+                font.setPointSize(new_size)
                 label.setFont(font)
 
     def get_labels_maker_volume(self) -> list[QLabel]:
@@ -367,6 +392,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 min_h=60,
                 max_h=80,
             )
+            button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
             button.clicked.connect(lambda _, v=volume: self._prepare_cocktail(v))
             icon = self.icons.generate_icon(icon_name, self.icons.color.background)
             self.icons.set_icon(button, icon, False)
