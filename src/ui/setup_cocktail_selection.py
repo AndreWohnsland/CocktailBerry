@@ -230,11 +230,11 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             # -1 indicates no ingredient
             if ing.id == -1:
                 ingredient_name = UI_LANGUAGE.get_add_self()
-                field_ingredient.setProperty("cssClass", "hand-separator")
+                field_ingredient.setProperty("cssClass", "hand-separator bold")
                 field_ingredient.setStyleSheet(f"color: {self.icons.color.neutral};")
                 set_underline(field_ingredient, True)
             else:
-                field_ingredient.setProperty("cssClass", None)
+                field_ingredient.setProperty("cssClass", "bold")
                 field_ingredient.setStyleSheet("")
                 set_underline(field_ingredient, False)
                 amount = ing.amount
