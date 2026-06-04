@@ -7,6 +7,8 @@ Usually, updating to the latest version is always a good idea.
 
 | Version     | Feature Description                                                                                                  |
 | :---------- | :------------------------------------------------------------------------------------------------------------------- |
+| **v4.6.0**  | Scale guided hand add process                                                                                        |
+| **v4.5.0**  | Greatly improve cocktail images                                                                                      |
 | **v4.4.0**  | Add virtual keyboard option to v2                                                                                    |
 | **v4.3.0**  | Add motorkit dispenser                                                                                               |
 | **v4.2.0**  | Add v1 Portrait Mode                                                                                                 |
