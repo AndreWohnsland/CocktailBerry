@@ -331,6 +331,13 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
                 font.setPointSize(new_size)
                 label.setFont(font)
 
+        # scale button icons 1:1 with the screen (no extra scale_factor)
+        default_icon_size = 36
+        icon_px = int(diff_from_default_height * default_icon_size)
+        scaled_icon = QSize(icon_px, icon_px)
+        for button in prepare_buttons:
+            button.setIconSize(scaled_icon)
+
     def get_labels_maker_volume(self) -> list[QLabel]:
         """Return all maker label objects for volumes of ingredients."""
         return [getattr(self, f"LMZutat{x}") for x in range(1, 10)]
