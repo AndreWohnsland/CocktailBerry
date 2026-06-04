@@ -10,12 +10,12 @@ import pytest
 
 from src.config.config_manager import CONFIG, shared
 from src.config.errors import ConfigError
-from src.models import Cocktail, HandAddMeasure, Ingredient, PrepareResult, PreparationResult
+from src.models import Cocktail, HandAddMeasure, Ingredient, PreparationResult, PrepareResult
 
 
-def _ingredient(id: int, name: str, *, bottle: int | None, amount: int, unit: str = "ml") -> Ingredient:
+def _ingredient(_id: int, name: str, *, bottle: int | None, amount: int, unit: str = "ml") -> Ingredient:
     return Ingredient(
-        id=id,
+        id=_id,
         name=name,
         alcohol=0,
         bottle_volume=1000,

@@ -74,8 +74,7 @@ def v3_database(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[Pa
         )
         cur.execute("INSERT INTO Recipes (Name) VALUES ('Test Cocktail');")
         cur.executemany(
-            "INSERT INTO WaiterLog (Timestamp, Waiter_NFC_ID, Recipe_ID, Volume, Is_Virgin) "
-            "VALUES (?, ?, ?, ?, ?);",
+            "INSERT INTO WaiterLog (Timestamp, Waiter_NFC_ID, Recipe_ID, Volume, Is_Virgin) VALUES (?, ?, ?, ?, ?);",
             [
                 ("2025-01-01 10:00:00", "nfc_001", 1, 250, 0),
                 ("2025-01-01 11:00:00", "nfc_002", 1, 300, 0),
