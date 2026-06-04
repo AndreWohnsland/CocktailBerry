@@ -244,6 +244,13 @@ fi
 curl -X 'POST' 'https://api.cocktailberry.org/api/v1/public/installation' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"os_version": "'"$OS_INFO"'"}'
 echo ""
 
+if [[ "$V2_FLAG" = false ]]; then
+  echo "~~ Disabling on-screen keyboard auto-popup (v1 uses custom keyboards) ~~"
+  sudo raspi-config nonint do_squeekboard 1 2>/dev/null \
+    && echo "> On-screen keyboard (squeekboard) disabled" \
+    || echo "> WARNING: Could not disable on-screen keyboard (squeekboard)"
+fi
+
 if [[ "$V2_FLAG" = true ]]; then
   echo "~~ Finalizing Web Setup ~~"
   # shellcheck disable=SC2164
