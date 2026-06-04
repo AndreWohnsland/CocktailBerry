@@ -41,7 +41,14 @@
     "spend": "Ausgeben",
     "selectTeam": "Team Auswählen",
     "randomCocktail": "Zufalls-Cocktail",
-    "beSurprised": "Lass dich überraschen!"
+    "beSurprised": "Lass dich überraschen!",
+    "handAdd": {
+      "intro": "Um den Cocktail fertigzustellen, füge diese Zutaten selbst hinzu.",
+      "finish": "Fertig",
+      "withScale": "Mit Waage abwiegen",
+      "manually": "Selbst hinzufügen",
+      "allDone": "Alle Zutaten wurden hinzugefügt. Dieses Fenster schließt sich in Kürze."
+    }
   },
   "lockScreen": {
     "defaultTitle": "Gesperrt",

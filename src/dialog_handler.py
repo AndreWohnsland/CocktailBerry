@@ -93,10 +93,13 @@ allowed_keys = Literal[
     "box_title",
     "cleaning_started",
     "cocktail_canceled",
+    "hand_add_all_done",
+    "hand_add_by_hand",
+    "hand_add_finish_button",
+    "hand_add_intro",
+    "hand_add_title",
     "cocktail_in_progress",
     "cocktail_not_possible",
-    "cocktail_ready_add",
-    "cocktail_ready",
     "cocktailberry_up_to_date",
     "confirmation_required",
     "create_cocktail_first",
@@ -404,24 +407,6 @@ class DialogHandler:
     def say_cocktail_canceled(self) -> None:
         """Informs user that the cocktail was canceled."""
         self.__output_language_dialog("cocktail_canceled", close_time=10)
-
-    def cocktail_ready(self, comment: str) -> str:
-        """Cocktail is done with additional information what to add."""
-        # no more message if there is no additional information
-        if len(comment) == 0:
-            return ""
-        header_comment = self._choose_language("cocktail_ready_add")
-        full_comment = f"\n\n{header_comment}{comment}"
-        return self._choose_language("cocktail_ready", full_comment=full_comment)
-
-    def say_cocktail_ready(self, comment: str) -> None:
-        """Informs user that the cocktail is done with additional information what to add."""
-        # no more message if there is no additional information
-        if not comment:
-            return
-        close_time = 60
-        msg = self.cocktail_ready(comment)
-        self.standard_box(msg, close_time=close_time)
 
     def say_enter_cocktail_name(self) -> None:
         """Informs user that no cocktail name was supplied."""

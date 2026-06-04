@@ -14,7 +14,7 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
-from src.models import Cocktail, CocktailStatus, EventType, Ingredient, PrepareResult
+from src.models import Cocktail, CocktailStatus, EventType, HandAddMeasure, Ingredient, PrepareResult
 from src.programs.addons.addons import ADDONS
 from src.service.waiter_service import WaiterService
 from src.service_handler import SERVICE_HANDLER
@@ -25,33 +25,18 @@ if TYPE_CHECKING:
 _logger = LoggerHandler("maker_module")
 
 
-def _build_comment_maker(cocktail: Cocktail) -> str:
-    """Build the additional comment for the completion message (if there are handadds)."""
-    comment = ""
-    hand_add = cocktail.handadds
-    # sort by descending length of the name and unit combined
-    length_desc = sorted(hand_add, key=lambda x: len(x.name) + len(x.unit), reverse=True)
-    for ing in length_desc:
-        amount: int | float = ing.amount
-        if ing.unit != "ml":
-            amount = ing.amount * cfg.EXP_MAKER_FACTOR
-        # usually show decimal places, up to 8, but if not ml is used clip decimal place
-        threshold = 8 if ing.unit == "ml" else 0
-        amount = int(round(amount, 1)) if amount >= threshold else round(amount, 1)
-        if amount <= 0:
-            continue
-        unit = cfg.EXP_MAKER_UNIT if ing.unit == "ml" else ing.unit
-        comment += f"\n~{amount} {unit} {ing.name}"
-
-    return comment
-
-
 def prepare_cocktail(
     cocktail: Cocktail,
     w: MainScreen | None = None,
     additional_message: str = "",
 ) -> tuple[PrepareResult, str]:
-    """Prepare a Cocktail, if not already another one is in production and enough ingredients are available."""
+    """Prepare a Cocktail, if not already another one is in production and enough ingredients are available.
+
+    The cocktail is finalized immediately after pumping. Any hand-adds are attached to
+    ``shared.cocktail_status`` so the UI shows them in the (non-blocking) guidance window afterwards;
+    finalization never waits on it. The scale feature only decides whether ml items get a measure
+    button there — when it is off (or no scale) every hand-add is just confirmed by hand.
+    """
     # Capture current waiter at preparation start (immune to logout during prep)
     waiter_nfc_id = shared.current_waiter_nfc_id
     shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
@@ -60,13 +45,29 @@ def prepare_cocktail(
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
     ingredients_machine = [x for x in cocktail.machineadds if x.amount > 0]
     _logger.info(f"Preparing {cocktail.adjusted_amount} ml {cocktail.display_name}")
-    comment = _build_comment_maker(cocktail)
-
-    # only use separator if we got both messages
-    separator = "\n" if additional_message and comment else ""
-    add_message = additional_message + separator + DH.cocktail_ready(comment)
     mc = MachineController()
-    result = mc.make_cocktail(w, ingredients_machine, cocktail.display_name, finish_message=add_message)
+
+    # Build the hand-add guidance list (shown for every cocktail that has hand-adds). An item is
+    # "measurable" (gets a scale measure button) only when the feature is on and a scale is present;
+    # otherwise it is confirmed by hand like any non-ml add.
+    scale_measuring = bool(cfg.MAKER_SCALE_FOR_HAND_ADDS and mc.has_scale)
+    hand_adds = [
+        HandAddMeasure(name=x.name, amount=x.amount, unit=x.unit, measurable=(x.unit == "ml" and scale_measuring))
+        for x in cocktail.handadds
+        if x.amount > 0
+    ]
+
+    # hand the guidance list + message to make_cocktail so they are published together with the
+    # FINISHED flip (see make_cocktail: written before the flip, so a poll never sees FINISHED
+    # without the list, and a canceled run never publishes one)
+    result = mc.make_cocktail(
+        w,
+        ingredient_list=ingredients_machine,
+        recipe=cocktail.display_name,
+        finish_message=additional_message,
+        hand_adds=hand_adds,
+    )
+
     DBC = DatabaseCommander()
     # single ingredient got represented as a cocktail with one ingredient, but no id, skip recipe increment
     if cocktail.id != 0:
@@ -97,8 +98,7 @@ def prepare_cocktail(
         return PrepareResult.CANCELED, DH.get_translation("cocktail_canceled")
 
     DBC.save_event(EventType.COCKTAIL_PREPARATION, f"{cocktail.display_name}")
-    shared.cocktail_status.status = PrepareResult.FINISHED
-    return PrepareResult.FINISHED, add_message
+    return PrepareResult.FINISHED, additional_message
 
 
 def interrupt_cocktail() -> None:

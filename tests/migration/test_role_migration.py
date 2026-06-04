@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
 import sqlite3
 from collections.abc import Generator
@@ -25,7 +26,7 @@ def v3_database(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[Pa
     monkeypatch.setattr(update_data, "DEFAULT_DATABASE_PATH", db_path)
     monkeypatch.setattr(update_data, "BACKUP_FOLDER", backup_dir)
 
-    with sqlite3.connect(db_path) as conn:
+    with contextlib.closing(sqlite3.connect(db_path)) as conn:
         cur = conn.cursor()
         cur.executescript(
             """
@@ -87,14 +88,14 @@ def v3_database(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[Pa
 
 
 def _columns(db_path: Path, table: str) -> list[str]:
-    with sqlite3.connect(db_path) as conn:
+    with contextlib.closing(sqlite3.connect(db_path)) as conn:
         cur = conn.cursor()
         cur.execute(f"PRAGMA table_info({table});")
         return [row[1] for row in cur.fetchall()]
 
 
 def _query(db_path: Path, sql: str, params: tuple = ()) -> list[tuple]:
-    with sqlite3.connect(db_path) as conn:
+    with contextlib.closing(sqlite3.connect(db_path)) as conn:
         cur = conn.cursor()
         cur.execute(sql, params)
         return list(cur.fetchall())
@@ -198,7 +199,7 @@ class TestRoleMigration:
         monkeypatch.setattr(update_data, "DATABASE_PATH", db_path)
         monkeypatch.setattr(update_data, "DEFAULT_DATABASE_PATH", db_path)
         monkeypatch.setattr(update_data, "BACKUP_FOLDER", backup_dir)
-        with sqlite3.connect(db_path) as conn:
+        with contextlib.closing(sqlite3.connect(db_path)) as conn:
             conn.execute(
                 "CREATE TABLE Waiters (NFC_ID TEXT PRIMARY KEY, Name TEXT, "
                 "Privilege_Maker BOOLEAN, Privilege_Ingredients BOOLEAN, "

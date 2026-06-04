@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, Literal, TypeVar
 
 from annotated_types import Len
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.config.config_manager import StartupIssue
 from src.models import Event, OptionTiles, PrepareResult
@@ -15,12 +15,11 @@ T = TypeVar("T")
 
 
 class ErrorDetail(BaseModel):
+    model_config = ConfigDict(use_enum_values=True)
+
     status: PrepareResult
     detail: str
     bottle: int | None = None
-
-    class Config:  # noqa: D106
-        use_enum_values = True
 
 
 class CocktailIngredient(BaseModel):

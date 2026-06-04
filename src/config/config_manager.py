@@ -51,6 +51,7 @@ from src.config.config_types import (
     StepperPumpConfig,
     StringType,
     WS281xLedConfig,
+    humanize_config_name,
 )
 from src.config.errors import ConfigError
 from src.config.validators import (
@@ -194,6 +195,8 @@ class ConfigManager:
     MAKER_ADD_SINGLE_INGREDIENT: bool = False
     # Option to show a random cocktail tile in the maker tab
     MAKER_RANDOM_COCKTAIL: bool = False
+    # Option to guide hand adds with the scale (opt-in, requires an enabled scale)
+    MAKER_SCALE_FOR_HAND_ADDS: bool = False
     # List of LED configurations (discriminated by ``led_type``: Normal or WSLED)
     LED_CONFIG: ClassVar[list[BaseLedConfig]] = []
     # RFID reader configuration (discriminated by ``rfid_type``)
@@ -380,6 +383,7 @@ class ConfigManager:
             "MAKER_USE_RECIPE_VOLUME": BoolType(check_name="Use Recipe Volume"),
             "MAKER_ADD_SINGLE_INGREDIENT": BoolType(check_name="Can Spend Single Ingredient"),
             "MAKER_RANDOM_COCKTAIL": BoolType(check_name="Random Cocktail Option"),
+            "MAKER_SCALE_FOR_HAND_ADDS": BoolType(check_name="Use Scale for Hand Adds"),
             "LED_CONFIG": ListType(
                 DiscriminatedDictType(
                     "led_type",
@@ -648,7 +652,8 @@ class ConfigManager:
             # Validate and set the value, if not possible to validate, do not set (use default)
             # If validate is False, the error will be ignored, otherwise raised
             try:
-                config_setting.validate(config_name, config_value)
+                # validate with a human-readable label so error messages don't expose raw CONFIG_KEYs
+                config_setting.validate(humanize_config_name(config_name), config_value)
                 setattr(self, config_name, config_setting.from_config(config_value))
             except ConfigError as e:
                 _logger.error(f"Config Error: {e}")
@@ -719,9 +724,15 @@ class ConfigManager:
         has_weight_pump = any(p.consumption_estimation == "weight" for p in self.PUMP_CONFIG)
         if has_weight_pump and not self.SCALE_CONFIG.enabled:
             error_msg = (
-                "PUMP_CONFIG has pumps with consumption_estimation='weight' but SCALE_CONFIG is not enabled. "
-                "Enable the scale or switch pumps to time-based estimation."
+                "Some pumps use weight-based consumption estimation, but the scale is not enabled. "
+                "Please enable the scale, or switch those pumps to time-based estimation."
             )
+            _logger.error(f"Config Error: {error_msg}")
+            if validate:
+                raise ConfigError(error_msg)
+        # Scale-assisted hand adds need an enabled scale to read weight
+        if self.MAKER_SCALE_FOR_HAND_ADDS and not self.SCALE_CONFIG.enabled:
+            error_msg = "'Scale-Assisted Hand Adds' is enabled, but the scale is not. Please enable the scale first."
             _logger.error(f"Config Error: {error_msg}")
             if validate:
                 raise ConfigError(error_msg)

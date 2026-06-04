@@ -41,7 +41,14 @@
     "spend": "Spend",
     "selectTeam": "Select Team",
     "randomCocktail": "Random Cocktail",
-    "beSurprised": "Be Surprised!"
+    "beSurprised": "Be Surprised!",
+    "handAdd": {
+      "intro": "To finish the cocktail, add these ingredients yourself.",
+      "finish": "Finish",
+      "withScale": "Weigh on the scale",
+      "manually": "Add yourself",
+      "allDone": "All ingredients have been added. This window will close shortly."
+    }
   },
   "lockScreen": {
     "defaultTitle": "Locked",

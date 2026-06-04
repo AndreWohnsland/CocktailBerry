@@ -6,13 +6,15 @@ Also defines the Mode for controls.
 # pylint: disable=unnecessary-lambda
 from __future__ import annotations
 
+import contextlib
 import os
 import platform
+import time
 from typing import TYPE_CHECKING, Any
 
 from PyQt6.QtCore import QEvent, QEventLoop, QObject
 from PyQt6.QtGui import QIntValidator, QMouseEvent, QResizeEvent
-from PyQt6.QtWidgets import QLineEdit, QMainWindow
+from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import CONFIG as cfg
@@ -48,6 +50,7 @@ from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui.setup_option_window import OptionWindow
 from src.ui.setup_picture_window import PictureWindow
+from src.ui.setup_preparation_finalization_screen import PreparationFinalizationScreen
 from src.ui.setup_progress_screen import ProgressScreen
 from src.ui.setup_refill_dialog import RefillDialog
 from src.ui.setup_team_window import TeamScreen
@@ -75,6 +78,13 @@ _PERMISSION_BY_TAB_INDEX: dict[int, PermissionKey] = {
     int(TabIndex.RECIPES): "recipes",
     int(TabIndex.BOTTLES): "bottles",
 }
+
+# auto-close the (non-blocking) hand-add guidance window if the user walks away; allow more time
+# when the scale is involved (measuring takes longer than just checking off manual adds)
+_HAND_ADD_MANUAL_TIMEOUT_S = 60
+_HAND_ADD_MEASURE_TIMEOUT_S = 120
+# linger on the completion view this long before auto-closing; Finish closes sooner
+_HAND_ADD_LINGER_S = 10.0
 
 
 class MainScreen(QMainWindow, Ui_MainWindow):
@@ -114,6 +124,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # building the fist page as a stacked widget
         # this is quite similar to the tab widget, but we don't need the tabs
         self.cocktail_selection: CocktailSelection | None = None
+        self.finalization_screen: PreparationFinalizationScreen | None = None
 
         # Run payment check before starting NFC so payment gets disabled if needed
         payment_result = check_payment_service()
@@ -359,6 +370,39 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self.progress_window is None:
             return
         self.progress_window.hide()
+
+    def run_preparation_finalization(self, cocktail: Cocktail, message: str = "") -> None:
+        """Show the finalize window (hand-adds and/or the message) until finished or timed out.
+
+        The cocktail is already finalized, so this is pure guidance. Like ``make_cocktail`` it runs a
+        synchronous loop on the main thread that pumps Qt events and polls the scale via ``tick``; a
+        walk-away timeout auto-closes it. ``message`` (e.g. payment balance) shows in the completion view.
+        """
+        # the published list is the single source of truth
+        hand_adds = shared.cocktail_status.hand_adds
+        self.finalization_screen = PreparationFinalizationScreen(self, cocktail, hand_adds, message)
+        # longer timeout only when the scale is actually used (any measurable row)
+        has_scale_interaction = any(h.measurable for h in hand_adds)
+        timeout_s = _HAND_ADD_MEASURE_TIMEOUT_S if has_scale_interaction else _HAND_ADD_MANUAL_TIMEOUT_S
+        deadline = time.time() + timeout_s
+        try:
+            while not self.finalization_screen.finished and time.time() < deadline:
+                self.finalization_screen.tick()
+                QApplication.processEvents()
+                time.sleep(0.05)
+            # every row resolved: linger on the completion message before closing, unless the user
+            # closes sooner via Finish (Finish / window-manager / timeout close without lingering)
+            if self.finalization_screen.finished and self.finalization_screen.linger_before_close:
+                linger_deadline = time.time() + _HAND_ADD_LINGER_S
+                while time.time() < linger_deadline and not self.finalization_screen.close_requested:
+                    QApplication.processEvents()
+                    time.sleep(0.05)
+        finally:
+            # the window may already be gone if the user closed it via the window manager
+            with contextlib.suppress(RuntimeError):
+                self.finalization_screen.close()
+                self.finalization_screen.deleteLater()
+            self.finalization_screen = None
 
     def open_team_window(self) -> None:
         self.team_window = TeamScreen(self)

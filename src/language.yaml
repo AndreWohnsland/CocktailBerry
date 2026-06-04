@@ -99,14 +99,6 @@ dialog:
     en: 'No service personnel is logged in. Please scan your NFC tag first.'
     de: 'Kein Servicepersonal angemeldet. Bitte zuerst den NFC-Tag scannen.'
     pl: 'Brak zalogowanej obsługi. Najpierw zeskanuj tag NFC.'
-  cocktail_ready:
-    en: 'The cocktail is ready. Please wait a moment, for the rest of the fluid to flow in.{full_comment}'
-    de: 'Der Cocktail ist fertig! Bitte kurz warten, falls noch etwas nach tropft.{full_comment}'
-    pl: 'Koktajl jest gotowy. Poczekaj chwilę, aż reszta płynu spłynie.{full_comment}'
-  cocktail_ready_add:
-    en: 'Also add:'
-    de: 'Noch hinzufügen:'
-    pl: 'Dodaj również:'
   cocktail_not_possible:
     en: 'Cocktail is not possible to make, not all ingredients are available!'
     de: 'Cocktail zubereiten ist nicht möglich, nicht alle Zutaten sind verfügbar!'
@@ -355,6 +347,26 @@ dialog:
     en: 'The preparation was cancelled.'
     de: 'Die Zubereitung wurde abgebrochen.'
     pl: 'Przygotowanie zostało anulowane.'
+  hand_add_intro:
+    en: 'To finish the cocktail, add these ingredients yourself.'
+    de: 'Um den Cocktail fertigzustellen, füge diese Zutaten selbst hinzu.'
+    pl: 'Aby dokończyć koktajl, dodaj te składniki samodzielnie.'
+  hand_add_title:
+    en: 'Weigh on the scale'
+    de: 'Mit Waage abwiegen'
+    pl: 'Zważ na wadze'
+  hand_add_by_hand:
+    en: 'Add yourself'
+    de: 'Selbst hinzufügen'
+    pl: 'Dodaj samodzielnie'
+  hand_add_finish_button:
+    en: 'Finish'
+    de: 'Fertig'
+    pl: 'Zakończ'
+  hand_add_all_done:
+    en: 'All ingredients have been added. This window will close shortly.'
+    de: 'Alle Zutaten wurden hinzugefügt. Dieses Fenster schließt sich in Kürze.'
+    pl: 'Wszystkie składniki zostały dodane. To okno wkrótce się zamknie.'
   image_deleted:
     en: 'Image deleted successfully.'
     de: 'Bild erfolgreich gelöscht.'
@@ -1048,6 +1060,10 @@ ui:
       en: 'Adds a random cocktail tile to the maker tab that picks a surprise cocktail on prepare'
       de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
       pl: 'Dodaje kafelek "Losowy koktajl" w zakładce Maker, który podczas przygotowania losuje napój.'
+    MAKER_SCALE_FOR_HAND_ADDS:
+      en: 'Guides hand adds with the scale: after machine preparation, weighable (ml) ingredients are added by pouring while a progress bar tracks the weight. Requires an enabled scale.'
+      de: 'Führt mit der Waage durch die Handzugaben: Nach der Maschinenzubereitung werden wägbare (ml) Zutaten durch Eingießen hinzugefügt, während ein Fortschrittsbalken das Gewicht verfolgt. Erfordert eine aktivierte Waage.'
+      pl: 'Prowadzi przez ręczne dodawanie za pomocą wagi: po przygotowaniu maszynowym składniki mierzalne (ml) dodaje się, nalewając je, podczas gdy pasek postępu śledzi wagę. Wymaga włączonej wagi.'
     LED_CONFIG:
       en: 'List with config for each LED. Choose the LED type (Normal or WSLED) per entry. Normal (non-addressable): pin type, board number (# only relevant for I2C), pin, default on state, preparation state (on/off/effects). WSLED (WS281x, addressable, GPIO only): pin, brightness, LED count, number of daisy chained rings, default on state, preparation state.'
       de: 'Liste mit Einstellung für jeden LED. Wähle den LED-Typ pro Eintrag (Normal oder WSLED). Normal (nicht ansteuerbar): Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). WSLED (WS281x, ansteuerbar, nur GPIO): Pin, Helligkeit, LED-Anzahl, Anzahl in Serie verbundener Ringe, Standard an-Zustand, Zustand bei Zubereitung.'
@@ -1298,6 +1314,10 @@ ui:
       en: 'Random Cocktail Button'
       de: 'Zufallscocktail-Button'
       pl: 'Przycisk losowego koktajlu'
+    MAKER_SCALE_FOR_HAND_ADDS:
+      en: 'Scale-Assisted Hand Adds'
+      de: 'Handzugaben mit Waage'
+      pl: 'Ręczne dodawanie z wagą'
     LED_CONFIG:
       en: 'LED Configuration'
       de: 'LED-Konfiguration'

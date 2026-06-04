@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
@@ -169,7 +170,9 @@ class CocktailView(QWidget):
 
     def emit_user_change(self, lookup: UserLookup) -> None:
         """Emit user change signal (thread-safe) for pyqt."""
-        self.user_changed.emit(lookup)
+        # during shutdown wrapped C/C++ object of type CocktailView has been deleted
+        with contextlib.suppress(RuntimeError):
+            self.user_changed.emit(lookup)
 
     def react_on_user_change(self, lookup: UserLookup) -> None:
         """Implement user change handling (runs on main thread)."""

@@ -8,7 +8,7 @@ from PyQt6.QtCore import QEventLoop
 from PyQt6.QtWidgets import QApplication
 
 from src.config.config_manager import CONFIG as cfg
-from src.config.config_manager import Tab
+from src.config.config_manager import Tab, shared
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
@@ -57,12 +57,13 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
         return False, booking.message
 
     additional_message = "" if booking.result == CocktailBooking.Result.INACTIVE else booking.message
+    # cocktail is fully finalized here; the hand-add guidance window (if any) runs afterwards
     result, message = maker.prepare_cocktail(cocktail, w, additional_message)
-    # show dialog in case of cancel or if there are handadds
     if result == PrepareResult.CANCELED:
         DP_CONTROLLER.say_cocktail_canceled()
-    elif len(message) > 0:
-        DP_CONTROLLER.standard_box(message, close_time=60)
+    elif shared.cocktail_status.hand_adds or message:
+        # finalize window: hand-adds and/or the additional message, then auto-closes
+        w.run_preparation_finalization(cocktail, message)
 
     # Otherwise clean up the rest
     bottles.set_fill_level_bars(w)

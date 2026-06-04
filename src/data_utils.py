@@ -126,9 +126,9 @@ def ilp_selection(top_ing_ids: set[int], cocktails: list[Cocktail], n: int) -> t
     # ILP model
     model = pulp.LpProblem("Cocktail_Selection", pulp.LpMaximize)
 
-    x = {i: pulp.LpVariable(f"x_{i}", cat="Binary") for i in ing_ids}  # ingredient chosen
+    x = {i: model.add_variable(f"x_{i}", cat="Binary") for i in ing_ids}  # ingredient chosen
     # Cocktail possible variables keyed by cocktail id
-    y = {c.id: pulp.LpVariable(f"y_{c.id}", cat="Binary") for c in cocktails}
+    y = {c.id: model.add_variable(f"y_{c.id}", cat="Binary") for c in cocktails}
 
     # Constraint: choose exactly n ingredients
     model += pulp.lpSum(x[i] for i in ing_ids) == n

@@ -79,6 +79,13 @@ export type PrepareResult =
   | 'NO_GLASS_DETECTED'
   | 'UNDEFINED';
 
+export interface HandAddMeasure {
+  name: string;
+  amount: number;
+  unit: string;
+  measurable: boolean;
+}
+
 export interface UserAuth {
   uid: string | null;
   balance: number | null;
@@ -90,6 +97,7 @@ export interface CocktailStatus {
   progress: number;
   message?: string;
   status: PrepareResult;
+  hand_adds?: HandAddMeasure[];
 }
 
 export interface ApiError {
@@ -161,6 +169,7 @@ export interface DefinedConfigData {
   MAKER_USE_RECIPE_VOLUME: boolean;
   MAKER_ADD_SINGLE_INGREDIENT: boolean;
   MAKER_RANDOM_COCKTAIL: boolean;
+  MAKER_SCALE_FOR_HAND_ADDS: boolean;
   LED_CONFIG: LedConfig[];
   RFID_CONFIG: RfidConfig;
   MICROSERVICE_ACTIVE: boolean;

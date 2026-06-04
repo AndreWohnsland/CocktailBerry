@@ -107,6 +107,12 @@ def create_label(
         label.setProperty("cssClass", css_class)
     if word_wrap:
         label.setWordWrap(True)
+        # a word-wrapped QLabel does not advertise height-for-width by default, so the layout reserves
+        # only a single line's height and clips the wrapped text (most visible when the label is shown
+        # after being hidden). Opt into height-for-width so the layout allocates the real wrapped height.
+        policy = label.sizePolicy()
+        policy.setHeightForWidth(True)
+        label.setSizePolicy(policy)
     return label
 
 

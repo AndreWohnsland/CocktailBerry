@@ -56,10 +56,26 @@ EVENT_TYPE_LEGACY_ALIASES: dict[str, str] = {
 
 
 @pydantic_dataclass
+class HandAddMeasure:
+    """One hand-add ingredient surfaced to the hand-add guidance window.
+
+    ``measurable`` is set by the preparation flow: True only when the scale feature is on and a
+    scale is present for a weighable (ml) ingredient (it gets a measure button); everything else is
+    confirmed by hand via a check button.
+    """
+
+    name: str
+    amount: int
+    unit: str
+    measurable: bool
+
+
+@pydantic_dataclass
 class CocktailStatus:
     progress: int = 0
     message: str | None = None
     status: PrepareResult = PrepareResult.FINISHED
+    hand_adds: list[HandAddMeasure] = field(default_factory=list)
 
 
 @functools.total_ordering
