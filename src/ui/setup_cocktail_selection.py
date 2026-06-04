@@ -90,6 +90,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         apply_responsive_layouts(self.width(), [self.layout_maker_detail])
         self._update_image_spacers()
         QTimer.singleShot(0, self._update_image_size)
+        # Re-scale the fonts to the real rendered window size (deferred so the layout has settled).
+        QTimer.singleShot(0, self.adjust_maker_label_size_cocktaildata)
 
     def _update_image_spacers(self) -> None:
         """Make image spacers expanding in portrait mode (centers image), fixed in landscape."""
@@ -277,11 +279,21 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             field_volume.setText("")
 
     def adjust_maker_label_size_cocktaildata(self) -> None:
-        """Adjust the font size for larger screens."""
+        """Adjust the font size relative to the real rendered window size.
+
+        Scales relative to the actual top-level window (`self.window()`) instead of the
+        configured `UI_WIDTH`/`UI_HEIGHT`, so it stays correct when the OS does not honor the
+        requested fullscreen size or the config does not match the panel. Because both the window
+        geometry and `setPointSize` live in logical pixels, the font-to-window ratio is
+        device-pixel-ratio neutral, i.e. fonts stay a constant fraction of the screen on any DPI.
+        """
         # iterate over all size types and adjust size relative to window height
         # default height was 480 for provided UI
         # so if its larger, the font should also be larger here
-        short_side = min(cfg.UI_HEIGHT, cfg.UI_WIDTH)
+        window = self.window()
+        if window is None:
+            return
+        short_side = min(window.height(), window.width())
         # no need to adjust if its near to the original height
         default_height = 480
         if short_side <= default_height + 20:
