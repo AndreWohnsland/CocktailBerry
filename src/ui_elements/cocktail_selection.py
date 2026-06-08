@@ -28,6 +28,7 @@ class Ui_CocktailSelection(object):
         font.setBold(True)
         self.LAlkoholname.setFont(font)
         self.LAlkoholname.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.LAlkoholname.setWordWrap(True)
         self.LAlkoholname.setObjectName("LAlkoholname")
         self.layout_image_side.addWidget(self.LAlkoholname)
         self.horizontalLayout = QtWidgets.QHBoxLayout()

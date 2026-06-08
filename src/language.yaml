@@ -640,6 +640,10 @@ ui:
       en: 'Random Cocktail'
       de: 'Zufalls-Cocktail'
       pl: 'Losowy koktajl'
+    random_virgin_cocktail_label:
+      en: 'Random Virgin Cocktail'
+      de: 'Zufalls-Virgin-Cocktail'
+      pl: 'Losowy koktajl bezalkoholowy'
     random_be_surprised:
       en: 'Be Surprised!'
       de: 'Lass dich überraschen!'
