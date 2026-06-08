@@ -149,9 +149,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Update the display for random cocktail mode."""
         pixmap = QPixmap(str(DEFAULT_COCKTAIL_IMAGE))
         self.image_container.setPixmap(pixmap)
-        random_label = UI_LANGUAGE.get_translation("random_cocktail_label", "main_window")
         surprise_label = UI_LANGUAGE.get_translation("random_be_surprised", "main_window")
-        self.LAlkoholname.setText(random_label)
+        self._update_random_label()
         self.LAlkoholgehalt.setText("?")
         # hide alcohol low/high buttons
         self.increase_alcohol.setVisible(False)
@@ -172,6 +171,11 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             fields_ingredient[0].setText(surprise_label)
             fields_ingredient[0].setVisible(True)
         self._render_prepare_buttons()
+
+    def _update_random_label(self) -> None:
+        """Set the random cocktail header, reflecting the virgin toggle state."""
+        key = "random_virgin_cocktail_label" if self.is_virgin else "random_cocktail_label"
+        self.LAlkoholname.setText(UI_LANGUAGE.get_translation(key, "main_window"))
 
     def _prepare_random_cocktail(self, amount: int) -> None:
         """Pick a random cocktail from the pool and prepare it."""
@@ -363,7 +367,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self.decrease_alcohol.setChecked(False)
         self.increase_alcohol.setChecked(False)
         if self.random_mode:
-            # Random mode keeps placeholder header but still re-renders buttons for consistency.
+            # Random mode keeps the placeholder header but reflects the virgin state in it.
+            self._update_random_label()
             self._render_prepare_buttons()
             return
         self.update_cocktail_data()

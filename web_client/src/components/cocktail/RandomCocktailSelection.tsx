@@ -101,7 +101,7 @@ const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handl
           </div>
           <div className='grow flex flex-col justify-center w-full'>
             <p className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral underline mb-2'>
-              {t('cocktails.randomCocktail')}
+              {t(isVirgin ? 'cocktails.randomVirginCocktail' : 'cocktails.randomCocktail')}
             </p>
             <div className='my-2 flex flex-col items-center justify-center gap-4'>
               <FaQuestion className='text-secondary' size={60} />
