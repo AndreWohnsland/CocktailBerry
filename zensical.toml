@@ -75,6 +75,12 @@ primary = "custom"
 toggle.icon = "material/weather-night"
 toggle.name = "Switch to light mode"
 
+# Footer link to the main CocktailBerry website.
+[[project.extra.social]]
+icon = "material/web"
+link = "https://cocktailberry.org"
+name = "CocktailBerry"
+
 # Since we customize superfences and tabbed, we must explicitly define all extensions
 # https://zensical.org/docs/setup/extensions/#default-configuration-zensicaltoml
 [project.markdown_extensions.abbr]
