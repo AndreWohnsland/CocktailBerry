@@ -52,7 +52,7 @@ class CarriageInterface(ABC):
         """
 
     @abstractmethod
-    def move_to(self, position: int) -> None:
+    def move_to(self, position: float) -> None:
         """Move the carriage to the given position (0-100) in percentage.
 
         The 0-100 axis is abstract: implementations map it to their native
@@ -82,7 +82,7 @@ class CarriageInterface(ABC):
     def cleanup(self) -> None:
         """Release hardware resources."""
 
-    def travel_time(self, from_pos: int, to_pos: int) -> float:
+    def travel_time(self, from_pos: float, to_pos: float) -> float:
         """Estimate the travel time in seconds between two positions.
 
         Uses speed_pct_per_s from config: time = |delta| / speed.

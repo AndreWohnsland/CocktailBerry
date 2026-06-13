@@ -24,7 +24,7 @@ from src.machine.dispensers.scheduler import (
 from src.models import Ingredient
 
 
-def _mock_dispenser(slot: int, volume_flow: float = 10.0, carriage_position: int = 0) -> MagicMock:
+def _mock_dispenser(slot: int, volume_flow: float = 10.0, carriage_position: float = 0) -> MagicMock:
     """Create a mock dispenser."""
     mock = MagicMock(spec=BaseDispenser)
     mock.slot = slot
@@ -339,6 +339,21 @@ class TestCarriageOrdering:
         ]
         # home(0) -> 10 -> 50 -> 80 -> home(0) = 10 + 40 + 30 + 80 = 160
         assert _total_travel(items, home_position=0) == 160
+
+    def test_total_travel_with_float_home(self):
+        items = [
+            PreparationItem(
+                dispenser=_mock_dispenser(1, carriage_position=10), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(2, carriage_position=50), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+            PreparationItem(
+                dispenser=_mock_dispenser(3, carriage_position=80), amount_ml=10, pump_speed=100, estimated_time=1
+            ),
+        ]
+        # home(12.5) -> 10 -> 50 -> 80 -> home(12.5) = 2.5 + 40 + 30 + 67.5 = 140
+        assert _total_travel(items, home_position=12.5) == pytest.approx(140.0)
 
     def testestimate_carriage_time(self):
         mock_carriage = MagicMock()

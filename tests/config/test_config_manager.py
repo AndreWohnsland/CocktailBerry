@@ -68,6 +68,8 @@ class TestConfigManagerGetConfig:
             assert "pin" in first_pump
             assert "volume_flow" in first_pump
             assert "tube_volume" in first_pump
+            assert "carriage_position" in first_pump
+            assert isinstance(first_pump["carriage_position"], float)
 
 
 class TestConfigManagerSetConfig:
@@ -252,6 +254,22 @@ class TestConfigManagerSetConfig:
         pump_config = config.PUMP_CONFIG[0]
         # GPIO routing is encoded by the concrete variant subclass; no `pin_type` attribute.
         assert isinstance(pump_config, DCGPIOPumpConfig)
+
+    def test_set_config_pump_carriage_position_accepts_float(self) -> None:
+        """Test that pump carriage_position accepts and preserves float values."""
+        config = ConfigManager()
+        config.set_config(
+            {
+                "MAKER_NUMBER_BOTTLES": 1,
+                "PUMP_CONFIG": [{"pin": 14, "volume_flow": 30.0, "tube_volume": 5, "carriage_position": 12.5}],
+            },
+            validate=True,
+        )
+        assert len(config.PUMP_CONFIG) == 1
+        pump_config = config.PUMP_CONFIG[0]
+        assert isinstance(pump_config.carriage_position, float)
+        assert pump_config.carriage_position == pytest.approx(12.5)
+        assert config.get_config()["PUMP_CONFIG"][0]["carriage_position"] == pytest.approx(12.5)
 
     def test_set_config_i2c_config_rejects_duplicate_device_type_and_board(self) -> None:
         """Test that I2C_CONFIG rejects duplicate (device_type, board_number) combinations."""

@@ -267,10 +267,10 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self,
         layout: QBoxLayout,
         config_name: str,
-        current_value: int,
+        current_value: float,
         allow_negative: bool = False,
     ) -> Callable[[], float]:
-        """Build a field for integer input with numpad."""
+        """Build a field for float input with numpad."""
         config_input = ClickableLineEdit(str(current_value))
         adjust_font(config_input, MEDIUM_FONT)
         config_input.setProperty("cssClass", "secondary")
