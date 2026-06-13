@@ -246,7 +246,8 @@ echo ""
 
 if [[ "$V2_FLAG" = false ]]; then
   echo "~~ Disabling on-screen keyboard auto-popup (v1 uses custom keyboards) ~~"
-  sudo raspi-config nonint do_squeekboard 1 2>/dev/null \
+  # do_squeekboard expects S1 (always on) / S2 (autodetect) / S3 (always off), not a 0/1 boolean
+  sudo raspi-config nonint do_squeekboard S3 \
     && echo "> On-screen keyboard (squeekboard) disabled" \
     || echo "> WARNING: Could not disable on-screen keyboard (squeekboard)"
 fi
