@@ -461,7 +461,7 @@ class BasePumpConfig(ConfigClass):
     volume_flow: float
     tube_volume: int
     consumption_estimation: ConsumptionEstimationType
-    carriage_position: int
+    carriage_position: float
 
     def __init__(
         self,
@@ -469,7 +469,7 @@ class BasePumpConfig(ConfigClass):
         volume_flow: float = 30.0,
         tube_volume: int = 0,
         consumption_estimation: ConsumptionEstimationType = "time",
-        carriage_position: int = 0,
+        carriage_position: float = 0.0,
         **kwargs: Any,
     ) -> None:
         self.pump_type = pump_type
@@ -508,7 +508,7 @@ class DCPumpConfig(BasePumpConfig):
         tube_volume: int = 0,
         pump_type: SupportedDispenserType = DC_DISPENSER_DEFAULT_VARIANT,
         consumption_estimation: ConsumptionEstimationType = "time",
-        carriage_position: int = 0,
+        carriage_position: float = 0.0,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -540,7 +540,7 @@ class DCGPIOPumpConfig(DCPumpConfig):
         tube_volume: int = 0,
         pump_type: SupportedDispenserType = DC_DISPENSER_DEFAULT_VARIANT,
         consumption_estimation: ConsumptionEstimationType = "time",
-        carriage_position: int = 0,
+        carriage_position: float = 0.0,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -572,7 +572,7 @@ class DCI2CPumpConfig(DCPumpConfig):
         board_number: int = 1,
         pump_type: SupportedDispenserType = "DC over I2C",
         consumption_estimation: ConsumptionEstimationType = "time",
-        carriage_position: int = 0,
+        carriage_position: float = 0.0,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -615,7 +615,7 @@ class StepperPumpConfig(BasePumpConfig):
         tube_volume: int = 0,
         pump_type: SupportedDispenserType = "Stepper",
         consumption_estimation: ConsumptionEstimationType = "time",
-        carriage_position: int = 0,
+        carriage_position: float = 0.0,
     ) -> None:
         super().__init__(
             pump_type=pump_type,
@@ -661,7 +661,7 @@ class DCMotorKitPumpConfig(BasePumpConfig):
         tube_volume: int = 0,
         pump_type: SupportedDispenserType = "DC over MotorKit",
         consumption_estimation: ConsumptionEstimationType = "time",
-        carriage_position: int = 0,
+        carriage_position: float = 0.0,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -704,7 +704,7 @@ class StepperMotorKitPumpConfig(BasePumpConfig):
         tube_volume: int = 0,
         pump_type: SupportedDispenserType = "Stepper over MotorKit",
         consumption_estimation: ConsumptionEstimationType = "time",
-        carriage_position: int = 0,
+        carriage_position: float = 0.0,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -1194,7 +1194,7 @@ class BaseCarriageConfig(ConfigClass):
 
     carriage_type: str
     enabled: bool
-    home_position: int
+    home_position: float
     speed_pct_per_s: float
     move_during_cleaning: bool
     wait_after_dispense: float
@@ -1203,7 +1203,7 @@ class BaseCarriageConfig(ConfigClass):
         self,
         carriage_type: str = "NoCarriage",
         enabled: bool = False,
-        home_position: int = 0,
+        home_position: float = 0.0,
         speed_pct_per_s: float = 10.0,
         move_during_cleaning: bool = True,
         wait_after_dispense: float = 0.0,

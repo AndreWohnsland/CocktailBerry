@@ -129,7 +129,7 @@ class ExtensionConfig(BaseCarriageConfig): # (4)!
         dir_pin: int = 0,
         carriage_type: str = EXTENSION_NAME,
         enabled: bool = False,
-        home_position: int = 0,
+        home_position: float = 0.0,
         speed_pct_per_s: float = 10.0,
         move_during_cleaning: bool = True,
         wait_after_dispense: float = 0.0,

@@ -43,7 +43,7 @@ class ExtensionConfig(BaseCarriageConfig):
         dir_pin: int = 0,
         carriage_type: str = EXTENSION_NAME,
         enabled: bool = False,
-        home_position: int = 0,
+        home_position: float = 0.0,
         speed_pct_per_s: float = 10.0,
         move_during_cleaning: bool = True,
         wait_after_dispense: float = 0.0,
@@ -110,7 +110,7 @@ class Implementation(CarriageInterface):
         self._step_pin = config.step_pin
         self._dir_pin = config.dir_pin
         # Track the current position in percent (0-100). Must be set in find_reference().
-        self._position = 0
+        self._position = 0.0
         # >>> Initialize your hardware here (e.g. configure GPIO for step/dir pins) <<<
         _logger.info(f"Carriage '{EXTENSION_NAME}' initialized (step={self._step_pin}, dir={self._dir_pin})")
 
@@ -123,11 +123,11 @@ class Implementation(CarriageInterface):
         """
         # >>> Drive toward the endstop until triggered, then set position <<<
         _logger.info(f"Carriage '{EXTENSION_NAME}': driving to reference sensor")
-        self._position = 0
+        self._position = 0.0
 
-    def move_to(self, position: int) -> None:
+    def move_to(self, position: float) -> None:
         """Move the carriage to the given position (0-100)."""
-        target = max(0, min(100, position))
+        target = max(0.0, min(100.0, position))
         if target == self._position:
             return
         # >>> Translate percent delta to motor steps and drive the motor <<<

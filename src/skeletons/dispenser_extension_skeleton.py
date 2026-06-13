@@ -44,7 +44,7 @@ class ExtensionConfig(BasePumpConfig):
         volume_flow: float = 30.0,
         tube_volume: int = 0,
         consumption_estimation: ConsumptionEstimationType = "time",
-        carriage_position: int = 0,
+        carriage_position: float = 0.0,
         **kwargs: Any,
     ) -> None:
         super().__init__(

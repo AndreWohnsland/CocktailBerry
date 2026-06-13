@@ -327,7 +327,7 @@ def _estimate_group_time(estimated_times: list[float], max_concurrent: int) -> f
 def estimate_carriage_time(
     groups: list[list[PreparationItem]],
     carriage: CarriageInterface,
-    home_position: int,
+    home_position: float,
 ) -> float:
     """Estimate total preparation time in carriage mode.
 
@@ -348,7 +348,7 @@ def estimate_carriage_time(
 
 
 def _order_by_carriage_position[DispatchItem: (PreparationItem, CleaningItem)](
-    items: list[DispatchItem], home_position: int
+    items: list[DispatchItem], home_position: float
 ) -> list[DispatchItem]:
     """Order items to minimize total carriage travel distance.
 
@@ -366,7 +366,7 @@ def _order_by_carriage_position[DispatchItem: (PreparationItem, CleaningItem)](
     return descending
 
 
-def _total_travel(items: Sequence[PreparationItem | CleaningItem], home_position: int) -> int:
+def _total_travel(items: Sequence[PreparationItem | CleaningItem], home_position: float) -> float:
     """Calculate total carriage travel: home -> items in order -> home."""
     if not items:
         return 0
