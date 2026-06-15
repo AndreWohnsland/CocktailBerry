@@ -350,3 +350,31 @@ uv run runme.py remove-ap [OPTIONS]
 ## Virtual Keyboard Commands
 
 For managing the virtual keyboard on the Raspberry Pi when using the web interface (v2), see the [web documentation](web.md#enable-the-virtual-keyboard) for the `add-virtual-keyboard` and `remove-virtual-keyboard` commands.
+
+## Generate a Manufacturer Blacklist
+
+As a manufacturer, you can blacklist certain configurations or option tiles that should not be shown to your enduser, customer or buyer of the machine.
+This is especially useful if you are selling the machine and want to hide options or settings that are not relevant for the buyer, to not overwhelm them with too many choices.
+
+```bash
+uv run runme.py generate-manufacturer-blacklist [OPTIONS]
+
+# Options:
+#   --help  Show help
+```
+
+The command is interactive: it presents two checkbox lists, one for the configurations and one for the option tiles.
+Use the arrow keys to move, <kbd>space</kbd> to toggle an entry, and <kbd>enter</kbd> to confirm your selection.
+Entries that are already part of an existing blacklist come pre-selected, so you can run the command again to adjust your selection later.
+
+The result is written to a `blacklist.json` file in the CocktailBerry folder, for example:
+
+```json
+{
+  "configs": ["UI_LANGUAGE", "MAKER_THEME"],
+  "options": ["cleaning", "rfid"]
+}
+```
+
+The `configs` list contains the names of the configuration settings to hide, while `options` contains the names of the option tiles to hide.
+A missing or empty `blacklist.json` simply means nothing is hidden, which is the common enduser case.
