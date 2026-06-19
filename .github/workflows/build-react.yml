@@ -29,17 +29,16 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Install Dependencies
-        uses: borales/actions-yarn@v5
-        with:
-          cmd: install
-          dir: ./web_client
+        run: yarn install --immutable
+        working-directory: ./web_client
 
       - name: Build React App
-        uses: borales/actions-yarn@v5
-        with:
-          cmd: build
-          dir: ./web_client
+        run: yarn build
+        working-directory: ./web_client
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7

@@ -72,23 +72,21 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Enable Corepack
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: corepack enable
+
       - name: Run install
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: borales/actions-yarn@v5
-        with:
-          cmd: install
-          dir: web_client
+        run: yarn install --immutable
+        working-directory: web_client
 
       - name: Run lint
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: borales/actions-yarn@v5
-        with:
-          cmd: lint
-          dir: web_client
+        run: yarn lint
+        working-directory: web_client
 
       - name: verify build succeeds
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: borales/actions-yarn@v5
-        with:
-          cmd: build
-          dir: web_client
+        run: yarn build
+        working-directory: web_client
