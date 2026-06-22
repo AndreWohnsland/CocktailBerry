@@ -30,14 +30,14 @@ const RestrictedModePrompt: React.FC = () => {
           <button
             type='button'
             onClick={handleDecline}
-            className='px-4 py-2 bg-neutral text-background rounded hover:bg-opacity-80 transition-colors'
+            className='px-4 py-2 bg-neutral text-on-neutral rounded hover:bg-opacity-80 transition-colors'
           >
             {t('restrictedMode.decline')}
           </button>
           <button
             type='button'
             onClick={handleAccept}
-            className='px-4 py-2 bg-primary text-background rounded hover:bg-opacity-80 transition-colors'
+            className='px-4 py-2 bg-primary text-on-primary rounded hover:bg-opacity-80 transition-colors'
           >
             {t('restrictedMode.accept')}
           </button>

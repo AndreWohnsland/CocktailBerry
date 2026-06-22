@@ -10,7 +10,7 @@ export interface MetricProps {
 
 const chipStyle = (value: number, threshold: number) => {
   const color = value <= threshold ? 'neutral' : 'danger';
-  return `border-2 text-background font-semibold rounded-lg text-center p-2 flex flex-col border-${color} bg-${color}`;
+  return `border-2 text-on-${color} font-semibold rounded-lg text-center p-2 flex flex-col border-${color} bg-${color}`;
 };
 
 const resolveFractionDigits = (value: number, fractionDigits?: number) => {

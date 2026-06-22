@@ -170,10 +170,10 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
                 <button
                   type='button'
                   onClick={() => handleAlcoholState('virgin')}
-                  className={`w-8 p-2 rounded-full ${alcohol === 'virgin' ? 'bg-secondary' : 'bg-primary'}`}
+                  className={`w-8 p-2 rounded-full ${alcohol === 'virgin' ? 'bg-secondary text-on-secondary' : 'bg-primary text-on-primary'}`}
                   disabled={selectedCocktail.only_virgin}
                 >
-                  <MdNoDrinks className='text-background' />
+                  <MdNoDrinks />
                 </button>
               )}
               {showAlcoholControls && (
@@ -181,22 +181,22 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
                   <button
                     type='button'
                     onClick={() => handleAlcoholState('low')}
-                    className={`w-8 p-2 rounded-full ${alcohol === 'low' ? 'bg-secondary' : 'bg-primary'} ${
+                    className={`w-8 p-2 rounded-full ${alcohol === 'low' ? 'bg-secondary text-on-secondary' : 'bg-primary text-on-primary'} ${
                       selectedCocktail.only_virgin && 'disabled'
                     }`}
                     disabled={selectedCocktail.only_virgin}
                   >
-                    <IoIosHappy className='text-background' />
+                    <IoIosHappy />
                   </button>
                   <button
                     type='button'
                     onClick={() => handleAlcoholState('high')}
-                    className={`w-8 p-2 rounded-full ${alcohol === 'high' ? 'bg-secondary' : 'bg-primary'} ${
+                    className={`w-8 p-2 rounded-full ${alcohol === 'high' ? 'bg-secondary text-on-secondary' : 'bg-primary text-on-primary'} ${
                       selectedCocktail.only_virgin && 'disabled'
                     }`}
                     disabled={selectedCocktail.only_virgin}
                   >
-                    <FaSkullCrossbones className='text-background' />
+                    <FaSkullCrossbones />
                   </button>
                 </>
               )}

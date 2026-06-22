@@ -37,7 +37,7 @@ const LogWindow: React.FC = () => {
     if (log.toLowerCase().includes('warning')) {
       style = `${style} text-danger`;
     } else if (log.toLowerCase().includes('error')) {
-      style = `${style} text-background bg-danger rounded-sm my-1`;
+      style = `${style} text-on-danger bg-danger rounded-sm my-1`;
     }
     return style;
   };

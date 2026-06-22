@@ -56,6 +56,16 @@ A custom implementation of one of six hardware component categories, discovered 
 
 _Avoid_: hardware addon, hardware plugin
 
+### Appearance (v2 web only)
+
+**Theme**:
+The named visual identity of the v2 web app — `default`, `berry`, `bavaria`, `alien`, `purple`, `tropical`, or `custom`. A Theme is a **machine-level** setting (`MAKER_THEME`): set once by the operator, shared by everyone who opens that machine's web app. It owns the *brand colors* (primary, secondary, danger, neutral). `custom` lets the operator pick those colors by hand.
+_Avoid_: skin, style, palette (palette = the colors, Theme = the named choice)
+
+**Mode**:
+The light/dark axis of the v2 web app, orthogonal to Theme: any Theme can be shown in either Mode. Unlike Theme, Mode is **per-browser** (stored in localStorage, not on the machine) — each visitor chooses their own. Each shipped Theme defines its full palette — surface and role colors — explicitly for *both* Modes: the dark palette is the historical look, the light palette is the same Theme tuned to stay readable on a light surface (the brand identity is recognisable in both, the exact values differ). Text drawn on a colored fill uses the surface color and stays legible by contrast symmetry. The six shipped Themes are valid in both Modes; the **`custom` Theme opts out** — it is the operator's full-manual escape hatch (they pick an absolute background by hand), so Mode does not apply to it and the toggle is hidden while it is active.
+_Avoid_: dark mode (that's one value of Mode, not the concept), color scheme
+
 ### Operations & admin
 
 **Maker**:

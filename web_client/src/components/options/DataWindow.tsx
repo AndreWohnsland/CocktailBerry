@@ -31,7 +31,7 @@ const ConsumeBarChart: React.FC<{
           <div
             key={key}
             className={
-              'border-2 border-neutral bg-neutral text-background font-bold rounded-full text-center overflow-hidden flex items-center justify-center'
+              'border-2 border-neutral bg-neutral text-on-neutral font-bold rounded-full text-center overflow-hidden flex items-center justify-center'
             }
             style={{ position: 'relative', zIndex: 1 }}
           >

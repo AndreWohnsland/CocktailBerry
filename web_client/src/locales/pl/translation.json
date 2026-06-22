@@ -29,7 +29,8 @@
     "ingredients": "Składniki",
     "recipes": "Przepisy",
     "bottles": "Butelki",
-    "options": "Opcje"
+    "options": "Opcje",
+    "toggleMode": "Przełącz tryb jasny/ciemny"
   },
   "cocktails": {
     "goToBottles": "Przejdź do butelek",

@@ -35,7 +35,7 @@ const BottleComponent: React.FC<BottleProps> = ({
   const getClass = () => {
     let color = 'border-primary text-primary';
     if (isToggled) {
-      color = 'border-secondary bg-secondary text-background';
+      color = 'border-secondary bg-secondary text-on-secondary';
     }
     return `max-w-40 px-4 ml-2 border-2 font-bold rounded-md ${color}`;
   };

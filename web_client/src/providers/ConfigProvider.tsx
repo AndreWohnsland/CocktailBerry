@@ -9,12 +9,17 @@ interface IConfig {
   refetchConfig: () => Promise<void>;
   theme: string;
   changeTheme: (theme: string) => void;
+  mode: Mode;
+  toggleMode: () => void;
   blacklist: Blacklist;
   isConfigBlacklisted: (configName: string) => boolean;
   isTileBlacklisted: (tileName: OptionTileName) => boolean;
 }
 
+type Mode = 'light' | 'dark';
+
 const STORE_THEME: string = 'THEME';
+const STORE_MODE: string = 'MODE';
 const STORE_CONFIG: string = 'CONFIG';
 const STORE_BLACKLIST: string = 'BLACKLIST';
 
@@ -52,6 +57,7 @@ const ConfigContext = createContext<IConfig | null>(null);
 export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [config, setConfig] = useState<DefinedConfigData>(JSON.parse(localStorage.getItem(STORE_CONFIG) ?? '{}'));
   const [theme, setTheme] = useState<string>(localStorage.getItem(STORE_THEME) ?? '');
+  const [mode, setMode] = useState<Mode>(localStorage.getItem(STORE_MODE) === 'light' ? 'light' : 'dark');
   const [blacklist, setBlacklist] = useState<Blacklist>(
     JSON.parse(localStorage.getItem(STORE_BLACKLIST) ?? JSON.stringify(EMPTY_BLACKLIST)),
   );
@@ -91,6 +97,16 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [theme]);
 
+  // Apply Mode via the data-mode attribute. `custom` opts out of Mode (ADR 0003):
+  // it is forced to dark so neither the light surface nor the text-darkening apply.
+  // The user's stored Mode is preserved for when they switch back to a shipped Theme.
+  useEffect(() => {
+    const effectiveMode = theme === 'custom' ? 'dark' : mode;
+    document.documentElement.setAttribute('data-mode', effectiveMode);
+    document.body.setAttribute('data-mode', effectiveMode);
+    localStorage.setItem(STORE_MODE, mode);
+  }, [theme, mode]);
+
   useEffect(() => {
     localStorage.setItem(STORE_CONFIG, JSON.stringify(config));
     i18n.changeLanguage(config?.UI_LANGUAGE ?? 'en');
@@ -104,6 +120,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     setTheme(newTheme);
   };
 
+  const toggleMode = useCallback(() => setMode((m) => (m === 'dark' ? 'light' : 'dark')), []);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: ignore handleThemeChange
   const contextValue = useMemo(
     () => ({
@@ -111,11 +129,13 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       refetchConfig: fetchConfigValues,
       theme,
       changeTheme: handleThemeChange,
+      mode,
+      toggleMode,
       blacklist,
       isConfigBlacklisted: (configName: string) => blacklist.configs.includes(configName),
       isTileBlacklisted: (tileName: OptionTileName) => blacklist.options[tileName],
     }),
-    [config, theme, fetchConfigValues, blacklist],
+    [config, theme, mode, toggleMode, fetchConfigValues, blacklist],
   );
 
   return <ConfigContext.Provider value={contextValue}>{children}</ConfigContext.Provider>;

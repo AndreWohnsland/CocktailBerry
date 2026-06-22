@@ -29,7 +29,8 @@
     "ingredients": "Ingredients",
     "recipes": "Recipes",
     "bottles": "Bottles",
-    "options": "Options"
+    "options": "Options",
+    "toggleMode": "Toggle light/dark mode"
   },
   "cocktails": {
     "goToBottles": "Go to Bottles",

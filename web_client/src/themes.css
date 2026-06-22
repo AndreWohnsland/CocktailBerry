@@ -1,3 +1,18 @@
+/* ============================================================
+   Theme = brand identity (machine-level). Mode = light/dark axis
+   (per-browser), applied via [data-mode] on :root + body. See ADR 0003.
+
+   Each Theme defines its colors EXPLICITLY for both Modes:
+     .theme              -> dark Mode (today's values, preserved)
+     .theme[data-mode="light"] -> light Mode
+
+   Role colors are authored per Mode to read on that Mode's surface, so they
+   work both as foreground text (`text-primary`) and as fills (`bg-primary`).
+   Text on a fill (`text-on-primary`) defaults to the surface color and is
+   readable by symmetry; override --on-*-color only where a light "pop" fill
+   needs dark text. `custom` opts out of Mode (forced dark, see ConfigProvider).
+   ============================================================ */
+
 :root {
   --primary-color: #007bff;
   --secondary-color: #ef9700;
@@ -6,6 +21,7 @@
   --danger-color: #d00000;
 }
 
+/* ---------- default ---------- */
 .default {
   --primary-color: #007bff;
   --secondary-color: #ef9700;
@@ -13,23 +29,51 @@
   --neutral-color: #96adba;
   --danger-color: #d00000;
 }
+.default[data-mode="light"] {
+  --primary-color: #0062cc;
+  --secondary-color: #c98000;
+  --neutral-color: #475569;
+  --danger-color: #b91c1c;
+  --background-color: color-mix(in srgb, var(--primary-color) 7%, #f5f6f7);
+  --text-color: #003b7a;
+}
 
+/* ---------- berry ---------- */
 .berry {
-  --primary-color: #3a4cbf;
+  --primary-color: #684efc;
   --secondary-color: #ec407a;
   --background-color: #0d0d0d;
   --neutral-color: #5761a1;
   --danger-color: #d00000;
 }
+.berry[data-mode="light"] {
+  --primary-color: #553abf;
+  --secondary-color: #be185d;
+  --neutral-color: #454e8a;
+  --danger-color: #b91c1c;
+  --background-color: color-mix(in srgb, var(--primary-color) 7%, #f5f6f7);
+  --text-color: #4931a7;
+}
 
+/* ---------- bavaria ---------- */
 .bavaria {
   --primary-color: #007bff;
-  --secondary-color: #01276a;
-  --background-color: #dad9d9;
+  --secondary-color: #afd6fc;
+  /* bavaria gains a real dark background; its old light look lives in light Mode. */
+  --background-color: #0c111c;
   --neutral-color: #44648d;
   --danger-color: #d00000;
 }
+.bavaria[data-mode="light"] {
+  --primary-color: #0062cc;
+  --secondary-color: #01276a;
+  --neutral-color: #3a5578;
+  --danger-color: #b91c1c;
+  --background-color: color-mix(in srgb, var(--primary-color) 7%, #f5f6f7);
+  --text-color: #1a1a1a;
+}
 
+/* ---------- alien ---------- */
 .alien {
   --primary-color: #00dd4a;
   --secondary-color: #00e4d1;
@@ -37,7 +81,16 @@
   --neutral-color: #489869;
   --danger-color: #d00000;
 }
+.alien[data-mode="light"] {
+  --primary-color: #15803d;
+  --secondary-color: #00a093;
+  --neutral-color: #4e755e;
+  --danger-color: #b91c1c;
+  --background-color: color-mix(in srgb, var(--primary-color) 7%, #f5f6f7);
+  --text-color: #0f5e2c;
+}
 
+/* ---------- purple ---------- */
 .purple {
   --primary-color: #d167ff;
   --secondary-color: #01e6ff;
@@ -45,11 +98,39 @@
   --neutral-color: #b694ba;
   --danger-color: #d00000;
 }
+.purple[data-mode="light"] {
+  --primary-color: #9333ea;
+  --secondary-color: #117e9c;
+  --neutral-color: #7c5d82;
+  --danger-color: #b91c1c;
+  --background-color: color-mix(in srgb, var(--primary-color) 10%, #f5f6f7);
+  --text-color: #7d2f9e;
+}
 
+/* ---------- tropical ---------- */
 .tropical {
   --primary-color: #55ecf7;
   --secondary-color: #fff70f;
   --background-color: #2b2b2b;
   --neutral-color: #96adba;
   --danger-color: #d00000;
+}
+.tropical[data-mode="light"] {
+  --primary-color: #41adb5;
+  --secondary-color: #c0ba18;
+  --neutral-color: #87a0ae;
+  --danger-color: #b91c1c;
+  --background-color: color-mix(in srgb, var(--primary-color) 5%, #f5f6f7);
+  --text-color: #378a90;
+}
+
+/* ---- Body text and on-fill text defaults. Dark Mode keeps body text = primary
+        (today's look); light Mode sets --text-color per Theme above. On-fill text
+        defaults to the surface and resolves per Mode automatically. ---- */
+:root {
+  --text-color: var(--primary-color);
+  --on-primary-color: var(--background-color);
+  --on-secondary-color: var(--background-color);
+  --on-neutral-color: var(--background-color);
+  --on-danger-color: var(--background-color);
 }

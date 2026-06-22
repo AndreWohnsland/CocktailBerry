@@ -5,6 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="/berry.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CocktailBerry Web</title>
+    <script type="text/javascript">
+      // Apply the stored light/dark Mode before first paint to avoid a flash.
+      // `custom` Theme opts out of Mode (ADR 0003), so it is forced to dark.
+      (function () {
+        try {
+          var mode = localStorage.getItem('MODE') === 'light' ? 'light' : 'dark';
+          if (localStorage.getItem('THEME') === 'custom') mode = 'dark';
+          document.documentElement.setAttribute('data-mode', mode);
+        } catch (e) {}
+      })();
+    </script>
     <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages

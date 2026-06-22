@@ -91,9 +91,9 @@ const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handl
                 <button
                   type='button'
                   onClick={() => setIsVirgin(!isVirgin)}
-                  className={`w-8 p-2 rounded-full ${isVirgin ? 'bg-secondary' : 'bg-primary'}`}
+                  className={`w-8 p-2 rounded-full ${isVirgin ? 'bg-secondary text-on-secondary' : 'bg-primary text-on-primary'}`}
                 >
-                  <MdNoDrinks className='text-background' />
+                  <MdNoDrinks />
                 </button>
               )}
             </div>
