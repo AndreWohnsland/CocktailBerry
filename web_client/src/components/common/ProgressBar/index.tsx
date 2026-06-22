@@ -11,7 +11,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ fillPercent, className, onCli
     // biome-ignore lint/a11y/noStaticElementInteractions: special case
     <div
       className={
-        'border-2 border-neutral bg-neutral text-background font-bold rounded-full text-center overflow-hidden flex items-center justify-center' +
+        'border-2 border-neutral bg-neutral text-on-neutral font-bold rounded-full text-center overflow-hidden flex items-center justify-center' +
         (className ? ` ${className}` : '')
       }
       style={{ position: 'relative', zIndex: 1 }}

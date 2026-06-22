@@ -9,7 +9,7 @@ interface TabSelectorProps {
 
 const createClass = (isActive: boolean) => {
   const baseClass = 'px-1 flex items-center border-2 font-semibold';
-  const activeClass = 'text-background bg-secondary border-secondary rounded-full';
+  const activeClass = 'text-on-secondary bg-secondary border-secondary rounded-full';
   return isActive ? `${baseClass} ${activeClass}` : `${baseClass} border-transparent`;
 };
 

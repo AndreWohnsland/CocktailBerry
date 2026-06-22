@@ -8,6 +8,13 @@
   --color-neutral: var(--neutral-color);
   --color-background: var(--background-color);
   --color-danger: var(--danger-color);
+
+  /* On-fill text color for a colored block; defaults to the surface, override
+     per Theme/Mode only where contrast needs it (see themes.css / ADR 0003). */
+  --color-on-primary: var(--on-primary-color);
+  --color-on-secondary: var(--on-secondary-color);
+  --color-on-neutral: var(--on-neutral-color);
+  --color-on-danger: var(--on-danger-color);
 }
 
 @custom-variant h-xs (@media (min-height: 400px));
@@ -15,7 +22,7 @@
 @custom-variant h-md (@media (min-height: 768px));
 @custom-variant h-lg (@media (min-height: 1024px));
 
-@source inline("{bg,text,border,ring,shadow}-{primary,secondary,neutral,background,danger}");
+@source inline("{bg,text,border,ring,shadow}-{primary,secondary,neutral,background,danger,on-primary,on-secondary,on-neutral,on-danger}");
 
 /*
   v3 default border-color was gray-200; v4 defaults to currentColor. Override
@@ -38,13 +45,13 @@
 
 :root {
   --toastify-color-light: var(--background-color) !important;
-  --toastify-text-color-light: var(--primary-color) !important;
+  --toastify-text-color-light: var(--text-color) !important;
   --toastify-color-info: var(--primary-color) !important;
   --toastify-color-progress-light: var(--primary-color) !important;
 }
 
 .Toastify__close-button {
-  color: var(--primary-color) !important;
+  color: var(--text-color) !important;
 }
 
 body {
@@ -60,7 +67,7 @@ html,
 body {
   margin: 0;
   background-color: var(--background-color);
-  color: var(--primary-color);
+  color: var(--text-color);
 }
 
 @utility button-primary {
@@ -72,11 +79,11 @@ body {
 }
 
 .button-primary-filled {
-  @apply button-base border-primary bg-primary text-background;
+  @apply button-base border-primary bg-primary text-on-primary;
 }
 
 .button-primary-filled:active {
-  @apply button-base border-secondary bg-secondary;
+  @apply button-base border-secondary bg-secondary text-on-secondary;
 }
 
 .button-secondary {
@@ -84,7 +91,7 @@ body {
 }
 
 .button-secondary-filled {
-  @apply button-base border-secondary bg-secondary text-background;
+  @apply button-base border-secondary bg-secondary text-on-secondary;
 }
 
 .button-neutral {
@@ -92,7 +99,7 @@ body {
 }
 
 .button-neutral-filled {
-  @apply button-base border-neutral bg-neutral text-background;
+  @apply button-base border-neutral bg-neutral text-on-neutral;
 }
 
 .button-danger {
@@ -100,7 +107,7 @@ body {
 }
 
 .button-danger-filled {
-  @apply button-base border-danger bg-danger text-background;
+  @apply button-base border-danger bg-danger text-on-danger;
 }
 
 .passive {
@@ -226,7 +233,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   right: auto;
   bottom: auto;
   transform: translate(-50%, -50%);
-  color: var(--primary-color);
+  color: var(--text-color);
   background: var(--background-color);
   padding: 10px;
   border-radius: 8px;
@@ -276,19 +283,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   padding-right: var(--scrollbar-width, 15px); /* Prevent layout shift when scrollbar disappears */
 }
 
-/* Custom Scrollbar Styling */
-/* Chrome, Edge, Safari */
-::-webkit-scrollbar {
-  background: var(--background-color);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-}
-::-webkit-scrollbar-track {
-  background: var(--background-color);
-}
-
-/* Firefox */
-* {
-  scrollbar-color: var(--primary-color) var(--background-color);
-}
+/* Scrollbar left unstyled on purpose: theming the scrollbar forces a classic
+   space-reserving scrollbar, whereas the default lets macOS use overlay
+   scrollbars (no reserved gutter, no header gap). See ADR 0003. */

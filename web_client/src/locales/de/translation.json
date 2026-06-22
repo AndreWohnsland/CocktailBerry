@@ -29,7 +29,8 @@
     "ingredients": "Zutaten",
     "recipes": "Rezepte",
     "bottles": "Flaschen",
-    "options": "Optionen"
+    "options": "Optionen",
+    "toggleMode": "Hellen/dunklen Modus umschalten"
   },
   "cocktails": {
     "goToBottles": "Zu den Flaschen",

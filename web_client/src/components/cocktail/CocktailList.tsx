@@ -121,7 +121,7 @@ const CocktailList: React.FC = () => {
       <div className='flex flex-wrap gap-3 justify-center items-center w-full mb-4'>
         {config.MAKER_RANDOM_COCKTAIL && displayedCocktails && displayedCocktails.length > 0 && !search && (
           <button
-            className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
+            className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-on-primary active:text-on-secondary'
             onClick={() => setRandomCocktailOpen(true)}
             type='button'
           >
@@ -153,8 +153,8 @@ const CocktailList: React.FC = () => {
                 key={cocktail.id}
                 className={`border-2 rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold ${
                   isNotAllowed
-                    ? 'border-neutral bg-neutral text-background opacity-50 cursor-not-allowed'
-                    : 'border-primary active:border-secondary bg-primary active:bg-secondary text-background cursor-pointer'
+                    ? 'border-neutral bg-neutral text-on-neutral opacity-50 cursor-not-allowed'
+                    : 'border-primary active:border-secondary bg-primary active:bg-secondary text-on-primary active:text-on-secondary cursor-pointer'
                 }`}
                 onClick={() => !isNotAllowed && setSelectedCocktail(cocktail)}
                 type='button'
@@ -179,7 +179,7 @@ const CocktailList: React.FC = () => {
           })}
         {config.MAKER_ADD_SINGLE_INGREDIENT && config.PAYMENT_TYPE === 'Disabled' && (
           <button
-            className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-background'
+            className='border-2 border-primary active:border-secondary rounded-xl box-border overflow-hidden min-w-56 max-w-64 basis-1 grow text-xl font-bold bg-primary active:bg-secondary text-on-primary active:text-on-secondary'
             onClick={() => setSingleIngredientOpen(true)}
             type='button'
           >

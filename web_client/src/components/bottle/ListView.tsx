@@ -29,7 +29,7 @@ const ListView: React.FC<ListViewProps> = ({ ingredientList, setSelected, select
           key={ingredient.id}
           onClick={() => handleSelect(ingredient)}
           className={`cursor-pointer p-2 my-1 rounded border font-bold ${
-            selected.includes(ingredient) ? 'text-background bg-secondary border-secondary' : 'border-transparent'
+            selected.includes(ingredient) ? 'text-on-secondary bg-secondary border-secondary' : 'border-transparent'
           }`}
           role='button'
         >
