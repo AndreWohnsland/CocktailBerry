@@ -102,8 +102,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   // The user's stored Mode is preserved for when they switch back to a shipped Theme.
   useEffect(() => {
     const effectiveMode = theme === 'custom' ? 'dark' : mode;
-    document.documentElement.setAttribute('data-mode', effectiveMode);
-    document.body.setAttribute('data-mode', effectiveMode);
+    document.documentElement.dataset.mode = effectiveMode;
+    document.body.dataset.mode = effectiveMode;
     localStorage.setItem(STORE_MODE, mode);
   }, [theme, mode]);
 

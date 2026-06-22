@@ -12,8 +12,10 @@
         try {
           var mode = localStorage.getItem('MODE') === 'light' ? 'light' : 'dark';
           if (localStorage.getItem('THEME') === 'custom') mode = 'dark';
-          document.documentElement.setAttribute('data-mode', mode);
-        } catch (e) {}
+          document.documentElement.dataset.mode = mode;
+        } catch {
+          /* localStorage may be blocked; the default (dark) Mode then applies */
+        }
       })();
     </script>
     <!-- Start Single Page Apps for GitHub Pages -->

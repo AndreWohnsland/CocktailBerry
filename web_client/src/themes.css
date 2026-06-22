@@ -19,6 +19,14 @@
   --background-color: #0d0d0d;
   --neutral-color: #96adba;
   --danger-color: #d00000;
+
+  /* Body text defaults to the primary (today's dark look); light blocks set it
+     per Theme. On-fill text defaults to the surface and resolves per Mode. */
+  --text-color: var(--primary-color);
+  --on-primary-color: var(--background-color);
+  --on-secondary-color: var(--background-color);
+  --on-neutral-color: var(--background-color);
+  --on-danger-color: var(--background-color);
 }
 
 /* ---------- default ---------- */
@@ -124,13 +132,3 @@
   --text-color: #378a90;
 }
 
-/* ---- Body text and on-fill text defaults. Dark Mode keeps body text = primary
-        (today's look); light Mode sets --text-color per Theme above. On-fill text
-        defaults to the surface and resolves per Mode automatically. ---- */
-:root {
-  --text-color: var(--primary-color);
-  --on-primary-color: var(--background-color);
-  --on-secondary-color: var(--background-color);
-  --on-neutral-color: var(--background-color);
-  --on-danger-color: var(--background-color);
-}

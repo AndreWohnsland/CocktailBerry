@@ -283,11 +283,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   padding-right: var(--scrollbar-width, 15px); /* Prevent layout shift when scrollbar disappears */
 }
 
-/* Scrollbar theming dropped on purpose: styling ::-webkit-scrollbar or
-   scrollbar-color forces a classic, space-reserving scrollbar. Leaving it unset
-   lets macOS use overlay scrollbars (no reserved gutter, no header gap).
-   To restore the themed/reserved scrollbar:
-     ::-webkit-scrollbar       { background: var(--background-color); }
-     ::-webkit-scrollbar-thumb { background: var(--primary-color); }
-     ::-webkit-scrollbar-track { background: var(--background-color); }
-     * { scrollbar-color: var(--primary-color) var(--background-color); } */
+/* Scrollbar left unstyled on purpose: theming the scrollbar forces a classic
+   space-reserving scrollbar, whereas the default lets macOS use overlay
+   scrollbars (no reserved gutter, no header gap). See ADR 0003. */
