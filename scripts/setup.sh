@@ -101,6 +101,10 @@ else
   ln -sf "$HOME/CocktailBerry/scripts/$script_source" "$HOME/launcher.sh"
   chmod +x "$HOME/CocktailBerry/scripts/$script_source"
 
+  # Running as root (needed for PWM LEDs) trips git's "dubious ownership" check
+  # because the repo is owned by the normal user. --system is read by every user.
+  sudo git config --system safe.directory "$HOME/CocktailBerry"
+
   echo "> Installing needed Python libraries, this may take a while depending on your OS (especially in v1), so it is time for a coffee break :)"
   # v1 needs to sync with system python (for pyqt)
   if [[ "$V2_FLAG" = true ]]; then
@@ -112,6 +116,9 @@ else
   fi
   if is_raspberry_pi; then
     sudo raspi-config nonint do_i2c 0
+    # Enable SPI so WS281x LEDs can run over SPI (pin 10) without root, and on Pi 5.
+    sudo raspi-config nonint do_spi 0
+    sudo usermod -aG spi "$(whoami)"
   else
     bash scripts/setup_non_rpi.sh
   fi
