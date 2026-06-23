@@ -39,7 +39,7 @@ def _open_spi() -> spidev.SpiDev:
         spi = spidev.SpiDev()
         spi.open(0, 0)
         return spi
-    except (FileNotFoundError, OSError) as err:
+    except OSError as err:  # FileNotFoundError (no device) is an OSError subclass
         raise RuntimeError(
             "Could not open /dev/spidev0.0. Enable SPI (sudo raspi-config -> Interface -> SPI, "
             "then reboot) and wire DIN to GPIO10 (MOSI, physical pin 19)."
