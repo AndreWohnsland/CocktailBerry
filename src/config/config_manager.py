@@ -407,7 +407,7 @@ class ConfigManager:
                         "WSLED": DictType(
                             {
                                 **SHARED_LED_FIELDS,
-                                "pin": IntType([build_number_limiter(0)], prefix="Pin:"),
+                                "pin": IntType([build_number_limiter(0)], prefix="Pin:", default=10),
                                 "brightness": IntType([build_number_limiter(1, 100)], suffix="%", default=100),
                                 "count": IntType([build_number_limiter(1, 500)], suffix="LEDs", default=24),
                                 "number_rings": IntType([build_number_limiter(1, 10)], suffix="X", default=1),

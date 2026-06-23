@@ -14,14 +14,30 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("WSLed")
 
-_NOT_AVAILABLE_MSG = "Could not import rpi_ws281x. Will not be able to control the WS281x, please install the library."
+# WS281x has two transports, chosen by pin. GPIO10 (SPI MOSI) works on every Pi
+# incl. the Pi 5 via our spidev driver. The PWM/PCM pins use rpi_ws281x, which only
+# works on Pi 0-4 (its DMA path is gone on the Pi 5's RP1 chip).
+_SPI_PIN = 10
+_SPI_MISSING_MSG = "Could not import spidev; cannot drive the WS281x over SPI (pin 10). Please install spidev."
+_PWM_MISSING_MSG = (
+    "Could not import rpi_ws281x; cannot drive the WS281x over PWM/PCM. "
+    "Install rpi-ws281x, or use pin 10 (SPI) which also works on the Pi 5."
+)
+
+# Color packs (r,g,b) to the same int for both backends, so one import serves both.
+try:
+    from src.machine.leds.ws_spi import Color, NeoPixelSPI
+
+    SPI_AVAILABLE = True
+except ModuleNotFoundError:
+    SPI_AVAILABLE = False
 
 try:
-    from rpi_ws281x import Adafruit_NeoPixel, Color  # pyright: ignore[reportMissingImports]
+    from rpi_ws281x import Adafruit_NeoPixel  # pyright: ignore[reportMissingImports]
 
-    WS281X_AVAILABLE = True
+    PWM_AVAILABLE = True
 except ModuleNotFoundError:
-    WS281X_AVAILABLE = False
+    PWM_AVAILABLE = False
 
 
 class WSLed(LedInterface):
@@ -29,23 +45,34 @@ class WSLed(LedInterface):
 
     def __init__(self, config: WS281xLedConfig, hardware: HardwareContext) -> None:
         super().__init__(config, hardware)
-        if not WS281X_AVAILABLE:
-            raise RuntimeError(_NOT_AVAILABLE_MSG)
         self.pin = config.pin
         self.brightness = min(int(255 * config.brightness / 100), 255)
         self.count = config.count
         self.number_rings = config.number_rings
-        _logger.info(f"<i> Initializing WS281x LED on pin {self.pin} ({self.count * self.number_rings} px)")
-        self.strip = Adafruit_NeoPixel(
+        # Pick the backend by pin: GPIO10 -> SPI (any Pi), else PWM/PCM via rpi_ws281x (Pi 0-4).
+        if self.pin == _SPI_PIN:
+            if not SPI_AVAILABLE:
+                raise RuntimeError(_SPI_MISSING_MSG)
+            strip_cls = NeoPixelSPI
+            transport = "SPI"
+        else:
+            if not PWM_AVAILABLE:
+                raise RuntimeError(_PWM_MISSING_MSG)
+            strip_cls = Adafruit_NeoPixel
+            transport = "PWM/PCM"
+        _logger.info(
+            f"<i> Initializing WS281x LED on pin {self.pin} via {transport} ({self.count * self.number_rings} px)"
+        )
+        self.strip = strip_cls(
             self.count * self.number_rings,
-            self.pin,  # best to use 12 or 18
+            self.pin,
             800000,  # freq
-            10,  # DMA 5 / 10
+            10,  # DMA channel (PWM only; ignored over SPI)
             False,  # invert
             self.brightness,  # brightness
             0,  # channel 0 or 1
         )
-        # will throw a RuntimeError as none root user here
+        # SPI: opens the device (RuntimeError if SPI disabled). PWM: RuntimeError if not root.
         self.strip.begin()
 
     def turn_off(self) -> None:

@@ -1140,7 +1140,7 @@ class WS281xLedConfig(BaseLedConfig):
 
     def __init__(
         self,
-        pin: int = 0,
+        pin: int = 10,
         brightness: int = 100,
         count: int = 24,
         number_rings: int = 1,
