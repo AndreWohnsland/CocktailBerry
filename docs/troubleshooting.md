@@ -93,16 +93,19 @@ In case the machine has an RTC built in and uses it, this option can usually be 
 
 WS281x LEDs can be driven two ways, picked automatically from the **pin** you set in the WSLED config:
 
-- **SPI — pin `10` (recommended).** Needs no root, and it is the **only** option that works on the **Raspberry Pi 5**. Also works on the Pi 3/4. Jump to [Run the LEDs without sudo](#run-the-leds-without-sudo-spi-also-works-on-pi-5).
-- **PWM/PCM — pins `12`/`18` (PWM) or `21` (PCM).** Uses the `rpi_ws281x` library, requires running as **root**, and works on the **Pi 0–4 only** (the driver does not run on the Pi 5). Described next.
+- **SPI — pin `10` (recommended).**
+  Needs no root, and it is the **only** option that works on the **Raspberry Pi 5**.
+  Also works on the Pi 3/4.
+  Jump to [Run the LEDs without sudo](#run-the-leds-without-sudo-spi-also-works-on-pi-5).
+- **PWM/PCM — pins `12`/`18` (PWM) or `21` (PCM).**
+  Uses the `rpi_ws281x` library, requires running as **root**, and works on the **Pi 0–4 only** (the driver does not run on the Pi 5).
+  Described next.
 
 ### PWM/PCM route (Pi 0–4, needs root)
 
 Getting the WS281x to work this way may be a little bit tricky.
 You need to run the program as root/sudo, so you also need to change this in `~/launcher.sh`.
 If you are using the latest installer, there will be a virtual environment created, so you should use this as root.
-This also requires you to reinstall the python packages for the main program.
-A better way would be to add the user to the gpio/other needed groups, so you can run the program as a normal user.
 
 ```bash
 # for v1: change this line
@@ -126,12 +129,16 @@ If you use any other non controllable LED connected over the relay, you can use 
 
 ### Run the LEDs without sudo (SPI, also works on Pi 5)
 
-The `sudo` above is only needed because the PWM/DMA driver pokes `/dev/mem`. If you instead drive the WS281x over **SPI**, no root is required — and SPI is the **only** way that works on the Pi 5 (the old PWM/DMA driver does not run there at all).
+The `sudo` above is only needed because the PWM/DMA driver pokes `/dev/mem`.
+If you instead drive the WS281x over **SPI**, no root is required — and SPI is the **only** way that works on the Pi 5 (the old PWM/DMA driver does not run there at all).
 
-Over SPI, CocktailBerry uses its own small `spidev`-based driver (not `rpi_ws281x`), selected automatically when the pin is `10`. You only change the pin and do a one-time setup:
+Over SPI, CocktailBerry uses its own small `spidev`-based driver (not `rpi_ws281x`), selected automatically when the pin is `10`.
+You only change the pin and do a one-time setup:
 
-- Set the LED **Pin to `10`** in the CocktailBerry config (WSLED entry). Wire the LED `DIN` to **GPIO10 / physical pin 19** (SPI0 MOSI).
-- Enable SPI and add your user to the `spi` group. The installer (`scripts/setup.sh`) already does this; to do it manually:
+- Set the LED **Pin to `10`** in the CocktailBerry config (WSLED entry).
+  Wire the LED `DIN` to **GPIO10 / physical pin 19** (SPI0 MOSI).
+- Enable SPI and add your user to the `spi` group.
+  The installer (`scripts/setup.sh`) already does this; to do it manually:
 
 ```bash
 sudo raspi-config nonint do_spi 0
@@ -141,14 +148,16 @@ sudo reboot
 
 After that you can run CocktailBerry normally — no `sudo`, no edits to `~/launcher.sh`.
 
-If the LEDs flicker or show wrong colours over SPI (common on long strips), the SPI clock/buffer needs tuning. Add to `/boot/firmware/config.txt` (older Pi OS: `/boot/config.txt`):
+If the LEDs flicker or show wrong colours over SPI (common on long strips), the SPI clock/buffer needs tuning.
+Add to `/boot/firmware/config.txt` (older Pi OS: `/boot/config.txt`):
 
 ```
 core_freq=250
 core_freq_min=500
 ```
 
-and append `spidev.bufsiz=32768` to `/boot/firmware/cmdline.txt` (keep it one single line, space-separated), then reboot. Check it took effect with `cat /sys/module/spidev/parameters/bufsiz` (should print `32768`).
+and append `spidev.bufsiz=32768` to `/boot/firmware/cmdline.txt` (keep it one single line, space-separated), then reboot.
+Check it took effect with `cat /sys/module/spidev/parameters/bufsiz` (should print `32768`).
 
 ## Set Up RFID Reader
 

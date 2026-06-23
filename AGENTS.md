@@ -68,6 +68,14 @@ Key modules use singletons — never instantiate new copies, always import the e
 
 Try to always use top level imports and not runtime imports, except this would create a circular import, then you can use runtime imports to break the cycle.
 
+## Doc/Markdown style
+
+Try to use one sentence per line, so that diffs are easier to read.
+Avoid overly complex or long sentences.
+Use simple words and avoid jargon.
+Use the active voice instead of the passive voice.
+Avoid using "we" or "I" in documentation, instead use "the user" or "the developer".
+
 ## Agent skills
 
 ### Issue tracker
