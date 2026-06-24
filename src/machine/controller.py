@@ -115,6 +115,31 @@ class MachineController:
         shared.cocktail_status.status = PrepareResult.FINISHED
         DatabaseCommander().save_event(EventType.CLEANING)
 
+    @staticmethod
+    def has_tube_volume() -> bool:
+        """Return True if at least one connected pump has a tube volume > 0."""
+        return any(p.tube_volume > 0 for p in cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES])
+
+    def initialize_bottles(self, w: MainScreen | None) -> None:
+        """Prime the tubes of all connected pumps that have a tube volume defined.
+
+        Pumps the configured tube volume through each slot that has an ingredient
+        assigned and a tube volume > 0. Only removes the air gap, so the fill level
+        is left untouched (the liquid stays in the system, it is not spent).
+        """
+        db = DatabaseCommander()
+        ingredients = []
+        for num in range(1, cfg.MAKER_NUMBER_BOTTLES + 1):
+            if cfg.PUMP_CONFIG[num - 1].tube_volume <= 0:
+                continue
+            ing = db.get_ingredient_at_bottle(num)
+            if ing is None:
+                continue
+            ing.amount = cfg.PUMP_CONFIG[num - 1].tube_volume
+            ingredients.append(ing)
+        if ingredients:
+            self.make_cocktail(w, ingredients, "initialize", is_cocktail=False, use_carriage=False)
+
     def make_cocktail(
         self,
         w: MainScreen | None,

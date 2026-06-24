@@ -20,7 +20,6 @@ from src.models import EventType
 from src.programs.blacklist import BLACKLIST
 from src.programs.calibration import CalibrationScreen
 from src.programs.scale_calibration import ScaleCalibrationScreen
-from src.tabs.bottles import has_tube_volume, initialize_bottles
 from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
 from src.ui.creation_utils import NARROW_WIDTH_THRESHOLD, repack_grid
@@ -113,7 +112,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         order = self._TILE_ORDER
         attr_by_button = {button: attr for button, attr, _ in order}
         items = [(button, span) for button, _attr, span in order]
-        show_initialize = has_tube_volume()
+        show_initialize = MachineController.has_tube_volume()
 
         def skip(widget: QPushButton) -> bool:
             if widget is self.button_initialize_bottles and not show_initialize:
@@ -188,7 +187,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if not DP_CONTROLLER.ask_to_initialize_bottles():
             return
         _logger.info("Bottle initialization requested over option UI")
-        initialize_bottles(self.mainscreen)
+        MachineController().initialize_bottles(self.mainscreen)
         DP_CONTROLLER.say_done()
 
     def _reboot_system(self) -> None:

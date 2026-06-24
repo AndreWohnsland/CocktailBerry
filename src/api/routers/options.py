@@ -47,7 +47,6 @@ from src.programs.addons.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
 from src.service.sumup_payment_service import Err
 from src.shared import NEWS_KEYS
-from src.tabs.bottles import initialize_bottles
 from src.updater import UpdateInfo, Updater
 from src.utils import (
     get_log_files,
@@ -123,7 +122,7 @@ async def clean_machine(background_tasks: BackgroundTasks, revert_pumps: bool = 
 async def initialize_bottles_endpoint(background_tasks: BackgroundTasks) -> ApiMessage:
     raise_when_cocktail_is_in_progress()
     _logger.info("Bottle initialization started by user request")
-    background_tasks.add_task(initialize_bottles, None)
+    background_tasks.add_task(MachineController().initialize_bottles, None)
     return ApiMessage(message=DH.get_translation("initialize_bottles_started"))
 
 
