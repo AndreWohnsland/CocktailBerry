@@ -75,6 +75,8 @@ allowed_keys = Literal[
     "ask_for_backup_location",
     "ask_restricted_mode",
     "ask_to_clean",
+    "ask_to_initialize_bottles",
+    "initialize_bottles_started",
     "ask_to_delete_reader",
     "ask_to_delete_x",
     "ask_to_install_qtsass",
@@ -598,6 +600,11 @@ class DialogHandler:
         message = self._choose_language("ask_to_clean")
         return self.user_okay(message)
 
+    def ask_to_initialize_bottles(self) -> bool:
+        """Asks the user if he wants to prime all pump tubes."""
+        message = self._choose_language("ask_to_initialize_bottles")
+        return self.user_okay(message)
+
     def ask_to_restart_for_config(self) -> bool:
         """Asks the user if he wants to restart to apply new config."""
         message = self._choose_language("restart_config")
@@ -834,6 +841,8 @@ class UiLanguage:
             cocktail_type = self._choose_language("cleaning_label", window)
         elif cocktail_type.lower() == "renew":
             cocktail_type = self._choose_language("bottle_renew_label", window)
+        elif cocktail_type.lower() == "initialize":
+            cocktail_type = self._choose_language("initialize_label", window)
         w.LHeader.setText(cocktail_type)
 
     def adjust_bonusingredient_screen(self, w: Ui_addingredient) -> None:
@@ -869,6 +878,7 @@ class UiLanguage:
         window = "option_window"
         for ui_element, text_name in [
             (w.button_clean, "cleaning"),
+            (w.button_initialize_bottles, "initialize_bottles"),
             (w.button_calibration, "calibration"),
             (w.button_config, "config"),
             (w.button_export, "data"),

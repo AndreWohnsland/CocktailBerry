@@ -25,6 +25,7 @@ const STORE_BLACKLIST: string = 'BLACKLIST';
 
 const EMPTY_OPTION_TILES: OptionTiles = {
   cleaning: false,
+  initialize_bottles: false,
   configuration: false,
   calibration: false,
   scale_calibration: false,

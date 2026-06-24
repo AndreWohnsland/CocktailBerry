@@ -374,6 +374,7 @@ class Event:
 
 class OptionTiles(BaseModel):
     cleaning: bool = False
+    initialize_bottles: bool = False
     configuration: bool = False
     calibration: bool = False
     scale_calibration: bool = False

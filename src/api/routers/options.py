@@ -47,6 +47,7 @@ from src.programs.addons.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
 from src.service.sumup_payment_service import Err
 from src.shared import NEWS_KEYS
+from src.tabs.bottles import initialize_bottles
 from src.updater import UpdateInfo, Updater
 from src.utils import (
     get_log_files,
@@ -116,6 +117,14 @@ async def clean_machine(background_tasks: BackgroundTasks, revert_pumps: bool = 
     mc = MachineController()
     background_tasks.add_task(mc.clean_pumps, None, use_revert)
     return ApiMessage(message=DH.get_translation("cleaning_started"))
+
+
+@protected_router.post("/initialize-bottles", tags=[Tags.PREPARATION], summary="Prime all pump tubes")
+async def initialize_bottles_endpoint(background_tasks: BackgroundTasks) -> ApiMessage:
+    raise_when_cocktail_is_in_progress()
+    _logger.info("Bottle initialization started by user request")
+    background_tasks.add_task(initialize_bottles, None)
+    return ApiMessage(message=DH.get_translation("initialize_bottles_started"))
 
 
 @protected_router.post("/reboot", summary="Reboot the system", dependencies=[not_on_demo])

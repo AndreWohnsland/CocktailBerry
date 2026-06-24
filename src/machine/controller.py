@@ -123,6 +123,7 @@ class MachineController:
         is_cocktail: bool = True,
         finish_message: str = "",
         hand_adds: list[HandAddMeasure] | None = None,
+        use_carriage: bool = True,
     ) -> PreparationResult:
         """RPI Logic to prepare the cocktail.
 
@@ -136,7 +137,7 @@ class MachineController:
         _logger.log_header("INFO", f"Starting {recipe}")
         if is_cocktail:
             self.hardware.led_controller.preparation_start()
-        self._run_scheduler(w, items, use_carriage=True)
+        self._run_scheduler(w, items, use_carriage=use_carriage)
         if is_cocktail:
             self.hardware.led_controller.preparation_end()
         # Write consumption back to ingredient objects

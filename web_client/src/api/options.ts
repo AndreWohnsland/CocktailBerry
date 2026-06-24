@@ -55,6 +55,10 @@ export const cleanMachine = async (revertPumps = false): Promise<{ message: stri
     .then((res) => res.data);
 };
 
+export const initializeBottles = async (): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${optionsUrl}/initialize-bottles`).then((res) => res.data);
+};
+
 // OS/System Management
 export const rebootSystem = async (): Promise<{ message: string }> => {
   return axiosInstance.post<{ message: string }>(`${optionsUrl}/reboot`).then((res) => res.data);
