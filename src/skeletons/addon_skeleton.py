@@ -13,9 +13,10 @@ from src.config.errors import ConfigError
 # You can access the default database with help of the dbc
 from src.database_commander import DatabaseCommander
 # Use the uil to add description and according translation
-from src.dialog_handler import UI_LANGUAGE as uil
+# from src.dialog_handler import UI_LANGUAGE as uil
 # Use the dpc to display dialogues or prompts to the user
-from src.display_controller import DP_CONTROLLER as dpc
+# Only available in v1 (Qt), uncomment if your addon needs it and does not target v2
+# from src.display_controller import DP_CONTROLLER as dpc
 # Use the LoggerHandler class for your logger
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
