@@ -41,6 +41,7 @@ const allTilesAllowed: OptionTiles = {
   configuration: false,
   calibration: false,
   scale_calibration: false,
+  initialize_bottles: false,
   backup: false,
   restore: false,
   data: false,

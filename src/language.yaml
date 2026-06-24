@@ -207,6 +207,10 @@ dialog:
     en: 'Starting Cleaning Progress? Please provide enough water.'
     de: 'Reinigung Starten? Bitte genug Wasser bereitstellen.'
     pl: 'Rozpocząć czyszczenie? Zapewnij odpowiednią ilość wody.'
+  ask_to_initialize_bottles:
+    en: 'Initialize bottles? This pumps the configured tube volume through each connected pump to fill empty tubes. Only run this when the tubes are empty and place a container under the outlets.'
+    de: 'Flaschen initialisieren? Dies pumpt das eingestellte Schlauchvolumen durch jede verbundene Pumpe, um leere Schläuche zu füllen. Nur ausführen, wenn die Schläuche leer sind, und ein Gefäß unter die Ausläufe stellen.'
+    pl: 'Zainicjować butelki? Spowoduje to przepompowanie skonfigurowanej objętości wężyka przez każdą podłączoną pompę, aby napełnić puste wężyki. Uruchom tylko wtedy, gdy wężyki są puste, i umieść pojemnik pod wylotami.'
   ask_to_shutdown:
     en: 'Shutdown the System?'
     de: 'Soll das System herunter gefahren werden?'
@@ -387,6 +391,10 @@ dialog:
     en: 'Cleaning process started!'
     de: 'Reinigung gestartet!'
     pl: 'Rozpoczęto czyszczenie!'
+  initialize_bottles_started:
+    en: 'Bottle initialization started!'
+    de: 'Flascheninitialisierung gestartet!'
+    pl: 'Rozpoczęto inicjalizację butelek!'
   options_updated:
     en: 'Options updated!'
     de: 'Optionen aktualisiert!'
@@ -692,6 +700,10 @@ ui:
       en: 'Renewing bottles'
       de: 'Flaschen erneuern'
       pl: 'Uzupełnione butelek'
+    initialize_label:
+      en: 'Initializing bottles'
+      de: 'Flaschen initialisieren'
+      pl: 'Inicjalizacja butelek'
     calibration_label:
       en: '{amount} ml volume, pump #{pump}'
       de: '{amount} ml Volumen, Pumpe #{pump}'
@@ -752,6 +764,10 @@ ui:
       en: 'Cleaning'
       de: 'Reinigen'
       pl: 'Czyszczenie'
+    initialize_bottles:
+      en: 'Initialize Bottles'
+      de: 'Flaschen Initialisieren'
+      pl: 'Zainicjuj Butelki'
     config:
       en: 'Configuration'
       de: 'Einstellungen'

@@ -14,7 +14,7 @@ export const TILE_GROUPS: Record<string, readonly OptionTileName[]> = {
   system: ['reboot', 'shutdown', 'internet_check', 'update_system', 'update_software'],
   configuration: ['configuration', 'addons', 'sumup', 'wifi', 'adjust_time', 'rfid'],
   data: ['data', 'logs', 'system_resource_usage', 'events', 'news', 'about', 'issues'],
-  hardware: ['cleaning', 'calibration', 'scale_calibration'],
+  hardware: ['cleaning', 'calibration', 'scale_calibration', 'initialize_bottles'],
   maintenance: ['backup', 'restore', 'waiters', 'recipe_calculation'],
 };
 
@@ -27,6 +27,7 @@ export const TILE_TRANSLATION_KEYS: Record<OptionTileName, string> = {
   configuration: 'options.configuration',
   calibration: 'options.calibration',
   scale_calibration: 'options.scaleCalibration',
+  initialize_bottles: 'options.initializeBottles',
   backup: 'options.backup',
   restore: 'options.restore',
   data: 'options.data',

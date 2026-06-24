@@ -20,6 +20,7 @@ from src.models import EventType
 from src.programs.blacklist import BLACKLIST
 from src.programs.calibration import CalibrationScreen
 from src.programs.scale_calibration import ScaleCalibrationScreen
+from src.tabs.bottles import has_tube_volume, initialize_bottles
 from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
 from src.ui.creation_utils import NARROW_WIDTH_THRESHOLD, repack_grid
@@ -57,6 +58,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
 
         self.button_back.clicked.connect(self.close)
         self.button_clean.clicked.connect(self._init_clean_machine)
+        self.button_initialize_bottles.clicked.connect(self._init_initialize_bottles)
         self.button_config.clicked.connect(self._open_config)
         self.button_reboot.clicked.connect(self._reboot_system)
         self.button_shutdown.clicked.connect(self._shutdown_system)
@@ -111,11 +113,18 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         order = self._TILE_ORDER
         attr_by_button = {button: attr for button, attr, _ in order}
         items = [(button, span) for button, _attr, span in order]
+        show_initialize = has_tube_volume()
+
+        def skip(widget: QPushButton) -> bool:
+            if widget is self.button_initialize_bottles and not show_initialize:
+                return True
+            return BLACKLIST.is_tile_blacklisted(attr_by_button[widget])
+
         repack_grid(
             self.gridLayout_2,
             items,
             self._tile_columns,
-            skip=lambda widget: BLACKLIST.is_tile_blacklisted(attr_by_button[widget]),  # ty: ignore[invalid-argument-type]
+            skip=skip,  # ty: ignore[invalid-argument-type]
         )
 
     def resizeEvent(self, a0: QResizeEvent | None) -> None:
@@ -134,6 +143,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """
         return [
             (self.button_clean, "cleaning", 1),
+            (self.button_initialize_bottles, "initialize_bottles", 1),
             (self.button_calibration, "calibration", 1),
             (self.button_config, "configuration", 1),
             (self.button_export, "data", 1),
@@ -171,6 +181,14 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             revert_pumps = DP_CONTROLLER.ask_to_use_reverted_pump()
         mc = MachineController()
         mc.clean_pumps(self.mainscreen, revert_pumps)
+        DP_CONTROLLER.say_done()
+
+    def _init_initialize_bottles(self) -> None:
+        """Prime all pump tubes if the user confirms the action."""
+        if not DP_CONTROLLER.ask_to_initialize_bottles():
+            return
+        _logger.info("Bottle initialization requested over option UI")
+        initialize_bottles(self.mainscreen)
         DP_CONTROLLER.say_done()
 
     def _reboot_system(self) -> None:

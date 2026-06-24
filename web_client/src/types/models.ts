@@ -552,6 +552,7 @@ export interface CurrentWaiterState {
  */
 export interface OptionTiles {
   cleaning: boolean;
+  initialize_bottles: boolean;
   configuration: boolean;
   calibration: boolean;
   scale_calibration: boolean;

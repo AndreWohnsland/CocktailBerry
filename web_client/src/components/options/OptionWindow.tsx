@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fa';
 import { FaCalculator, FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
 import { GrUpdate } from 'react-icons/gr';
-import { MdEventNote, MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
+import { MdEventNote, MdOpacity, MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
 import { RiShutDownLine } from 'react-icons/ri';
 import { TiDocumentAdd } from 'react-icons/ti';
 import { useNavigate } from 'react-router';
@@ -22,6 +22,7 @@ import {
   checkInternetConnection,
   cleanMachine,
   createBackup,
+  initializeBottles,
   listSoftwareUpdates,
   rebootSystem,
   shutdownSystem,
@@ -45,6 +46,7 @@ const OptionWindow = () => {
   const { theme, changeTheme, config, isTileBlacklisted } = useConfig();
   const navigate = useNavigate();
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [progressName, setProgressName] = useState('');
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updateInfo, setUpdateInfo] = useState<UpdateAvailability>();
@@ -60,6 +62,10 @@ const OptionWindow = () => {
     return waiter == null ? true : Boolean(waiter.tile_permissions?.[tile]);
   };
 
+  const hasTubeVolume = (config.PUMP_CONFIG ?? [])
+    .slice(0, config.MAKER_NUMBER_BOTTLES)
+    .some((pump) => pump.tube_volume > 0);
+
   const cleanClick = async () => {
     const started = await confirmAndExecute(t('options.startCleaningProgram'), async () => {
       const revertPumps = config.MAKER_PUMP_REVERSION_CONFIG?.enabled
@@ -68,6 +74,14 @@ const OptionWindow = () => {
       return cleanMachine(revertPumps);
     });
     if (!started) return;
+    setProgressName(t('options.cleaningTheMachine'));
+    setIsProgressModalOpen(true);
+  };
+
+  const initializeBottlesClick = async () => {
+    const started = await confirmAndExecute(t('options.startInitializeBottles'), initializeBottles);
+    if (!started) return;
+    setProgressName(t('options.initializingTheBottles'));
     setIsProgressModalOpen(true);
   };
 
@@ -157,7 +171,7 @@ const OptionWindow = () => {
         isOpen={isProgressModalOpen}
         onRequestClose={() => setIsProgressModalOpen(false)}
         progress={0}
-        displayName={t('options.cleaningTheMachine')}
+        displayName={progressName}
       />
       <div className='flex flex-col items-center max-w-5xl w-full p-2 pt-0'>
         <div className='dropdown-container flex flex-row items-center mb-4 w-full max-w-md'>
@@ -172,6 +186,15 @@ const OptionWindow = () => {
         <div className='grid gap-1 w-full grid-cols-1 md:grid-cols-2'>
           {showTile('cleaning') && (
             <TileButton label={t('options.cleaning')} filled icon={MdWaterDrop} iconSize={22} onClick={cleanClick} />
+          )}
+          {hasTubeVolume && showTile('initialize_bottles') && (
+            <TileButton
+              label={t('options.initializeBottles')}
+              filled
+              icon={MdOpacity}
+              iconSize={22}
+              onClick={initializeBottlesClick}
+            />
           )}
           {showTile('calibration') && (
             <TileButton
