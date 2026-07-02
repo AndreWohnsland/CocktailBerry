@@ -23,6 +23,19 @@ def build_number_limiter(min_val: float = 1, max_val: float = 100) -> Callable[[
     return limit_number
 
 
+def build_allowed_values(allowed: list[int], hint: str = "") -> Callable[[str, int], None]:
+    """Build the function: check the number is one of the allowed values."""
+
+    def check_allowed(configname: str, data: int) -> None:
+        if data not in allowed:
+            msg = f"{configname} must be one of {allowed}"
+            if hint:
+                msg += f" ({hint})"
+            raise ConfigError(msg)
+
+    return check_allowed
+
+
 def build_distinct_validator(
     keys: list[str],
     fallback: dict[str, Any] | None = None,

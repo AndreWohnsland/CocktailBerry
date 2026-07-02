@@ -55,6 +55,7 @@ from src.config.config_types import (
 )
 from src.config.errors import ConfigError
 from src.config.validators import (
+    build_allowed_values,
     build_distinct_validator,
     build_number_limiter,
     validate_i2c_address,
@@ -126,6 +127,12 @@ SHARED_LED_FIELDS: dict[str, ConfigInterface[Any]] = {
     "default_on": BoolType(check_name="Default On"),
     "preparation_state": ChooseOptions.leds,
 }
+
+# GPIOs a WS281x LED can actually run on with our driver. rpi_ws281x only accepts
+# {10, 12, 18, 21} on channel 0 (13/19 are PWM1 and need channel 1, which WSLed hardcodes
+# to 0 in src/machine/leds/wsled.py); pin 10 is our own SPI backend. See ws2811.c
+# check_hwver_and_gpionum for the source of truth.
+WS281X_SUPPORTED_PINS = [10, 12, 18, 21]
 
 SHARED_REVERSION_FIELDS: dict[str, ConfigInterface[Any]] = {
     "reversion_type": ChooseOptions.reversion_type,
@@ -407,7 +414,11 @@ class ConfigManager:
                         "WSLED": DictType(
                             {
                                 **SHARED_LED_FIELDS,
-                                "pin": IntType([build_number_limiter(0)], prefix="Pin:", default=10),
+                                "pin": IntType(
+                                    [build_allowed_values(WS281X_SUPPORTED_PINS, "10=SPI, 12/18=PWM, 21=PCM")],
+                                    prefix="Pin:",
+                                    default=10,
+                                ),
                                 "brightness": IntType([build_number_limiter(1, 100)], suffix="%", default=100),
                                 "count": IntType([build_number_limiter(1, 500)], suffix="LEDs", default=24),
                                 "number_rings": IntType([build_number_limiter(1, 10)], suffix="X", default=1),

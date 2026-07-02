@@ -1,6 +1,7 @@
 # pyright: reportMissingImports=false
 from __future__ import annotations
 
+import atexit
 from collections.abc import Iterator
 from random import randint
 from typing import TYPE_CHECKING
@@ -73,7 +74,18 @@ class WSLed(LedInterface):
             0,  # channel 0 or 1
         )
         # SPI: opens the device (RuntimeError if SPI disabled). PWM: RuntimeError if not root.
-        self.strip.begin()
+        try:
+            self.strip.begin()
+        except Exception:
+            # rpi_ws281x registers atexit(_cleanup) inside PixelStrip.__init__, before begin().
+            # A failed begin() leaves the strip uninitialized, but the handler survives and keeps
+            # the object alive. The next atexit run (our restart flow calls atexit._run_exitfuncs())
+            # would then invoke ws2811_fini() on an uninitialized handle and segfault the C
+            # extension, killing the restart with no Python traceback. Drop the orphaned handler.
+            cleanup = getattr(self.strip, "_cleanup", None)
+            if cleanup is not None:
+                atexit.unregister(cleanup)
+            raise
 
     def turn_off(self) -> None:
         """Turn all leds off."""
