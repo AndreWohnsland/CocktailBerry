@@ -7,8 +7,16 @@ You can use this to get information on the commands when running locally.
 
 !!! info "Used Auto Setup?"
     If you installed via the setup script, the program will usually be started via the `~/launcher.sh` file.
-    When you want to use other than the default options, change the `~/launcher.sh` file accordingly.
-    Just add the flags or their corresponding values to the `uv run runme.py` command.
+    This file is a symlink to `~/CocktailBerry/scripts/v1-launcher.sh` (v1) or `v2-launcher.sh` (v2), which are tracked by git.
+    Editing the symlink target directly means an update will overwrite the changes.
+    To make persistent local changes, first replace the symlink with your own copy:
+
+    ```bash
+    rm ~/launcher.sh
+    cp ~/CocktailBerry/scripts/v1-launcher.sh ~/launcher.sh  # use v2-launcher.sh for v2
+    ```
+
+    Then edit `~/launcher.sh` as needed, for example add the flags or their values to the `uv run runme.py` command.
 
 !!! info "v1 or v2?"
     If you are already running the API (v2) version, you need to use the command `api.py` instead of `runme.py`.

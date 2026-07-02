@@ -49,7 +49,8 @@ To ensure that the UI looks nice like in the screenshots, a resolution not highe
 If you happen to use a high-resolution screen, there is an easy fix, though.
 For example, when using a screen with a 2560x1600 resolution, I would recommend dividing the value by `x` (for example x=2).
 In the CocktailBerry config, set width to 2560/2 = 1280 and height to 1600/2 = 800.
-In case you used the provided setup, just change the first line in the ~/launcher.sh file `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case).
+In case you used the provided setup, change the first line `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case) in the `~/launcher.sh` file.
+Note that `~/launcher.sh` is a symlink to a git-tracked file, so replace it with your own copy first, otherwise an update overwrites the change (see [CLI Commands](commands.md) for the steps).
 This will use the lower dimensions for the application but scale it up by the factor of two so it occupies the whole screen.
 Decimal numbers for x also work, just try not to get decimals for width / height.
 If you use your own startup script or similar, just add the export line with a corresponding value to it, or set the environment variable in any other desired way.
@@ -105,6 +106,7 @@ WS281x LEDs can be driven two ways, picked automatically from the **pin** you se
 
 Getting the WS281x to work this way may be a little bit tricky.
 You need to run the program as root/sudo, so you also need to change this in `~/launcher.sh`.
+`~/launcher.sh` is a symlink to a git-tracked file, so replace it with your own copy first, otherwise an update overwrites the change (see [CLI Commands](commands.md) for the steps).
 If you are using the latest installer, there will be a virtual environment created, so you should use this as root.
 
 ```bash
@@ -280,7 +282,7 @@ Your picture will then replace the default provided picture.
 
 The user pictures are stored in the `~/CocktailBerry/display_images_user` folder.
 The picture will be saved with the cocktail id as name and jpg format.
-You can also provide the cocktail name in lowercase with underscores instead of spaces as the picture name in jpg format (e.g. `cuba_libre.jpg` for "Cuba Libre"), if you prefer to upload the pictures manually in that folder instead of the GUI.
+If you prefer to add pictures manually in that folder instead of the GUI, name the file with the cocktail id (e.g. `5.jpg`).
 
 If your database is quite old, newer cocktails you added may either have the default picture, or may have another picture from new cocktails contained now in the database.
 This is due to the database using incrementing integers as primary key for the cocktails.
@@ -381,9 +383,11 @@ Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh
 If your setup is equal to the docs (Raspberry Pi, CocktailBerry GitHub cloned to the home folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
 
 ```bash
-cp ~/CocktailBerry/scripts/v1-launcher.sh ~/
+cp ~/CocktailBerry/scripts/v1-launcher.sh ~/launcher.sh  # use v2-launcher.sh for v2
 cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
 ```
+
+Copying to a real `~/launcher.sh` file (instead of the symlink the installer creates) means the file survives updates but does not receive their changes.
 
 If there are any problems with the lxterminal window opening and instant closing, check the rights of the shell file, it needs executable (x) rights, otherwise use `chmod` to give x-rights:
 

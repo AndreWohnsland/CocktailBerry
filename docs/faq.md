@@ -174,10 +174,16 @@ sudo apt-get update
 sudo apt-get install xdotool
 ```
 
-Then adjust the `launcher.sh` file to include the following line on top:
+Then adjust the `launcher.sh` file to include the following line on top.
+`~/launcher.sh` is a symlink to a git-tracked file, so first replace it with your own copy (otherwise an update overwrites the change):
 
 ```bash
-# you can edit it with 'sudo nano ~/launcher.sh'
+rm ~/launcher.sh
+cp ~/CocktailBerry/scripts/v1-launcher.sh ~/launcher.sh  # use v2-launcher.sh for v2
+```
+
+```bash
+# you can now edit it with 'nano ~/launcher.sh'
 sleep 1 # sometimes you need to wait a bit longer so can increase to 2 if needed
 xdotool getactivewindow windowminimize
 # rest of the script stays same

@@ -61,5 +61,6 @@
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "biome.configurationPath": "web_client/biome.json"
+  "biome.configurationPath": "web_client/biome.json",
+  "biome.requireConfiguration": true
 }

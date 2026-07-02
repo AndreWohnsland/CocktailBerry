@@ -1,7 +1,5 @@
 from pathlib import Path
 
-script_entry_path = Path.home() / "launcher.sh"
-qt_launcher_path = Path.home() / "CocktailBerry" / "scripts" / "v1-launcher.sh"
 web_entry_path = Path("/etc/xdg/autostart/cocktail_web.desktop")
 
 
@@ -15,11 +13,12 @@ def _remove_web_entry() -> None:
 
 
 def roll_back_to_qt_script() -> None:
-    """Roll back to the Qt setup."""
-    if script_entry_path.exists() or script_entry_path.is_symlink():
-        script_entry_path.unlink()
-    script_entry_path.symlink_to(qt_launcher_path)
-    qt_launcher_path.chmod(0o755)
+    """Point the launcher at the v1 (Qt) backend, preserving any user customization."""
+    # Runtime import: keeps this module runnable as a standalone root script (__main__),
+    # where the repo root is not on sys.path and top-level `src.*` imports would fail.
+    from src.migration.launcher import switch_launcher
+
+    switch_launcher("v1")
 
 
 # This section need to be run as root in a subprocess
