@@ -6,6 +6,11 @@ from src.filepath import SCRIPTS_FOLDER
 Version = Literal["v1", "v2"]
 
 
+def launcher_path() -> Path:
+    """Return the path of the launcher script the installer manages (~/launcher.sh)."""
+    return Path.home() / "launcher.sh"
+
+
 def switch_launcher(target: Version) -> None:
     """Point ~/launcher.sh at the given version's launcher, preserving user edits.
 
@@ -18,7 +23,7 @@ def switch_launcher(target: Version) -> None:
     """
     home = Path.home()
     source: Version = "v1" if target == "v2" else "v2"
-    launcher = home / "launcher.sh"
+    launcher = launcher_path()
     target_script = SCRIPTS_FOLDER / f"{target}-launcher.sh"
     target_backup = home / f"launcher.{target}.bak"
 

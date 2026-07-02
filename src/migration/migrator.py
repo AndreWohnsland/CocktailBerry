@@ -30,7 +30,8 @@ from src.filepath import (
 )
 from src.logger_handler import LoggerHandler
 from src.migration.export_data import add_export_tables_to_db, migrate_csv_export_data_to_db
-from src.migration.qt_migrator import roll_back_to_qt_script, script_entry_path
+from src.migration.launcher import launcher_path
+from src.migration.qt_migrator import roll_back_to_qt_script
 from src.migration.update_data import (
     add_cost_consumption_column_to_ingredients,
     add_disallow_pump_back_column_to_ingredients,
@@ -481,7 +482,7 @@ def _check_and_replace_qt_launcher_script() -> None:
     # check if the script has the basic python runme.py command without api
     needed_commands = ["runme.py"]
     with contextlib.suppress(FileNotFoundError):
-        current_script_text = script_entry_path.read_text()
+        current_script_text = launcher_path().read_text()
         _logger.info("Updating the launcher script to the new version with uv")
         if not all(command in current_script_text for command in needed_commands):
             replace_backend_script()
