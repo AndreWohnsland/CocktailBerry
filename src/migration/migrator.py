@@ -30,8 +30,7 @@ from src.filepath import (
 )
 from src.logger_handler import LoggerHandler
 from src.migration.export_data import add_export_tables_to_db, migrate_csv_export_data_to_db
-from src.migration.launcher import launcher_path
-from src.migration.qt_migrator import roll_back_to_qt_script
+from src.migration.launcher import launcher_path, switch_launcher
 from src.migration.update_data import (
     add_cost_consumption_column_to_ingredients,
     add_disallow_pump_back_column_to_ingredients,
@@ -44,7 +43,6 @@ from src.migration.update_data import (
     migrate_waiter_privileges_to_roles,
     remove_hand_from_recipe_data,
 )
-from src.migration.web_migrator import replace_backend_script
 
 _logger = LoggerHandler("migrator_module")
 
@@ -485,7 +483,7 @@ def _check_and_replace_qt_launcher_script() -> None:
         current_script_text = launcher_path().read_text()
         _logger.info("Updating the launcher script to the new version with uv")
         if not all(command in current_script_text for command in needed_commands):
-            replace_backend_script()
+            switch_launcher("v2", preserve=False)
             return
         # need to also add uv venv on linux here if uv is already available
         # This is because we need the system site package for pyqt
@@ -493,7 +491,7 @@ def _check_and_replace_qt_launcher_script() -> None:
         platform_name = platform.system().lower()
         if not VENV_FOLDER.exists() and uv_executable and platform_name == "linux":
             subprocess.run([uv_executable, "uv", "venv"], check=True)
-        roll_back_to_qt_script()
+        switch_launcher("v1", preserve=False)
 
 
 def _combine_led_setting_into_one_config() -> None:
