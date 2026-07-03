@@ -131,7 +131,11 @@ const CocktailList: React.FC = () => {
             </p>
             <div className='relative w-full' style={{ paddingTop: '100%' }}>
               <img
-                src={`${API_URL}/static/default/default.jpg`}
+                src={`${API_URL}/static/user/random.jpg`}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = `${API_URL}/static/default/default.jpg`;
+                }}
                 alt={t('cocktails.randomCocktail')}
                 className='absolute top-0 left-0 w-full h-full object-cover'
               />

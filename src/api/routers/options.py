@@ -39,6 +39,7 @@ from src.config.config_manager import shared
 from src.data_utils import generate_consume_data
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
+from src.image_utils import RANDOM_IMAGE_NAME, find_user_cocktail_image, process_image, save_image
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
@@ -105,6 +106,36 @@ async def update_options(options: dict, background_tasks: BackgroundTasks) -> Ap
         background_tasks.add_task(_restart_task)
         return ApiMessage(message=DH.get_translation("options_updated_and_restart"))
     return ApiMessage(message=DH.get_translation("options_updated"))
+
+
+@protected_router.post(
+    "/random-image", summary="Upload the image for the random cocktail tile", dependencies=[not_on_demo]
+)
+async def upload_random_image(file: Annotated[UploadFile, File(...)]) -> ApiMessage:
+    try:
+        contents = await file.read()
+        image = process_image(contents)
+        if image is None:
+            raise HTTPException(status_code=400, detail="Image processing failed.")
+        save_image(image, RANDOM_IMAGE_NAME)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to upload image: {e!s}")
+    return ApiMessage(message=DH.get_translation("image_uploaded"))
+
+
+@protected_router.delete(
+    "/random-image", summary="Delete the image for the random cocktail tile", dependencies=[not_on_demo]
+)
+async def delete_random_image() -> ApiMessage:
+    user_image_path = find_user_cocktail_image(RANDOM_IMAGE_NAME)
+    if user_image_path is None or not user_image_path.exists():
+        message = DH.get_translation("element_not_found", element_name="Random Cocktail Image")
+        raise HTTPException(status_code=404, detail=message)
+    try:
+        user_image_path.unlink()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to delete image: {e!s}")
+    return ApiMessage(message=DH.get_translation("image_deleted"))
 
 
 @protected_router.post("/clean", tags=[Tags.PREPARATION], summary="Start the machine cleaning")

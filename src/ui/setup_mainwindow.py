@@ -443,7 +443,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # usually we get a cocktail because the name was from the list
         if not cocktail:
             return
-        self.picture_window = PictureWindow(cocktail, self.cocktail_view.populate_cocktails)
+        self.picture_window = PictureWindow(cocktail.id, cocktail.name, self.cocktail_view.populate_cocktails)
 
     def open_refill_dialog(self, cocktail: Cocktail) -> None:
         """Open the refill dialog for the given ingredient."""

@@ -11,8 +11,8 @@ from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.filepath import DEFAULT_COCKTAIL_IMAGE, INGREDIENT_IMAGE
-from src.image_utils import find_cocktail_image
+from src.filepath import INGREDIENT_IMAGE
+from src.image_utils import RANDOM_IMAGE_NAME, find_cocktail_image
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail
 from src.payment_utils import filter_cocktails_by_user
@@ -65,7 +65,7 @@ def generate_random_image_block(cocktails: list[Cocktail], mainscreen: MainScree
     )
     label = ClickableLabel(random_label)
     label.setProperty("cssClass", "cocktail-picture-view")
-    pixmap = QPixmap(str(DEFAULT_COCKTAIL_IMAGE))
+    pixmap = QPixmap(str(find_cocktail_image(RANDOM_IMAGE_NAME)))
     label.setPixmap(pixmap)
     label.setScaledContents(True)
     label.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
@@ -104,7 +104,7 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
         button.setIconSize(QSize(20, 20))
     label = ClickableLabel(name_label)
     label.setProperty("cssClass", "cocktail-picture-view")
-    cocktail_image = INGREDIENT_IMAGE if cocktail is None else find_cocktail_image(cocktail)
+    cocktail_image = INGREDIENT_IMAGE if cocktail is None else find_cocktail_image(cocktail.id)
     pixmap = QPixmap(str(cocktail_image))
     label.setPixmap(pixmap)
     label.setScaledContents(True)

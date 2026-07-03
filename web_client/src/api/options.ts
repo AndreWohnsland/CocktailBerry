@@ -48,6 +48,23 @@ export const updateOptions = async (options: ConfigData): Promise<{ message: str
   return axiosInstance.post<{ message: string }>(optionsUrl, options).then((res) => res.data);
 };
 
+export const uploadRandomImage = async (file: File): Promise<{ message: string }> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return axiosInstance
+    .post<{ message: string }>(`${optionsUrl}/random-image`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((res) => res.data);
+};
+
+export const deleteRandomImage = async (): Promise<{ message: string }> => {
+  return axiosInstance.delete<{ message: string }>(`${optionsUrl}/random-image`).then((res) => res.data);
+};
+
 // Clean
 export const cleanMachine = async (revertPumps = false): Promise<{ message: string }> => {
   return axiosInstance

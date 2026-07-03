@@ -268,7 +268,7 @@ async def delete_cocktail_image(cocktail_id: int) -> ApiMessage:
     if cocktail is None:
         message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
         raise HTTPException(status_code=404, detail=message)
-    user_image_path = find_user_cocktail_image(cocktail)
+    user_image_path = find_user_cocktail_image(cocktail_id)
     if user_image_path is None or not user_image_path.exists():
         message = DH.get_translation("element_not_found", element_name=f"Cocktail Image (id={cocktail_id})")
         raise HTTPException(status_code=404, detail=message)

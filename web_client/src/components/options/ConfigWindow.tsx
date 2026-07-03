@@ -18,6 +18,7 @@ import NumberInput from '../common/NumberInput';
 import ObjectDisplay from '../common/ObjectDisplay';
 import TabSelector from '../common/TabSelector';
 import TextInput from '../common/TextInput';
+import RandomImageUpload from './RandomImageUpload';
 
 // some of the config are "old" meaning they are only used in the QT but not React UI
 // we will define them here and skip the values for those (e.g. not generate input fields)
@@ -414,6 +415,7 @@ const ConfigWindow: React.FC = () => {
       <h3 className='text-secondary text-lg font-bold mb-1'>{data?.[key]?.readable_name || key}</h3>
       {data && <p className='text-neutral mb-2 text-center'>{data[key].description}</p>}
       {renderInputField(key, configData[key])}
+      {key === 'MAKER_RANDOM_COCKTAIL' && <RandomImageUpload />}
     </div>
   );
 

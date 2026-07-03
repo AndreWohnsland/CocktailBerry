@@ -11,8 +11,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.filepath import DEFAULT_COCKTAIL_IMAGE
-from src.image_utils import find_cocktail_image
+from src.image_utils import RANDOM_IMAGE_NAME, find_cocktail_image
 from src.models import Cocktail, Ingredient
 from src.ui.creation_utils import (
     LARGE_FONT,
@@ -118,7 +117,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def _set_image(self) -> None:
         """Set the image of the cocktail."""
-        image_path = find_cocktail_image(self.cocktail)
+        image_path = find_cocktail_image(self.cocktail.id)
         pixmap = QPixmap(str(image_path))
         self.image_container.setPixmap(pixmap)
 
@@ -147,7 +146,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def update_random_display(self) -> None:
         """Update the display for random cocktail mode."""
-        pixmap = QPixmap(str(DEFAULT_COCKTAIL_IMAGE))
+        pixmap = QPixmap(str(find_cocktail_image(RANDOM_IMAGE_NAME)))
         self.image_container.setPixmap(pixmap)
         surprise_label = UI_LANGUAGE.get_translation("random_be_surprised", "main_window")
         self._update_random_label()

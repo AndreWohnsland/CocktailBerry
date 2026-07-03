@@ -6,48 +6,41 @@ from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 
 from src.filepath import DEFAULT_COCKTAIL_IMAGE, DEFAULT_IMAGE_FOLDER, USER_IMAGE_FOLDER
-from src.models import Cocktail
+
+# reserved image identifier for the random cocktail tile (not a real cocktail)
+RANDOM_IMAGE_NAME = "random"
 
 
-def find_cocktail_image(cocktail: Cocktail) -> Path:
-    """Find the image for the given cocktail."""
+def find_cocktail_image(identifier: int | str) -> Path:
+    """Find the image for the given cocktail id (or reserved name)."""
     # setting default cocktail image
-    cocktail_image = find_default_cocktail_image(cocktail)
+    cocktail_image = find_default_cocktail_image(identifier)
     # Now try to get the user defined image, if it exists
-    user_cocktail_image = find_user_cocktail_image(cocktail)
+    user_cocktail_image = find_user_cocktail_image(identifier)
     if user_cocktail_image is not None:
         cocktail_image = user_cocktail_image
     return cocktail_image
 
 
-def find_default_cocktail_image(cocktail: Cocktail) -> Path:
-    """Find the system defined image for the given cocktail."""
+def find_default_cocktail_image(identifier: int | str) -> Path:
+    """Find the system defined image for the given cocktail id (or reserved name)."""
     # setting default cocktail image
     cocktail_image = DEFAULT_COCKTAIL_IMAGE
     # then try to get system cocktail image
     # provided cocktails will have a default image, user added will not
-    specific_image_path = DEFAULT_IMAGE_FOLDER / f"{cocktail.id}.jpg"
+    specific_image_path = DEFAULT_IMAGE_FOLDER / f"{identifier}.jpg"
     if specific_image_path.exists():
         cocktail_image = specific_image_path
     return cocktail_image
 
 
-def find_user_cocktail_image(cocktail: Cocktail) -> Path | None:
-    """Find the user defined image for the given cocktail.
+def find_user_cocktail_image(identifier: int | str) -> Path | None:
+    """Find the user defined image for the given cocktail id (or reserved name).
 
     Returns None if not set.
     """
-    cocktail_image = None
-    # also allow cocktail name with underscores as image name
-    image_paths = [
-        USER_IMAGE_FOLDER / f"{cocktail.id}.jpg",
-        USER_IMAGE_FOLDER / f"{cocktail.name.lower().replace(' ', '_')}.jpg",
-    ]
-    for path in image_paths:
-        if path.exists():
-            cocktail_image = path
-            break
-    return cocktail_image
+    image_path = USER_IMAGE_FOLDER / f"{identifier}.jpg"
+    return image_path if image_path.exists() else None
 
 
 def process_image(image_data: str | bytes | Path, resize_size: int = 500) -> Image.Image | None:
@@ -108,6 +101,6 @@ def check_picture_orientation(img: Image.Image) -> Image.Image:
     return img
 
 
-def save_image(image: Image.Image, save_id: int) -> None:
+def save_image(image: Image.Image, save_id: int | str) -> None:
     """Save the given image to the user folder."""
     image.save(USER_IMAGE_FOLDER / f"{save_id}.jpg", "JPEG")
