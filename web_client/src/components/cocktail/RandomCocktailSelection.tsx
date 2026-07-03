@@ -78,7 +78,11 @@ const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handl
       <div className='flex flex-col sm:flex-row items-center md:items-start justify-center w-full h-full'>
         <div className='relative w-full h-full sm:mr-2 mb-2 flex-1'>
           <img
-            src={`${API_URL}/static/default/default.jpg`}
+            src={`${API_URL}/static/user/random.jpg`}
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = `${API_URL}/static/default/default.jpg`;
+            }}
             alt={t('cocktails.randomCocktail')}
             className='w-full h-full object-cover border-2 border-neutral rounded-lg overflow-hidden'
           />

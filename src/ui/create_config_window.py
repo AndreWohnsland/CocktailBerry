@@ -22,6 +22,7 @@ from src.config.config_types import (
 from src.config.errors import ConfigError
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.image_utils import RANDOM_IMAGE_NAME
 from src.programs.blacklist import BLACKLIST
 from src.ui.creation_utils import (
     LARGE_FONT,
@@ -35,6 +36,7 @@ from src.ui.creation_utils import (
 from src.ui.setup_color_window import ColorWindow
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui.setup_numpad_widget import NumpadWidget
+from src.ui.setup_picture_window import PictureWindow
 from src.ui_elements import Ui_ConfigWindow
 from src.ui_elements.clickablelineedit import ClickableLineEdit
 from src.utils import restart_v1
@@ -91,6 +93,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.config_objects: dict[str, Callable[[], CONFIG_TYPES_POSSIBLE]] = {}
         self.color_window: ColorWindow | None = None
         self.button_custom_color: QPushButton | None = None
+        self.random_image_window: PictureWindow | None = None
         UI_LANGUAGE.adjust_config_window(self)
         self._init_ui()
         self.showFullScreen()
@@ -184,6 +187,8 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
         self.config_objects[config_name] = getter_fn
         if config_name == "MAKER_THEME":
             self._build_custom_color_button(vbox)
+        if config_name == "MAKER_RANDOM_COCKTAIL":
+            self._build_random_image_button(vbox)
         # Add small spacer after each section
         vbox.addItem(create_spacer(12))
 
@@ -197,6 +202,25 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
 
     def _open_color_window(self) -> None:
         self.color_window = ColorWindow(self.mainscreen)
+
+    def _build_random_image_button(self, vbox: QVBoxLayout) -> None:
+        """Build a button to set the image of the random cocktail tile."""
+        self.button_random_image = create_button(
+            UI_LANGUAGE.get_translation("set_random_image", "picture_window"),
+            min_w=0,
+            max_w=16777215,
+            max_h=200,
+            min_h=50,
+            font_size=LARGE_FONT,
+            bold=True,
+        )
+        self.button_random_image.clicked.connect(self._open_random_image_window)
+        vbox.addWidget(self.button_random_image)
+
+    def _open_random_image_window(self) -> None:
+        display_name = UI_LANGUAGE.get_translation("random_cocktail_label", "main_window")
+        refresh = self.mainscreen.cocktail_view.populate_cocktails if self.mainscreen is not None else lambda: None
+        self.random_image_window = PictureWindow(RANDOM_IMAGE_NAME, display_name, refresh)
 
     def _build_input_field(  # noqa: C901
         self, config_name: str, config_setting: ConfigInterface, current_value: Any, layout: QBoxLayout | None = None

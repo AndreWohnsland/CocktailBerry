@@ -98,7 +98,7 @@ def calculate_cocktail_volume_and_concentration(cocktail: CocktailInput) -> tupl
 def create_image_url(cocktail: DBCocktail, default: bool = False) -> str:
     # get the folder name of the path
     default_folder_name = DEFAULT_IMAGE_FOLDER.name
-    image_path = find_default_cocktail_image(cocktail) if default else find_cocktail_image(cocktail)
+    image_path = find_default_cocktail_image(cocktail.id) if default else find_cocktail_image(cocktail.id)
     # check if the image is in the default folder
     if default_folder_name in image_path.parts:
         return f"/static/default/{image_path.name}"

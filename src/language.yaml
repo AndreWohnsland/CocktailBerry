@@ -963,6 +963,10 @@ ui:
       en: 'Set picture for {cocktail}'
       de: 'Bild einstellen für {cocktail}'
       pl: 'Ustaw obraz dla {cocktail}'
+    set_random_image:
+      en: 'Set Random Cocktail Image'
+      de: 'Bild für Zufallscocktail setzen'
+      pl: 'Ustaw obraz losowego koktajlu'
 
   ##### SETTINGS WINDOW #####
   # all values for settings window
