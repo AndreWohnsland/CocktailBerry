@@ -63,9 +63,9 @@ This way, no data will get lost in the void.
 ### Posting Data to the Official API
 
 When the microservice is active, you can use it not only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) and submit your data.
-It will then appear on the [official dashboard](https://stats-cocktailberry.streamlitapp.com/).
+It will then appear on the [official dashboard](https://stats-cocktailberry.streamlit.app/).
 Don't worry, no private data is included, only some cocktail data.
-A detailed write-down [can be found on the dashboard site](https://stats-cocktailberry.streamlitapp.com#how-to-participate) how you can receive your API key.
+A detailed write-down [can be found on the dashboard site](https://stats-cocktailberry.streamlit.app/#how-to-participate) how you can receive your API key.
 You need to change the default `API_KEY` value of the microservice to your own key.
 After that, your CocktailBerry will be able to also submit data and help populate the dashboard.
 
@@ -154,7 +154,7 @@ For this, a very easy way is to use [RaspAp](https://raspap.com/).
 
 !!! info "Less Typing"
     Using the included script `sh scripts/install_docker.sh` and `sh scripts/install_compose.sh` will also do that for you.
-    You may have executed it at the setup of your CocktailBerry, if you used the all in one script, and therefore already installed docker.
+    You may have executed it at the setup of your CocktailBerry, if you used the all-in-one script, and therefore already installed docker.
     Using them has the benefit that they may be more up to date than the commands below.
 
 Just run these commands in sequence on the Pi:
@@ -167,7 +167,7 @@ sudo usermod -aG docker $USER
 newgrp docker
 DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
-curl -SL https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-linux-aarch64 -o ~/.docker/cli-plugins/docker-compose
+curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-aarch64 -o ~/.docker/cli-plugins/docker-compose
 chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 docker compose version || echo "Compose installation failed :("
 docker run hello-world

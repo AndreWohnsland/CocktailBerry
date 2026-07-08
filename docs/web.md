@@ -1,7 +1,7 @@
 # CocktailBerry Web
 
-!!! info "This is still new and not the default interface yet"
-    This is a new implementation and not as battle-tested as the old interface.
+!!! info "Not the default interface yet"
+    The web interface is stable, but v1 (the Qt app) is still the default.
     If you spot any issues, please report them in the [GitHub repository](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose).
     In general, most features should work as expected, but there might be some edge cases that are not covered yet.
 
@@ -32,23 +32,22 @@ The web interface requires a modern web browser that supports the latest web tec
 You do not need a touch screen, just a device being able to connect to the same network as the Raspberry Pi.
 However, a touchscreen can be used to control the app directly on the Raspberry Pi.
 
-As a word of caution: Currently it is difficult to trigger the virtual keyboard in kiosk mode (full screen).
-This is only an issue if you are using a touchscreen directly connected to the Raspberry Pi, not via phone or tablet.
-You might start with a non-full-screen web browser for now, but we are working on a solution.
-
 ## Limitations
+
+*This is for the v2 web interface. For the v1 (Qt) UI, see [Touchscreen settings](installation.md#touchscreen-settings).*
 
 Currently, the web interface might have some issues with touch screens directly connected to the Raspberry Pi.
 In some occasions, older OS or not properly configured screens, the default keyboard might not show up.
 If you are using an external device to control the app, this should not be an issue.
 In case you are using a touch screen directly connected to the Raspberry Pi, running the browser in non-kiosk mode might help.
-Installing the maliit keyboard might also be an alternative.
+There is also the option in the software to enable a web keyboard instead.
+This should work in fullscreen.
 
 ## Installation
 
 The easiest way to use the new interface is to use the CocktailBerry CLI [setup-web command](commands.md#switch-to-cocktailberry-web), if you installed CocktailBerry the usual way.
 Existing installations should update to at least version v2.0.0 to have this command available.
-Or you can use the v2 flag in the all in one installer script [as shown above](#quick-install).
+Or you can use the v2 flag in the all-in-one installer script [as shown above](#quick-install).
 
 !!! warning "Before starting"
     Before you start the update, make sure to backup your data.
@@ -65,11 +64,11 @@ uv run runme.py setup-web
 This will set up the web interface as the default interface and start it instead of the old main program.
 You can now access the website by opening your browser and navigating to `http://<ip>` or locally on `http://localhost`.
 
-Note: In the following section we use `uv run api.py` instead of `uv run runme.py` to start the web interface.
+Note: from here on, on a v2 install, use `uv run api.py` instead of `uv run runme.py`.
 
-## Enable the Virtual Keyboard
+## RPi Virtual Keyboard
 
-If you are lucky, the virtual keyboard [squeekboard](https://www.raspberrypi.com/documentation/accessories/display.html#use-an-on-screen-keyboard) is already working out of the box.
+The Raspberry Pi OS has a virtual keyboard that can be enabled via raspi-config.
 In case you do not want it, and it is activated, see the section below to disable it.
 If it should not show up when clicking on an input field, you can try to enable it manually.
 
@@ -95,7 +94,7 @@ sudo raspi-config
 
 Then go to `Display Options` -> `On-Screen Keyboard` and disable it.
 
-## Rollback to QT
+## Rollback to Qt
 
 If you want to go back to the old interface, you can do so by running the following command.
 

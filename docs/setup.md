@@ -46,20 +46,20 @@ They can be used at your own risk of CocktailBerry not working 100% properly.
 ??? info "List Maker Config Values"
     Maker config values are used to change the behavior of CocktailBerry.
 
-    | Value Name                    | Description                                               |
-    | :---------------------------- | :-------------------------------------------------------- |
-    | `MAKER_NAME`                  | Give your CocktailBerry its own name, max 30 chars        |
-    | `MAKER_NUMBER_BOTTLES`        | Number of displayed bottles, can use up to 16 bottles     |
-    | `MAKER_PREPARE_VOLUME`        | List of possible spend volumes of machine                 |
-    | `MAKER_SIMULTANEOUSLY_PUMPS`  | Number of pumps which can be simultaneously active        |
-    | `MAKER_SEARCH_UPDATES`        | Search for updates at program start                       |
-    | `MAKER_CHECK_BOTTLE`          | Check if there is enough of each ingredient left          |
-    | `MAKER_CLEAN_TIME`            | Time the machine will execute the cleaning program        |
-    | `MAKER_ALCOHOL_FACTOR`        | Value to multiply alcoholic ingredients in all recipes    |
-    | `MAKER_MAX_HAND_INGREDIENTS`  | Max x ingredients are allowed to add by hand              |
-    | `MAKER_CHECK_INTERNET`        | Do a connection check at start for time adjustment window |
-    | `MAKER_USE_RECIPE_VOLUME`     | Do not scale but use defined amounts                      |
-    | `MAKER_ADD_SINGLE_INGREDIENT` | Allows spending single ingredient in maker view           |
+    | Value Name                    | Description                                                |
+    | :---------------------------- | :--------------------------------------------------------- |
+    | `MAKER_NAME`                  | Give your CocktailBerry its own name, max 30 chars         |
+    | `MAKER_NUMBER_BOTTLES`        | Number of displayed bottles, can use up to 24 bottles (v1) |
+    | `MAKER_PREPARE_VOLUME`        | List of possible dispensing volumes for the machine        |
+    | `MAKER_SIMULTANEOUSLY_PUMPS`  | Number of pumps which can be simultaneously active         |
+    | `MAKER_SEARCH_UPDATES`        | Search for updates at program start                        |
+    | `MAKER_CHECK_BOTTLE`          | Check if there is enough of each ingredient left           |
+    | `MAKER_CLEAN_TIME`            | Time the machine will execute the cleaning program         |
+    | `MAKER_ALCOHOL_FACTOR`        | Value to multiply alcoholic ingredients in all recipes     |
+    | `MAKER_MAX_HAND_INGREDIENTS`  | Max x ingredients are allowed to add by hand               |
+    | `MAKER_CHECK_INTERNET`        | Do a connection check at start for time adjustment window  |
+    | `MAKER_USE_RECIPE_VOLUME`     | Do not scale but use defined amounts                       |
+    | `MAKER_ADD_SINGLE_INGREDIENT` | Allows spending single ingredient in maker view            |
 
 ??? info "List Hardware Config Values"
     Hardware config values are used to configure and enable the connected hardware.
@@ -234,6 +234,8 @@ With this as your base setup, even if not using the optional ingredients, your C
     With this information you may identify popular drinks and ingredients.
 
 ## Updates
+
+*See also: [How to get Updates](faq.md#how-to-get-updates) and [Software does not Update](troubleshooting.md#software-does-not-update) for troubleshooting.*
 
 There is the option to enable the automatic search for updates at program start.
 The `MAKER_SEARCH_UPDATES` config can enable this feature.

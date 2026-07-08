@@ -29,7 +29,7 @@ Some examples for an addon could be:
 - Implementation of a weight scale to detect if a glass is present
 - Add a checklist for invoices or cost splitting
 - Modify starting values (default output volume, e.g.) to let them be changed via the GUI
-- Integrate external things like automatic ice crasher
+- Integrate external things like automatic ice crusher
 - And almost anything you can think of
 
 ## Installing Addons
@@ -501,7 +501,7 @@ ADDON_NAME = "Your Displayed Name" # (1)!
 There are times when you either want to inform the user with a dialog or want to have a confirmation of the user.
 In these cases, you can use the `DP_CONTROLLER` object.
 The method `standard_box` will create a window showing your text.
-The method `user_ok` will prompt the user with the text and return if the user pressed ok.
+The method `user_okay` will prompt the user with the text and return if the user pressed ok.
 Those methods will use the default used elements from CocktailBerry.
 
 ```python

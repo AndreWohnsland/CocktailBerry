@@ -6,8 +6,6 @@ Once added, the extension gets its own configuration page in the UI and its inst
 
 Unlike dispenser extensions, which create one instance *per pump slot*, or other hardware that serves a specific purpose in the main code (scale, etc.), a hardware context extension creates **one instance per extension** and stores it in `hardware.extra["YourExtensionName"]`.
 Dispensers (and other extension code) then access it from the `HardwareContext` they receive.
-Unlike dispenser extensions, which create one instance *per pump slot*, a hardware context extension creates **one instance per extension**.
-Dispensers (and other extension code) access it from the `HardwareContext` they receive.
 
 This is the recommended approach when:
 

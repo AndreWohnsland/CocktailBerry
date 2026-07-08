@@ -55,6 +55,9 @@ Your `Implementation` class inherits from `LedInterface`. The base class owns th
 
 The constructor receives `config` (your `ExtensionConfig` instance) and `hardware` (`HardwareContext` — provides access to pin controller, scale, carriage, RFID, and `extra` dict of hardware extension instances).
 
+!!! warning "LEDs are created early"
+    LEDs are constructed before the scale, carriage and RFID reader exist, so `hardware.scale`, `hardware.carriage` and `hardware.rfid` are `None` in `__init__`. Read them at runtime (inside your frame generators), not in the constructor.
+
 ### How animations are driven
 
 You never spawn threads or check cancel flags. The base class:

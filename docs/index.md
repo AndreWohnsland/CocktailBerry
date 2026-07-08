@@ -32,8 +32,8 @@ Like this project? Give it a star on [GitHub](https://github.com/AndreWohnsland/
 ## Features
 
 CocktailBerry currently comes in two versions, v1 and v2.
-The v1 is the stable version which ships the QT app as a single application.
-[v2](https://docs.cocktailberry.org/web/) is the new version with a separate API and UI, which offers more flexibility, but might have some issues on built-in touchscreens.
+The v1 is the stable default, shipping the Qt app as a single application.
+[v2](https://docs.cocktailberry.org/web/) offers a separate API and UI with more flexibility, but might have some issues on built-in touchscreens.
 Both versions have the full feature set listed below.
 
 CocktailBerry offers the following features:
@@ -62,3 +62,9 @@ In addition, there is the possibility to use and set up a second device as a das
 - Provide the teams API to post and get cocktail data
 - Display different modes of data for a team-by-team comparison
 - _Optional_: Use the dashboard as WiFi hot-spot
+
+!!! heart "Support CocktailBerry"
+    CocktailBerry is free and open source, built and maintained in spare time, with ongoing infrastructure and AI subscription costs on top.
+
+    If it brought you joy, [see how you can support CocktailBerry](support.md) 
+    - there are many ways to help, and most cost nothing but a little time.
