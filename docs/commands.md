@@ -95,7 +95,7 @@ This will no longer start the web interface, but the main program.
 The main program will then be started as usual as a full windowed app.
 
 ```bash
-uv run runme.py switch-back
+uv run api.py switch-back
 ```
 
 ## Clearing Local Database

@@ -30,4 +30,5 @@ This requires some work on the existing base code, but delivers a great opportun
 #### Buy me a coffee and other support options
 
 And of course, you can always [buy me a coffee](https://www.buymeacoffee.com/AndreWohnsland) - because, who doesn't love coffee.
+If that's easier for you, you can also [donate via PayPal](https://www.paypal.com/donate/?hosted_button_id=ASLXG6JF94B4A).
 Besides that, there are also other support options available on the GitHub project page, or some affiliate links in the documentation.

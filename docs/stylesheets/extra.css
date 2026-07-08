@@ -6,11 +6,43 @@
   --md-primary-bg-color--light: #ffffffb3;
 }
 
+/* The modern theme paints the header with the page background (glassy blur);
+   classic used the brand pink. Restore the pink header + light text for both. */
+.md-header {
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+
+/* Header sits on brand pink in both schemes. Pin the search pill to a fixed
+   translucent dark (same in light/dark) so it reads as a consistent, slightly
+   darker pink with white text — no theme-dependent colour shift. */
+.md-header .md-search__button,
+.md-header .md-search__button:hover,
+.md-header .md-search__button:focus {
+  color: var(--md-primary-bg-color);
+  background-color: rgba(0, 0, 0, 0.18);
+}
+
+.md-header .md-search__button::before {
+  background-color: var(--md-primary-bg-color); /* the magnifier is a mask, tint via bg */
+}
+
+/* The ⌘K / Ctrl+K badge is themed light/dark by default; pin it white-on-pink. */
+.md-header .md-search__button::after {
+  color: var(--md-primary-bg-color);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
 @media screen and (max-width: 768px) {
   img {
     width: auto;
     height: auto;
   }
+}
+
+/* Modern underlines all content links (.md-typeset a); keep buttons clean. */
+.md-typeset a.cta-btn {
+  text-decoration: none;
 }
 
 .cta-btn {
@@ -49,12 +81,40 @@
 #announcement-content {
   text-align: center;
   background-color: #39489e;
+  color: #fff; /* modern banner text is theme-dependent; keep it white on the blue */
 }
 
 .md-banner {
   background-color: #39489e;
+  color: #fff;
 }
 
 .mermaid {
   text-align: center;
+}
+
+/* Custom "heart" admonition for support/donation CTAs. Reuses tip's green
+   (#00bfa5) but as its own type, so the built-in `tip` stays untouched.
+   Use with:  !!! heart "Support the project"   (Material custom-admonition recipe) */
+:root {
+  --md-admonition-icon--heart: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z"/></svg>');
+  /* Accent for the support block. Change this one line to recolour it entirely.
+     #64dd17 = Material "Question" green; #00bfa5 = "Tip" teal; or any hex/brand colour. */
+  --heart-color: #00bfa5;
+}
+
+.md-typeset .admonition.heart,
+.md-typeset details.heart {
+  border-color: var(--heart-color);
+  /* modern tints the whole body by type; 10% of the accent matches built-ins */
+  background-color: color-mix(in srgb, var(--heart-color) 10%, transparent);
+}
+
+/* No separate title tint: modern tints the whole block one uniform colour,
+   so let the title share the body's green instead of stacking a second layer. */
+.md-typeset .heart > .admonition-title::before,
+.md-typeset .heart > summary::before {
+  background-color: var(--heart-color);
+  -webkit-mask-image: var(--md-admonition-icon--heart);
+  mask-image: var(--md-admonition-icon--heart);
 }

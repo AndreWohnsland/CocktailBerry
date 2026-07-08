@@ -49,7 +49,7 @@ extra_javascript = [
 ]
 
 [project.theme]
-variant = "classic"
+variant = "modern"
 custom_dir = "docs/overrides"
 logo = "img/berry.svg"
 favicon = "img/favicon.ico"
@@ -107,6 +107,10 @@ anchor_linenums = true
 [project.markdown_extensions.pymdownx.mark]
 [project.markdown_extensions.pymdownx.smartsymbols]
 [project.markdown_extensions.pymdownx.snippets]
+# Reusable doc fragments (shared admonitions, notes) live in docs/.snippets.
+# Include one on its own line with:  --8<-- "all_in_one.md"
+base_path = ["docs/.snippets"]
+check_paths = true # fail the build on a missing snippet instead of silently skipping
 [project.markdown_extensions.pymdownx.superfences]
 custom_fences = [
   { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },

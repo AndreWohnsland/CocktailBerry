@@ -43,7 +43,7 @@ Higher resolution screens can be used, for high-res screens (at least v1) I reco
 
 You probably can use a wide variety of Single Board Computers (SBCs) beside the Raspberry Pi.
 The software should work on any system, but there are still some considerations.
-Especially if you are inexperienced with programming and Linux, I strongly suggest to stick to the recommended Pi setup.
+Especially if you are inexperienced with programming and Linux, I strongly suggest sticking to the recommended Pi setup.
 If you are experienced with Linux, you can probably get almost any SBC to work properly.
 I recommend using a wayland based desktop variant, for example a Debian Linux for the OS.
 The autorun / installation may differ a bit from the Pi.
@@ -65,6 +65,8 @@ Older versions are not supported.
 Generally, it is always recommended to use a fresh Raspberry Pi OS setup for the best experience.
 
 ### How to get Updates
+
+*See also: the [`MAKER_SEARCH_UPDATES` setting](setup.md#updates) and [Software does not Update](troubleshooting.md#software-does-not-update) if updates fail.*
 
 Simply have an internet connection and turn on the check updates option.
 If there is an update, CocktailBerry will inform you at startup.
@@ -140,7 +142,7 @@ If you use I2C, you can theoretically control up to 128 pumps with one Raspberry
 
 ### What is the Inverted Option
 
-Depending on your controlling unit (relay, mosfet, e.g.) the on / off signal may be inverted.
+Depending on your controlling unit (relay, mosfet, etc.) the on / off signal may be inverted.
 The relay arrays I've seen use a high state for switching off and a low state for switching on.
 This is the inverted state to a regular n-channel mosfet without any extra elements.
 The default setting is set to True, so it's inverted by default and should work as expected with usual relay arrays.
@@ -175,12 +177,7 @@ sudo apt-get install xdotool
 ```
 
 Then adjust the `launcher.sh` file to include the following line on top.
-`~/launcher.sh` is a symlink to a git-tracked file, so first replace it with your own copy (otherwise an update overwrites the change):
-
-```bash
-rm ~/launcher.sh
-cp ~/CocktailBerry/scripts/v1-launcher.sh ~/launcher.sh  # use v2-launcher.sh for v2
-```
+Note that `~/launcher.sh` is a symlink to a git-tracked file, so replace it with your own copy first, otherwise an update overwrites the change (see [CLI Commands](commands.md) for the steps).
 
 ```bash
 # you can now edit it with 'nano ~/launcher.sh'
@@ -200,6 +197,8 @@ You can set the tube volume of each pump in `PUMP_CONFIG`.
 When applying a new bottle, CocktailBerry will also pump that much volume up.
 
 ### Implementing LEDs
+
+*See also: [Get the LED Working](troubleshooting.md#get-the-led-working) for wiring and driver setup.*
 
 You can define one or more pins which control an LED (array).
 The LEDs will light up during cocktail preparation, as well as when the cocktail is finished.

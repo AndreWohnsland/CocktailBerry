@@ -92,6 +92,8 @@ In case the machine has an RTC built in and uses it, this option can usually be 
 
 ## Get the LED Working
 
+*See also: [Implementing LEDs](faq.md#implementing-leds) for what the LED feature does.*
+
 WS281x LEDs can be driven two ways, picked automatically from the **pin** you set in the WSLED config:
 
 - **SPI — pin `10` (recommended).**
@@ -185,7 +187,7 @@ After that, you select the corresponding option in the settings dropdown for the
 When using the teams function, you can then also use an RFID chip, which inserts the information (name of person) for the leaderboard.
 In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
 
-Take care that you don't use any of the connected pins of the RFID reader in the CocktailBerry config for a pump or a LED.
+Take care that you don't use any of the connected pins of the RFID reader in the CocktailBerry config for a pump or an LED.
 If you do so, remove them or replace them with another pin.
 Otherwise, the RFID will not work.
 It's best to restart the Pi afterwards and then check if the RFID is working as intended.
@@ -232,6 +234,8 @@ cat ~/cb_backup/custom_config_pre_{version_number}.yaml
 ```
 
 ## Software does not Update
+
+*See also: [How to get Updates](faq.md#how-to-get-updates) and the [`MAKER_SEARCH_UPDATES` setting](setup.md#updates).*
 
 It may happen that you don't get the latest version of the software prompted at start, even if you check for updates.
 This can be due to different reasons.

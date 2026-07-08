@@ -26,9 +26,8 @@ Currently, two types are supported: NFC-based payments and SumUp Terminal paymen
 
 === "SumUp"
 
-    !!! bug "Still in Beta"
-        The SumUp payment integration is still in beta.
-        It should work fine, but might be rough around the edges.
+    !!! note "Good to Know"
+        The SumUp payment integration should work fine, but might still be rough around the edges.
 
     For SumUp Terminal payments, a physical SumUp card terminal (Solo) is used to process payments.
     CocktailBerry as well as the terminal need to be connected to the internet for this to work.
@@ -218,7 +217,7 @@ The recommended way for a "basic" hardware setup is:
         Then open a PowerShell terminal as Administrator and run the following command to download and execute the installation script:
 
         ```powershell
-        powershell -ExecutionPolicy ByPass -c "irm https://github.com/AndreWohnsland/CocktailBerry-Payment/blob/main/scripts/windows_installer.ps1 | iex"
+        powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Payment/main/scripts/windows_installer.ps1 | iex"
         ```
 
         Alternatively, there is also a pre-built executable available for the GUI, which you can download from the [release page](https://github.com/AndreWohnsland/CocktailBerry-Payment/releases).

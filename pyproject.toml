@@ -50,7 +50,7 @@ dev = [
   "pre-commit>=4.6.0",
   "ty==0.0.42",
   "ruff>=0.15.15",
-  "zensical>=0.0.43",
+  "zensical>=0.0.47",
 ]
 
 [project.optional-dependencies]

@@ -19,18 +19,11 @@ After flashing the latest Raspberry Pi 64-bit OS, you can use the provided shell
 Or just install [the requirements](#installing-requirements), when you want to have a look into the program on your PC.
 You can always install the other things later, the docs provide information within each corresponding section.
 
+*Building a physical machine? See [Hardware](hardware.md) for the parts list first.*
+
 ### Automatic Installation
 
-!!! tip "RPi: Try the new all in one Script"
-    If you are on your Raspberry Pi, you can now also use the so-called *All In One Script*!
-    This will check that git, Python and your OS are compatible for the project and install CocktailBerry including Docker and compose on the Pi.
-
-    Just use:
-
-    ```bash
-    wget -O - https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry/master/scripts/all_in_one.sh | bash
-    ```
-    to get the script and run it on the Pi. Too easy to be true, isn't it?
+--8<-- "all_in_one.md"
 
 If you want to have the new v2 API and app, see [web setup](web.md) for how to easily switch after the setup.
 Or add a `-s v2` at the end of the command to execute the switch directly after installing.
@@ -91,6 +84,8 @@ All configuration can be customized under `custom_config.yaml`, or over the user
 This file will be created at the first program start.
 
 ## Touchscreen settings
+
+*This covers the v1 (Qt) UI. For the v2 web interface, see [Limitations](web.md#limitations).*
 
 It's worth mentioning that the UI is optimized for a touch display with an 800x480 or a 1024x600 resolution.
 By default, the full screen is also limited to 800x480.

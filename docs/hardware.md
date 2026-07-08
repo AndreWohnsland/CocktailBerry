@@ -7,16 +7,16 @@ How exactly you will build your CocktailBerry is completely up to you.
 
 ## Example Machine
 
-The following components were used within the showcase for the Machines (CocktailBerry v1/v2/v3):
+The following components were used within the showcase for the Machines (CocktailBerry MK series and 2-Go):
 
-- 1x [Raspberry Pi 3b+](https://amzn.to/48bhCBc) (or newer [Model 4](https://amzn.to/4pqSH3v))
+- 1x [Raspberry Pi 3b+](https://amzn.to/48bhCBc) (or newer [Model 4](https://amzn.to/4pqSH3v), [Model 5](https://amzn.to/4i9h2IG)); for the [v2 web interface](web.md) use at least a Pi 4 with 2 GB RAM
 - 1x [5-inch Touch Screen](https://amzn.to/3K6Ntei) or [7-inch Touch Screen](https://amzn.to/49sKlnn) for the Raspberry Pi
 - Official [Touch Screen](https://amzn.to/4pnDPmj) also works
 - 1x Micro [SD-Card](https://amzn.to/3JY3Dqn) (16-32 GB is enough, depending on what else you want to store)
 - 1x 5V Power supply for the [Raspberry Pi 3](https://amzn.to/3XbImwj) or [Raspberry Pi 4](https://amzn.to/48axtjp)
 - 1-2x [8 Channel](https://amzn.to/49ya120) or other RPi (needs 3.3V Logic Level, 5V will NOT WORK!!!) Relay-Boards depending on pump count (important to have 5V input control)
-- *Alternative*: Motor shields [AZDelivery](https://amzn.to/3SbQiOE) or [Adafruit](https://amzn.to/4vE6uaf) 4 DC or 2 Stepper Motors per shield, has reversion build in
-- 6-24x Pumps, it should be food safe, examples are:
+- *Alternative*: Motor shields [AZDelivery](https://amzn.to/3SbQiOE) or [Adafruit](https://amzn.to/4vE6uaf) 4 DC or 2 Stepper Motors per shield, has reversion built in
+- 6-24x Pumps, they should be food safe, examples are:
 - [membrane pump](https://amzn.to/4ocmw6S) or [this one](https://amzn.to/4a6PfXl)
 - [peristaltic pump](https://amzn.to/3LSyTrh)
 - 1x [Power supply](https://amzn.to/49w0fgP) for the pumps
@@ -32,7 +32,7 @@ The following components were used within the showcase for the Machines (Cocktai
 
 If you want to use the NFC-Reader functionality with the payment service, you will need at least two additional NFC readers and another Pi setup:
 
-- 2x [USB RFID Reader](https://amzn.to/4p75hVZ), other ones might not work out of the box
+- 2x [USB RFID Reader](https://amzn.to/4p75hVZ) — most generic USB readers work, this one is tested
 - Compatible NFC tags (e.g., [MIFARE Classic](https://amzn.to/43ZPcsC) or [in Blue](https://amzn.to/43ZPcsC))
 - 1x [Raspberry Pi 3b+](https://amzn.to/48bhCBc) (or newer [Model 4](https://amzn.to/4pqSH3v))
 - Additional monitor + mouse + keyboard or another touchscreen; see above
