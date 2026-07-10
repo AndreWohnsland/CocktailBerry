@@ -27,6 +27,16 @@ This is a good place to start, since you need little knowledge about the base co
 Either help implement new base features, fix issues or improve the existing code base.
 This requires some work on the existing base code, but delivers a great opportunity to shape CocktailBerry.
 
+#### Build a machine and give feedback
+
+The [hardware project](https://github.com/AndreWohnsland/CocktailBerry-Hardware) provides control boards and 3D-printable machines you can build yourself.
+Reporting back - fit issues, unclear assembly steps, or photos of your build - directly improves the designs and docs.
+
+#### Contribute to the hardware designs
+
+If you work with CAD or PCB design, improvements to the printed parts and boards are welcome.
+Even small fixes, like a better tolerance or a simpler print orientation, help everyone building after you.
+
 #### Buy me a coffee and other support options
 
 And of course, you can always [buy me a coffee](https://www.buymeacoffee.com/AndreWohnsland) - because, who doesn't love coffee.
