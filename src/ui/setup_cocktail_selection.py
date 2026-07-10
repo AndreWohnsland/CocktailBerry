@@ -51,6 +51,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # Multi-button mode deletes that widget and fills _volume_buttons instead.
         self._multi_button: bool = not cfg.MAKER_USE_RECIPE_VOLUME and len(cfg.MAKER_PREPARE_VOLUME) > 1
         self._volume_buttons: list[tuple[int, QPushButton]] = []
+        # size the layout was last fully settled for (see presettle_layout / resizeEvent)
+        self._settled_size = QSize()
         # build the image
         self.image_container.setScaledContents(True)
         self.icons = IconSetter()
@@ -82,6 +84,11 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
 
     def resizeEvent(self, a0: QResizeEvent | None) -> None:
         """Flip layout_maker_detail based on window width and resize image to fit its container."""
+        if self.size() == self._settled_size:
+            # presettle_layout already settled this exact size; redoing it would relax the
+            # image constraints again and cause a visible one-frame shift on slow hardware.
+            super().resizeEvent(a0)
+            return
         # Clear fixed-size constraints so the layout can freely allocate space for image_container.
         self.image_container.setMinimumSize(QSize(0, 0))
         self.image_container.setMaximumSize(QSize(16777215, 16777215))
@@ -96,6 +103,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         self._update_image_size()
         # Re-scale the fonts to the real rendered window size.
         self.adjust_maker_label_size_cocktaildata()
+        self._settled_size = self.size()
 
     def presettle_layout(self, size: QSize) -> None:
         """Compute the final layout while still hidden, so the view shows up already settled (no visible shift).
