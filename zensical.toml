@@ -81,6 +81,12 @@ icon = "material/web"
 link = "https://cocktailberry.org"
 name = "CocktailBerry"
 
+# Footer link to the hardware documentation.
+[[project.extra.social]]
+icon = "material/hammer-wrench"
+link = "https://hardware.cocktailberry.org"
+name = "Hardware Docs"
+
 # Since we customize superfences and tabbed, we must explicitly define all extensions
 # https://zensical.org/docs/setup/extensions/#default-configuration-zensicaltoml
 [project.markdown_extensions.abbr]

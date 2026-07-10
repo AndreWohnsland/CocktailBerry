@@ -314,6 +314,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
             return
         if cfg.cocktailberry_payment:
             NFCPaymentService().remove_callback("cocktail_list")
+        # settle image/font sizing while still hidden, so the page appears without visible shifting
+        self.cocktail_selection.presettle_layout(self.container_maker.size())
         self.container_maker.setCurrentWidget(self.cocktail_selection)
 
     def switch_to_cocktail_list(self) -> None:

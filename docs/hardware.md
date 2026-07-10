@@ -5,6 +5,10 @@ To build a functional machine, you can take this reference and customize it to y
 This offers a good starting point for what you might need.
 How exactly you will build your CocktailBerry is completely up to you.
 
+!!! tip "Official boards and machines"
+    Don't want to design your own? The official [hardware project](https://hardware.cocktailberry.org/)
+    has ready-to-order control boards and fully 3D-printable machines with assembly guides.
+
 ## Example Machine
 
 The following components were used within the showcase for the Machines (CocktailBerry MK series and 2-Go):
@@ -66,14 +70,9 @@ The switch will then turn the pump on or off via the RPi.
 How you will build your CocktailBerry is still completely up to you.
 The only restriction by the software is that the GPIO pins are turned on / off via the RPi.
 
-## Custom PCBs or STLs
+## Official PCBs and Machines
 
-!!! warning "Help Wanted"
-    We are currently working on a custom PCB for even easier connection and cable management.
-    If you are interested in helping [reach out to us](mailto:cocktailmakeraw@gmail.com).
-    With your help, we can make this project even better.
-
-When the PCB is in an acceptable state, there will also be a new design fitting for that PCB.
-In the future we are planning to provide the files here or a link to their origin.
+The official [hardware project](https://hardware.cocktailberry.org/) provides custom control boards (PCBAs) that replace the relay arrays and jumper wiring described above, plus fully 3D-printable machines with parts lists and assembly guides.
+Fabrication files are ready to order (e.g. at JLCPCB), and the sources live in the [hardware repository](https://github.com/AndreWohnsland/CocktailBerry-Hardware) - contributions are welcome.
 
 *[5V will NOT WORK]: The relay board input control must use 3.3V logic level (RPi GPIO output), look that they are compatible with the RPi. Also, 16 Relay boards are known to cause issues, so try to avoid them.

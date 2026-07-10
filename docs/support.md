@@ -29,7 +29,7 @@ This requires some work on the existing base code, but delivers a great opportun
 
 #### Build a machine and give feedback
 
-The [hardware project](https://github.com/AndreWohnsland/CocktailBerry-Hardware) provides control boards and 3D-printable machines you can build yourself.
+The [hardware project](https://hardware.cocktailberry.org/) provides control boards and 3D-printable machines you can build yourself.
 Reporting back - fit issues, unclear assembly steps, or photos of your build - directly improves the designs and docs.
 
 #### Contribute to the hardware designs

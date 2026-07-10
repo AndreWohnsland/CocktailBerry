@@ -88,9 +88,29 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         super().resizeEvent(a0)
         apply_responsive_layouts(self.width(), [self.layout_maker_detail])
         self._update_image_spacers()
-        QTimer.singleShot(0, self._update_image_size)
-        # Re-scale the fonts to the real rendered window size (deferred so the layout has settled).
-        QTimer.singleShot(0, self.adjust_maker_label_size_cocktaildata)
+        # Deferred so the layout has settled; one combined callback so image and font sizing
+        # land within the same event and cannot be split across two repaints.
+        QTimer.singleShot(0, self._apply_deferred_sizing)
+
+    def _apply_deferred_sizing(self) -> None:
+        self._update_image_size()
+        # Re-scale the fonts to the real rendered window size.
+        self.adjust_maker_label_size_cocktaildata()
+
+    def presettle_layout(self, size: QSize) -> None:
+        """Compute the final layout while still hidden, so the view shows up already settled (no visible shift).
+
+        Qt defers resizeEvent for hidden widgets, so run the sizing pipeline synchronously here.
+        """
+        self.resize(size)
+        self.image_container.setMinimumSize(QSize(0, 0))
+        self.image_container.setMaximumSize(QSize(16777215, 16777215))
+        apply_responsive_layouts(self.width(), [self.layout_maker_detail])
+        self._update_image_spacers()
+        layout = self.layout()
+        if layout:
+            layout.activate()
+        self._apply_deferred_sizing()
 
     def _update_image_spacers(self) -> None:
         """Make image spacers expanding in portrait mode (centers image), fixed in landscape."""

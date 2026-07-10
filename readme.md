@@ -18,12 +18,13 @@ It enables you to build your own, fully customized machine, while still being ab
 Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://docs.cocktailberry.org).
 
 <a href="https://demo.cocktailberry.org/"><img src="docs/pictures/demobutton.png" alt="v2-demo" height="70"/></a>
+<a href="https://cocktailberry.org/"><img src="docs/pictures/websitebutton.png" alt="website" height="70"/></a>
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
 
-<a href="https://cocktailberry.org/"><img src="docs/pictures/websitebutton.png" alt="website" height="70"/></a>
 <a href="https://docs.cocktailberry.org/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
 <a href="https://stats-cocktailberry.streamlit.app/"><img src="docs/pictures/dashboardbutton.png" alt="dashboard" height="70"/></a>
+<a href="https://hardware.cocktailberry.org/"><img src="docs/pictures/hardwarebutton.png" alt="hardware" height="70"/></a>
 
 This app is used to control a cocktail machine and easily prepare cocktails via a nice-looking user interface.
 It also offers the option to create and manage your recipes and ingredients via the interface and calculates the possible cocktails to prepare from given ingredients.

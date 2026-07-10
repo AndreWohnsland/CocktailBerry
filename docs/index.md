@@ -23,6 +23,7 @@ Here you will find everything to get started!
   <a href="https://cocktailberry.org/" class="cta-btn secondary-btn"> Homepage </a>
   <a href="quickstart/" class="cta-btn primary-btn"> Quickstart </a>
   <a href="setup/" class="cta-btn secondary-btn"> Set Up </a>
+  <a href="https://hardware.cocktailberry.org/" class="cta-btn primary-btn"> Hardware Docs </a>
 </div>
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
