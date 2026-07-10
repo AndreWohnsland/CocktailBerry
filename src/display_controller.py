@@ -638,14 +638,6 @@ class DisplayController(DialogHandler):
             w.check_ingredient_do_not_revert,
         )
 
-    def get_labels_maker_volume(self, w: Ui_MainWindow) -> list[QLabel]:
-        """Return all maker label objects for volumes of ingredients."""
-        return [getattr(w, f"LMZutat{x}") for x in range(1, 10)]
-
-    def get_labels_maker_ingredients(self, w: Ui_MainWindow) -> list[QLabel]:
-        """Return all maker label objects for ingredient name."""
-        return [getattr(w, f"LZutat{x}") for x in range(1, 10)]
-
     def get_number_label_bottles(self, w: Ui_MainWindow, get_all: bool = False) -> list[QLabel]:
         """Return all label object for the number of the bottle."""
         number = cfg.choose_bottle_number(get_all)
