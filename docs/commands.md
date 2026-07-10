@@ -357,7 +357,7 @@ uv run runme.py remove-ap [OPTIONS]
 
 ## Virtual Keyboard Commands
 
-For managing the virtual keyboard on the Raspberry Pi when using the web interface (v2), see the [web documentation](web.md#enable-the-virtual-keyboard) for the `add-virtual-keyboard` and `remove-virtual-keyboard` commands.
+For managing the virtual keyboard on the Raspberry Pi when using the web interface (v2), see the [web documentation](web.md#rpi-virtual-keyboard) for the `add-virtual-keyboard` and `remove-virtual-keyboard` commands.
 
 ## Generate a Manufacturer Blacklist
 
