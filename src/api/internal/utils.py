@@ -35,6 +35,7 @@ def map_cocktail(cocktail: DBCocktail | None, scale: bool = True) -> Cocktail | 
         is_allowed=cocktail.is_allowed,
         virgin_available=cocktail.virgin_available,
         only_virgin=cocktail.only_virgin,
+        is_naturally_virgin=cocktail.is_naturally_virgin,
         # ingredient hand is if it is currently not on a bottle
         ingredients=[
             CocktailIngredient(

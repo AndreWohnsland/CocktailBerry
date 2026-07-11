@@ -21,7 +21,7 @@ def requires_sumup_payment(cocktail: Cocktail) -> bool:
 
 def _get_price_in_cents(cocktail: Cocktail) -> int:
     """Calculate the cocktail price in cents for SumUp."""
-    multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0
+    multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin and not cocktail.is_naturally_virgin else 1.0
     price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
     return int(price * 100)
 

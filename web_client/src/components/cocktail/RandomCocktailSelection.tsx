@@ -33,8 +33,10 @@ const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handl
   const { config } = useConfig();
   const { t } = useTranslation();
 
-  const pool = isVirgin ? cocktails.filter((c) => c.virgin_available) : cocktails.filter((c) => !c.only_virgin);
-  const hasVirginOption = cocktails.some((c) => c.virgin_available);
+  const pool = isVirgin
+    ? cocktails.filter((c) => c.virgin_available || c.only_virgin)
+    : cocktails.filter((c) => !c.only_virgin);
+  const hasVirginOption = cocktails.some((c) => c.virgin_available || c.only_virgin);
 
   const possibleServingSizes = config.MAKER_USE_RECIPE_VOLUME
     ? [0]
@@ -45,7 +47,7 @@ const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handl
     const chosen = pool[Math.floor(Math.random() * pool.length)];
     const factor = isVirgin ? 0 : 1;
     const prepareAmount = config.MAKER_USE_RECIPE_VOLUME ? chosen.amount : amount;
-    const displayPrefix = isVirgin ? 'Virgin ' : '';
+    const displayPrefix = isVirgin && !chosen.is_naturally_virgin ? 'Virgin ' : '';
     setChosenCocktailName(`${displayPrefix}${chosen.name}`);
     prepareCocktail(chosen, prepareAmount, factor, teamName)
       .then(() => {

@@ -118,3 +118,10 @@
   -webkit-mask-image: var(--md-admonition-icon--heart);
   mask-image: var(--md-admonition-icon--heart);
 }
+
+/* Mobile drawer: the white header logo is invisible on the light drawer
+   background, so swap in the pink logo there. The header keeps the white
+   one (its background is the brand pink). */
+.md-nav__button.md-logo img {
+  content: url("../pictures/Berry.svg");
+}

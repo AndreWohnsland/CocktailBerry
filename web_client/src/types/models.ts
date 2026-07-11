@@ -18,6 +18,7 @@ export interface Cocktail {
   enabled: boolean;
   virgin_available: boolean;
   only_virgin: boolean;
+  is_naturally_virgin: boolean;
   ingredients: CocktailIngredient[];
   image: string;
   default_image: string;

@@ -86,7 +86,7 @@ const CocktailList: React.FC = () => {
     );
   }
   if (search !== null && showOnlyVirginPossible) {
-    displayedCocktails = displayedCocktails?.filter((cocktail) => cocktail.virgin_available);
+    displayedCocktails = displayedCocktails?.filter((cocktail) => cocktail.virgin_available || cocktail.only_virgin);
     displayedCocktails = displayedCocktails?.map((cocktail) => {
       return { ...cocktail, only_virgin: true };
     });
@@ -164,7 +164,7 @@ const CocktailList: React.FC = () => {
                 type='button'
               >
                 <p className='text-center py-1 flex items-center justify-center'>
-                  {cocktail.virgin_available && (
+                  {(cocktail.virgin_available || cocktail.only_virgin) && (
                     <MdNoDrinks
                       className={`mr-2 ${cocktail.only_virgin && 'border-2 border-background rounded-full'}`}
                     />
