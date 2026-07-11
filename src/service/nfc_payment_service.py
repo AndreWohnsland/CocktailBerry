@@ -190,7 +190,8 @@ class NFCPaymentService:
             return CocktailBooking.no_user_logged_in()
         if not user.is_adult and not cocktail.is_virgin:
             return CocktailBooking.too_young()
-        multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin else 1.0
+        apply_virgin_price = cocktail.is_virgin and not cocktail.is_naturally_virgin
+        multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if apply_virgin_price else 1.0
         price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
         if user.balance < price:
             return CocktailBooking.insufficient_balance()

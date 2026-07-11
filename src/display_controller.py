@@ -499,7 +499,7 @@ class DisplayController(DialogHandler):
         icons = IconSetter()
         if isinstance(item_data, Cocktail):
             cocktail_icon = QIcon()
-            if item_data.virgin_available:
+            if item_data.virgin_available or item_data.only_virgin:
                 cocktail_icon = icons.generate_icon(icons.presets.virgin, icons.color.primary, icons.color.secondary)
             lw_item = QListWidgetItem(cocktail_icon, item_data.name)
 

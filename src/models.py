@@ -159,7 +159,7 @@ class Cocktail:
     @property
     def display_name(self) -> str:
         """Display name for the cocktail, including virgin tag if applicable."""
-        return f"{self.name} (Virgin)" if self.is_virgin else self.name
+        return f"{self.name} (Virgin)" if self.is_virgin and not self.is_naturally_virgin else self.name
 
     # also changes handadd to machine add if the handadd is currently at the machine
     # this way the user needs to add less, if it happens to be also on the machine
@@ -189,6 +189,12 @@ class Cocktail:
         # single ingredient cocktails will not be considered virgin, because they are an ingredient (wrapper)
         return self.adjusted_alcohol == 0 and len(self.ingredients) > 1
 
+    @property
+    def is_naturally_virgin(self) -> bool:
+        """Returns if the recipe contains no alcoholic ingredients at all."""
+        # single ingredient cocktails will not be considered virgin, because they are an ingredient (wrapper)
+        return len(self.ingredients) > 1 and all(x.alcohol == 0 for x in self.ingredients)
+
     def set_handadd_consumption(self) -> None:
         """Set the consumption for handadds to their amount, as they are not tracked by the machine."""
         for ing in self.handadds:
@@ -217,6 +223,8 @@ class Cocktail:
         """Return if the recipe is possible with given additional hand add ingredients."""
         self.only_virgin = False
         if self._is_normal_cocktail_possible(hand_available, max_hand_ingredients):
+            # recipes without any alcohol are handled like only virgin ones
+            self.only_virgin = self.is_naturally_virgin
             return True
         if self.virgin_available and self._is_virgin_cocktail_possible(hand_available, max_hand_ingredients):
             self.only_virgin = True

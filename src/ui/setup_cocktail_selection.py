@@ -207,7 +207,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     def _prepare_random_cocktail(self, amount: int) -> None:
         """Pick a random cocktail from the pool and prepare it."""
         if self.is_virgin:
-            pool = [c for c in self.random_pool if c.virgin_available]
+            pool = [c for c in self.random_pool if c.virgin_available or c.only_virgin]
         else:
             pool = [c for c in self.random_pool if not c.only_virgin]
         if not pool:
@@ -247,7 +247,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     def update_cocktail_data(self) -> None:
         """Update the cocktail data in the selection view."""
         self._scale_cocktail()
-        virgin_prefix = "Virgin " if self.is_virgin else ""
+        virgin_prefix = "Virgin " if self.is_virgin and not self.cocktail.is_naturally_virgin else ""
         self.LAlkoholname.setText(f"{virgin_prefix}{self.cocktail.name}")
         self.LAlkoholgehalt.setText(f"{self.cocktail.adjusted_alcohol:.1f}%")
         display_data = self.cocktail.machineadds

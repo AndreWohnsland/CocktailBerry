@@ -47,6 +47,7 @@ class Cocktail(BaseModel):
     is_allowed: bool
     virgin_available: bool
     only_virgin: bool
+    is_naturally_virgin: bool
     ingredients: list[CocktailIngredient]
     image: str
     default_image: str

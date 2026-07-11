@@ -97,7 +97,7 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
         css_class="btn-inverted btn-half-top",
     )
     icons = IconSetter()
-    if cocktail is not None and cocktail.virgin_available:
+    if cocktail is not None and (cocktail.virgin_available or cocktail.only_virgin):
         button.setText(f" {name_label}")
         icon = icons.generate_icon(PresetIcon.virgin, icons.color.background, border=cocktail.only_virgin)
         button.setIcon(icon)

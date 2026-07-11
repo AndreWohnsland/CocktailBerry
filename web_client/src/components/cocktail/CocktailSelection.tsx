@@ -118,7 +118,8 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
 
   const calculateDisplayPrice = (amount: number, pricePer100: number): string => {
     if (config.PAYMENT_TYPE === 'Disabled') return '';
-    const virginMultiplier = alcohol === 'virgin' ? config.PAYMENT_VIRGIN_MULTIPLIER / 100 : 1;
+    const virginMultiplier =
+      alcohol === 'virgin' && !selectedCocktail.is_naturally_virgin ? config.PAYMENT_VIRGIN_MULTIPLIER / 100 : 1;
     const rawPrice = ((amount * pricePer100) / 100) * virginMultiplier;
     const roundTo = config.PAYMENT_PRICE_ROUNDING;
     const price = roundTo > 0 ? Math.ceil(rawPrice / roundTo) * roundTo : rawPrice;
@@ -133,7 +134,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
       <div className='flex flex-col sm:flex-row items-center md:items-start justify-center w-full h-full'>
         <div className='w-full h-full sm:mr-2 mb-2 flex-1 flex flex-col'>
           <p className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral mb-2'>
-            {alcohol === 'virgin' && 'Virgin '}
+            {alcohol === 'virgin' && !selectedCocktail.is_naturally_virgin && 'Virgin '}
             {selectedCocktail.name}
           </p>
           <div className='relative flex-1'>
@@ -247,7 +248,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
         isOpen={isProgressModalOpen}
         onRequestClose={() => setIsProgressModalOpen(false)}
         progress={0}
-        displayName={`${alcohol === 'virgin' ? 'Virgin ' : ''}${displayCocktail.name}`}
+        displayName={`${alcohol === 'virgin' && !displayCocktail.is_naturally_virgin ? 'Virgin ' : ''}${displayCocktail.name}`}
         triggerOnClose={handleCloseModal}
       />
       <TeamSelection
