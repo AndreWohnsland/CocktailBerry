@@ -255,7 +255,8 @@ const RecipeList: React.FC = () => {
                 />
               </div>
               {selectedCocktail.ingredients.map((ingredient, index) => (
-                <div key={ingredient.id} className='flex items-center'>
+                // biome-ignore lint/suspicious/noArrayIndexKey: new rows share id 0, index is the only unique key
+                <div key={index} className='flex items-center'>
                   <DropDown
                     value={ingredient.id ? ingredient.id.toString() : ''}
                     allowedValues={
