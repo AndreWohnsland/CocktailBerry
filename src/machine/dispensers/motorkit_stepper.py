@@ -20,7 +20,7 @@ _logger = LoggerHandler("StepperMotorKitDispenser")
 try:
     from adafruit_motor.stepper import BACKWARD, FORWARD, SINGLE
 # Fallback for the values (they are literals, but better use library-provided ones if available)
-except (ImportError, RuntimeError):
+except (ImportError, RuntimeError, NameError):
     FORWARD = 1
     BACKWARD = 2
     SINGLE = 1
