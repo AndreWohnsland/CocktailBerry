@@ -94,8 +94,8 @@ class NeoPixelSPI:
         if self._spi is None:
             raise RuntimeError("begin() must be called before show().")
         b = self.brightness
-        # ponytail: 24 bytes/px + reset must fit spidev's default 4096-byte bufsiz,
-        # so ~160 px max; chunk the transfer if bigger installs ever show up.
+        # ponytail: 24 bytes/px + preamble + reset must fit spidev's default 4096-byte
+        # bufsiz, so ~150 px max; chunk the transfer if bigger installs ever show up.
         out: list[int] = []
         for c in self._colors:
             r = ((c >> 16) & 0xFF) * b // 255
@@ -104,4 +104,8 @@ class NeoPixelSPI:
             for byte in (g, r, blue):  # WS2812 wire order is GRB
                 for i in range(7, -1, -1):
                     out.append(_SYM[(byte >> i) & 1])
-        self._spi.xfer2(out + _RESET)
+        # Leading low guard: some boards (seen on a Pi 5 rev 1.1) emit a spurious edge on
+        # MOSI at transfer start; the strip reads it as a phantom first bit and the whole
+        # frame shifts by one bit (wrong colors / flicker during effects). Holding the line
+        # low for a latch period right before the data makes the frame start unambiguous.
+        self._spi.xfer2(_RESET + out + _RESET)
