@@ -9,7 +9,7 @@ if "spidev" not in sys.modules:
     stub.SpiDev = object  # type: ignore[attr-defined]
     sys.modules["spidev"] = stub
 
-from src.machine.leds.ws_spi import _RESET, Color, NeoPixelSPI
+from src.machine.leds.ws_spi import _RESET, _SPI_HZ, Color, NeoPixelSPI
 
 
 class _FakeSpi:
@@ -31,15 +31,19 @@ def test_show_encodes_one_green_pixel_grb() -> None:
     strip.setPixelColor(0, Color(0, 255, 0))  # pure green
     strip.show()
     data = strip._spi.last  # type: ignore[attr-defined]
-    # 24 data bits -> 24 3-bit symbols -> 9 bytes, then the reset latch.
+    # 24 data bits -> one SPI byte each, then the reset latch.
     body = data[: len(data) - len(_RESET)]
     assert data[-len(_RESET) :] == _RESET
-    assert len(body) == 9
-    # GRB order: green byte (0xFF) first -> first 8 symbols are all "1" (0b110).
-    # 8x 0b110 = 0b110110110110110110110110 -> bytes 0xDB 0x6D 0xB6
-    assert body[0:3] == [0xDB, 0x6D, 0xB6]
-    # red+blue are 0 -> remaining symbols all "0" (0b100).
-    assert body[3:] == [0x92, 0x49, 0x24, 0x92, 0x49, 0x24]
+    assert len(body) == 24
+    # GRB order: green byte (0xFF) first -> first 8 symbols are all "1" (0xF8).
+    assert body[0:8] == [0xF8] * 8
+    # red+blue are 0 -> remaining symbols all "0" (0xC0).
+    assert body[8:] == [0xC0] * 16
+
+
+def test_reset_latch_covers_newer_ws2812b() -> None:
+    # Newer WS2812B revisions need >280 us low to latch; keep _RESET scaled to _SPI_HZ.
+    assert len(_RESET) * 8 / _SPI_HZ >= 280e-6
 
 
 def test_brightness_scales_down() -> None:
@@ -48,5 +52,5 @@ def test_brightness_scales_down() -> None:
     strip.setPixelColor(0, Color(255, 255, 255))
     strip.show()
     body = strip._spi.last[: -len(_RESET)]  # type: ignore[attr-defined]
-    # brightness 0 -> all channels 0 -> every symbol is 0b100.
-    assert set(body) == {0x92, 0x49, 0x24}
+    # brightness 0 -> all channels 0 -> every symbol is the "0" byte.
+    assert set(body) == {0xC0}

@@ -8,8 +8,13 @@ over SPI instead. The strip is driven from the 40-pin header SPI0 (``/dev/spidev
 GPIO10 = MOSI) on every Pi, including the Pi 5. SPI must be enabled (raspi-config).
 Only the MOSI pin is usable; the ``pin`` arg is kept for API parity but ignored.
 
-WS2812 runs at 800 kHz (1.25 us/bit). We send 3 SPI bits per data bit at 2.4 MHz:
-a 0 bit -> ``0b100``, a 1 bit -> ``0b110``.
+WS2812 runs at 800 kHz (1.25 us/bit). We send one SPI byte per data bit at 6.4 MHz:
+a 0 bit -> ``0xC0`` (high ~312 ns), a 1 bit -> ``0xF8`` (high ~781 ns). Byte-aligned
+symbols are deliberate: SPI controllers (notably the Pi 5's RP1) may insert inter-byte
+gaps during which MOSI holds its last level, and with byte-per-bit encoding a gap can
+only stretch the low tail of a bit, which the strip ignores. Sub-byte encodings (e.g.
+3 bits per bit at 2.4 MHz) let gaps split a symbol after its high phase, turning 0s
+into 1s on timing-sensitive chip batches.
 """
 
 from __future__ import annotations
@@ -20,10 +25,9 @@ from src.logger_handler import LoggerHandler
 
 _logger = LoggerHandler("WSLedSPI")
 
-_SPI_HZ = 2_400_000
-_SYM = (0b100, 0b110)  # data bit 0 / 1 as a 3-bit SPI symbol
-_RESET = [0] * 100  # trailing low bytes (>50 us) latch the strip
-_BYTE = 8
+_SPI_HZ = 6_400_000
+_SYM = (0xC0, 0xF8)  # data bit 0 / 1 as one SPI byte
+_RESET = [0] * 250  # trailing low bytes (~312 us > the 280 us newer WS2812B need) latch the strip
 
 
 def Color(red: int, green: int, blue: int, white: int = 0) -> int:
@@ -69,9 +73,9 @@ class NeoPixelSPI:
         self._spi = _open_spi()
         self._spi.max_speed_hz = _SPI_HZ
         self._spi.mode = 0
-        # Log the negotiated clock. WS2812 needs ~2.4 MHz for correct bit timing; on the
-        # Pi 3/4 the SPI clock is a power-of-2 divisor of the core clock and may round off,
-        # so a value far from _SPI_HZ here is the prime suspect when LEDs flicker / mis-colour.
+        # Log the negotiated clock. WS2812 needs ~6.4 MHz for correct bit timing; the SPI
+        # clock is an integer divisor of the core clock and may round off, so a value far
+        # from _SPI_HZ here is the prime suspect when LEDs flicker / mis-colour.
         achieved = self._spi.max_speed_hz
         msg = f"<i> WS281x SPI ready: {self.num} px on /dev/spidev0.0 @ {achieved} Hz (target {_SPI_HZ})"
         if achieved == _SPI_HZ:
@@ -90,21 +94,14 @@ class NeoPixelSPI:
         if self._spi is None:
             raise RuntimeError("begin() must be called before show().")
         b = self.brightness
-        bits: list[int] = []
+        # ponytail: 24 bytes/px + reset must fit spidev's default 4096-byte bufsiz,
+        # so ~160 px max; chunk the transfer if bigger installs ever show up.
+        out: list[int] = []
         for c in self._colors:
             r = ((c >> 16) & 0xFF) * b // 255
             g = ((c >> 8) & 0xFF) * b // 255
             blue = (c & 0xFF) * b // 255
             for byte in (g, r, blue):  # WS2812 wire order is GRB
                 for i in range(7, -1, -1):
-                    bits.append(_SYM[(byte >> i) & 1])
-        out, acc, n = bytearray(), 0, 0
-        for sym in bits:  # pack 3-bit symbols into bytes
-            acc = (acc << 3) | sym
-            n += 3
-            while n >= _BYTE:
-                n -= _BYTE
-                out.append((acc >> n) & 0xFF)
-        if n:
-            out.append((acc << (_BYTE - n)) & 0xFF)
-        self._spi.xfer2(list(out) + _RESET)
+                    out.append(_SYM[(byte >> i) & 1])
+        self._spi.xfer2(out + _RESET)
