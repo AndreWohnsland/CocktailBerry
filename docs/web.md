@@ -5,7 +5,8 @@
     If you spot any issues, please report them in the [GitHub repository](https://github.com/AndreWohnsland/CocktailBerry/issues/new/choose).
     In general, most features should work as expected, but there might be some edge cases that are not covered yet.
 
-This is within the [roadmap](https://github.com/users/AndreWohnsland/projects/1) for v2.
+CocktailBerry web (v2) is the successor of the Qt (v1) app.
+Both versions are still maintained, but the focus is on the web interface.
 The goal of this release is to provide a more polished and at the same time more flexible app.
 It includes a new web interface that can be used to control the machine from any device on the same network.
 This allows users to control the machine from their phone, tablet, or any other device that has a web browser.

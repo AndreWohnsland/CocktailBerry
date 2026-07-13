@@ -183,14 +183,13 @@ class LedInterface(ABC):
 
         Cancellation is event-driven: ``Event.wait(timeout=sleep_s)`` returns
         immediately when ``_stop_effect`` is set, so latency is bounded by the
-        per-frame yield rather than a fixed poll interval. If the iterator
-        yields no frames, ``fallback()`` is invoked so static LEDs end up in
+        per-frame yield rather than a fixed poll interval. When the iterator
+        finishes without being cancelled (empty or naturally exhausted, e.g. a
+        timed end animation), ``fallback()`` is invoked so the LED ends up in
         the right idle state without any per-extension code.
         """
-        produced_frame = False
         try:
             for sleep_s in iterator:
-                produced_frame = True
                 if self._stop_effect.is_set():
                     return
                 # Event.wait returns True if the event was set during the wait.
@@ -203,8 +202,8 @@ class LedInterface(ABC):
             if callable(close):
                 with contextlib.suppress(Exception):
                     close()
-            if not produced_frame and not self._stop_effect.is_set():
+            if not self._stop_effect.is_set():
                 try:
                     fallback()
                 except Exception:
-                    _logger.log_exception("LED fallback after empty effect raised")
+                    _logger.log_exception("LED fallback after effect raised")
