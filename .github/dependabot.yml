@@ -2,6 +2,8 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
+    labels:
+      - dependencies
     schedule:
       interval: weekly
     groups:
@@ -10,6 +12,8 @@ updates:
           - "*"
   - package-ecosystem: uv
     directory: /
+    labels:
+      - dependencies
     schedule:
       interval: weekly
     groups:
