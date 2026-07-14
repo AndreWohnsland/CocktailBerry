@@ -10,6 +10,9 @@ env:
   CC: gcc
   CXX: g++
 
+permissions:
+  contents: read
+
 jobs:
   install-CocktailBerry:
     runs-on: ubuntu-latest

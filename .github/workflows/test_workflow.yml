@@ -6,6 +6,9 @@ env:
   IMAGE_BASE_NAME: ${{ github.repository }}
   DOCKER_NAMESPACE: andrewo92
 
+permissions:
+  contents: read
+
 jobs:
   greeting_job:
     runs-on: ubuntu-latest

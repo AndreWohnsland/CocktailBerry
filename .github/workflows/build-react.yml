@@ -7,6 +7,9 @@ on:
     types: [ published ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   verify-version:
     # Only relevant for releases (this workflow also runs on workflow_dispatch).

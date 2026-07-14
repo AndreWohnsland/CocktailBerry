@@ -3,6 +3,9 @@ run-name: Validates that there is no translation (key) missing
 
 on: [pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
