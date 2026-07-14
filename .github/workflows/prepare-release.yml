@@ -1,5 +1,5 @@
 name: Prepare Release
-run-name: Prepare release version bump PR
+run-name: 🚀 Prepare release PR
 
 # Reads the current release-drafter draft, bumps the version in pyproject.toml and
 # uv.lock to the drafted version, and opens a PR to master. The maintainer approves

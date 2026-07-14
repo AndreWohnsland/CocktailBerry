@@ -9,7 +9,7 @@ requires-python = ">= 3.13"
 dependencies = [
     "gitpython>=3.1.50",
     "requests>=2.34.2",
-    "sumup==0.2.1",
+    "sumup==0.3.0",
     "pyyaml>=6.0.3",
     "typer>=0.26.5",
     "pyfiglet>=1.0.4",
@@ -48,7 +48,7 @@ dev = [
   "pytest>=9.0.3",
   "pytest-cov>=7.1.0",
   "pre-commit>=4.6.0",
-  "ty==0.0.42",
+  "ty==0.0.59",
   "ruff>=0.15.15",
   "zensical>=0.0.47",
 ]

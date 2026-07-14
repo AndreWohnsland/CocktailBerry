@@ -117,7 +117,7 @@ class _SumupSdkClient:
     def delete_reader(self, reader_id: str) -> None:
         return self._client.readers.delete(
             merchant_code=self._merchant_code,
-            id=reader_id,
+            reader_id=reader_id,
         )
 
     @run_catching

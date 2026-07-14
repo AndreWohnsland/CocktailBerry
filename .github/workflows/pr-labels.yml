@@ -1,5 +1,6 @@
 ---
   name: PR Labels
+  run-name: 🏷️ Label check — ${{ github.event.pull_request.title }}
   
   on:
     pull_request_target:

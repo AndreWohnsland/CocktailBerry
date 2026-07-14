@@ -1,5 +1,6 @@
 ---
 name: Sync labels
+run-name: 🏷️ Sync repo labels
 
 on:
   push:

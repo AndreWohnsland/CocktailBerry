@@ -1,6 +1,5 @@
 name: Build React App and Add to Release
-run-name: |
-  Build React App${{ github.event_name == 'release' && ' and add to Release' || '' }}
+run-name: ⚛️ Build web client — ${{ github.event.release.tag_name || 'manual run' }}
 
 on:
   release:

@@ -1,4 +1,5 @@
 name: Code Check
+run-name: 🔍 Code check — ${{ github.event.pull_request.title || 'manual run' }}
 
 on:
   pull_request:
