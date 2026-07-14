@@ -1,4 +1,5 @@
 name: Smoke Test the setup script on the runner
+run-name: 🧪 Smoke test — ${{ github.event.head_commit.message || 'manual run' }}
 
 on:
   push:

@@ -1,5 +1,6 @@
 name: Manual Build & publish
-run-name: Build & publish CocktailBerry ${{ github.event.inputs.service }} image version ${{ github.event.inputs.version }}
+run-name: 🐳 Build ${{ inputs.service }}:${{ inputs.version }}
+
 on:
   workflow_dispatch:
     inputs:

@@ -1,5 +1,5 @@
 name: Validate Translations
-run-name: Validates that there is no translation (key) missing
+run-name: 🌍 Translation check — ${{ github.event.pull_request.title }}
 
 on: [pull_request]
 

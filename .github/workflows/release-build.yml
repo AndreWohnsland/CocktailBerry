@@ -1,8 +1,9 @@
 name: Update version, build & publish CocktailBerry images
-run-name: "Version: ${{ github.event.release.tag_name }}, build and publish images"
+run-name: 🐳 Release build — ${{ github.event.release.tag_name }}
+
 on:
   release:
-    types: [ published ]
+    types: [published]
 
 jobs:
   verify-version:

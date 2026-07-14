@@ -1,4 +1,6 @@
 name: ShellCheck
+run-name: 🐚 ShellCheck — ${{ github.event.pull_request.title }}
+
 on: [pull_request]
 permissions:
   contents: read
