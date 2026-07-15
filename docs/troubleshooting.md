@@ -413,10 +413,10 @@ Using the user's environment with `sudo -E .venv/bin/python runme.py` should als
 
 ### Raspberry Pi 5 GPIO Issues
 
-If you are using a Raspberry Pi 5, you may run into issues with the lgpio library for GPIO access.
-The latest installer should already address this issue.
-But if you are running an old installation and did a kernel update, some things might have changed.
-To fix possible issues with lgpio on the Raspberry Pi 5, please run the following commands:
+The Raspberry Pi 5 needs the lgpio library for GPIO access.
+Current versions manage lgpio as a normal dependency, so the installer and the built-in updater handle it automatically.
+If GPIO stopped working on an old installation (for example after a manual `uv sync`, which removes packages not managed by uv), the best fix is to update to the latest version.
+To fix an old installation in place instead, run the following commands:
 
 ```bash
 cd "$HOME/CocktailBerry/"

@@ -45,8 +45,10 @@ else
   sudo apt update && sudo sudo apt -y full-upgrade
 fi
 
-echo "> Installing nmcli, this is needed for wifi setup"
-sudo apt install network-manager liblgpio-dev
+# system packages (network-manager, liblgpio-dev, nfc build deps) are handled
+# by scripts/dependency_installer.sh below, which also self-heals on every launch
+echo "> Installing system dependencies (if missing), this may take a while..."
+bash scripts/dependency_installer.sh
 
 # using desktop file for autostart
 echo "> Copying desktop file to: /etc/xdg/autostart/cocktail.desktop"
@@ -74,9 +76,6 @@ fi
 if [[ "$1" != "cicd" ]]; then
   cd ~/CocktailBerry/ || exit
 fi
-
-# reuse dependency installer, so we can setup newly added dependencies in one place
-bash scripts/dependency_installer.sh
 
 # Making necessary steps for the according program
 if [[ "$1" = "dashboard" ]]; then
@@ -108,11 +107,11 @@ else
   echo "> Installing needed Python libraries, this may take a while depending on your OS (especially in v1), so it is time for a coffee break :)"
   # v1 needs to sync with system python (for pyqt)
   if [[ "$V2_FLAG" = true ]]; then
-    uv sync --inexact --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
+    uv sync --inexact --no-dev --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
   else
     echo "> Installing PyQt"
     sudo apt-get -y install python3-pyqt6 || echo "ERROR: Could not install PyQt6" >&2
-    uv sync --inexact --extra v1 --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
+    uv sync --inexact --no-dev --extra v1 --extra nfc || echo "ERROR: Could not install Python libraries with uv" >&2
   fi
   if is_raspberry_pi; then
     sudo raspi-config nonint do_i2c 0
@@ -123,9 +122,9 @@ else
     bash scripts/setup_non_rpi.sh
   fi
   # on none RPi devices, we need to set control to the GPIOs, and set user to sudoers
+  # lgpio itself is a declared dependency (pi-hardware group), installed by uv sync above
   if is_raspberry_pi5; then
     sudo usermod -aG gpio "$(whoami)"
-    uv pip install lgpio
   fi
 fi
 echo "Done with the setup"

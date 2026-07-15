@@ -93,14 +93,14 @@ git --version >/dev/null 2>&1
 GIT_IS_AVAILABLE=$?
 if [[ $GIT_IS_AVAILABLE -ne 0 ]]; then
   echo "> Git was not found, installing it ..."
-  sudo apt install git
+  sudo apt install -y git
 else
   echo "> Git is already installed!"
 fi
 
 # also link python to python3 if its still an old system
 echo "~~ linking python to python3 if not already done ~~"
-sudo apt install python-is-python3
+sudo apt install -y python-is-python3
 
 # might also need to install python-venv
 echo "~~ Check if python3-venv and ensurepip are available ~~"
@@ -112,7 +112,7 @@ ENSUREPIP_IS_AVAILABLE=$?
 if [[ $VENV_IS_AVAILABLE -ne 0 ]] || [[ $ENSUREPIP_IS_AVAILABLE -ne 0 ]]; then
   echo "> Python3 venv or ensurepip was not found, installing python3-venv ..."
   PYTHON_VERSION=$(python3 -V | cut -d' ' -f2 | cut -d'.' -f1,2) # Extracts version in format X.Y
-  sudo apt install python"${PYTHON_VERSION}"-venv
+  sudo apt install -y python"${PYTHON_VERSION}"-venv
 else
   echo "> Python3 venv and ensurepip are already installed!"
 fi
@@ -123,13 +123,16 @@ pip --version >/dev/null 2>&1
 PIP_IS_AVAILABLE=$?
 if [[ $PIP_IS_AVAILABLE -ne 0 ]]; then
   echo "> Pip was not found, installing it ..."
-  sudo apt install python3-pip
+  sudo apt install -y python3-pip
 else
   echo "> Pip is already installed!"
 fi
 
 echo "~~ Installing uv ~~"
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# Pinned uv version for reproducible installs: uv has changed behavior between
+# releases before (e.g. exact sync by default). Bump this deliberately after testing.
+UV_VERSION="0.11.28"
+curl -LsSf "https://astral.sh/uv/$UV_VERSION/install.sh" | sh
 # shellcheck disable=SC1091
 source "$HOME"/.local/bin/env
 
@@ -151,7 +154,7 @@ lxterminal --version >/dev/null 2>&1
 LXTERMINAL_IS_AVAILABLE=$?
 if [[ $LXTERMINAL_IS_AVAILABLE -ne 0 ]]; then
   echo "> Lxterminal was not found, installing it ..."
-  sudo apt install lxterminal
+  sudo apt install -y lxterminal
 else
   echo "> Lxterminal is already installed!"
 fi

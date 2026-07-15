@@ -41,6 +41,8 @@ dependencies = [
 [dependency-groups]
 pi-hardware = [
   "hx711-rpi-py>=1.65.0 ; sys_platform == 'linux'",
+  # gpiozero backend, required on Pi 5; needs liblgpio-dev to build on Python 3.13 (no cp313 wheels yet)
+  "lgpio>=0.2.2 ; sys_platform == 'linux' and platform_machine == 'aarch64'",
 ]
 dev = [
   "mkdocs-material>=9.7.6",
@@ -71,6 +73,9 @@ override-dependencies = [
     "pyqt6; sys_platform != 'linux' or python_version >= '3.12'"
 ]
 
+# Legacy: only affects the `uv pip` CLI (used by old migrations), NOT `uv sync`/`uv lock`.
+# piwheels serves 32-bit (armv6l/armv7l) wheels only, so it offers nothing for
+# 64-bit installs (Pi 5 / modern RPi OS) — do not wire it into [[tool.uv.index]].
 [tool.uv.pip]
 extra-index-url = [
     "https://pypi.python.org/simple",

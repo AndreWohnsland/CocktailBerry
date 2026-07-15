@@ -105,11 +105,11 @@ def restart_v1() -> None:
     """Restart the v1 Application.
 
     Cases we have:
-    - Standard: uv run --extra v1 --extra nfc runme.py [arguments]
-    - Root privilege: uv sync --extra v1 --extra nfc && sudo -E path/env/python runme.py [arguments]
+    - Standard: uv run --no-dev --extra v1 --extra nfc runme.py [arguments]
+    - Root privilege: uv sync --no-dev --extra v1 --extra nfc && sudo -E path/env/python runme.py [arguments]
     """
     arguments, python, uv_executable = _common_restart()
-    uv_args = ["--extra", "v1", "--extra", "nfc"]
+    uv_args = ["--no-dev", "--extra", "v1", "--extra", "nfc"]
     cmd = [uv_executable, "run", *uv_args] if uv_executable else [python]
     if "SUDO_USER" in os.environ:
         cmd = ["sudo", "-E", python]
@@ -122,8 +122,8 @@ def restart_v2() -> None:
     """Restart the v2 Application.
 
     Cases we have:
-    - Standard: uv run runme.py [arguments]
-    - Root privilege: uv sync && sudo -E path/env/python runme.py [arguments]
+    - Standard: uv run --no-dev runme.py [arguments]
+    - Root privilege: uv sync --no-dev && sudo -E path/env/python runme.py [arguments]
     """
     arguments, python, uv_executable = _common_restart()
     # skip out if this is the dev program (will not work restart here)
@@ -131,11 +131,11 @@ def restart_v2() -> None:
     if len(arguments) != 0 and arguments[0] == "dev":
         _logger.debug("Will not restart because of dev program.")
         return
-    cmd = [uv_executable, "run"] if uv_executable else [python]
+    cmd = [uv_executable, "run", "--no-dev"] if uv_executable else [python]
     if "SUDO_USER" in os.environ:
         cmd = ["sudo", "-E", python]
         if uv_executable:
-            subprocess.run([uv_executable, "sync", "--inexact"], check=True)
+            subprocess.run([uv_executable, "sync", "--inexact", "--no-dev"], check=True)
     os.execvp(cmd[0], [*cmd, str(EXECUTABLE_V2), *arguments])
 
 
