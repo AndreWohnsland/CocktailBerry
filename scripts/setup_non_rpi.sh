@@ -24,7 +24,7 @@ sudo /usr/local/bin/setup_gpio_permissions.sh
 
 # set the rules to enable gpio
 # only both in combination seem to work
-sudo apt install python3-pip libgpiod2
+sudo apt install -y python3-pip libgpiod2
 sudo cp ./scripts/99-gpio.rules /etc/udev/rules.d/99-gpio.rules
 sudo udevadm control --reload-rules
 sudo udevadm trigger

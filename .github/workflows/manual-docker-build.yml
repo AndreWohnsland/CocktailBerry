@@ -27,6 +27,32 @@ jobs:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
+      - name: 🗺️ Resolve build target
+        id: target
+        run: |
+          case "${{ inputs.service }}" in
+            service)
+              CONTEXT=./microservice
+              FILE=./microservice/Dockerfile
+              IMAGE=andrewo92/cocktailberry-microservice
+              ;;
+            backend)
+              CONTEXT=./dashboard
+              FILE=./dashboard/Dockerfile.backend
+              IMAGE=andrewo92/cocktailberry-dashboard-be
+              ;;
+            frontend)
+              CONTEXT=./dashboard
+              FILE=./dashboard/Dockerfile.frontend
+              IMAGE=andrewo92/cocktailberry-dashboard-fe
+              ;;
+          esac
+          {
+            echo "context=$CONTEXT"
+            echo "file=$FILE"
+            echo "image=$IMAGE"
+          } >> "$GITHUB_OUTPUT"
+
       - name: 🐳 Set up QEMU
         uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
 
@@ -42,9 +68,12 @@ jobs:
       - name: 🍸 Build and push Docker image CocktailBerry
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
-          context: ${{ contains(github.event.inputs.service, 'service') && './microservice' || './dashboard' }}
-          file: ${{ contains(github.event.inputs.service, 'service') && './microservice/Dockerfile' || contains(github.event.inputs.service, 'backend') && './dashboard/Dockerfile.backend' || './dashboard/Dockerfile.frontend' }}
+          context: ${{ steps.target.outputs.context }}
+          file: ${{ steps.target.outputs.file }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ contains(github.event.inputs.service, 'service') && 'andrewo92/cocktailberry-microservice' || contains(github.event.inputs.service, 'backend') && 'andrewo92/cocktailberry-dashboard-be' || 'andrewo92/cocktailberry-dashboard-fe' }}:latest,${{ contains(github.event.inputs.service, 'service') && 'andrewo92/cocktailberry-microservice' || contains(github.event.inputs.service, 'backend') && 'andrewo92/cocktailberry-dashboard-be' || 'andrewo92/cocktailberry-dashboard-fe' }}:${{ github.event.inputs.version }}
-          no-cache: true
+          tags: ${{ steps.target.outputs.image }}:latest,${{ steps.target.outputs.image }}:${{ inputs.version }}
+          # pull keeps base images fresh while still using the layer cache
+          pull: true
+          cache-from: type=gha,scope=${{ steps.target.outputs.image }}
+          cache-to: type=gha,mode=max,scope=${{ steps.target.outputs.image }}

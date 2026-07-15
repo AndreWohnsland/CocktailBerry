@@ -427,6 +427,7 @@ dev = [
 ]
 pi-hardware = [
     { name = "hx711-rpi-py", marker = "sys_platform == 'linux'" },
+    { name = "lgpio", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
 ]
 
 [package.metadata]
@@ -479,7 +480,10 @@ dev = [
     { name = "ty", specifier = "==0.0.59" },
     { name = "zensical", specifier = ">=0.0.47" },
 ]
-pi-hardware = [{ name = "hx711-rpi-py", marker = "sys_platform == 'linux'", specifier = ">=1.65.0" }]
+pi-hardware = [
+    { name = "hx711-rpi-py", marker = "sys_platform == 'linux'", specifier = ">=1.65.0" },
+    { name = "lgpio", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'", specifier = ">=0.2.2" },
+]
 
 [[package]]
 name = "colorama"
@@ -1062,6 +1066,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/00/11/b56381fa6c3f4cc5d
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c9/fb/108ecd1fe961941959ad0ee4e12ee7b8b1477247f30b1fdfd83ceaf017f0/jupyter_core-5.7.2-py3-none-any.whl", hash = "sha256:4f7315d2f6b4bcf2e3e7cb6e46772eba760ae459cd1f59d29eb57b0a01bd7409", size = 28965, upload-time = "2024-03-12T12:37:32.36Z" },
 ]
+
+[[package]]
+name = "lgpio"
+version = "0.2.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/56/33/26ec2e8049eaa2f077bf23a12dc61ca559fbfa7bea0516bf263d657ae275/lgpio-0.2.2.0.tar.gz", hash = "sha256:11372e653b200f76a0b3ef8a23a0735c85ec678a9f8550b9893151ed0f863fff", size = 90087, upload-time = "2024-03-29T21:59:55.901Z" }
 
 [[package]]
 name = "libsass"
