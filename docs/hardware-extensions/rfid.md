@@ -1,3 +1,8 @@
+---
+icon: material/cellphone-nfc
+tags: [Feature, Hardware, Extension]
+---
+
 # RFID Readers
 
 Custom RFID readers let you drive any NFC/RFID hardware that CocktailBerry does not support out of the box.

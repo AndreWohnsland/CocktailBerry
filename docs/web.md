@@ -1,3 +1,8 @@
+---
+icon: material/web
+tags: [Setup, Feature]
+---
+
 # CocktailBerry Web
 
 !!! info "Not the default interface yet"

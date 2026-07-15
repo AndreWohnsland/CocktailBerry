@@ -1,3 +1,8 @@
+---
+icon: material/cube-outline
+tags: [Feature, Hardware, Extension]
+---
+
 # Hardware Context Extensions
 
 Hardware context extensions let you register **shared hardware** — such as a UART board, SPI bus, or any custom controller — that multiple dispenser extensions (or other code) can access at runtime.

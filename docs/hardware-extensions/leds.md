@@ -1,3 +1,8 @@
+---
+icon: material/led-variant-outline
+tags: [Feature, Hardware, Extension]
+---
+
 # LEDs
 
 Custom LEDs let you drive any indicator/lighting hardware that CocktailBerry does not support out of the box.

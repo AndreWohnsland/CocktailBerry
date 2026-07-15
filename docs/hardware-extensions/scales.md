@@ -1,3 +1,8 @@
+---
+icon: material/scale-balance
+tags: [Feature, Hardware, Extension]
+---
+
 # Scales
 
 Custom scales let you drive any load-cell amplifier or weighing hardware that CocktailBerry does not support out of the box.

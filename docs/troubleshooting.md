@@ -1,3 +1,8 @@
+---
+icon: material/bug-outline
+tags: [Help]
+---
+
 # Troubleshooting
 
 If you run into any problems, check here first for a solution.

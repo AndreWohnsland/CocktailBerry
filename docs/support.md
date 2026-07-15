@@ -1,3 +1,8 @@
+---
+icon: material/heart-outline
+tags: [Project]
+---
+
 # How to Support
 
 There are different ways to support and contribute to CocktailBerry. This includes:

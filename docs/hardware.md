@@ -1,3 +1,8 @@
+---
+icon: material/hammer-wrench
+tags: [Setup, Hardware]
+---
+
 # Hardware
 
 You can run the software on any non RPi hardware, but you won't be able to control the pins without a device supporting GPIO control.

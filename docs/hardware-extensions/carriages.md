@@ -1,3 +1,8 @@
+---
+icon: material/robot-industrial-outline
+tags: [Feature, Hardware, Extension]
+---
+
 # Carriages
 
 Custom carriages (or slides) let you drive any linear positioning hardware that moves a glass between dispenser slots.

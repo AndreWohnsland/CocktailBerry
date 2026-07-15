@@ -1,3 +1,8 @@
+---
+icon: material/translate
+tags: [Reference]
+---
+
 # Supported Languages
 
 CocktailBerry includes multi-language support. You can change the language with the `UI_LANGUAGE` config option. Currently, supported languages are:

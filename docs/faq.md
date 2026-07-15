@@ -1,3 +1,8 @@
+---
+icon: material/frequently-asked-questions
+tags: [Help]
+---
+
 # Frequently Asked Questions
 
 Here you will find a list of commonly asked questions about the Software or Hardware.
@@ -84,7 +89,7 @@ The changes may require a restart of the program.
 
 ### How to Install CocktailBerry
 
-Check out the [quickstart](quickstart.md) or [installation](installation.md) section.
+Check out the [installation](installation.md) section.
 If you execute those commands at your Raspberry Pi, you should be ready to go.
 The commands do: Loading the project from GitHub, updating the system, installing dependencies and creating an auto start setting.
 
