@@ -7,21 +7,21 @@ readme = "readme.md"
 requires-python = ">= 3.13"
 
 dependencies = [
-    "gitpython>=3.1.50",
+    "gitpython>=3.1.51",
     "requests>=2.34.2",
     "sumup==0.3.0",
     "pyyaml>=6.0.3",
-    "typer>=0.26.5",
+    "typer>=0.26.8",
     "pyfiglet>=1.0.4",
-    "pillow>=12.2.0",
-    "psutil>=6.0.0",
+    "pillow>=12.3.0",
+    "psutil>=7.2.2",
     "distro>=1.9.0",
-    "fastapi[standard]>=0.136.3",
-    "uvicorn>=0.48.0",
-    "sse-starlette>=3.4.4",
+    "fastapi[standard]>=0.139.0",
+    "uvicorn>=0.51.0",
+    "sse-starlette>=3.4.5",
     "python-periphery>=2.4.1",
-    "sqlalchemy>=2.0.50",
-    "alembic>=1.18.4",
+    "sqlalchemy>=2.0.51",
+    "alembic>=1.18.5",
     "pulp>=3.3.2",
     "stamina>=26.1.0",
     "adafruit-circuitpython-mcp230xx>=2.6.2",
@@ -32,7 +32,7 @@ dependencies = [
     "cedargrove-nau7802>=2.1.4",
     "inquirerprompt>=0.3.4",
     "mfrc522>=0.0.7 ; sys_platform == 'linux'",
-    "spidev>=3.6 ; sys_platform == 'linux'",
+    "spidev>=3.8 ; sys_platform == 'linux'",
     "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
     "gpiozero>=2.0.1 ; sys_platform == 'linux'",
     "rpi-gpio>=0.7.1 ; sys_platform == 'linux'",
@@ -46,13 +46,13 @@ pi-hardware = [
 ]
 dev = [
   "mkdocs-material>=9.7.6",
-  "ipykernel>=7.2.0",
-  "pytest>=9.0.3",
+  "ipykernel>=7.3.0",
+  "pytest>=9.1.1",
   "pytest-cov>=7.1.0",
   "pre-commit>=4.6.0",
   "ty==0.0.59",
-  "ruff>=0.15.15",
-  "zensical>=0.0.47",
+  "ruff>=0.15.21",
+  "zensical>=0.0.50",
 ]
 
 [project.optional-dependencies]
