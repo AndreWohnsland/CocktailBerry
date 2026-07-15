@@ -15,46 +15,37 @@ permissions:
 jobs:
   ruff:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ "3.13" ]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - name: Install the latest version of uv using Python ${{ matrix.python-version }}
+      - name: Install the latest version of uv
         uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.13"
       - name: 🔍 Lint with ruff
         run: uv run --no-group pi-hardware ruff check src
 
   ty:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ "3.13" ]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - name: Install the latest version of uv using Python ${{ matrix.python-version }}
+      - name: Install the latest version of uv
         uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.13"
       - name: 🔍 Type Checking with ty
         run: uv run --extra v1 --no-group pi-hardware ty check src
 
   pytest:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ "3.13" ]
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - name: Install the latest version of uv using Python ${{ matrix.python-version }}
+      - name: Install the latest version of uv
         uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.13"
       - name: 🔍 Run PyTest
         run: uv run --no-group pi-hardware pytest
 
