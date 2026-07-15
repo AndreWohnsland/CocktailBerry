@@ -1,3 +1,8 @@
+---
+icon: material/source-branch
+tags: [Project]
+---
+
 # Development
 
 For developers, there is [an additional section](https://github.com/AndreWohnsland/CocktailBerry/blob/master/docs/.devnotes.md) with information available.

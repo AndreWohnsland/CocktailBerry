@@ -1,43 +1,14 @@
+---
+icon: material/code-block-braces
+tags: [Feature]
+---
+
 # Advanced Topics
 
 !!! info "Optional Features"
     Take note that none of this section is required to run the base program.
     These are just some fun additions, which you can optionally use.
     If you are not interested in them, just skip this section.
-
-!!! example "Use the CLI"
-    The **easiest** way to install the CocktailBerry microservice is via the [CLI](commands.md#setup-the-microservice).
-    Just run:
-    ```bash
-    uv run runme.py setup-microservice
-    ```
-    for the interactive mode to change the env variables and build the service including automated updates.
-
-!!! tip "Try the Pre-build Image"
-    There is the option to install directly from Docker Hub, a new tag is built every release.
-    This is for more advanced users, since you need to set the files/settings yourself.
-
-    Visit [Docker Hub](https://hub.docker.com/search?q=andrewo92) and pull the corresponding images and follow the instructions on Docker Hub.
-
-## Installation of Services
-
-Simply have `docker compose` installed and run either the CLI command or the docker compose command in the folder where you specified the `docker-compose.yaml` file.
-You will also find more information below about the specific services.
-
-```bash
-uv run runme.py setup-microservice # (1)!
-uv run runme.py setup-teams-service -l de # (2)!
-docker compose up --build -d # (3)!
-```
-
-1. This is the recommended and easiest way!
-2. Just use this in case you want to use the team feature and also on the same device as CocktailBerry. I recommend at least an RPi 4 with 2GB RAM.
-3. If you are an experienced docker user, feel free to do it yourself! If you got a quite old system, docker v1 may be installed. Best is to upgrade, but you can use `docker-compose` as a command.
-
-This will handle the setup of all docker services.
-You may have to set the environment variables, depending on your setup.
-To be up-to-date, I recommend using [watchtower](https://containrrr.dev/watchtower/), which will automatically update the docker images.
-Using the CLI, it will be automatically installed and configured.
 
 ## CocktailBerry Microservice
 
@@ -55,6 +26,8 @@ uv run runme.py setup-microservice
 ```
 
 The terminal will interactively ask you for the required information.
+This also sets up [watchtower](https://containrrr.dev/watchtower/), which keeps the service image up to date.
+See the [CLI documentation](commands.md#setup-the-microservice) for all options.
 
 One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktailberry-now-with-home-assistant).
 The service will also temporarily store the data within a database, if there was no connection to the endpoint, and try again later.
@@ -137,12 +110,7 @@ You can access the frontend on a web browser, either over:
 - **http://127.0.0.1:8050** Your browser directly at the RPi
 - **http://YOUR_PI_IP:8050** The IP address of the Pi from another device, if devices are in the same network
 
-In addition, if you want to automatically open the Chromium browser at start on the second device, you can add the command to the autostart file.
-The shell script will also do that for you, if you use it:
-
-```bash
-echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
-```
+The setup script will also configure the second device to automatically open the dashboard in a kiosk browser at start.
 
 ### Using the Dashboard as a Hotspot
 
@@ -152,23 +120,6 @@ For this, a very easy way is to use [RaspAp](https://raspap.com/).
 
 ## Installing Docker
 
-!!! info "Less Typing"
-    Using the included script `sh scripts/install_docker.sh` and `sh scripts/install_compose.sh` will also do that for you.
-    You may have executed it at the setup of your CocktailBerry, if you used the all-in-one script, and therefore already installed docker.
-    Using them has the benefit that they may be more up to date than the commands below.
-
-Just run these commands in sequence on the Pi:
-
-```bash
-sudo apt-get update && sudo apt-get -y upgrade
-sudo apt install docker.io -y
-docker --version || echo "Docker installation failed :("
-sudo usermod -aG docker $USER
-newgrp docker
-DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
-mkdir -p $DOCKER_CONFIG/cli-plugins
-curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-aarch64 -o ~/.docker/cli-plugins/docker-compose
-chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
-docker compose version || echo "Compose installation failed :("
-docker run hello-world
-```
+Docker and compose are needed for the microservice and dashboard features.
+The provided scripts `sh scripts/install_docker.sh` and `sh scripts/install_compose.sh` will install both for you.
+If you used the all-in-one script at the setup of your CocktailBerry, docker is most likely already installed.

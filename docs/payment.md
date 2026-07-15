@@ -1,3 +1,8 @@
+---
+icon: material/credit-card-outline
+tags: [Feature]
+---
+
 # Setting Up and Using the Payment Feature
 
 !!! info "Optional Feature"

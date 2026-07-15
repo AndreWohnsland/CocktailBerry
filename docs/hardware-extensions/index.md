@@ -1,3 +1,8 @@
+---
+icon: material/connection
+tags: [Feature, Hardware, Extension]
+---
+
 # Custom Hardware Extensions
 
 CocktailBerry allows you to create your own implementation of hardware components.

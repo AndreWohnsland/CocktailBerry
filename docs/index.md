@@ -1,3 +1,7 @@
+---
+icon: material/home-outline
+---
+
 # Home
 
 <img src="./pictures/CocktailBerry.svg" alt="CocktailBerry"/>
@@ -11,7 +15,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_CocktailBerry&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_CocktailBerry)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/CocktailBerry?style=social)
 
-[![Support CocktailBerry](https://img.shields.io/badge/Support%20CocktailBerry-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
+[![Support CocktailBerry](https://img.shields.io/badge/Support%20CocktailBerry-learn%20how-yellow)](support.md)
 
 Welcome to the CocktailBerry documentation.
 CocktailBerry is a Python and Qt (or React for v2) based software for a cocktail machine on the Raspberry Pi.
@@ -19,11 +23,11 @@ It enables you to build your own, fully customized machine, while still being ab
 Here you will find everything to get started!
 
 <div class="mid-flex">
-<a href="https://demo.cocktailberry.org/" class="cta-btn primary-btn"> v2 Demo </a>
+<a href="https://demo.cocktailberry.org/" class="cta-btn primary-btn"> Demo </a>
   <a href="https://cocktailberry.org/" class="cta-btn secondary-btn"> Homepage </a>
-  <a href="quickstart/" class="cta-btn primary-btn"> Quickstart </a>
+  <a href="installation/" class="cta-btn primary-btn"> Get Started </a>
   <a href="setup/" class="cta-btn secondary-btn"> Set Up </a>
-  <a href="https://hardware.cocktailberry.org/" class="cta-btn primary-btn"> Hardware Docs </a>
+  <a href="https://hardware.cocktailberry.org/" class="cta-btn primary-btn"> Hardware </a>
 </div>
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
@@ -41,8 +45,10 @@ CocktailBerry offers the following features:
 
 - Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
 - Let customers pay via NFC chips/cards
+- Accept card payments via a SumUp terminal
 - Add new ingredients and recipes with needed information via the UI
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
+- Guide the manual addition of ingredients with a connected scale
 - Define connected ingredients to the machine and existing additional ingredients via the UI
 - Auto calculate and display possible recipes dependent on given information
 - Option to serve cocktails without alcohol
@@ -56,6 +62,8 @@ CocktailBerry offers the following features:
 - Support WS281x LEDs on your machine
 - Support for RFID/NFC reader
 - Support for Service Personnel
+- Update the software and OS or set up WiFi directly from the interface
+- Extend the machine with hardware extensions, like scales, carriages or custom dispensers
 - Implement your own [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) to extend the base functionality
 
 In addition, there is the possibility to use and set up a second device as a dashboard:

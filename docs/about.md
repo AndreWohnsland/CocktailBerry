@@ -1,3 +1,8 @@
+---
+icon: material/information-outline
+tags: [Project]
+---
+
 # Overview
 
 CocktailBerry is used to control your cocktail machine and easily prepare cocktails via a nice-looking user interface.
@@ -24,7 +29,7 @@ If you want to do your own software part, you can still add this via [addons](ad
 CocktailBerry comes with two versions: v1 and v2.
 Most impressions here shown are from v1, but v2 is quite similar.
 The main difference is that v2 comes with a more modern design and as a web app, offering more flexibility and accessibility.
-You can have a look at the [v2 demo](https://demo.cocktailberry.org/cocktails) to interactively experience it.
+You can have a look at the [demo](https://demo.cocktailberry.org/cocktails) to interactively experience it.
 The interface was programmed for the users to easily interact with CocktailBerry and manage everything via the GUI.
 There are different views for the tasks.
 

@@ -1,3 +1,8 @@
+---
+icon: material/cup-outline
+tags: [Feature, Hardware, Extension]
+---
+
 # Dispensers
 
 Custom dispensers let you control any pump or valve hardware that CocktailBerry does not support out of the box.

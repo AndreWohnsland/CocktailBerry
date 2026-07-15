@@ -1,3 +1,8 @@
+---
+icon: material/cog-outline
+tags: [Setup]
+---
+
 # Setting up CocktailBerry
 
 CocktailBerry will work directly after using the installer, but you can make your own adjustments to make it even better.

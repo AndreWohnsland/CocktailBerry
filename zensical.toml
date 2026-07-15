@@ -9,36 +9,45 @@ repo_name = "GitHub Cocktailberry"
 nav = [
   { "Home" = "index.md" },
   { "About" = "about.md" },
-  { "Quickstart" = "quickstart.md" },
-  { "Installation" = "installation.md" },
-  { "Hardware" = "hardware.md" },
-  { "Setup / Usage" = "setup.md" },
-  { "CocktailBerry Web" = "web.md" },
-  { "Supported Languages" = "languages.md" },
-  { "CLI commands" = "commands.md" },
-  { "Payment Feature" = "payment.md" },
-  { "Service Personnel" = "waiter.md" },
-  { "Advanced Topics" = "advanced.md" },
-  { "Addons" = "addons.md" },
-  { "Hardware Extensions" = [
-    "hardware-extensions/index.md",
-    { "Context Extensions" = "hardware-extensions/hardware-context.md" },
-    { "Scales" = "hardware-extensions/scales.md" },
-    { "Carriages" = "hardware-extensions/carriages.md" },
-    { "RFID Readers" = "hardware-extensions/rfid.md" },
-    { "LEDs" = "hardware-extensions/leds.md" },
-    { "Dispensers" = "hardware-extensions/dispensers.md" },
+  { "Getting Started" = [
+    { "Installation" = "installation.md" },
+    { "Hardware" = "hardware.md" },
+    { "Setup & Usage" = "setup.md" },
+    { "CocktailBerry Web" = "web.md" },
   ]},
-  { "Migration Guides" = [
-    "migration/index.md",
-    { "v3 Update" = "migration/v3.md" },
-    { "v4 Update" = "migration/v4.md" },
+  { "Features" = [
+    { "Payment Feature" = "payment.md" },
+    { "Service Personnel" = "waiter.md" },
+    { "Addons" = "addons.md" },
+    { "HW Extensions" = [
+      "hardware-extensions/index.md",
+      { "Context Extensions" = "hardware-extensions/hardware-context.md" },
+      { "Scales" = "hardware-extensions/scales.md" },
+      { "Carriages" = "hardware-extensions/carriages.md" },
+      { "RFID Readers" = "hardware-extensions/rfid.md" },
+      { "LEDs" = "hardware-extensions/leds.md" },
+      { "Dispensers" = "hardware-extensions/dispensers.md" },
+    ]},
+    { "Advanced Topics" = "advanced.md" },
   ]},
-  { "Troubleshooting" = "troubleshooting.md" },
-  { "FAQ" = "faq.md" },
-  { "Feature Timetable" = "features.md" },
-  { "Development" = "development.md" },
-  { "How to Support" = "support.md" },
+  { "Reference" = [
+    { "CLI commands" = "commands.md" },
+    { "Supported Languages" = "languages.md" },
+    { "Feature Timetable" = "features.md" },
+  ]},
+  { "Help" = [
+    { "Troubleshooting" = "troubleshooting.md" },
+    { "FAQ" = "faq.md" },
+    { "Migration Guides" = [
+      "migration/index.md",
+      { "v3 Update" = "migration/v3.md" },
+      { "v4 Update" = "migration/v4.md" },
+    ]},
+  ]},
+  { "Project" = [
+    { "Development" = "development.md" },
+    { "How to Support" = "support.md" },
+  ]},
 ]
 
 extra_css = ["stylesheets/extra.css"]
@@ -48,12 +57,24 @@ extra_javascript = [
     "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"
 ]
 
+# Tag identifiers, icons are assigned under [project.theme.icon.tag].
+[project.extra.tags]
+Setup = "setup"
+Hardware = "hardware"
+Feature = "feature"
+Extension = "extension"
+Reference = "reference"
+Help = "help"
+Migration = "migration"
+Project = "project"
+
 [project.theme]
 variant = "modern"
 custom_dir = "docs/overrides"
 logo = "img/berry.svg"
 favicon = "img/favicon.ico"
 features = [
+  "navigation.sections",
   "navigation.footer",
   "content.code.copy",
   "content.code.annotate",
@@ -62,6 +83,17 @@ features = [
   "navigation.indexes",
   "content.tooltips",
 ]
+
+[project.theme.icon.tag]
+default = "material/tag-outline"
+setup = "material/rocket-launch"
+hardware = "material/chip"
+feature = "material/star-outline"
+extension = "material/puzzle-outline"
+reference = "material/book-open-variant"
+help = "material/chat-question-outline"
+migration = "material/arrow-up-bold-hexagon-outline"
+project = "material/account-group"
 
 [[project.theme.palette]]
 scheme = "default"

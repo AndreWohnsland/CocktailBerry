@@ -1,3 +1,8 @@
+---
+icon: material/chart-timeline-variant
+tags: [Reference]
+---
+
 # Feature Timetable
 
 Here you will find a list of the new features introduced over time.

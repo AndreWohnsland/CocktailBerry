@@ -1,3 +1,8 @@
+---
+icon: material/account-group-outline
+tags: [Feature]
+---
+
 # Service Personnel Mode
 
 !!! info "Optional Feature"

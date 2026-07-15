@@ -1,3 +1,8 @@
+---
+icon: material/puzzle-outline
+tags: [Feature, Extension]
+---
+
 # Addons
 
 Addons are third party extensions which add additional features to CocktailBerry.

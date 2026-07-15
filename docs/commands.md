@@ -1,3 +1,8 @@
+---
+icon: material/console
+tags: [Reference]
+---
+
 # CLI Commands
 
 In this section, there is an overview and description of the Command Line Interface (CLI) commands of the program.

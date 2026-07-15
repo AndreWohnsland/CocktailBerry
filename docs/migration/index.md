@@ -1,3 +1,8 @@
+---
+icon: material/arrow-up-bold-hexagon-outline
+tags: [Help, Migration]
+---
+
 # Migration Guides
 
 When a major version of CocktailBerry is released (e.g. `v2.9.0` → `v3.0.0`), it usually contains breaking changes that cannot all be migrated automatically. This page explains the general approach; per-version steps live in the subpages.
