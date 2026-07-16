@@ -18,43 +18,43 @@ How exactly you will build your CocktailBerry is completely up to you.
 
 The following components were used within the showcase for the Machines (CocktailBerry MK series and 2-Go):
 
-- 1x [Raspberry Pi 3b+](https://amzn.to/48bhCBc) (or newer [Model 4](https://amzn.to/4pqSH3v), [Model 5](https://amzn.to/4i9h2IG)); for the [v2 web interface](web.md) use at least a Pi 4 with 2 GB RAM
-- 1x [5-inch Touch Screen](https://amzn.to/3K6Ntei) or [7-inch Touch Screen](https://amzn.to/49sKlnn) for the Raspberry Pi
-- Official [Touch Screen](https://amzn.to/4pnDPmj) also works
-- 1x Micro [SD-Card](https://amzn.to/3JY3Dqn) (16-32 GB is enough, depending on what else you want to store)
-- 1x 5V Power supply for the [Raspberry Pi 3](https://amzn.to/3XbImwj) or [Raspberry Pi 4](https://amzn.to/48axtjp)
-- 1-2x [8 Channel](https://amzn.to/49ya120) or other RPi (needs 3.3V Logic Level, 5V will NOT WORK!!!) Relay-Boards depending on pump count (important to have 5V input control)
-- *Alternative*: Motor shields [AZDelivery](https://amzn.to/3SbQiOE) or [Adafruit](https://amzn.to/4vE6uaf) 4 DC or 2 Stepper Motors per shield, has reversion built in
+- 1x {{ extra.pi_3bplus_link }} (or newer {{ extra.pi_4_link }}, {{ extra.pi_5_link }}); for the [v2 web interface](web.md) use at least a Pi 4 with 2 GB RAM
+- 1x {{ extra.touch_5in_link }} or {{ extra.touch_7in_link }} for the Raspberry Pi
+- {{ extra.touch_official_link }} also works
+- 1x {{ extra.sd_card_link }} (depending on what else you want to store)
+- 1x {{ extra.pi3_power_supply_link }} or {{ extra.pi4_power_supply_link }}
+- 1-2x {{ extra.relay_board_link }} or other RPi (needs 3.3V Logic Level, 5V will NOT WORK!!!) Relay-Boards depending on pump count (important to have 5V input control)
+- *Alternative*: {{ extra.motor_shield_azdelivery_link }} or {{ extra.motor_shield_adafruit_link }} 4 DC or 2 Stepper Motors per shield, has reversion built in
 - 6-24x Pumps, they should be food safe, examples are:
-- [membrane pump](https://amzn.to/4ocmw6S) or [this one](https://amzn.to/4a6PfXl)
-- [peristaltic pump](https://amzn.to/3LSyTrh)
-- 1x [Power supply](https://amzn.to/49w0fgP) for the pumps
-- 5-10m [Food safe hose/tubes](https://amzn.to/4ppufj3) for the pumps
-- Female to Female [jumper wires](https://amzn.to/47TY7yc)
-- Some wires, [Hex-Standoffs](https://amzn.to/4oRQBd0), Screws and other small parts for mounting
+- {{ extra.membrane_pump_link }} or {{ extra.membrane_pump_alt_link }}
+- {{ extra.peristaltic_pump_link }}
+- 1x {{ extra.power_supply_12v_link }} for the pumps
+- 5-10m {{ extra.tubing_link }} for the pumps
+- {{ extra.jumper_wires_link }}
+- Some wires, {{ extra.hex_standoffs_link }}, Screws and other small parts for mounting
 - Your custom build machine casing
-- *Optional*: [HDMI](https://amzn.to/4ra7Wzo) and [USB](https://amzn.to/48n4NF7) cables for small space builds
-- *Optional*: A good [converter](https://amzn.to/4qT18oW) (using USB ones may result in too high voltage loss) if you only want one power source
-- *Optional*: [USB C](https://amzn.to/3X9I7lw) or [Micro USB](https://amzn.to/4oQDCIu) open cable
+- *Optional*: {{ extra.hdmi_cable_link }} and {{ extra.usb_cable_link }} for small space builds
+- *Optional*: A good {{ extra.voltage_converter_link }} (using USB ones may result in too high voltage loss) if you only want one power source
+- *Optional*: {{ extra.usb_c_open_cable_link }} or {{ extra.micro_usb_open_cable_link }}
 
 ## Payment Service
 
 If you want to use the NFC-Reader functionality with the payment service, you will need at least two additional NFC readers and another Pi setup:
 
-- 2x [USB RFID Reader](https://amzn.to/4p75hVZ) — most generic USB readers work, this one is tested
-- Compatible NFC tags (e.g., [MIFARE Classic](https://amzn.to/43ZPcsC) or [in Blue](https://amzn.to/43ZPcsC))
-- 1x [Raspberry Pi 3b+](https://amzn.to/48bhCBc) (or newer [Model 4](https://amzn.to/4pqSH3v))
+- 2x {{ extra.rfid_reader_link }} — most generic USB readers work, this one is tested
+- Compatible {{ extra.nfc_tags_link }}
+- 1x {{ extra.pi_3bplus_link }} (or newer {{ extra.pi_4_link }})
 - Additional monitor + mouse + keyboard or another touchscreen; see above
 
 ## Teams Dashboard
 
 The following components were used within the showcase for the Teams Dashboard:
 
-- 1x [Raspberry Pi 3b+](https://amzn.to/48bhCBc) (or newer [Model 4](https://amzn.to/4pqSH3v), [Model 5](https://amzn.to/4i9h2IG))
-- 1x [7-inch Touch Screen](https://amzn.to/47SVAnN)
-- 1x [Display Casing](https://amzn.to/49sLPOt)
-- 1x Micro [SD-Card](https://amzn.to/3JY3Dqn)
-- 1x 5V Power supply for the [Raspberry Pi 3](https://amzn.to/3XbImwj), [Pi 4](https://amzn.to/48axtjp) or [Pi 5](https://amzn.to/4885zEN)
+- 1x {{ extra.pi_3bplus_link }} (or newer {{ extra.pi_4_link }}, {{ extra.pi_5_link }})
+- 1x {{ extra.touch_7in_teams_link }}
+- 1x {{ extra.display_casing_link }}
+- 1x {{ extra.sd_card_link }}
+- 1x {{ extra.pi3_power_supply_link }}, {{ extra.pi4_power_supply_link }} or {{ extra.pi5_power_supply_link }}
 
 ## Possible Basic Circuit
 

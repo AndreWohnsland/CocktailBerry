@@ -160,3 +160,54 @@ slugify = { function = "pymdownx.slugs.slugify", kwds = { case = "lower" } }
 [project.markdown_extensions.pymdownx.tasklist]
 custom_checkbox = true
 [project.markdown_extensions.pymdownx.tilde]
+
+# Enable the macros plugin so pages can interpolate shared values from extra.*
+# (Jinja2), e.g. {{ extra.pi_5_link }}.
+[project.plugins.macros]
+config = {}
+
+# Product purchase links (affiliate). Single source of truth for this repo: each
+# value is a full Markdown link, so a page renders a clickable link from just the
+# macro. Keys and values are kept identical to CocktailBerry-Hardware's
+# zensical.toml, so a link fix is a one-line copy between the two files.
+[project.extra]
+# Raspberry Pi
+pi_3bplus_link = "[Raspberry Pi 3B+](https://amzn.to/48bhCBc)"
+pi_4_link = "[Raspberry Pi 4](https://amzn.to/4pqSH3v)"
+pi_5_link = "[Raspberry Pi 5](https://amzn.to/4i9h2IG)"
+# Touchscreens & casing
+touch_5in_link = "[5\" Touchscreen](https://amzn.to/3K6Ntei)"
+touch_7in_link = "[7\" Touchscreen](https://amzn.to/49sKlnn)"
+touch_7in_teams_link = "[7\" Touchscreen (Teams)](https://amzn.to/47SVAnN)"
+touch_official_link = "[Official Touchscreen](https://amzn.to/4pnDPmj)"
+display_casing_link = "[Display Casing](https://amzn.to/49sLPOt)"
+# Storage
+sd_card_link = "[Micro SD Card (16-32 GB)](https://amzn.to/3JY3Dqn)"
+# Controller boards
+relay_board_link = "[8-Channel Relay Board](https://amzn.to/49ya120)"
+motor_shield_azdelivery_link = "[Motor Shield (AZDelivery)](https://amzn.to/3SbQiOE)"
+motor_shield_adafruit_link = "[Motor Shield (Adafruit)](https://amzn.to/4vE6uaf)"
+# Power supplies
+pi3_power_supply_link = "[5 V Power Supply (Raspberry Pi 3)](https://amzn.to/3XbImwj)"
+pi4_power_supply_link = "[5 V Power Supply (Raspberry Pi 4)](https://amzn.to/48axtjp)"
+pi5_power_supply_link = "[5 V Power Supply (Raspberry Pi 5)](https://amzn.to/4885zEN)"
+power_supply_12v_link = "[12 V Power Supply](https://amzn.to/49w0fgP)"
+voltage_converter_link = "[Voltage Converter](https://amzn.to/4qT18oW)"
+# Tubing, cables & fasteners
+tubing_link = "[Food-Safe Tubing](https://amzn.to/4ppufj3)"
+jumper_wires_link = "[Jumper Wires (F-F)](https://amzn.to/47TY7yc)"
+hex_standoffs_link = "[Hex Standoffs](https://amzn.to/4oRQBd0)"
+hdmi_cable_link = "[HDMI Cable](https://amzn.to/4ra7Wzo)"
+usb_cable_link = "[USB Cable](https://amzn.to/48n4NF7)"
+usb_c_open_cable_link = "[USB-C Open Cable](https://amzn.to/3X9I7lw)"
+micro_usb_open_cable_link = "[Micro USB Open Cable](https://amzn.to/4oQDCIu)"
+# Payment hardware
+rfid_reader_link = "[USB RFID Reader](https://amzn.to/4p75hVZ)"
+nfc_tags_link = "[NFC Tags (MIFARE)](https://amzn.to/43ZPcsC)"
+# Pumps
+membrane_pump_link = "[Membrane Pump](https://amzn.to/4ocmw6S)"
+membrane_pump_alt_link = "[Membrane Pump (alt.)](https://amzn.to/4a6PfXl)"
+peristaltic_pump_link = "[Peristaltic Pump](https://amzn.to/3LSyTrh)"
+# Software-repo only (not in CocktailBerry-Hardware)
+acr1252u_link = "[ACR1252U](https://amzn.to/4irVt6h)"
+mfrc522_link = "[MFRC522 Module](https://amzn.to/4puhW4T)"

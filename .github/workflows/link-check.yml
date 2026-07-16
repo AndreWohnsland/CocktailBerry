@@ -1,0 +1,45 @@
+name: Docs Link Check
+run-name: 🔗 Docs link check — ${{ github.event_name == 'schedule' && 'scheduled' || 'manual run' }}
+
+# Monthly sweep for dead links in the documentation. Runs against the built
+# site (not the markdown sources) so links interpolated by the macros plugin
+# from zensical.toml (e.g. affiliate links) are covered too.
+
+on:
+  schedule:
+    - cron: "0 4 1 * *" # 1st of every month, 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        with:
+          python-version: "3.13"
+
+      - name: Build docs
+        run: uv run --no-group pi-hardware zensical build
+
+      - name: 🔗 Check links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          # 403/429/503 are accepted: Amazon (and other shops) block bots with
+          # these codes, but a dead amzn.to shortlink still returns 404.
+          args: >-
+            --no-progress
+            --accept '200..=204,403,429,503'
+            --max-concurrency 4
+            --exclude '^https?://(localhost|127\.0\.0\.1)'
+            'site/**/*.html'
+          fail: true
+        env:
+          # Raises the rate limit for github.com links to avoid 429 noise.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
