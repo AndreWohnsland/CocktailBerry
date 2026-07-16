@@ -175,8 +175,8 @@ It is not recommended for complete beginners, and it may include some tinkering.
 As long as you use the recommended usb reader, you should be fine.
 Currently, you can use these different types of readers:
 
-- Basic MFRC522 ([like this](https://amzn.to/4puhW4T), SPI Protocol)
-- USB RFID Reader (like [this](https://amzn.to/4p75hVZ), only reading UID supported)
+- Basic {{ extra.mfrc522_link }} (SPI Protocol)
+- {{ extra.rfid_reader_link }} (only reading UID supported)
 
 !!! bug "Please Read"
     Reading / Writing RFIDs while still having an interactive GUI may cause a lot of trouble.

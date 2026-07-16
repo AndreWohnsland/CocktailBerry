@@ -46,8 +46,8 @@ Currently, two types are supported: NFC-based payments and SumUp Terminal paymen
 To use payments with CocktailBerry, you will need the following:
 
 === "NFC Based"
-    - NFC reader compatible with the list of supported readers, [ACR1252U](https://amzn.to/4irVt6h) is recommended
-    - Compatible NFC tags (e.g., [MIFARE Classic](https://amzn.to/43ZPcsC) or [in Blue](https://amzn.to/43ZPcsC))
+    - NFC reader compatible with the list of supported readers, {{ extra.acr1252u_link }} is recommended
+    - Compatible {{ extra.nfc_tags_link }}
     - The [CocktailBerry Payment](https://github.com/AndreWohnsland/CocktailBerry-Payment) Service reachable over network by your CocktailBerry device
     - CocktailBerry version 3.0 or higher
 
