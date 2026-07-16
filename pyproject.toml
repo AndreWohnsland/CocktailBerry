@@ -7,16 +7,16 @@ readme = "readme.md"
 requires-python = ">= 3.13"
 
 dependencies = [
-    "gitpython>=3.1.51",
+    "gitpython>=3.1.52",
     "requests>=2.34.2",
     "sumup==0.3.0",
     "pyyaml>=6.0.3",
-    "typer>=0.26.8",
+    "typer>=0.27.0",
     "pyfiglet>=1.0.4",
     "pillow>=12.3.0",
     "psutil>=7.2.2",
     "distro>=1.9.0",
-    "fastapi[standard]>=0.139.0",
+    "fastapi[standard]>=0.139.2",
     "uvicorn>=0.51.0",
     "sse-starlette>=3.4.5",
     "python-periphery>=2.4.1",
@@ -50,8 +50,8 @@ dev = [
   "pytest>=9.1.1",
   "pytest-cov>=7.1.0",
   "pre-commit>=4.6.0",
-  "ty==0.0.59",
-  "ruff>=0.15.21",
+  "ty==0.0.60",
+  "ruff>=0.15.22",
   "zensical>=0.0.50",
 ]
 
