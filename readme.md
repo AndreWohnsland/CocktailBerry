@@ -11,7 +11,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreWohnsland_CocktailBerry&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AndreWohnsland_CocktailBerry)
 ![GitHub Repo stars](https://img.shields.io/github/stars/AndreWohnsland/CocktailBerry?style=social)
 
-[![Support CocktailBerry](https://img.shields.io/badge/Support%20CocktailBerry-donate-yellow)](https://www.buymeacoffee.com/AndreWohnsland)
+[![Support CocktailBerry](https://img.shields.io/badge/Support%20CocktailBerry-learn%20how-yellow)](https://software.cocktailberry.org/support/)
 
 CocktailBerry is a Python and Qt (or React for v2) based app for a cocktail machine on the Raspberry Pi.
 It enables you to build your own, fully customized machine, while still being able to use the identical software on each machine.
@@ -48,8 +48,10 @@ CocktailBerry can do:
 
 - Prepare cocktails of a given volume and adjusted concentration of alcoholic ingredients
 - Let customers pay via NFC chips/cards
+- Accept card payments via a SumUp terminal
 - Add new ingredients and recipes with needed information via the UI
 - Specify additional ingredients for later hand add within a recipe (like sticky syrup)
+- Guide the manual addition of ingredients with a connected scale
 - Define connected ingredients to the machine and existing additional ingredients via the UI
 - Auto calculate and display possible recipes dependent on given information
 - Option to serve cocktails without alcohol
@@ -63,6 +65,8 @@ CocktailBerry can do:
 - Support WS281x LEDs on your machine
 - Support for RFID/NFC reader
 - Support for Service Personnel
+- Update the software and OS or set up WiFi directly from the interface
+- Extend the machine with hardware extensions, like scales, carriages or custom dispensers
 - Implement your own [addon](https://github.com/AndreWohnsland/CocktailBerry-Addons) to extend the base functionality
 
 In addition, there is the possibility to use and set up a second device as a dashboard:
