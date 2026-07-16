@@ -228,7 +228,7 @@ The recommended way for a "basic" hardware setup is:
         Alternatively, there is also a pre-built executable available for the GUI, which you can download from the [release page](https://github.com/AndreWohnsland/CocktailBerry-Payment/releases).
         You might not be able to set all options though when using this directly, so even when using this, going over this preparation and service installation steps is recommended.
 
-        If [uv](https://docs.astral.sh/uv/getting-started/installation) or [git](https://git-scm.com/install/windows) fails to install, you might need to install them manually first.
+        If [uv](https://docs.astral.sh/uv/getting-started/installation/) or [git](https://git-scm.com/install/windows) fails to install, you might need to install them manually first.
 
     **Service installation**
 

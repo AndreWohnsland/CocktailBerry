@@ -12,7 +12,7 @@ Here you can find all the requirements and installation steps.
 These are the minimal tools needed to get started:
 
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) or [Python 3.13+](https://www.python.org/downloads/)
-- [Git](https://git-scm.com/downloads)
+- [Git](https://git-scm.com/downloads/)
 - recommended: **latest** [Raspberry Pi OS, 64 bit](https://www.raspberrypi.com/software/) (Desktop, Trixie)
 - *optional:* for a manual v2 (web) install: [Node.js](https://nodejs.org/en/download/) and [Yarn](https://yarnpkg.com/getting-started/install)
 

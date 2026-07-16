@@ -38,7 +38,7 @@ Like this project? Give it a star on [GitHub](https://github.com/AndreWohnsland/
 
 CocktailBerry currently comes in two versions, v1 and v2.
 The v1 is the stable default, shipping the Qt app as a single application.
-[v2](https://docs.cocktailberry.org/web/) offers a separate API and UI with more flexibility, but might have some issues on built-in touchscreens.
+[v2](web.md) offers a separate API and UI with more flexibility, but might have some issues on built-in touchscreens.
 Both versions have the full feature set listed below.
 
 CocktailBerry offers the following features:
