@@ -219,6 +219,12 @@ class MachineController:
         if self.hardware.reverter is not None:
             self.hardware.reverter.initialize_pin()
 
+    def adjust_dispenser_volume_flow(self, slot: int, volume_flow: float) -> None:
+        """Update the volume flow of a running dispenser without re-initializing hardware."""
+        dispenser = self.dispensers.get(slot)
+        if dispenser is not None:
+            dispenser.volume_flow = volume_flow
+
     def close_all_pumps(self) -> None:
         """Stop all active dispensers."""
         for dispenser in self.dispensers.values():

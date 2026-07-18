@@ -10,6 +10,7 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.machine.controller import MachineController
 from src.models import PrepareResult
 from src.tabs import maker
 from src.ui.setup_numpad_widget import NumpadWidget
@@ -259,5 +260,6 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         new_flow = round(current_flow * self.calibration_data.factor, 1)
         cfg.PUMP_CONFIG[channel_idx].volume_flow = new_flow
         cfg.sync_config_to_file()
+        MachineController().adjust_dispenser_volume_flow(self.calibration_data.pump_number, new_flow)
         self.reset()
         DH.say_volume_flow_adjusted(self.calibration_data.pump_number, new_flow)
