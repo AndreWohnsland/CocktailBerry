@@ -33,11 +33,20 @@ jobs:
         with:
           # 403/429/503 are accepted: Amazon (and other shops) block bots with
           # these codes, but a dead amzn.to shortlink still returns 404.
+          # 303 is accepted for Streamlit apps, which answer with a wake-up redirect.
+          # root-dir resolves root-relative links (/img/..., used by 404.html).
+          # demo + andrewohnsland.github.io subpages are excluded: both are React
+          # SPAs on GitHub Pages whose 404-template redirect hack makes every
+          # working deep link report status 404. Their roots stay checked.
           args: >-
             --no-progress
-            --accept '200..=204,403,429,503'
+            --root-dir '${{ github.workspace }}/site'
+            --accept '200..=204,303,403,429,503'
             --max-concurrency 4
             --exclude '^https?://(localhost|127\.0\.0\.1)'
+            --exclude '^https?://demo\.cocktailberry\.org/.+'
+            --exclude '^https?://andrewohnsland\.github\.io/.+'
+            --exclude '^https?://sonarcloud\.io/api/project_badges/'
             'site/**/*.html'
           fail: true
         env:

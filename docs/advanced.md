@@ -35,7 +35,7 @@ This way, no data will get lost in the void.
 
 ### Posting Data to the Official API
 
-When the microservice is active, you can use it not only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-WebApp) and submit your data.
+When the microservice is active, you can use it not only to send data to your own webhook, but also to the official [CocktailBerry data API](https://github.com/AndreWohnsland/CocktailBerry-Stats) and submit your data.
 It will then appear on the [official dashboard](https://stats-cocktailberry.streamlit.app/).
 Don't worry, no private data is included, only some cocktail data.
 A detailed write-down [can be found on the dashboard site](https://stats-cocktailberry.streamlit.app/#how-to-participate) how you can receive your API key.
