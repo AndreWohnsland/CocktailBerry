@@ -7,6 +7,9 @@ on:
 
 jobs:
   verify-version:
+    permissions:
+      # The guard re-drafts the release and deletes the tag on version mismatch.
+      contents: write
     uses: ./.github/workflows/verify-release-version.yml
 
   build-and-push-image:

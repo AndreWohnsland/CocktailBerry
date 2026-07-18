@@ -13,7 +13,8 @@ jobs:
     # Only relevant for releases (this workflow also runs on workflow_dispatch).
     if: github.event_name == 'release'
     permissions:
-      contents: read
+      # The guard re-drafts the release and deletes the tag on version mismatch.
+      contents: write
     uses: ./.github/workflows/verify-release-version.yml
 
   build-and-upload:
