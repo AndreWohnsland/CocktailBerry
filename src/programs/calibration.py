@@ -13,6 +13,7 @@ from src.display_controller import DP_CONTROLLER
 from src.machine.controller import MachineController
 from src.models import PrepareResult
 from src.tabs import maker
+from src.ui.creation_utils import create_button
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui_elements import Ui_CalibrationRealWidget, Ui_CalibrationTargetWidget, Ui_CalibrationWindow
 
@@ -60,6 +61,21 @@ class _CalibrationTargetWidget(QWidget, Ui_CalibrationTargetWidget):
         )
         self.amount_plus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.input_amount, 10, 200, 10))
         self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.input_amount, 10, 200, -10))
+        self.mc = MachineController()
+        if self.mc.has_scale:
+            self.button_tare = create_button(
+                UI_LANGUAGE._choose_language("tare", "scale_calibration_window"),
+                font_size=30,
+                max_h=500,
+                min_h=120,
+            )
+            self.button_tare.clicked.connect(self._tare_scale)
+            self.horizontalLayout_2.insertWidget(0, self.button_tare)
+
+    def _tare_scale(self) -> None:
+        """Tare the built-in scale so it can be used to measure the dispensed amount."""
+        self.mc.scale_tare(5)
+        DH.standard_box_non_blocking(DH.get_translation("scale_tared"), close_time=2)
 
     def output_volume(self) -> None:
         """Output the set number of volume according to defined volume flow.
@@ -105,6 +121,24 @@ class _CalibrationRealWidget(QWidget, Ui_CalibrationRealWidget):
         )
         self.input_measured_amount.textChanged.connect(self.on_entered_measured_amount)
         self.input_ingredient.currentTextChanged.connect(self.on_ingredient_changed)
+        self.mc = MachineController()
+        if self.mc.has_scale:
+            self.button_read_scale = create_button(
+                UI_LANGUAGE._choose_language("read_weight", "scale_calibration_window"),
+                font_size=16,
+                max_h=60,
+                min_h=60,
+            )
+            self.button_read_scale.clicked.connect(self._read_scale)
+            self.gridLayout.addWidget(self.button_read_scale, 2, 0, 2, 1)
+
+    def _read_scale(self) -> None:
+        """Read grams from the built-in scale into the measured field (1 g ~ 1 ml)."""
+        try:
+            grams = self.mc.scale_read_grams()
+        except RuntimeError:
+            return
+        self.input_measured_amount.setText(f"{grams:.1f}")
 
     def prompt_for_measured_amount(self) -> None:
         enter_amount_translation = UI_LANGUAGE._choose_language("enter_measured_amount", "calibration_window")
