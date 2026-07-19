@@ -4,6 +4,7 @@ import { FaInfoCircle, FaMinus, FaPlus } from 'react-icons/fa';
 import { calibrateBottle } from '../../api/bottles';
 import { updateIngredient, useIngredients } from '../../api/ingredients';
 import { updateOptions } from '../../api/options';
+import { readScale, tareScale, useScaleStatus } from '../../api/scale';
 import { useConfig } from '../../providers/ConfigProvider';
 import type { Ingredient } from '../../types/models';
 import { executeAndShow } from '../../utils';
@@ -28,7 +29,10 @@ const CalibrationWindow = () => {
   const [pendingPump, setPendingPump] = useState(1);
   const { config, refetchConfig } = useConfig();
   const { data: ingredients = [], refetch: refetchIngredients } = useIngredients(false);
+  const { data: scaleStatus } = useScaleStatus();
   const { t } = useTranslation();
+
+  const hasScale = scaleStatus?.data ?? false;
 
   const currentFlow = config?.PUMP_CONFIG?.[channel - 1]?.volume_flow || 0;
   const selectedIngredient: Ingredient | null =
@@ -91,6 +95,15 @@ const CalibrationWindow = () => {
 
   const handleNext = () => {
     setStep('measure');
+  };
+
+  const handleTare = async () => {
+    await executeAndShow(() => tareScale(5));
+  };
+
+  const handleReadScale = async () => {
+    const result = await readScale();
+    setMeasuredVolume(result.data);
   };
 
   const handleContinuePumping = () => {
@@ -215,6 +228,11 @@ const CalibrationWindow = () => {
           </div>
           <div className='grow py-2'></div>
           <div className='w-full space-y-3'>
+            {hasScale && (
+              <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleTare}>
+                {t('scaleCalibration.tare')}
+              </button>
+            )}
             {targetVolume > 0 && (
               <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleNext}>
                 {t('calibration.next')}
@@ -240,6 +258,11 @@ const CalibrationWindow = () => {
                 handleInputChange={(v) => setMeasuredVolume(v)}
                 suffix='ml'
               />
+              {hasScale && (
+                <button type='button' className='button-primary text-lg p-3 w-full' onClick={handleReadScale}>
+                  {t('scaleCalibration.readWeight')}
+                </button>
+              )}
             </div>
 
             <div className='space-y-2'>
