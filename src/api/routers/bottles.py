@@ -4,7 +4,7 @@ from src.api.api_config import Tags
 from src.api.internal.utils import map_bottles
 from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import maker_protected, master_protected_dependency
-from src.api.models import ApiMessage, Bottle
+from src.api.models import ApiMessage, Bottle, BottleConfigUpdate
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab
 from src.database_commander import DatabaseCommander
@@ -75,6 +75,31 @@ async def update_bottle(bottle_id: int, ingredient_id: int, amount: int | None =
     return ApiMessage(
         message=DH.get_translation("bottle_updated", bottle_id=bottle_id, amount=amount, ingredient_id=ingredient_id)
     )
+
+
+# need to use master protection here instead of maker protection
+@router.put(
+    "/{bottle_id}/config",
+    summary="Update dispenser configuration like the volume flow.",
+    dependencies=[
+        Depends(master_protected_dependency),
+    ],
+)
+async def update_bottle_config(bottle_id: int, data: BottleConfigUpdate) -> ApiMessage:
+    raise_when_cocktail_is_in_progress()
+    if bottle_id < 1 or bottle_id > cfg.MAKER_NUMBER_BOTTLES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid bottle number, valid_range 1-{cfg.MAKER_NUMBER_BOTTLES}",
+        )
+    if data.volume_flow is None:
+        return ApiMessage(message=DH.get_translation("options_updated"))
+    new_flow = round(data.volume_flow, 1)
+    cfg.PUMP_CONFIG[bottle_id - 1].volume_flow = new_flow
+    cfg.sync_config_to_file()
+    # also update the live dispenser object, otherwise the change only takes effect after a restart
+    MachineController().adjust_dispenser_volume_flow(bottle_id, new_flow)
+    return ApiMessage(message=DH.get_translation("pump_volume_flow_adjusted", pump_number=bottle_id, new_flow=new_flow))
 
 
 # need to use master protection here instead of maker protection

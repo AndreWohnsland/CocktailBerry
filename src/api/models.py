@@ -93,6 +93,10 @@ class Bottle(BaseModel):
     ingredient: Ingredient | None = None
 
 
+class BottleConfigUpdate(BaseModel):
+    volume_flow: float | None = Field(None, gt=0)
+
+
 class PrepareCocktailRequest(BaseModel):
     volume: int = Field(..., gt=0)
     alcohol_factor: float = Field(..., ge=0)

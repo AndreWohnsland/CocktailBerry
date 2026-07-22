@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaInfoCircle, FaMinus, FaPlus } from 'react-icons/fa';
-import { calibrateBottle } from '../../api/bottles';
+import { calibrateBottle, updateBottleConfig } from '../../api/bottles';
 import { updateIngredient, useIngredients } from '../../api/ingredients';
-import { updateOptions } from '../../api/options';
 import { readScale, tareScale, useScaleStatus } from '../../api/scale';
 import { useConfig } from '../../providers/ConfigProvider';
 import type { Ingredient } from '../../types/models';
@@ -113,12 +112,7 @@ const CalibrationWindow = () => {
   const handleApplyNewFlow = async () => {
     if (newFlow === null) return;
 
-    const updatedPumpConfig = [...config.PUMP_CONFIG];
-    updatedPumpConfig[channel - 1] = {
-      ...updatedPumpConfig[channel - 1],
-      volume_flow: newFlow,
-    };
-    await executeAndShow(() => updateOptions({ PUMP_CONFIG: updatedPumpConfig }));
+    await executeAndShow(() => updateBottleConfig(channel, newFlow));
     await refetchConfig();
     handleReset();
   };

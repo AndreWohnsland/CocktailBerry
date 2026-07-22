@@ -459,7 +459,7 @@ dialog:
     en: 'Failed to initiate checkout or there were intermittent connection issues. Please check the terminal connection, it might be offline.'
     de: 'Checkout konnte nicht gestartet werden oder es gab zwischendurch Verbindungsprobleme. Bitte Terminal-Verbindung prüfen, es könnte offline sein.'
     pl: 'Nie udało się rozpocząć płatności lub wystąpiły problemy z połączeniem. Sprawdź terminal, może być offline.'
-  pumpt_volume_flow_adjusted:
+  pump_volume_flow_adjusted:
     en: 'Pump {pump_number} volume flow adjusted to {new_flow} ml/s.'
     de: 'Pumpen {pump_number} Volumenstrom auf {new_flow} ml/s angepasst.'
     pl: 'Przepływ pompy {pump_number} został ustawiony na {new_flow} ml/s.'
