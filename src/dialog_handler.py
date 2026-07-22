@@ -148,6 +148,7 @@ allowed_keys = Literal[
     "payment_too_young",
     "payment_user_not_found",
     "preparation_cancelled",
+    "pump_volume_flow_adjusted",
     "python_deprecated",
     "qtsass_not_successful",
     "recipe_added",
@@ -559,7 +560,7 @@ class DialogHandler:
 
     def say_volume_flow_adjusted(self, pump_number: int, new_flow: float) -> None:
         """Informs the user that the volume flow for a pump has been adjusted."""
-        self.__output_language_dialog("pumpt_volume_flow_adjusted", pump_number=pump_number, new_flow=new_flow)
+        self.__output_language_dialog("pump_volume_flow_adjusted", pump_number=pump_number, new_flow=new_flow)
 
     def say_ingredient_speed_adjusted(self, ingredient_name: str, new_speed: int) -> None:
         """Informs the user that the ingredient speed factor has been adjusted."""

@@ -22,6 +22,12 @@ export const updateBottle = async (bottleId: number, ingredientId: number, amoun
     .then((response) => response.data);
 };
 
+export const updateBottleConfig = async (bottleId: number, volumeFlow: number): Promise<{ message: string }> => {
+  return axiosInstance
+    .put<{ message: string }>(`${bottle_url}/${bottleId}/config`, { volume_flow: volumeFlow })
+    .then((response) => response.data);
+};
+
 export const calibrateBottle = async (bottle_id: number, amount: number): Promise<{ message: string }> => {
   return axiosInstance
     .post<{ message: string }>(`${bottle_url}/${bottle_id}/calibrate`, null, { params: { amount } })
