@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections import deque
 from typing import TYPE_CHECKING
 
 from src.logger_handler import LoggerHandler
@@ -11,6 +12,11 @@ if TYPE_CHECKING:
 
 
 _logger = LoggerHandler("BaseScale")
+
+# calibration stability gate: the last `samples` reads must agree within this fraction of the
+# measured span, otherwise the weight is still settling or something touches the scale
+_STABLE_SPREAD_RATIO = 0.02
+_MAX_READ_MULTIPLIER = 3  # give up after samples * this many single reads
 
 
 class ScaleInterface(ABC):
@@ -70,15 +76,28 @@ class ScaleInterface(ABC):
         """Calibrate scale factor using a known weight (after tare).
 
         zero_raw_offset is the raw ADC reading corresponding to 0g (empty scale)
+        Waits until the reading is stable (the last `samples` reads agree within a small
+        fraction of the measured span) so settling weights or a touching hand do not get
+        baked into the factor. Raises RuntimeError if the reading never stabilizes.
         Overwrite this if your scale requires a different calibration procedure.
         """
         if weight_g <= 0:
             _logger.error("Calibration weight must be > 0")
             return self._calibration_factor
-        factor = (self.read_raw(samples) - zero_raw_offset) / weight_g
-        self.set_calibration_factor(factor)
-        self.set_zero_raw_offset(zero_raw_offset)
-        return factor
+        window: deque[int] = deque(maxlen=samples)
+        for _ in range(samples * _MAX_READ_MULTIPLIER):
+            window.append(self.read_raw(1))
+            if len(window) < samples:
+                continue
+            span = sum(window) / samples - zero_raw_offset
+            if max(window) - min(window) <= abs(span) * _STABLE_SPREAD_RATIO:
+                factor = span / weight_g
+                self.set_calibration_factor(factor)
+                self.set_zero_raw_offset(zero_raw_offset)
+                return factor
+        raise RuntimeError(
+            "Scale reading did not stabilize - make sure the weight sits still and nothing touches the scale"
+        )
 
     def set_calibration_factor(self, calibration_factor: float) -> None:
         """Set the calibration factor directly (bypassing tare and calibrate_with_known_weight).

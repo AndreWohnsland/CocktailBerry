@@ -30,7 +30,8 @@ class NAU7802Scale(ScaleInterface):
             _logger.error(msg)
             raise ImportError(msg)
         super().__init__(config, hardware)
-        self._zero_offset: int = 0
+        # start from the stored empty-scale offset so read_grams() is sensible before the first tare
+        self._zero_offset: int = config.zero_raw_offset
         i2c = get_i2c()
         if i2c is None:
             msg = "I2C bus is not available. Cannot initialize NAU7802 scale."
