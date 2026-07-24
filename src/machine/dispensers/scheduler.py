@@ -115,6 +115,7 @@ class DispenserScheduler(BaseScheduler):
     def __init__(self, max_concurrent: int, carriage: CarriageInterface | None = None) -> None:
         super().__init__(max_concurrent, carriage)
         self._next_log_time = 0.0
+        self._last_progress = 0
 
     def run(
         self,
@@ -127,6 +128,7 @@ class DispenserScheduler(BaseScheduler):
             return
 
         self._next_log_time = 0.0
+        self._last_progress = 0
         # Emit initial 0% so the UI refreshes before any long blocking step
         # (notably the carriage moving to the first position).
         on_progress(0)
@@ -249,6 +251,9 @@ class DispenserScheduler(BaseScheduler):
             if total_required > 0
             else 0
         )
+        # A lifted glass makes the scale read negative; never let displayed progress go back
+        progress = max(progress, self._last_progress)
+        self._last_progress = progress
         consumption = [x.consumption for x in all_items]
         on_progress(progress)
         self._log_consumption(consumption, progress)
