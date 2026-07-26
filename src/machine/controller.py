@@ -13,6 +13,7 @@ with contextlib.suppress(ModuleNotFoundError):
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
+from src.dialog_handler import DIALOG_HANDLER
 from src.machine.carriage import create_carriage
 from src.machine.dispensers import create_dispenser
 from src.machine.dispensers.base import BaseDispenser
@@ -171,6 +172,12 @@ class MachineController:
                 item.ingredient.consumption = item.consumption
         machine_ingredients = [item.ingredient for item in items if item.ingredient is not None]
         _logger.info(f"Total calculated consumption: {[round(i.consumption) for i in machine_ingredients]}")
+        stalled_names = [item.ingredient.name for item in items if item.stalled and item.ingredient is not None]
+        if stalled_names:
+            stall_message = DIALOG_HANDLER.get_translation(
+                "ingredient_not_fully_dispensed", ingredients=", ".join(stalled_names)
+            )
+            finish_message = f"{finish_message}\n{stall_message}".strip()
         _logger.log_header("INFO", f"Finished {recipe}")
         if w is not None:
             w.close_progression_window()
