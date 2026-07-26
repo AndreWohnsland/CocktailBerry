@@ -12,6 +12,7 @@ Once added, the new scale type appears in the scale configuration dropdown along
 Unlike dispensers, a **single** scale is created per machine (one `SCALE_CONFIG` entry).
 It is wired into the `HardwareContext` and shared across all weight-based dispensers.
 Any dispenser referencing the scale is automatically scheduled exclusively (no parallel dispensing) so readings stay consistent.
+During preparation, the dispenser stops slightly before the target weight and waits for the reading to settle, so liquid still falling does not overshoot the requested amount.
 
 For scales, the base classes are:
 

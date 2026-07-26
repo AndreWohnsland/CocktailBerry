@@ -119,6 +119,7 @@ allowed_keys = Literal[
     "ingredient_double_usage",
     "ingredient_must_be_handadd",
     "ingredient_not_connected",
+    "ingredient_not_fully_dispensed",
     "ingredient_still_as_machine_add",
     "ingredient_still_at_bottle",
     "ingredient_still_at_recipe",

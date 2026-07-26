@@ -39,6 +39,8 @@ class PreparationItem:
     estimated_time: float = 0.0
     consumption: float = 0.0
     done: bool = False
+    stalled: bool = False
+    """True when the stall watchdog aborted this pour (e.g. empty bottle)."""
     recipe_order: int = 1
     ingredient: Ingredient | None = None
     """Back-reference to the source ingredient. None for non-ingredient tasks like cleaning."""
@@ -288,6 +290,7 @@ def _dispense_item(item: PreparationItem, on_step: Callable[[], None] | None = N
             revert=item.revert,
             callback=callback,
         )
+        item.stalled = item.dispenser.last_dispense_stalled
         item.done = True
     except Exception as exc:
         _logger.error(f"Dispenser error on slot {item.dispenser.slot}: {exc}")
@@ -473,7 +476,12 @@ class CleaningScheduler(BaseScheduler):
         with ThreadPoolExecutor(max_workers=len(batch)) as executor:
             futures = [
                 executor.submit(
-                    item.dispenser.dispense, _CLEANING_LARGE_AMOUNT, _PROGRESS_COMPLETE, item.revert, lambda *_: None
+                    item.dispenser.dispense,
+                    _CLEANING_LARGE_AMOUNT,
+                    _PROGRESS_COMPLETE,
+                    item.revert,
+                    lambda *_: None,
+                    use_scale=False,
                 )
                 for item in batch
             ]

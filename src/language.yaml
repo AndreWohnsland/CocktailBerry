@@ -95,6 +95,10 @@ dialog:
     en: 'The cocktail was cancelled!'
     de: 'Der Cocktail wurde abgebrochen!'
     pl: 'Koktajl został anulowany!'
+  ingredient_not_fully_dispensed:
+    en: 'Could not fully dispense: {ingredients}! Please check the bottle(s).'
+    de: 'Konnte nicht vollständig dosieren: {ingredients}! Bitte Flasche(n) prüfen.'
+    pl: 'Nie udało się w pełni nalać: {ingredients}! Sprawdź butelki.'
   no_waiter_logged_in:
     en: 'No service personnel is logged in. Please scan your NFC tag first.'
     de: 'Kein Servicepersonal angemeldet. Bitte zuerst den NFC-Tag scannen.'
