@@ -85,7 +85,9 @@ if [[ "$1" = "dashboard" ]]; then
   read -r language
   export UI_LANGUAGE=$language
   docker compose -f docker-compose.both.yaml up --build -d || echo "ERROR: Could not install dashboard over docker-compose, is docker installed?" >&2
-  echo "@chromium-browser --kiosk --app 127.0.0.1:8050" | sudo tee -a /etc/xdg/lxsession/LXDE-pi/autostart
+  # autostart via desktop file, works on X11 and Wayland sessions
+  echo "> Copying desktop file to: /etc/xdg/autostart/dashboard.desktop"
+  sudo cp ~/CocktailBerry/scripts/dashboard.desktop /etc/xdg/autostart/
 else
   echo "> Setting up CocktailBerry"
   # Generating launcher script, we use symlinks so when project is updated we can sneak in that change too
