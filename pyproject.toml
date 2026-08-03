@@ -51,7 +51,7 @@ dev = [
   "pytest-cov>=7.1.0",
   "pre-commit>=4.6.0",
   "ty==0.0.60",
-  "ruff>=0.15.22",
+  "ruff>=0.16.0",
   "zensical>=0.0.50",
 ]
 
@@ -134,6 +134,7 @@ ignore = [
   "D213", # Multi-line docstring summary should start at the second line
   "ANN401", # no Any for *args or **kwargs
   "PLR0913", # Too many arguments
+  "PLR0917", # Too many positional arguments
   "PLC0415", # `import` should be at the top-level of a file
 ]
 

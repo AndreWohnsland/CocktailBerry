@@ -101,7 +101,7 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
 
         done = pyqtSignal()
 
-        def __init__(self, func: Callable, parent: None | QObject = None) -> None:
+        def __init__(self, func: Callable, parent: QObject | None = None) -> None:
             super().__init__(parent)
             self.func = func
 

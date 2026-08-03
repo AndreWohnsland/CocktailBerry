@@ -85,7 +85,7 @@ CONFIG_TO_SKIP = (
 
 
 class ConfigWindow(QMainWindow, Ui_ConfigWindow):
-    def __init__(self, parent: None | MainScreen) -> None:
+    def __init__(self, parent: MainScreen | None) -> None:
         super().__init__()
         self.setupUi(self)
         DP_CONTROLLER.initialize_window_object(self)

@@ -54,7 +54,7 @@ class AddOnManager:
         for filename in filenames:
             self._load_in_addon(filename)
 
-    def _load_in_addon(self, filename: str) -> None | tuple[str, AddonInterface]:
+    def _load_in_addon(self, filename: str) -> tuple[str, AddonInterface] | None:
         """Load an addon from a file."""
         try:
             module = import_module(f"addons.{filename}")
