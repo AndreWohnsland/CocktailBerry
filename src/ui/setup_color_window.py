@@ -46,7 +46,7 @@ def _install_qtsass() -> None:
 class ColorWindow(QMainWindow, Ui_ColorWindow):
     """Creates the log window Widget."""
 
-    def __init__(self, parent: None | MainScreen) -> None:
+    def __init__(self, parent: MainScreen | None) -> None:
         """Init. Connect all the buttons and set window policy."""
         super().__init__()
         self.setupUi(self)
