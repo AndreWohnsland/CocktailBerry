@@ -163,6 +163,7 @@
     "reset": "Reset",
     "continuePumping": "Continue Pumping",
     "next": "Next",
+    "useScaleAssist": "Use scale assist",
     "progressTitle": "{{amount}} ml volume, pump #{{pump}}"
   },
   "scaleCalibration": {

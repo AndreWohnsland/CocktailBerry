@@ -1595,6 +1595,10 @@ ui:
       en: 'Enter Measured Amount'
       de: 'Bitte gemessene Menge eingeben'
       pl: 'Wprowadź zmierzoną ilość'
+    use_scale_assist:
+      en: 'Use scale assist'
+      de: 'Waagen-Unterstützung verwenden'
+      pl: 'Użyj pomiaru wagą'
     target_amount:
       en: 'Target Amount: {amount} ml'
       de: 'Zielmenge: {amount} ml'
