@@ -7,6 +7,7 @@ import { readScale, tareScale, useScaleStatus } from '../../api/scale';
 import { useConfig } from '../../providers/ConfigProvider';
 import type { Ingredient } from '../../types/models';
 import { executeAndShow } from '../../utils';
+import CheckBox from '../common/CheckBox';
 import DropDown from '../common/DropDown';
 import NumberInput from '../common/NumberInput';
 import ProgressModal from '../common/ProgressModal';
@@ -23,6 +24,7 @@ const CalibrationWindow = () => {
   const [targetVolume, setTargetVolume] = useState(0);
   const [measuredVolume, setMeasuredVolume] = useState(0);
   const [selectedIngredientId, setSelectedIngredientId] = useState<string>('');
+  const [scaleAssist, setScaleAssist] = useState(true);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [pendingAmount, setPendingAmount] = useState(0);
   const [pendingPump, setPendingPump] = useState(1);
@@ -77,6 +79,11 @@ const CalibrationWindow = () => {
   ];
 
   const handleStartPumping = async () => {
+    // first spend of a session tares the scale, so multiple spends accumulate on it
+    if (hasScale && scaleAssist && targetVolume === 0) {
+      const tared = await executeAndShow(() => tareScale(5));
+      if (!tared) return;
+    }
     const success = await executeAndShow(() => calibrateBottle(channel, amount));
     if (!success) return;
     setPendingAmount(amount);
@@ -94,10 +101,6 @@ const CalibrationWindow = () => {
 
   const handleNext = () => {
     setStep('measure');
-  };
-
-  const handleTare = async () => {
-    await executeAndShow(() => tareScale(5));
   };
 
   const handleReadScale = async () => {
@@ -151,6 +154,7 @@ const CalibrationWindow = () => {
     setTargetVolume(0);
     setMeasuredVolume(0);
     setSelectedIngredientId('');
+    setScaleAssist(true);
   };
 
   return (
@@ -223,9 +227,14 @@ const CalibrationWindow = () => {
           <div className='grow py-2'></div>
           <div className='w-full space-y-3'>
             {hasScale && (
-              <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleTare}>
-                {t('scaleCalibration.tare')}
-              </button>
+              <div className='flex justify-center mb-4'>
+                <CheckBox
+                  value={scaleAssist}
+                  checkName={t('calibration.useScaleAssist')}
+                  handleInputChange={setScaleAssist}
+                  disabled={targetVolume > 0}
+                />
+              </div>
             )}
             {targetVolume > 0 && (
               <button type='button' className='button-primary text-lg p-4 w-full' onClick={handleNext}>
@@ -252,7 +261,7 @@ const CalibrationWindow = () => {
                 handleInputChange={(v) => setMeasuredVolume(v)}
                 suffix='ml'
               />
-              {hasScale && (
+              {hasScale && scaleAssist && (
                 <button type='button' className='button-primary text-lg p-3 w-full' onClick={handleReadScale}>
                   {t('scaleCalibration.readWeight')}
                 </button>

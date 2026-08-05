@@ -45,6 +45,8 @@ class PreparationItem:
     ingredient: Ingredient | None = None
     """Back-reference to the source ingredient. None for non-ingredient tasks like cleaning."""
     revert: bool = False
+    use_scale: bool = True
+    """False runs the dispense time-based even on weight-mode pumps (e.g. pump calibration)."""
 
     def __post_init__(self) -> None:
         if self.estimated_time > 0.0:
@@ -289,6 +291,7 @@ def _dispense_item(item: PreparationItem, on_step: Callable[[], None] | None = N
             pump_speed=item.pump_speed,
             revert=item.revert,
             callback=callback,
+            use_scale=item.use_scale,
         )
         item.stalled = item.dispenser.last_dispense_stalled
         item.done = True

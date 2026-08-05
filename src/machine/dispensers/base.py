@@ -220,7 +220,7 @@ class BaseDispenser(ABC):
         # If a scale was used, wait for the reading to settle and log the final consumption.
         # This is important since otherwise we cannot know how much liquid still fell after a stop
         if self._active_scale is not None and predictor is not None:
-            consumption = self._settle_and_log(consumption, amount_ml, predictor)
+            consumption = self._settle_and_log(consumption, amount_ml, predictor, callback)
         callback(consumption, True)
         self._after_dispense(ctx)
         return consumption
@@ -233,9 +233,15 @@ class BaseDispenser(ABC):
             f"{consumption:.1f}/{amount_ml:.1f}ml, stopping (empty bottle or blocked tube?)"
         )
 
-    def _settle_and_log(self, cutoff: float, amount_ml: float, predictor: _StopPredictor) -> float:
+    def _settle_and_log(
+        self,
+        cutoff: float,
+        amount_ml: float,
+        predictor: _StopPredictor,
+        callback: ProgressCallback,
+    ) -> float:
         """Wait for the settled scale reading and log how the pour landed."""
-        settled = self._read_settled_consumption(cutoff)
+        settled = self._read_settled_consumption(cutoff, callback)
         lead = f"{predictor.lead_s:.2f}s" if predictor.lead_s is not None else "n/a"
         gradient = f"{predictor.gradient:.1f}ml/s" if predictor.gradient is not None else "n/a"
         _logger.debug(
@@ -244,7 +250,7 @@ class BaseDispenser(ABC):
         )
         return settled
 
-    def _read_settled_consumption(self, at_cutoff: float) -> float:
+    def _read_settled_consumption(self, at_cutoff: float, callback: ProgressCallback) -> float:
         """Wait until the scale reading stops changing (no more falling liquid), return it.
 
         Runs after every scale-based dispense ending (early stop, target reached,
@@ -252,7 +258,8 @@ class BaseDispenser(ABC):
         the glass. Settled means the reading moved at most _SCALE_JITTER_G over a
         _GRADIENT_WINDOW_S span; _SETTLE_TIMEOUT_S bounds the wait. A cancel
         arriving during the wait aborts it (a dispense already canceled before the
-        wait still settles normally).
+        wait still settles normally). Each reading is emitted through the progress
+        callback so the progress bar keeps moving while in-flight liquid lands.
         """
         scale = self._active_scale
         if scale is None:
@@ -266,6 +273,7 @@ class BaseDispenser(ABC):
                 break
             previous = reading
             reading = scale.read_grams()
+            callback(reading, False)
             now = time.monotonic()
             if abs(reading - previous) > _SCALE_JITTER_G:
                 stable_since = now

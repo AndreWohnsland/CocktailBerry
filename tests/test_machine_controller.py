@@ -183,7 +183,7 @@ class TestController:
         """Exclusive path passes on_step to emit aggregate progress per update."""
         mock_disp = _mock_dispenser(1)
 
-        def fake_dispense(amount_ml: float, pump_speed: int, revert: bool, callback) -> float:  # noqa: ANN001
+        def fake_dispense(amount_ml: float, pump_speed: int, revert: bool, callback, use_scale: bool = True) -> float:  # noqa: ANN001
             callback(50.0, False)
             callback(100.0, True)
             return 100.0

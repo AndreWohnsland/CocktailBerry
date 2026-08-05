@@ -131,6 +131,23 @@ def test_tiny_amount_uses_backstop(clock: FakeClock) -> None:
     assert calls[-1] == (result, True)
 
 
+def test_settle_keeps_progress_updating(clock: FakeClock) -> None:
+    # after the early cut, in-flight liquid still lands; the progress callback
+    # must keep reporting during the settle wait instead of freezing at the cutoff
+    scale = FakeScale(clock, flow_ml_s=25.0, fall_time_s=0.5)
+    dispenser = DummyDispenser(scale)
+    during_settle: list[float] = []
+
+    def callback(consumption: float, done: bool) -> None:
+        if not dispenser.pump_on and not done:
+            during_settle.append(consumption)
+
+    result = dispenser.dispense(40.0, 100, revert=False, callback=callback)
+
+    assert during_settle  # progress kept flowing after the pump was cut
+    assert max(during_settle) == pytest.approx(result, abs=1.0)  # crept up to the settled value
+
+
 def test_cancel_still_settles(clock: FakeClock) -> None:
     scale = FakeScale(clock, flow_ml_s=25.0, fall_time_s=0.5)
     dispenser = DummyDispenser(scale)

@@ -166,11 +166,14 @@ def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> P
         bottle=bottle_number,
     )
     mc = MachineController()
+    # time-based on purpose: calibration measures the pump, a scale-controlled
+    # dispense would just land on target and calibrate the scale against itself
     mc.make_cocktail(
         w=w,
         ingredient_list=[ing],
         recipe=display_name,
         is_cocktail=False,
+        use_scale=False,
     )
     return shared.cocktail_status.status
 

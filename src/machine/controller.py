@@ -150,16 +150,20 @@ class MachineController:
         finish_message: str = "",
         hand_adds: list[HandAddMeasure] | None = None,
         use_carriage: bool = True,
+        use_scale: bool = True,
     ) -> PreparationResult:
         """RPI Logic to prepare the cocktail.
 
         Calculates needed time for each slot according to data and config.
         Updates Progressbar status. Returns data for DB updates.
+
+        use_scale=False runs all dispenses time-based even on weight-mode pumps
+        (pump calibration must measure the pump, not the scale).
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
         if w is not None:
             w.open_progression_window(recipe)
-        items = self._build_preparation_items(ingredient_list)
+        items = self._build_preparation_items(ingredient_list, use_scale=use_scale)
         _logger.log_header("INFO", f"Starting {recipe}")
         if is_cocktail:
             self.hardware.led_controller.preparation_start()
@@ -268,7 +272,9 @@ class MachineController:
             )
         return items
 
-    def _build_preparation_items(self, ingredient_list: list[Ingredient]) -> list[PreparationItem]:
+    def _build_preparation_items(
+        self, ingredient_list: list[Ingredient], use_scale: bool = True
+    ) -> list[PreparationItem]:
         """Build the preparation items from ingredients and dispensers."""
         items = []
         for ing in ingredient_list:
@@ -282,6 +288,7 @@ class MachineController:
                     pump_speed=ing.pump_speed,
                     recipe_order=ing.recipe_order,
                     ingredient=ing,
+                    use_scale=use_scale,
                 )
             )
         return items

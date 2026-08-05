@@ -163,6 +163,7 @@
     "reset": "Zurücksetzen",
     "continuePumping": "Weiter Pumpen",
     "next": "Weiter",
+    "useScaleAssist": "Waagen-Unterstützung verwenden",
     "progressTitle": "{{amount}} ml Volumen, Pumpe #{{pump}}"
   },
   "scaleCalibration": {

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from PyQt6.QtWidgets import QMainWindow, QWidget
+from PyQt6.QtWidgets import QCheckBox, QMainWindow, QWidget
 
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DatabaseCommander
@@ -13,7 +13,7 @@ from src.display_controller import DP_CONTROLLER
 from src.machine.controller import MachineController
 from src.models import PrepareResult
 from src.tabs import maker
-from src.ui.creation_utils import create_button
+from src.ui.creation_utils import LARGE_FONT, adjust_font, create_button
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui_elements import Ui_CalibrationRealWidget, Ui_CalibrationTargetWidget, Ui_CalibrationWindow
 
@@ -30,11 +30,13 @@ class CalibrationData:
     pump_number: int
     target_volume: float = 0.0
     measured_volume: float = 0.0
+    use_scale_assist: bool = True
 
     def reset(self) -> None:
         """Reset all calibration data."""
         self.target_volume = 0.0
         self.measured_volume = 0.0
+        self.use_scale_assist = True
 
     @property
     def factor(self) -> float:
@@ -63,19 +65,16 @@ class _CalibrationTargetWidget(QWidget, Ui_CalibrationTargetWidget):
         self.amount_minus.clicked.connect(lambda: DP_CONTROLLER.change_input_value(self.input_amount, 10, 200, -10))
         self.mc = MachineController()
         if self.mc.has_scale:
-            self.button_tare = create_button(
-                UI_LANGUAGE._choose_language("tare", "scale_calibration_window"),
-                font_size=30,
-                max_h=500,
-                min_h=120,
+            self.checkbox_scale_assist = QCheckBox(
+                UI_LANGUAGE._choose_language("use_scale_assist", "calibration_window")
             )
-            self.button_tare.clicked.connect(self._tare_scale)
-            self.horizontalLayout_2.insertWidget(0, self.button_tare)
+            adjust_font(self.checkbox_scale_assist, LARGE_FONT, bold=True)
+            self.checkbox_scale_assist.setChecked(True)
+            self.checkbox_scale_assist.toggled.connect(self._set_scale_assist)
+            self.horizontalLayout_2.insertWidget(0, self.checkbox_scale_assist)
 
-    def _tare_scale(self) -> None:
-        """Tare the built-in scale so it can be used to measure the dispensed amount."""
-        self.mc.scale_tare(5)
-        DH.standard_box_non_blocking(DH.get_translation("scale_tared"), close_time=2)
+    def _set_scale_assist(self, checked: bool) -> None:
+        self.calibration_data.use_scale_assist = checked
 
     def output_volume(self) -> None:
         """Output the set number of volume according to defined volume flow.
@@ -88,6 +87,11 @@ class _CalibrationTargetWidget(QWidget, Ui_CalibrationTargetWidget):
         self.calibration_data.pump_number = channel_number
         self.channel_plus.setEnabled(False)
         self.channel_minus.setEnabled(False)
+        # first spend of a session tares the scale, so multiple spends accumulate on it
+        if self.mc.has_scale:
+            self.checkbox_scale_assist.setEnabled(False)
+            if self.calibration_data.use_scale_assist and self.calibration_data.target_volume == 0:
+                self.mc.scale_tare(5)
         result = maker.calibrate(channel_number, amount, w=self.mainscreen)
         if result == PrepareResult.FINISHED:
             self.calibration_data.target_volume += amount
@@ -98,6 +102,9 @@ class _CalibrationTargetWidget(QWidget, Ui_CalibrationTargetWidget):
         self.channel_plus.setEnabled(True)
         self.channel_minus.setEnabled(True)
         self.button_next.setEnabled(False)
+        if self.mc.has_scale:
+            self.checkbox_scale_assist.setEnabled(True)
+            self.checkbox_scale_assist.setChecked(True)
 
 
 class _CalibrationRealWidget(QWidget, Ui_CalibrationRealWidget):
@@ -131,6 +138,11 @@ class _CalibrationRealWidget(QWidget, Ui_CalibrationRealWidget):
             )
             self.button_read_scale.clicked.connect(self._read_scale)
             self.gridLayout.addWidget(self.button_read_scale, 2, 0, 2, 1)
+
+    def sync_scale_assist(self) -> None:
+        """Show the read-weight button only when the session uses scale assist."""
+        if self.mc.has_scale:
+            self.button_read_scale.setVisible(self.calibration_data.use_scale_assist)
 
     def _read_scale(self) -> None:
         """Read grams from the built-in scale into the measured field (1 g ~ 1 ml)."""
@@ -244,6 +256,7 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         DP_CONTROLLER.set_display_settings(self)
 
     def show_real_page(self) -> None:
+        self.page_real.sync_scale_assist()
         self.page_real.label_spend_volume.setText(
             UI_LANGUAGE._choose_language(
                 "target_amount", "calibration_window", amount=self.calibration_data.target_volume

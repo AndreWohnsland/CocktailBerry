@@ -9,8 +9,8 @@ from __future__ import annotations
 
 from typing import cast
 
-from src.machine.dispensers.base import BaseDispenser
-from src.machine.dispensers.scheduler import DispenserScheduler, PreparationItem
+from src.machine.dispensers.base import BaseDispenser, ProgressCallback
+from src.machine.dispensers.scheduler import DispenserScheduler, PreparationItem, _dispense_item
 
 
 def _item(amount_ml: float) -> PreparationItem:
@@ -28,3 +28,29 @@ def test_progress_is_monotonic_and_never_negative():
         item.consumption = consumption
         scheduler._emit_progress([item], emitted.append)
     assert emitted == [0, 30, 60, 60, 60, 70, 100]
+
+
+def test_dispense_item_forwards_use_scale():
+    """Calibration items (use_scale=False) must reach the dispenser time-based, without a tare."""
+    seen: list[bool] = []
+
+    class RecordingDispenser:
+        slot = 1
+        volume_flow = 10.0
+        last_dispense_stalled = False
+
+        def dispense(
+            self,
+            amount_ml: float,
+            pump_speed: int,
+            revert: bool,
+            callback: ProgressCallback,
+            use_scale: bool = True,
+        ) -> float:
+            seen.append(use_scale)
+            return amount_ml
+
+    dispenser = cast("BaseDispenser", RecordingDispenser())
+    _dispense_item(PreparationItem(dispenser=dispenser, amount_ml=50, pump_speed=100, use_scale=False))
+    _dispense_item(PreparationItem(dispenser=dispenser, amount_ml=50, pump_speed=100))
+    assert seen == [False, True]
