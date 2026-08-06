@@ -33,6 +33,7 @@ log_config["filters"] = {
             "GET /api/info",
             "GET /api/cocktails/prepare/status",
             "GET /api/scale/read",
+            "GET /api/static/",
         ],
     }
 }
