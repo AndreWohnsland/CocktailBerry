@@ -35,6 +35,10 @@ dialog:
     en: 'No scale available'
     de: 'Keine Waage verfügbar'
     pl: 'Brak dostępnej wagi'
+  no_glass_detected:
+    en: 'No glass detected, please place a glass!'
+    de: 'Kein Glas erkannt, bitte ein Glas platzieren!'
+    pl: 'Nie wykryto szklanki, proszę postawić szklankę!'
   scale_tared:
     en: 'Scale tared successfully'
     de: 'Waage erfolgreich tariert'
@@ -171,10 +175,6 @@ dialog:
     en: 'There is a new update available. Do you want to pull it from GitHub? The program will be restarted afterwards.'
     de: 'Es ist ein neues Update verfügbar. Update von GitHub pullen? Das Programm wird danach neu gestartet.'
     pl: 'Dostępna jest nowa aktualizacja. Czy chcesz pobrać ją z GitHub? Program zostanie następnie uruchomiony ponownie.'
-  update_select_version:
-    en: 'Select the version you want to update to. You can step to a version before a major update to migrate safely.'
-    de: 'Wähle die Version, auf die du aktualisieren möchtest. Du kannst vor einem Major-Update auf eine Zwischenversion gehen, um sicher zu migrieren.'
-    pl: 'Wybierz wersję, do której chcesz zaktualizować. Możesz przejść do wersji przed dużą aktualizacją, aby bezpiecznie migrować.'
   update_major_marker:
     en: 'major'
     de: 'Major'
@@ -1089,9 +1089,9 @@ ui:
       de: 'Fügt eine Zufalls-Cocktail Kachel zum Maker Tab hinzu, die beim Zubereiten einen Überraschungscocktail wählt'
       pl: 'Dodaje kafelek "Losowy koktajl" w zakładce Maker, który podczas przygotowania losuje napój.'
     MAKER_SCALE_FOR_HAND_ADDS:
-      en: 'Guides hand adds with the scale: after machine preparation, weighable (ml) ingredients are added by pouring while a progress bar tracks the weight. Requires an enabled scale.'
-      de: 'Führt mit der Waage durch die Handzugaben: Nach der Maschinenzubereitung werden wägbare (ml) Zutaten durch Eingießen hinzugefügt, während ein Fortschrittsbalken das Gewicht verfolgt. Erfordert eine aktivierte Waage.'
-      pl: 'Prowadzi przez ręczne dodawanie za pomocą wagi: po przygotowaniu maszynowym składniki mierzalne (ml) dodaje się, nalewając je, podczas gdy pasek postępu śledzi wagę. Wymaga włączonej wagi.'
+      en: 'Guides hand adds with the scale: after machine preparation, weighable (ml) ingredients are added by pouring while a progress bar tracks the weight. Only takes effect when a scale is enabled; without one, hand adds use the usual manual confirmation.'
+      de: 'Führt mit der Waage durch die Handzugaben: Nach der Maschinenzubereitung werden wägbare (ml) Zutaten durch Eingießen hinzugefügt, während ein Fortschrittsbalken das Gewicht verfolgt. Wirkt nur bei aktivierter Waage; ohne Waage werden Handzugaben wie üblich manuell bestätigt.'
+      pl: 'Prowadzi przez ręczne dodawanie za pomocą wagi: po przygotowaniu maszynowym składniki mierzalne (ml) dodaje się, nalewając je, podczas gdy pasek postępu śledzi wagę. Działa tylko przy włączonej wadze; bez wagi ręczne dodawanie potwierdza się jak zwykle ręcznie.'
     LED_CONFIG:
       en: 'List with config for each LED. Choose the LED type (Normal or WSLED) per entry. Normal (non-addressable): pin type, board number (# only relevant for I2C), pin, default on state, preparation state (on/off/effects). WSLED (WS281x, addressable, GPIO only): pin, brightness, LED count, number of daisy chained rings, default on state, preparation state.'
       de: 'Liste mit Einstellung für jeden LED. Wähle den LED-Typ pro Eintrag (Normal oder WSLED). Normal (nicht ansteuerbar): Pin-Typ, Board-Nummer (# nur relevant für I2C), Pin, Standard an-Zustand, Zustand bei Zubereitung (an/aus/Effekte). WSLED (WS281x, ansteuerbar, nur GPIO): Pin, Helligkeit, LED-Anzahl, Anzahl in Serie verbundener Ringe, Standard an-Zustand, Zustand bei Zubereitung.'
