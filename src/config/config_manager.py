@@ -741,12 +741,12 @@ class ConfigManager:
             _logger.error(f"Config Error: {error_msg}")
             if validate:
                 raise ConfigError(error_msg)
-        # Scale-assisted hand adds need an enabled scale to read weight
+        # Scale-assisted hand adds silently fall back to manual confirmation without a scale (see tabs/maker.py)
         if self.MAKER_SCALE_FOR_HAND_ADDS and not self.SCALE_CONFIG.enabled:
-            error_msg = "'Scale-Assisted Hand Adds' is enabled, but the scale is not. Please enable the scale first."
-            _logger.error(f"Config Error: {error_msg}")
-            if validate:
-                raise ConfigError(error_msg)
+            _logger.warning(
+                "'Scale-Assisted Hand Adds' is enabled but the scale is not - "
+                "the setting has no effect until the scale is enabled."
+            )
 
     def choose_bottle_number(self, get_all: bool = False, ignore_limits: bool = False) -> int:
         """Select the number of Bottles, limits by max supported count."""

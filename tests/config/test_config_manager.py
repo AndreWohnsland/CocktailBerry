@@ -622,6 +622,13 @@ class TestConfigManagerSetConfig:
                 validate=True,
             )
 
+    def test_scale_for_hand_adds_without_scale_does_not_raise(self) -> None:
+        """Scale-assisted hand adds without an enabled scale only warns, it must not block the config."""
+        config = ConfigManager()
+        config.set_config({"MAKER_SCALE_FOR_HAND_ADDS": True}, validate=True)
+        assert config.MAKER_SCALE_FOR_HAND_ADDS is True
+        assert config.SCALE_CONFIG.enabled is False
+
     def test_set_config_i2c_led_requires_matching_i2c_board(self) -> None:
         """`Normal over I2C` LED entries must reference an enabled I2C_CONFIG board."""
         config = ConfigManager()

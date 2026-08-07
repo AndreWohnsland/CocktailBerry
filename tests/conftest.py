@@ -1,11 +1,19 @@
+import tempfile
 from collections.abc import Generator
+from pathlib import Path
 from typing import Any
 
 import pytest
 
-from src.config.config_manager import CONFIG, ConfigManager
-from src.database_commander import DatabaseCommander
-from src.db_models import DbBottle
+from src.logger_handler import LoggerHandler
+
+# Redirect all log files to a temp dir BEFORE importing any module that creates
+# a module-level LoggerHandler, so test runs don't write into the real logs/*.log.
+LoggerHandler.log_folder = Path(tempfile.mkdtemp(prefix="cocktailberry-test-logs-"))
+
+from src.config.config_manager import CONFIG, ConfigManager  # noqa: E402
+from src.database_commander import DatabaseCommander  # noqa: E402
+from src.db_models import DbBottle  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
