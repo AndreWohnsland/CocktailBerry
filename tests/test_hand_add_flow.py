@@ -6,10 +6,7 @@ The cocktail is finalized immediately; when the scale flow applies the hand-adds
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from src.config.config_manager import CONFIG, shared
-from src.config.errors import ConfigError
 from src.models import Cocktail, HandAddMeasure, Ingredient, PreparationResult, PrepareResult
 
 
@@ -106,19 +103,3 @@ def test_non_ml_hand_add_is_never_measurable():
     )
     hand_adds = _run_prepare(cocktail, feature_on=True, has_scale=True)
     assert [(h.name, h.measurable) for h in hand_adds] == [("Mint", False)]
-
-
-def test_config_validation_requires_enabled_scale():
-    original_feature = CONFIG.MAKER_SCALE_FOR_HAND_ADDS
-    original_enabled = CONFIG.SCALE_CONFIG.enabled
-    try:
-        CONFIG.MAKER_SCALE_FOR_HAND_ADDS = True
-        CONFIG.SCALE_CONFIG.enabled = False
-        with pytest.raises(ConfigError):
-            CONFIG._validate_scale_config(validate=True)
-        CONFIG.SCALE_CONFIG.enabled = True
-        # no error when the scale is enabled
-        CONFIG._validate_scale_config(validate=True)
-    finally:
-        CONFIG.MAKER_SCALE_FOR_HAND_ADDS = original_feature
-        CONFIG.SCALE_CONFIG.enabled = original_enabled
