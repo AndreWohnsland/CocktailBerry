@@ -12,8 +12,8 @@ _logger = LoggerHandler("resource_tracker", LogFiles.RESOURCES)
 
 
 def _resource_logger_thread(log_interval: int, session_number: int) -> None:
-    _logger.log_header("INFO", "Starting resource tracker, will only log if RAM usage is above 90%")
-    _logger.info("The whole data points will be saved in the Database and can be accessed via the GUI.")
+    _logger.log_header("INFO", f"Starting resource tracker, session number: {session_number}")
+    _logger.info("The data will be saved in the database and can be accessed via the GUI")
     sense_interval = 5
     critical_usage = 90
     DBC = DatabaseCommander()

@@ -90,7 +90,7 @@ const ConsumeWindow: React.FC = () => {
   const selectedData = consumeData[selectedDataType];
 
   return (
-    <div className='flex flex-col w-full max-w-5xl'>
+    <div className='flex grow flex-col w-full max-w-5xl'>
       <div className='flex flex-col items-center justify-center shrink-0 mb-2'>
         <div className='flex flex-row items-center w-full max-w-lg px-2'>
           <p className='text-2xl font-bold text-secondary mr-4 text-center'>{t('data.data')}:</p>
