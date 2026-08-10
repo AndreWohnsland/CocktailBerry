@@ -13,6 +13,12 @@ if TYPE_CHECKING:
 
 _logger = LoggerHandler("NAU7802Scale")
 
+_READ_TIMEOUT_S = 0.5
+"""Upper bound for one sample; ~5x the 100ms sample period at the chip's 10 SPS.
+
+Without it, a wedged chip (bus contention, wiring glitch) blocks the dispense
+thread forever and freezes the app at the end of cleaning/preparation."""
+
 try:
     from cedargrove_nau7802 import NAU7802  # type: ignore[import-untyped]
 
@@ -46,7 +52,11 @@ class NAU7802Scale(ScaleInterface):
         _logger.log_event("INFO", f"NAU7802 scale initialized (address=0x{config.i2c_address})")
 
     def _wait_and_read(self) -> int:
+        deadline = time.monotonic() + _READ_TIMEOUT_S
         while not self._nau.available():
+            if time.monotonic() > deadline:
+                _logger.warning("NAU7802: timeout waiting for sample, returning zero offset (reads as 0g)")
+                return self._zero_offset
             time.sleep(0.01)
         return self._nau.read()
 
