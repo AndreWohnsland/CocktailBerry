@@ -23,7 +23,7 @@ const RandomImageUpload: React.FC = () => {
   };
 
   return (
-    <div className='flex items-center pt-1'>
+    <div className='flex items-center pt-2'>
       <button type='button' onClick={handleUpload} className='p-2 mr-1 button-secondary'>
         <FaUpload />
       </button>
