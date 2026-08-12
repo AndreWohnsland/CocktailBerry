@@ -4,7 +4,7 @@ import contextlib
 import random
 from collections.abc import Callable
 from enum import IntEnum
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar, NamedTuple
 
 import typer
 import yaml
@@ -71,6 +71,17 @@ _logger = LoggerHandler("config_manager")
 
 _default_pins = [14, 15, 18, 23, 24, 25, 8, 7, 17, 27]
 _default_volume_flow = [30.0] * 10
+# Number of pins per I2C expander type, pins are 0-indexed (e.g. 0-15 for 16 pins)
+_I2C_EXPANDER_PIN_COUNT = {"MCP23017": 16, "PCF8574": 8, "PCA9535": 16}
+
+
+class _I2CPinUsage(NamedTuple):
+    """A pin used on an I2C expander by some config, with a label for error messages."""
+
+    label: str
+    pin_type: str
+    board_number: int
+    pin: int
 
 
 class Tab(IntEnum):
@@ -685,26 +696,26 @@ class ConfigManager:
         self._validate_scale_config(validate)
 
     def _validate_i2c_boards(self, validate: bool) -> None:
-        # Collect all I2C (pin_type, board_number) pairs used by any config that routes
-        # through an I2C expander: PUMP_CONFIG, MAKER_PUMP_REVERSION_CONFIG, LED_CONFIG.
-        # The variant subclasses (DCI2CPumpConfig, GlobalI2CReversionConfig, NormalI2CLedConfig)
-        # are the only ones carrying pin_type/board_number — so isinstance is enough.
-        required_i2c_boards: set[tuple[str, int]] = set()
-        for pump in self.PUMP_CONFIG:
+        # Collect all I2C pin usages from any config that routes through an I2C expander:
+        # PUMP_CONFIG, MAKER_PUMP_REVERSION_CONFIG, LED_CONFIG. The variant subclasses
+        # (DCI2CPumpConfig, GlobalI2CReversionConfig, NormalI2CLedConfig) are the only ones
+        # carrying pin_type/board_number — so isinstance is enough.
+        i2c_pins: list[_I2CPinUsage] = []
+        for idx, pump in enumerate(self.PUMP_CONFIG, start=1):
             if isinstance(pump, DCI2CPumpConfig):
-                required_i2c_boards.add((pump.pin_type, pump.board_number))
+                i2c_pins.append(_I2CPinUsage(f"pump {idx}", pump.pin_type, pump.board_number, pump.pin))
         if isinstance(self.MAKER_PUMP_REVERSION_CONFIG, GlobalI2CReversionConfig):
-            required_i2c_boards.add(
-                (self.MAKER_PUMP_REVERSION_CONFIG.pin_type, self.MAKER_PUMP_REVERSION_CONFIG.board_number)
-            )
-        for led in self.LED_CONFIG:
+            reversion = self.MAKER_PUMP_REVERSION_CONFIG
+            i2c_pins.append(_I2CPinUsage("pump reversion", reversion.pin_type, reversion.board_number, reversion.pin))
+        for idx, led in enumerate(self.LED_CONFIG, start=1):
             if isinstance(led, NormalI2CLedConfig):
-                required_i2c_boards.add((led.pin_type, led.board_number))
+                i2c_pins.append(_I2CPinUsage(f"LED {idx}", led.pin_type, led.board_number, led.pin))
 
         # Get enabled I2C (device_type, board_number) pairs from I2C_CONFIG
         enabled_i2c_boards = {(cfg.device_type, cfg.board_number) for cfg in self.I2C_CONFIG if cfg.enabled}
 
         # Check that all required I2C boards have enabled devices
+        required_i2c_boards = {(p.pin_type, p.board_number) for p in i2c_pins}
         missing_boards = required_i2c_boards - enabled_i2c_boards
         if missing_boards:
             readable = ", ".join(f"{t} board {n}" for t, n in missing_boards)
@@ -712,6 +723,18 @@ class ConfigManager:
                 f"Config uses I2C boards {readable} but I2C_CONFIG "
                 "has no enabled devices for them. Add enabled entries to I2C_CONFIG."
             )
+            _logger.error(f"Config Error: {error_msg}")
+            if validate:
+                raise ConfigError(error_msg)
+
+        # Check that all used pins are within the expander's pin range (pins are 0-indexed)
+        out_of_range = [
+            f"{p.label} uses {p.pin_type} pin {p.pin}, valid pins are 0-{_I2C_EXPANDER_PIN_COUNT[p.pin_type] - 1}"
+            for p in i2c_pins
+            if not 0 <= p.pin < _I2C_EXPANDER_PIN_COUNT[p.pin_type]
+        ]
+        if out_of_range:
+            error_msg = f"Config uses I2C pins outside the valid range: {'; '.join(out_of_range)}."
             _logger.error(f"Config Error: {error_msg}")
             if validate:
                 raise ConfigError(error_msg)

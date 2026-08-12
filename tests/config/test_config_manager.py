@@ -239,6 +239,49 @@ class TestConfigManagerSetConfig:
                 validate=True,
             )
 
+    @staticmethod
+    def _i2c_pump_config(device_type: str, pin: int) -> dict:
+        return {
+            "MAKER_NUMBER_BOTTLES": 1,
+            "PUMP_CONFIG": [
+                {
+                    "pump_type": "DC over I2C",
+                    "pin": pin,
+                    "volume_flow": 30.0,
+                    "tube_volume": 5,
+                    "pin_type": device_type,
+                    "board_number": 1,
+                }
+            ],
+            "I2C_CONFIG": [
+                {
+                    "device_type": device_type,
+                    "enabled": True,
+                    "address": "20",
+                    "inverted": False,
+                    "board_number": 1,
+                }
+            ],
+        }
+
+    @pytest.mark.parametrize(("device_type", "pin_count"), [("MCP23017", 16), ("PCF8574", 8), ("PCA9535", 16)])
+    def test_set_config_i2c_pump_pin_in_range_succeeds(self, device_type: str, pin_count: int) -> None:
+        """Test that I2C pump pins within the expander's 0-indexed pin range pass validation."""
+        for pin in (0, pin_count - 1):
+            config = ConfigManager()
+            config.set_config(self._i2c_pump_config(device_type, pin), validate=True)
+            pump_config = config.PUMP_CONFIG[0]
+            assert isinstance(pump_config, DCI2CPumpConfig)
+            assert pump_config.pin == pin
+
+    @pytest.mark.parametrize(("device_type", "pin_count"), [("MCP23017", 16), ("PCF8574", 8), ("PCA9535", 16)])
+    def test_set_config_i2c_pump_pin_out_of_range_fails(self, device_type: str, pin_count: int) -> None:
+        """Test that I2C pump pins outside the expander's 0-indexed pin range fail validation."""
+        for pin in (-1, pin_count):
+            config = ConfigManager()
+            with pytest.raises(ConfigError):
+                config.set_config(self._i2c_pump_config(device_type, pin), validate=True)
+
     def test_set_config_gpio_pump_does_not_require_i2c_config(self) -> None:
         """Test that GPIO pin type does not require I2C_CONFIG."""
         config = ConfigManager()
