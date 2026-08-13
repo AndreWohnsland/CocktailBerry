@@ -239,7 +239,10 @@ class MachineController:
     def close_all_pumps(self) -> None:
         """Stop all active dispensers."""
         for dispenser in self.dispensers.values():
-            dispenser.stop()
+            try:
+                dispenser.stop()
+            except Exception as exc:
+                _logger.error(f"Failed to stop dispenser slot {dispenser.slot}: {exc}")
 
     def cleanup(self) -> None:
         """Cleanup for shutdown the machine."""
