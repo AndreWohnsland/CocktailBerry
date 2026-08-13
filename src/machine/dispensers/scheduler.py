@@ -29,6 +29,14 @@ _PROGRESS_COMPLETE = 100
 """Maximum progress value emitted via on_progress callbacks (100 = done)."""
 
 
+def _safe_stop(dispenser: BaseDispenser) -> None:
+    """Stop a dispenser, logging errors so one broken pin cannot prevent stopping the others."""
+    try:
+        dispenser.stop()
+    except Exception as exc:
+        _logger.error(f"Failed to stop dispenser slot {dispenser.slot}: {exc}")
+
+
 @dataclass
 class PreparationItem:
     """A single dispensing task for the scheduler."""
@@ -207,7 +215,7 @@ class DispenserScheduler(BaseScheduler):
             while active:
                 if is_cancelled():
                     for data in active.values():
-                        data.dispenser.stop()
+                        _safe_stop(data.dispenser)
                     break
 
                 done_futures = [f for f in active if f.done()]
@@ -493,7 +501,7 @@ class CleaningScheduler(BaseScheduler):
                 elapsed = time.perf_counter() - start
                 if elapsed >= duration or is_cancelled():
                     for item in batch:
-                        item.dispenser.stop()
+                        _safe_stop(item.dispenser)
                     break
                 fraction = elapsed / duration
                 on_progress(base_progress + int(fraction * (max_progress - base_progress)))
