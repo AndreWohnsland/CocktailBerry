@@ -7,21 +7,21 @@ readme = "readme.md"
 requires-python = ">= 3.13"
 
 dependencies = [
-    "gitpython>=3.1.57",
+    "gitpython>=3.1.59",
     "requests>=2.34.2",
     "sumup==0.3.1",
     "pyyaml>=6.0.3",
-    "typer>=0.27.0",
+    "typer>=0.27.1",
     "pyfiglet>=1.0.4",
     "pillow>=12.3.0",
     "psutil>=7.2.2",
     "distro>=1.9.0",
     "fastapi[standard]>=0.141.1",
-    "uvicorn>=0.52.0",
-    "sse-starlette>=3.4.6",
+    "uvicorn>=0.52.1",
+    "sse-starlette>=3.4.8",
     "python-periphery>=2.4.1",
-    "sqlalchemy>=2.0.51",
-    "alembic>=1.18.5",
+    "sqlalchemy>=2.0.52",
+    "alembic>=1.19.1",
     "pulp>=3.3.2",
     "stamina>=26.1.0",
     "adafruit-circuitpython-mcp230xx>=2.6.2",
@@ -49,10 +49,10 @@ dev = [
   "ipykernel>=7.3.0",
   "pytest>=9.1.1",
   "pytest-cov>=7.1.0",
-  "pre-commit>=4.6.1",
+  "pre-commit>=4.6.2",
   "ty==0.0.72",
-  "ruff>=0.16.0",
-  "zensical>=0.0.52",
+  "ruff>=0.16.2",
+  "zensical>=0.0.53",
 ]
 
 [project.optional-dependencies]
