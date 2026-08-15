@@ -361,7 +361,7 @@ class ConfigWindow(QMainWindow, Ui_ConfigWindow):
                 default_value = list_value.get_default()
             add_button.clicked.connect(
                 lambda: self._add_ui_element_to_list(
-                    default_value,  # ty:ignore[invalid-argument-type]
+                    default_value,
                     getter_fn_list,
                     config_name,
                     config_input,
