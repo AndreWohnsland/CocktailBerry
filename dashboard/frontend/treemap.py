@@ -4,6 +4,7 @@ import warnings
 
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import requests
 from language import language
 from store import store
@@ -43,7 +44,11 @@ def get_plot_data(datatype: int) -> pd.DataFrame:
     url = "http://127.0.0.1:8080/teamdata"
     if os.getenv("EXECUTOR") is not None:
         url = "http://backend:8080/teamdata"
-    res = requests.get(url, params=payload, headers=headers)
+    try:
+        res = requests.get(url, params=payload, headers=headers, timeout=10)
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+        # backend not reachable, show the placeholder instead of hanging the callback
+        return DF_START
     data = pd.DataFrame(json.loads(res.text), columns=["Team", "Person", "Amount"])
     if data.empty:
         return DF_START
@@ -51,7 +56,7 @@ def get_plot_data(datatype: int) -> pd.DataFrame:
     return data
 
 
-def generate_treemap(df: pd.DataFrame) -> px.Figure:
+def generate_treemap(df: pd.DataFrame) -> go.Figure:
     """Generate a treemap out of the df."""
     # if its 1st or 2nd graph type (today data) add color mapping that team keeps
     # same color, even if the value changes

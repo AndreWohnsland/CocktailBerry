@@ -1,9 +1,0 @@
-requests
-python-dotenv
-pyyaml
-plotly>=6.7.0
-dash
-numpy>=2.4.4
-scipy>=1.17.0
-pandas>=3.0.2
-gunicorn

@@ -3,12 +3,11 @@ COPY --from=ghcr.io/astral-sh/uv:0.9.22 /uv /uvx /bin/
 
 WORKDIR /app
 
-# Copy pyproject.toml
-COPY pyproject.toml ./
+COPY pyproject.toml uv.lock ./
 
 # Install dependencies using uv
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --extra frontend --no-install-project
+    uv sync --frozen --extra frontend --no-install-project
 
 # Copy frontend application code
 COPY frontend/ /app/

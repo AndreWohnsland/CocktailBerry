@@ -1,7 +1,8 @@
 import datetime
 import sqlite3
 from pathlib import Path
-from typing import Optional
+
+from fastapi.logger import logger
 
 DATABASE_NAME = "team"
 DIRPATH = Path(__file__).parent.absolute()
@@ -16,14 +17,14 @@ class DBController:
         self.conn = sqlite3.connect(self.database_path)
         self.cursor = self.conn.cursor()
         if not db_exists:
-            print("creating Database")
+            logger.info("Creating database")
             self.__create_tables()
         self.__add_person_to_db()
 
-    def __del__(self):
+    def __del__(self) -> None:
         self.conn.close()
 
-    def enter_cocktail(self, team: str, volume: int, person: Optional[str]):
+    def enter_cocktail(self, team: str, volume: int, person: str | None) -> None:
         if person is None:
             person = "Team"
         sql = "INSERT INTO TEAM(Date, Team, Volume, Person) VALUES(?,?,?,?)"
@@ -39,7 +40,7 @@ class DBController:
         )
         self.conn.commit()
 
-    def generate_leaderboard(self, hour_range: Optional[int], use_count: bool, limit: int):
+    def generate_leaderboard(self, hour_range: int | None, use_count: bool, limit: int) -> dict:
         addition = ""
         if hour_range is not None:
             addition = f" WHERE Date >= datetime('now','-{hour_range} hours')"
@@ -48,7 +49,7 @@ class DBController:
         self.cursor.execute(sql, (limit,))
         return dict(self.cursor.fetchall())
 
-    def generate_teamdata(self, hour_range: Optional[int], use_count: bool, limit: int):
+    def generate_teamdata(self, hour_range: int | None, use_count: bool, limit: int) -> list:
         addition1 = ""
         addition2 = ""
         if hour_range is not None:
@@ -62,10 +63,10 @@ class DBController:
         self.cursor.execute(sql, (limit,))
         return self.cursor.fetchall()
 
-    def __count_or_sum(self, use_count: bool):
+    def __count_or_sum(self, use_count: bool) -> str:
         return "count(*)" if use_count else "sum(Volume)"
 
-    def __create_tables(self):
+    def __create_tables(self) -> None:
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS
             Team(Date DATETIME NOT NULL,
@@ -75,7 +76,7 @@ class DBController:
         )
         self.conn.commit()
 
-    def __add_person_to_db(self):
+    def __add_person_to_db(self) -> None:
         """Add the new column to the db."""
         try:
             self.cursor.execute("ALTER TABLE Team ADD Person Text;")

@@ -13,7 +13,7 @@ from treemap import generate_treemap, get_plot_data
     Input("interval-component", "n_intervals"),
     Input("url", "pathname"),
 )
-def update_plot(n, pathname):
+def update_plot(n: int, pathname: str) -> list:
     routes = {
         "/n_today": 1,
         "/vol_today": 2,
