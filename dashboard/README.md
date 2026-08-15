@@ -8,7 +8,7 @@ The dashboard provides a web interface and server for the Teams option.
 Use uv to install the dependencies:
 
 ```bash
-uv sync
+uv sync --all-extras
 ```
 
 Then, go in the frontend or backend folder and run the following command:
