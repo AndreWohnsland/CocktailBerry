@@ -293,7 +293,8 @@ class Cocktail:
         # scale alcoholic ingredients with factor
         for ing in self.adjusted_ingredients:
             factor = alcohol_factor if bool(ing.alcohol) else 1
-            ing.amount *= factor  # pyright: ignore[reportAttributeAccessIssue]
+            # will just temporarily use float to remember exact values here, need to do rounding later to keep type
+            ing.amount *= factor  # pyright: ignore[reportAttributeAccessIssue] # ty:ignore[invalid-assignment]
             scaled_amount += ing.amount
             concentration += ing.amount * ing.alcohol
         self.adjusted_alcohol = round(concentration / scaled_amount, 1)
