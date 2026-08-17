@@ -2,17 +2,19 @@ import json
 import sqlite3
 from pathlib import Path
 
+from fastapi.logger import logger
+
 DATABASE_NAME = "failed_data"
 DIRPATH = Path(__file__).parent.absolute()
 
 
 class DatabaseHandler:
-    """Handler Class for Connecting and querring Databases."""
+    """Handler class for connecting to and querying the database."""
 
     def __init__(self) -> None:
         self.database_path = DIRPATH / f"{DATABASE_NAME}.db"
         if not self.database_path.exists():
-            print("creating Database")
+            logger.info("Creating database")
             self.create_tables()
         self.database = sqlite3.connect(self.database_path)
         self.cursor = self.database.cursor()

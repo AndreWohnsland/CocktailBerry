@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -9,4 +9,4 @@ class Cocktail(BaseModel):
     machinename: str
     countrycode: str
     ingredients: list[dict[str, Any]]
-    makedate: Optional[str] = None
+    makedate: str | None = None
