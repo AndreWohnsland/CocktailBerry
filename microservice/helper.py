@@ -1,8 +1,8 @@
 import os
 
+# Sentinel values must match the placeholders shipped in .env.example / user .env files.
 DEFAULT_HOOK_EP = "enpointforhook"
 DEFAULT_API_KEY = "readdocshowtoget"
-OLD_API_ENDPOINT = "https://cocktailberryapi-1-u0613408.deta.app/cocktail"
 API_ENDPOINT = "https://api.cocktailberry.org/api/v1/cocktail"
 
 
@@ -18,7 +18,8 @@ def generate_urls_and_headers() -> list[tuple[str, dict[str, str]]]:
         # Split the header config into a list
         # the config is header:value,header2:value2
         headers = hook_headers_config.split(",")
-        hook_headers = dict(x.split(":") for x in headers)
+        # split only on the first colon, header values may contain colons themselves
+        hook_headers = dict(x.split(":", 1) for x in headers)
     endpoint_data: list[tuple[str, dict[str, str]]] = []
     if (hook_url != DEFAULT_HOOK_EP) and (hook_url is not None):
         endpoint_data.append(

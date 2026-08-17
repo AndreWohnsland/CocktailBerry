@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 import os
 from threading import Thread
 from typing import Annotated
@@ -17,6 +18,9 @@ from query_sender import try_send_query_data
 from models import Cocktail
 
 load_dotenv()
+# The fastapi logger has no handlers by default: without this, .info() calls are
+# dropped and errors are printed bare via Python's last-resort handler.
+logging.basicConfig(format="%(asctime)s %(levelname)s [%(name)s] %(message)s", level=logging.INFO)
 
 app = FastAPI()
 
