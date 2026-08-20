@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaCalculator } from 'react-icons/fa6';
+import { FaCalculator, FaMartiniGlass } from 'react-icons/fa6';
 import { calculateOptimal, useCocktails } from '../../api/cocktails.ts';
+import { useConfig } from '../../providers/ConfigProvider';
 import type { CocktailIngredient } from '../../types/models.ts';
 import { confirmAndExecute } from '../../utils.tsx';
 import Accordion from '../common/Accordion';
@@ -16,6 +17,8 @@ function RecipeCalculator() {
   const [selectedCocktails, setSelectedCocktails] = useState<number[]>([]);
   const [nIngredients, setNIngredients] = useState<number>(10);
   const { data: cocktails } = useCocktails(false, 0, false);
+  const { config } = useConfig();
+  const { data: possibleCocktails } = useCocktails(true, config.MAKER_MAX_HAND_INGREDIENTS ?? 0, false);
 
   // Select-all checkbox state
   const allCount = cocktails?.length ?? 0;
@@ -44,6 +47,10 @@ function RecipeCalculator() {
     });
   };
 
+  const handleSelectPossible = () => {
+    setSelectedCocktails((possibleCocktails ?? []).map((c) => c.id));
+  };
+
   const ingredientWithRecipes = useMemo(() => {
     if (!cocktails) return [];
     const selected = cocktails.filter((c) => selectedCocktails.includes(c.id));
@@ -67,7 +74,7 @@ function RecipeCalculator() {
   return (
     <div className='max-w-7xl w-full px-1 flex flex-col h-full'>
       <TextHeader text={t('recipeCalculation.title')} space={4} />
-      <div className='w-full flex items-center justify-center gap-3 px-2 mb-3'>
+      <div className='w-full flex flex-wrap items-center justify-center gap-3 px-2 mb-3'>
         <label htmlFor='num-ingredients' className='font-medium text-center'>
           {t('recipeCalculation.numberIngredients')}
         </label>
@@ -80,6 +87,7 @@ function RecipeCalculator() {
           className='input-base-large max-w-20'
         />
         <Button label={t('recipeCalculation.optimize')} filled onClick={handleCalculate} icon={FaCalculator} />
+        <Button iconSize={16} label={t('recipeCalculation.selectPossible')} onClick={handleSelectPossible} icon={FaMartiniGlass} />
       </div>
       <div className='grow flex flex-col sm:flex-row justify-start items-start w-full h-full sm:h-[70vh] h-md:mb-6 mb-2'>
         <div className='w-full sm:w-1/2 h-full flex flex-col'>
