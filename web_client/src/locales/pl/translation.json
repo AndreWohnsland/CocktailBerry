@@ -257,7 +257,8 @@
     "numberIngredients": "Liczba składników:",
     "optimize": "Optymalizuj",
     "confirmCalculation": "To może chwilę potrwać przy dużych bazach danych. Kontynuować?",
-    "optimized": "Optymalizacja zakończona"
+    "optimized": "Optymalizacja zakończona",
+    "selectPossible": "Konfiguracja maszyny"
   },
   "userDisplay": {
     "noUser": "Brak NFC",
