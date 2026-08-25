@@ -43,7 +43,7 @@ import AboutModal from './AboutModal';
 import UpdateModal from './UpdateModal';
 
 const OptionWindow = () => {
-  const { theme, changeTheme, config, isTileBlacklisted } = useConfig();
+  const { theme, changeTheme, config, isTileBlacklisted, scale, changeScale } = useConfig();
   const navigate = useNavigate();
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [progressName, setProgressName] = useState('');
@@ -180,6 +180,15 @@ const OptionWindow = () => {
             value={theme}
             allowedValues={Object.fromEntries(themes.map((t) => [t, t.charAt(0).toUpperCase() + t.slice(1)]))}
             handleInputChange={(value) => themeSelect(value)}
+            className='p-2!'
+          />
+        </div>
+        <div className='dropdown-container flex flex-row items-center mb-4 w-full max-w-md'>
+          <p className='mr-2 text-neutral'>{t('options.displayScale')}:</p>
+          <DropDown
+            value={String(scale)}
+            allowedValues={Object.fromEntries([70, 80, 90, 100, 110, 120, 130, 140, 150].map((s) => [s, `${s}%`]))}
+            handleInputChange={(value) => changeScale(Number(value))}
             className='p-2!'
           />
         </div>

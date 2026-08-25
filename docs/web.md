@@ -72,6 +72,13 @@ You can now access the website by opening your browser and navigating to `http:/
 
 Note: from here on, on a v2 install, use `uv run api.py` instead of `uv run runme.py`.
 
+## Display Scale
+
+Kiosk browsers often handle zoom poorly: some only scale the text, others ignore the setting entirely.
+The web interface has its own display scale setting that works the same in every browser.
+Open the options tab and select the desired scale in the `Display Scale` dropdown at the top.
+The setting is stored per device, so each connected device can use its own scale.
+
 ## RPi Virtual Keyboard
 
 The Raspberry Pi OS has a virtual keyboard that can be enabled via raspi-config.

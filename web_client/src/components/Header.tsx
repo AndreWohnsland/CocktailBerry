@@ -29,7 +29,7 @@ const Header: React.FC = () => {
   }
 
   return (
-    <header className='fixed top-0 left-0 w-screen bg-[color-mix(in_srgb,var(--neutral-color)_15%,var(--background-color))] z-10'>
+    <header className='fixed top-0 left-0 w-full bg-[color-mix(in_srgb,var(--neutral-color)_15%,var(--background-color))] z-10'>
       <div className='flex items-center gap-2 py-1 px-4'>
         <nav className='flex-1 overflow-x-auto'>
           {/* w-max + mx-auto centers when it fits, but collapses to the left
