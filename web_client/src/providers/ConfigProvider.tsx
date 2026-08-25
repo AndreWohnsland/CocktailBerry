@@ -11,6 +11,8 @@ interface IConfig {
   changeTheme: (theme: string) => void;
   mode: Mode;
   toggleMode: () => void;
+  scale: number;
+  changeScale: (scale: number) => void;
   blacklist: Blacklist;
   isConfigBlacklisted: (configName: string) => boolean;
   isTileBlacklisted: (tileName: OptionTileName) => boolean;
@@ -20,6 +22,7 @@ type Mode = 'light' | 'dark';
 
 const STORE_THEME: string = 'THEME';
 const STORE_MODE: string = 'MODE';
+const STORE_SCALE: string = 'SCALE';
 const STORE_CONFIG: string = 'CONFIG';
 const STORE_BLACKLIST: string = 'BLACKLIST';
 
@@ -59,6 +62,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [config, setConfig] = useState<DefinedConfigData>(JSON.parse(localStorage.getItem(STORE_CONFIG) ?? '{}'));
   const [theme, setTheme] = useState<string>(localStorage.getItem(STORE_THEME) ?? '');
   const [mode, setMode] = useState<Mode>(localStorage.getItem(STORE_MODE) === 'light' ? 'light' : 'dark');
+  const [scale, setScale] = useState<number>(Number(localStorage.getItem(STORE_SCALE)) || 100);
   const [blacklist, setBlacklist] = useState<Blacklist>(
     JSON.parse(localStorage.getItem(STORE_BLACKLIST) ?? JSON.stringify(EMPTY_BLACKLIST)),
   );
@@ -108,6 +112,15 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem(STORE_MODE, mode);
   }, [theme, mode]);
 
+  // Zoom lives on <body>, not <html>: CustomColorProvider clears the root's
+  // inline style when switching themes. The variable feeds the vh corrections
+  // in App.tsx (viewport units are not affected by zoom).
+  useEffect(() => {
+    document.body.style.zoom = String(scale / 100);
+    document.body.style.setProperty('--app-zoom', String(scale / 100));
+    localStorage.setItem(STORE_SCALE, String(scale));
+  }, [scale]);
+
   useEffect(() => {
     localStorage.setItem(STORE_CONFIG, JSON.stringify(config));
     i18n.changeLanguage(config?.UI_LANGUAGE ?? 'en');
@@ -132,11 +145,13 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       changeTheme: handleThemeChange,
       mode,
       toggleMode,
+      scale,
+      changeScale: setScale,
       blacklist,
       isConfigBlacklisted: (configName: string) => blacklist.configs.includes(configName),
       isTileBlacklisted: (tileName: OptionTileName) => blacklist.options[tileName],
     }),
-    [config, theme, mode, toggleMode, fetchConfigValues, blacklist],
+    [config, theme, mode, toggleMode, scale, fetchConfigValues, blacklist],
   );
 
   return <ConfigContext.Provider value={contextValue}>{children}</ConfigContext.Provider>;

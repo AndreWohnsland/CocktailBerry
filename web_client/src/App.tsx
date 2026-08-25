@@ -51,12 +51,12 @@ function App() {
   }, [issues, navigate]);
 
   return (
-    <div className='min-h-screen flex w-full h-full'>
+    <div className='min-h-[calc(100vh/var(--app-zoom,1))] flex w-full h-full'>
       <ConfirmDialog />
       <RestrictedModePrompt />
       <Header />
       <div
-        className={`min-h-screen ${
+        className={`min-h-[calc(100vh/var(--app-zoom,1))] ${
           restrictedModeActive ? 'pt-2' : 'pt-12'
         } flex flex-col w-full justify-center items-center`}
       >

@@ -112,6 +112,7 @@
     "startInitializeBottles": "Initialize bottles? This pumps the configured tube volume through each connected pump to fill empty tubes. Only run this when the tubes are empty and place a container under the outlets.",
     "configuration": "Configuration",
     "data": "Data",
+    "displayScale": "Display Scale",
     "events": "Events",
     "internetCheck": "Internet Check",
     "issues": "Issues",
