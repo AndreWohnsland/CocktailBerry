@@ -23,7 +23,9 @@ jobs:
         with:
           python-version: "3.13"
       - name: 🔍 Lint with ruff
-        run: uv run --no-group pi-hardware ruff check src
+        run: uvx ruff check src
+      - name: 🔍 Check formatting with ruff
+        run: uvx ruff format src --check
 
   ty:
     runs-on: ubuntu-latest

@@ -1,31 +1,30 @@
 ---
-  name: PR Labels
-  run-name: 🏷️ Label check — ${{ github.event.pull_request.title }}
-  
-  on:
-    pull_request_target:
-      types:
-        - opened
-        - labeled
-        - unlabeled
-        - synchronize
-    workflow_call:
-  
-  permissions:
-    contents: read
-    pull-requests: write
+name: PR Labels
+run-name: 🏷️ Label check — ${{ github.event.pull_request.title }}
 
-  jobs:
-    pr_labels:
-      name: Verify
-      runs-on: ubuntu-latest
-      steps:
-        - name: 🏷 Verify PR has a valid label
-          uses: jesusvasquez333/verify-pr-label-action@657d111bbbe13e22bbd55870f1813c699bde1401 # v1.4.0
-          with:
-            pull-request-number: "${{ github.event.pull_request.number }}"
-            github-token: "${{ secrets.GITHUB_TOKEN }}"
-            valid-labels: >-
-              breaking-change, bugfix, documentation, enhancement,
-              refactor, performance, new-feature, maintenance, ci, dependencies
-            disable-reviews: true
+on:
+  pull_request_target:
+    types:
+      - opened
+      - labeled
+      - unlabeled
+      - synchronize
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr_labels:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏷 Verify PR has a valid label
+        uses: jesusvasquez333/verify-pr-label-action@657d111bbbe13e22bbd55870f1813c699bde1401 # v1.4.0
+        with:
+          pull-request-number: "${{ github.event.pull_request.number }}"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          valid-labels: >-
+            breaking-change, bugfix, documentation, enhancement,
+            refactor, performance, new-feature, maintenance, ci, dependencies
+          disable-reviews: true

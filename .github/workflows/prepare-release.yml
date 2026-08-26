@@ -60,6 +60,8 @@ jobs:
           git push origin "$BRANCH_NAME"
           gh pr create \
             --title "Update version to ${{ steps.get_version.outputs.tag }}" \
+            --label "skip-changelog" \
+            --label "maintenance" \
             --body "Bumps the version to ${{ steps.get_version.outputs.tag }} before publishing the release. Merge this, then publish the draft so the tag points at a commit that contains its own version." \
             --head "$BRANCH_NAME" \
             --base master
