@@ -67,6 +67,8 @@ nfc = [
 ]
 
 [tool.uv]
+# Supply-chain cooldown: never resolve releases younger than 2 days
+exclude-newer = "3 days"
 default-groups = ["dev", "pi-hardware"]
 override-dependencies = [
     "pyqt6-qt6; sys_platform != 'linux' or python_version >= '3.12'",

@@ -7,6 +7,8 @@ updates:
       - skip-changelog
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 3
     groups:
       github-actions:
         patterns:
@@ -18,7 +20,22 @@ updates:
       - skip-changelog
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 3
     groups:
       python:
+        patterns:
+          - "*"
+  - package-ecosystem: npm
+    directory: /web_client
+    labels:
+      - dependencies
+      - skip-changelog
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    groups:
+      npm:
         patterns:
           - "*"
