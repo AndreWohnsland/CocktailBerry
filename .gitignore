@@ -181,6 +181,7 @@ failed_data.db
 custom_config.*
 blacklist.json
 .version.ini
+.release_cache.json
 # some testing files
 tmp_*
 

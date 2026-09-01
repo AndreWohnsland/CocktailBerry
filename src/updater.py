@@ -1,15 +1,16 @@
+import contextlib
+import json
 import sys
 from dataclasses import dataclass, field
 from enum import StrEnum
 
 import requests
 from git import GitCommandError, Repo
-from requests import Response
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
-from src.filepath import ROOT_PATH
+from src.filepath import RELEASE_CACHE_FILE, ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.migration.migrator import Migrator
 from src.migration.setup_web import download_web_client
@@ -129,19 +130,47 @@ class Updater:
             return UpdateInfo(UpdateInfo.Status.ERROR, update_problem + f"\n{err}")
         # Source the list from the published releases: this excludes drafts/prereleases,
         # carries release notes, and guarantees the web-client asset exists.
-        try:
-            release_data = requests.get(f"{_GITHUB_RELEASE_URL}?per_page=100", timeout=10)
-            release_data.raise_for_status()
-        except requests.RequestException as err:
+        releases = self._fetch_releases()
+        if releases is None:
             update_problem = "Could not fetch release information from GitHub"
-            _logger.log_event("ERROR", update_problem)
-            _logger.log_exception(err)
             return UpdateInfo(UpdateInfo.Status.ERROR, update_problem)
-        versions = self._build_version_list(release_data)
+        versions = self._build_version_list(releases)
         if not versions:
             return UpdateInfo(UpdateInfo.Status.UP_TO_DATE, "")
         _logger.log_event("INFO", f"{len(versions)} update(s) available, newest is {versions[-1].version}")
         return UpdateInfo(UpdateInfo.Status.UPDATES_AVAILABLE, self._format_release_notes(versions), versions)
+
+    def _fetch_releases(self) -> list[dict] | None:
+        """Fetch the published releases, or None if unavailable.
+
+        Unauthenticated GitHub API access is limited to 60 requests/hour per IP,
+        so the last successful response is cached: on fetch errors (e.g. rate
+        limit exceeded) the cached data is used, and the ETag skips the body
+        transfer when nothing changed (304 still counts against the limit).
+        """
+        cache: dict = {}
+        with contextlib.suppress(OSError, ValueError):
+            cache = json.loads(RELEASE_CACHE_FILE.read_text())
+        headers = {"If-None-Match": cache["etag"]} if "etag" in cache else {}
+        try:
+            response = requests.get(f"{_GITHUB_RELEASE_URL}?per_page=100", headers=headers, timeout=10)
+            if response.status_code == requests.codes.not_modified:
+                return cache["releases"]
+            response.raise_for_status()
+        except requests.RequestException as err:
+            if "releases" in cache:
+                _logger.log_event("WARNING", f"Could not fetch releases from GitHub, using cached data ({err})")
+                return cache["releases"]
+            _logger.log_event("ERROR", "Could not fetch release information from GitHub")
+            _logger.log_exception(err)
+            return None
+        releases = response.json()
+        etag = response.headers.get("ETag")
+        if etag:
+            # cache is an optimization only; write may fail e.g. when the file is owned by root after a sudo run
+            with contextlib.suppress(OSError):
+                RELEASE_CACHE_FILE.write_text(json.dumps({"etag": etag, "releases": releases}))
+        return releases
 
     def _precondition_error(self) -> str | None:
         """Return why updates cannot be checked (branch / Python), or None if okay."""
@@ -157,12 +186,12 @@ class Updater:
             return f"Python version is too old, not checking for updates. You need at least {FUTURE_PYTHON_VERSION}"
         return None
 
-    def _build_version_list(self, response: Response) -> list[VersionInfo]:
-        """Build the ascending list of newer published releases from the API response."""
+    def _build_version_list(self, releases: list[dict]) -> list[VersionInfo]:
+        """Build the ascending list of newer published releases from the API data."""
         migrator = Migrator()
         current_major = migrator.local_version.major
         versions: list[VersionInfo] = []
-        for release in response.json():
+        for release in releases:
             if release.get("draft") or release.get("prerelease"):
                 continue
             tag_name = release.get("tag_name", "")
