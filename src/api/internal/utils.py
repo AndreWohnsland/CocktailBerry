@@ -79,7 +79,13 @@ def map_ingredient(ingredient: DBIngredient | None) -> Ingredient | None:
 
 
 def map_bottles(ing: DBIngredient) -> Bottle:
-    return Bottle(number=ing.bottle or 0, ingredient=map_ingredient(ing) if ing.id > 0 else None)
+    number = ing.bottle or 0
+    has_tube_volume = 0 < number <= len(cfg.PUMP_CONFIG) and cfg.PUMP_CONFIG[number - 1].tube_volume > 0
+    return Bottle(
+        number=number,
+        ingredient=map_ingredient(ing) if ing.id > 0 else None,
+        has_tube_volume=has_tube_volume,
+    )
 
 
 def calculate_cocktail_volume_and_concentration(cocktail: CocktailInput) -> tuple[int, int]:

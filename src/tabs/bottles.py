@@ -107,8 +107,8 @@ def renew_bottles(w: MainScreen, bottles: list[int]) -> None:
         if pump_config.tube_volume > 0:
             ing.amount = pump_config.tube_volume
             ingredients.append(ing)
-    # if there is at least one tube volume defined, flush the tubes
-    if ingredients:
+    # if there is at least one tube volume defined, let the user decide if the tubes get flushed
+    if ingredients and DP_CONTROLLER.ask_to_flush_tubes():
         mc = MachineController()
         mc.make_cocktail(w, ingredients, "renew", False)
     DP_CONTROLLER.say_bottles_renewed()

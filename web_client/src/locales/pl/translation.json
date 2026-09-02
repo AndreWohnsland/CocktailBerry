@@ -92,6 +92,7 @@
   },
   "bottles": {
     "applyNew": "Potwierdź wybrane",
+    "flushTubesQuestion": "Czy przepłukać również wężyki wymienionych butelek? Spowoduje to przepompowanie skonfigurowanej objętości wężyka przez każdą pompę, aby wypchnąć starą ciecz. Umieść pojemnik pod wylotami.",
     "available": "Dostępne",
     "possibleToAdd": "Możliwe do dodania",
     "adjustHeader": "Dostosuj poziom napełnienia butelki, maksymalnie {{maximum}}"

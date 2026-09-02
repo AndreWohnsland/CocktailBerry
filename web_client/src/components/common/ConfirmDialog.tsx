@@ -23,7 +23,7 @@ const ConfirmDialog = () => {
       shouldCloseOnOverlayClick={false}
       shouldCloseOnEsc={false}
       className='modal slim'
-      overlayClassName='overlay z-30'
+      overlayClassName='overlay z-40'
     >
       <div className='flex flex-col bg-background p-6 rounded-lg h-full'>
         <div className='grow' />

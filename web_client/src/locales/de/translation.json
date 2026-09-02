@@ -92,6 +92,7 @@
   },
   "bottles": {
     "applyNew": "Neue Registrieren",
+    "flushTubesQuestion": "Auch die Schläuche der erneuerten Flaschen spülen? Dies pumpt das eingestellte Schlauchvolumen durch jede Pumpe, um die alte Flüssigkeit herauszudrücken. Ein Gefäß unter die Ausläufe stellen.",
     "available": "Verfügbar",
     "possibleToAdd": "Mögliche zum Hinzuzufügen",
     "adjustHeader": "Füllstand der Flasche anpassen, Maximum ist {{maximum}}"

@@ -12,8 +12,10 @@ export const useBottles = (): UseQueryResult<Bottle[], Error> => {
   return useQuery<Bottle[], Error>('bottles', getBottles);
 };
 
-export const refillBottle = async (bottleNumbers: number[]) => {
-  return axiosInstance.post(`${bottle_url}/refill`, bottleNumbers).then((response) => response.data);
+export const refillBottle = async (bottleNumbers: number[], flushTubes = true) => {
+  return axiosInstance
+    .post(`${bottle_url}/refill`, bottleNumbers, { params: { flush_tubes: flushTubes } })
+    .then((response) => response.data);
 };
 
 export const updateBottle = async (bottleId: number, ingredientId: number, amount?: number) => {

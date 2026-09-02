@@ -211,6 +211,10 @@ dialog:
     en: 'Starting Cleaning Progress? Please provide enough water.'
     de: 'Reinigung Starten? Bitte genug Wasser bereitstellen.'
     pl: 'Rozpocząć czyszczenie? Zapewnij odpowiednią ilość wody.'
+  ask_to_flush_tubes:
+    en: 'Also flush the tubes of the renewed bottles? This pumps the configured tube volume through each pump to push out the old liquid. Place a container under the outlets.'
+    de: 'Auch die Schläuche der erneuerten Flaschen spülen? Dies pumpt das eingestellte Schlauchvolumen durch jede Pumpe, um die alte Flüssigkeit herauszudrücken. Ein Gefäß unter die Ausläufe stellen.'
+    pl: 'Czy przepłukać również wężyki wymienionych butelek? Spowoduje to przepompowanie skonfigurowanej objętości wężyka przez każdą pompę, aby wypchnąć starą ciecz. Umieść pojemnik pod wylotami.'
   ask_to_initialize_bottles:
     en: 'Initialize bottles? This pumps the configured tube volume through each connected pump to fill empty tubes. Only run this when the tubes are empty and place a container under the outlets.'
     de: 'Flaschen initialisieren? Dies pumpt das eingestellte Schlauchvolumen durch jede verbundene Pumpe, um leere Schläuche zu füllen. Nur ausführen, wenn die Schläuche leer sind, und ein Gefäß unter die Ausläufe stellen.'
