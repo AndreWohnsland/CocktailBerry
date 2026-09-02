@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { refillBottle, useBottles } from '../../api/bottles';
 import { useIngredients } from '../../api/ingredients';
+import { confirm } from '../../confirmDialog';
 import type { Ingredient } from '../../types/models';
 import { executeAndShow } from '../../utils';
 import Button from '../common/Button';
@@ -50,7 +51,10 @@ const BottleList: React.FC = () => {
       .filter((key) => toggledBottles[Number(key)])
       .map(Number);
     if (!toggledNumbers.length) return;
-    const success = await executeAndShow(() => refillBottle(toggledNumbers));
+    const needsFlush =
+      bottles?.some((bottle) => toggledBottles[bottle.number] && bottle.has_tube_volume && bottle.ingredient) ?? false;
+    const flushTubes = needsFlush ? await confirm(t('bottles.flushTubesQuestion')) : false;
+    const success = await executeAndShow(() => refillBottle(toggledNumbers, flushTubes));
     if (success) {
       await bottleRefetch();
       setToggledBottles({});

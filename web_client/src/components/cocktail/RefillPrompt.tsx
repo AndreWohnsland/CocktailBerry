@@ -5,7 +5,8 @@ import { FaWineBottle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router';
-import { refillBottle } from '../../api/bottles';
+import { refillBottle, useBottles } from '../../api/bottles';
+import { confirm } from '../../confirmDialog';
 import { executeAndShow } from '../../utils';
 
 interface RefillPromptProps {
@@ -21,6 +22,7 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumb
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { data: bottles } = useBottles();
 
   // Reset checkbox when modal closes and reopens
   const handleClose = () => {
@@ -28,9 +30,12 @@ const RefillPrompt: React.FC<RefillPromptProps> = ({ isOpen, message, bottleNumb
     onClose();
   };
 
-  const applyRefillBottle = () => {
+  const applyRefillBottle = async () => {
     if (!isChecked) return;
-    executeAndShow(() => refillBottle([bottleNumber])).then((success) => {
+    const bottle = bottles?.find((b) => b.number === bottleNumber);
+    const needsFlush = !!bottle?.has_tube_volume && !!bottle?.ingredient;
+    const flushTubes = needsFlush ? await confirm(t('bottles.flushTubesQuestion')) : false;
+    executeAndShow(() => refillBottle([bottleNumber], flushTubes)).then((success) => {
       if (success) onClose();
     });
   };

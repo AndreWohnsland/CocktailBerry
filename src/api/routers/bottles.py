@@ -30,7 +30,9 @@ async def get_bottles() -> list[Bottle]:
 
 
 @protected_router.post("/refill", summary="Refill all given bottles to maximum.")
-async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundTasks) -> ApiMessage:
+async def refill_bottle(
+    bottle_numbers: list[int], background_tasks: BackgroundTasks, flush_tubes: bool = True
+) -> ApiMessage:
     raise_when_cocktail_is_in_progress()
     if any(num < 1 or num > cfg.MAKER_NUMBER_BOTTLES for num in bottle_numbers):
         raise HTTPException(
@@ -41,14 +43,15 @@ async def refill_bottle(bottle_numbers: list[int], background_tasks: BackgroundT
     DBC.set_bottle_volumelevel_to_max(bottle_numbers)
     ingredients = []
     # check if any of those slots have a tube volume defined
-    for num in bottle_numbers:
-        ing = DBC.get_ingredient_at_bottle(num)
-        pump_config = cfg.PUMP_CONFIG[num - 1]
-        if ing is None:
-            continue
-        if pump_config.tube_volume > 0:
-            ing.amount = pump_config.tube_volume
-            ingredients.append(ing)
+    if flush_tubes:
+        for num in bottle_numbers:
+            ing = DBC.get_ingredient_at_bottle(num)
+            pump_config = cfg.PUMP_CONFIG[num - 1]
+            if ing is None:
+                continue
+            if pump_config.tube_volume > 0:
+                ing.amount = pump_config.tube_volume
+                ingredients.append(ing)
     # if there is at least one tube volume defined, flush the tubes
     if ingredients:
         mc = MachineController()

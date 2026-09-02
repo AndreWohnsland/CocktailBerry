@@ -91,6 +91,7 @@ class CocktailInput(BaseModel):
 class Bottle(BaseModel):
     number: int
     ingredient: Ingredient | None = None
+    has_tube_volume: bool = False
 
 
 class BottleConfigUpdate(BaseModel):

@@ -92,6 +92,7 @@
   },
   "bottles": {
     "applyNew": "Apply New",
+    "flushTubesQuestion": "Also flush the tubes of the renewed bottles? This pumps the configured tube volume through each pump to push out the old liquid. Place a container under the outlets.",
     "available": "Available",
     "possibleToAdd": "Possible to Add",
     "adjustHeader": "Adjust the fill level of the bottle, maximum is {{maximum}}"

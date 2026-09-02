@@ -199,7 +199,8 @@ With this setting, the window will be minimized before the rest of the program a
 
 If your pumps have a long tube to the bottle, the first cocktail may have too little volume.
 You can set the tube volume of each pump in `PUMP_CONFIG`.
-When applying a new bottle, CocktailBerry will also pump that much volume up.
+When applying a new bottle, CocktailBerry will ask if it should also pump that much volume up.
+Decline the prompt if the tube is still filled, for example when a peristaltic pump keeps the liquid in the tube.
 If you use a scale for preparation, you can set the tube volume to 0.
 The scale measures the actual dispensed liquid, so priming is not needed and only the first pour per bottle takes a bit longer.
 

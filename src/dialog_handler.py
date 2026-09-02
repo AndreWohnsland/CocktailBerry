@@ -75,6 +75,7 @@ allowed_keys = Literal[
     "ask_for_backup_location",
     "ask_restricted_mode",
     "ask_to_clean",
+    "ask_to_flush_tubes",
     "ask_to_initialize_bottles",
     "initialize_bottles_started",
     "ask_to_delete_reader",
@@ -605,6 +606,11 @@ class DialogHandler:
     def ask_to_initialize_bottles(self) -> bool:
         """Asks the user if he wants to prime all pump tubes."""
         message = self._choose_language("ask_to_initialize_bottles")
+        return self.user_okay(message)
+
+    def ask_to_flush_tubes(self) -> bool:
+        """Asks the user if the tubes of the renewed bottles should be flushed."""
+        message = self._choose_language("ask_to_flush_tubes")
         return self.user_okay(message)
 
     def ask_to_restart_for_config(self) -> bool:

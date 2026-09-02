@@ -66,6 +66,7 @@ export interface CocktailInput {
 export interface Bottle {
   number: number;
   ingredient?: Ingredient;
+  has_tube_volume: boolean;
 }
 
 export type PrepareResult =
