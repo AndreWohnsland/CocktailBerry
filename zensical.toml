@@ -84,6 +84,9 @@ features = [
   "content.tooltips",
 ]
 
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
 [project.theme.icon.tag]
 default = "material/tag-outline"
 setup = "material/rocket-launch"
