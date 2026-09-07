@@ -35,7 +35,7 @@ class TouchScrollArea(QScrollArea):
         if self.mousePressPos is None:
             return
         moved = event.pos() - self.mousePressPos
-        self.mouserPressPos = None
+        self.mousePressPos = None
         if moved.manhattanLength() > MAX_SCROLL_DISTANCE:
             event.accept()
             return
