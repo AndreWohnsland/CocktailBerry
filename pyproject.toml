@@ -9,7 +9,7 @@ requires-python = ">= 3.13"
 dependencies = [
     "gitpython>=3.1.59",
     "requests>=2.34.2",
-    "sumup==0.3.1",
+    "sumup==0.3.3",
     "pyyaml>=6.0.3",
     "typer>=0.27.1",
     "pyfiglet>=1.0.4",
@@ -30,7 +30,7 @@ dependencies = [
     "adafruit-circuitpython-motorkit>=1.6.21",
     "rpimotorlib>=4.0.0",
     "cedargrove-nau7802>=2.1.4",
-    "inquirerprompt>=0.3.4",
+    "inquirerprompt>=0.5.0",
     "mfrc522>=0.0.7 ; sys_platform == 'linux'",
     "spidev>=3.8 ; sys_platform == 'linux'",
     "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
@@ -50,7 +50,7 @@ dev = [
   "pytest>=9.1.1",
   "pytest-cov>=7.1.0",
   "pre-commit>=4.6.2",
-  "ty==0.0.72",
+  "ty==0.0.76",
   "ruff>=0.16.2",
   "zensical>=0.0.53",
 ]

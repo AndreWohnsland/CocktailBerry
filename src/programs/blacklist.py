@@ -1,8 +1,8 @@
 import json
 
 import typer
-from InquirerPy import inquirer
-from InquirerPy.base import Choice
+from InquirerPrompt import inquirer
+from InquirerPrompt.base import Choice
 
 from src.config.config_manager import CONFIG as cfg
 from src.filepath import BLACKLIST_FILE
