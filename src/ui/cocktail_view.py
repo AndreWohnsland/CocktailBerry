@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QFrame, QGridLayout, QSizePolicy, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QFrame, QGridLayout, QScrollArea, QScroller, QSizePolicy, QVBoxLayout, QWidget
 
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
@@ -20,7 +20,6 @@ from src.service.nfc_payment_service import UserLookup, UserLookupResult
 from src.ui.creation_utils import create_button, create_label
 from src.ui.icons import IconSetter, PresetIcon
 from src.ui_elements.clickable_label import ClickableLabel
-from src.ui_elements.touch_scroll_area import TouchScrollArea
 
 if TYPE_CHECKING:
     from src.service.nfc_payment_service import User
@@ -133,8 +132,9 @@ class CocktailView(QWidget):
 
     def __init__(self, mainscreen: MainScreen) -> None:
         super().__init__()
-        self.scroll_area = TouchScrollArea()
+        self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
+        QScroller.grabGesture(self.scroll_area.viewport(), QScroller.ScrollerGestureType.LeftMouseButtonGesture)
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
         self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
         self.scroll_area.setFrameShadow(QFrame.Shadow.Plain)
