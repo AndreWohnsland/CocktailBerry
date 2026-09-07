@@ -5,7 +5,16 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QFrame, QGridLayout, QScrollArea, QScroller, QSizePolicy, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QFrame,
+    QGridLayout,
+    QScrollArea,
+    QScroller,
+    QScrollerProperties,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
+)
 
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER
@@ -126,6 +135,19 @@ def generate_image_block(cocktail: Cocktail | None, mainscreen: MainScreen) -> Q
     return layout
 
 
+def _enable_touch_scrolling(scroll_area: QScrollArea) -> None:
+    viewport = scroll_area.viewport()
+    QScroller.grabGesture(viewport, QScroller.ScrollerGestureType.LeftMouseButtonGesture)
+    scroller = QScroller.scroller(viewport)
+    if scroller is None:
+        return
+    props = scroller.scrollerProperties()
+    # overshoot factors are fractions of the viewport height, default 1.0 (drag) and 0.5 (fling)
+    props.setScrollMetric(QScrollerProperties.ScrollMetric.OvershootDragDistanceFactor, 0.1)
+    props.setScrollMetric(QScrollerProperties.ScrollMetric.OvershootScrollDistanceFactor, 0.1)
+    scroller.setScrollerProperties(props)
+
+
 class CocktailView(QWidget):
     # Signal for thread-safe user change notifications
     user_changed = pyqtSignal(object)
@@ -134,7 +156,7 @@ class CocktailView(QWidget):
         super().__init__()
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        QScroller.grabGesture(self.scroll_area.viewport(), QScroller.ScrollerGestureType.LeftMouseButtonGesture)
+        _enable_touch_scrolling(self.scroll_area)
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
         self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
         self.scroll_area.setFrameShadow(QFrame.Shadow.Plain)
