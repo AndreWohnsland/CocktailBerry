@@ -2,6 +2,8 @@ import datetime
 import json
 import logging
 import os
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from threading import Thread
 from typing import Annotated
 
@@ -12,7 +14,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile
 from fastapi.logger import logger
 from fastapi.responses import JSONResponse
-from helper import generate_urls_and_headers
+from helper import check_api_key, generate_urls_and_headers
 from query_sender import try_send_query_data
 
 from models import Cocktail
@@ -22,7 +24,13 @@ load_dotenv()
 # dropped and errors are printed bare via Python's last-resort handler.
 logging.basicConfig(format="%(asctime)s %(levelname)s [%(name)s] %(message)s", level=logging.INFO)
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
+    check_api_key()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
@@ -45,7 +53,9 @@ async def post_cocktail_hook(cocktail: Cocktail) -> JSONResponse:
         except Exception as err:
             logger.exception("Some other error occurred: %s", err)
 
-    make_date = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M")
+    # deliberately naive local time (no timezone offset): the stats api treats
+    # makedate as machine wall clock, do not switch to an aware datetime.now(UTC)
+    make_date = datetime.datetime.now().isoformat(timespec="seconds")
     if cocktail.makedate is not None:
         make_date = cocktail.makedate
 
