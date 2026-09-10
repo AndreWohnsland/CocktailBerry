@@ -210,7 +210,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
                 <tbody>
                   {machineIngredients.map((ingredient) => (
                     <tr key={ingredient.id}>
-                      <td className='text-text text-right pr-2'>{ingredient.name}</td>
+                      <td className='text-right pr-2'>{ingredient.name}</td>
                       <td className='text-secondary text-left'>
                         {ingredient.amount} {ingredient.unit}
                       </td>
@@ -218,7 +218,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
                   ))}
                   {handIngredients.map((ingredient) => (
                     <tr key={ingredient.id}>
-                      <td className='text-text text-right pr-2'>
+                      <td className='text-right pr-2'>
                         <span className='text-neutral mr-2'>[Hand]</span>
                         {ingredient.name}
                       </td>

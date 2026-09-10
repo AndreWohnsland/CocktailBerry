@@ -32,7 +32,7 @@ const Metric: React.FC<MetricProps> = ({
 }) => {
   return (
     <div className={chipStyle(value, threshold)}>
-      <span className='capitalize text-s opacity-80'>{name}</span>
+      <span className='capitalize text-sm opacity-80'>{name}</span>
       <span className='text-xl font-bold'>{formatMetricValue(value, unit, fractionDigits)}</span>
     </div>
   );

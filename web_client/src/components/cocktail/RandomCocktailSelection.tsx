@@ -111,7 +111,7 @@ const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handl
             </p>
             <div className='my-2 flex flex-col items-center justify-center gap-4'>
               <FaQuestion className='text-secondary' size={60} />
-              <p className='text-center text-xl text-text'>{t('cocktails.beSurprised')}</p>
+              <p className='text-center text-xl'>{t('cocktails.beSurprised')}</p>
             </div>
           </div>
           <ServingSizeButtons

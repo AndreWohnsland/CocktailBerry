@@ -14,7 +14,7 @@ const InfoScreen: React.FC<InfoScreenProps> = ({ icon, title, description, hint,
       {icon}
       <span className='mt-8 text-2xl text-secondary text-center'>{title}</span>
       {description && <span className='mt-4 text-lg text-center'>{description}</span>}
-      {hint && <span className='mt-4 text-md text-neutral text-center'>{hint}</span>}
+      {hint && <span className='mt-4 text-base text-neutral text-center'>{hint}</span>}
       {button && <div className='mt-4'>{button}</div>}
     </div>
   );

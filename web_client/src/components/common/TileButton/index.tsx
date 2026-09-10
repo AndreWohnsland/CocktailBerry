@@ -25,7 +25,7 @@ const TileButton = ({
   ...props
 }: TileButtonProps) => {
   const textMapping = {
-    sm: 'text-md',
+    sm: 'text-base',
     md: 'text-lg',
     lg: 'text-xl',
   };

@@ -212,7 +212,7 @@ const PermissionGrid: React.FC<PermissionGridProps> = ({ permissions, onChange }
   const { t } = useTranslation();
   return (
     <>
-      <p className='text-md text-neutral mb-2'>{t('role.tabPermissions')}</p>
+      <p className='text-base text-neutral mb-2'>{t('role.tabPermissions')}</p>
       <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6'>
         {PERMISSION_KEYS.map((key) => (
           <CheckBox
@@ -236,7 +236,7 @@ const TilePermissionGrid: React.FC<TilePermissionGridProps> = ({ tiles, onChange
   const { t } = useTranslation();
   return (
     <>
-      <p className='text-md text-neutral mb-2'>{t('role.tilePermissions')}</p>
+      <p className='text-base text-neutral mb-2'>{t('role.tilePermissions')}</p>
       <div className='flex flex-col gap-4 mb-4'>
         {Object.entries(TILE_GROUPS).map(([group, keys]) => (
           <div key={group}>
