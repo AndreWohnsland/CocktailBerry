@@ -167,7 +167,6 @@ custom_checkbox = true
 # Enable the macros plugin so pages can interpolate shared values from extra.*
 # (Jinja2), e.g. {{ extra.pi_5_link }}.
 [project.plugins.macros]
-config = {}
 
 # Product purchase links (affiliate). Single source of truth for this repo: each
 # value is a full Markdown link, so a page renders a clickable link from just the
