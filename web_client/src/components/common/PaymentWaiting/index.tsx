@@ -10,7 +10,7 @@ const PaymentWaiting: React.FC = () => {
       <FaCreditCard className='text-primary animate-pulse' size={120} />
       <div className='text-center'>
         <p className='text-2xl text-neutral font-bold mb-4'>{t('payment.scanNFC')}</p>
-        <p className='text-lg text-text'>{t('payment.holdCard')}</p>
+        <p className='text-lg'>{t('payment.holdCard')}</p>
       </div>
     </div>
   );
