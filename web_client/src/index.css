@@ -39,8 +39,19 @@
   }
 }
 
+/* Press feedback for touch targets: scale only, colors stay instant so a
+   theme switch never smears. 0.96 is the point where it reads without looking exaggerated. */
+@utility pressable {
+  transition-property: scale;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+  &:active {
+    scale: 0.96;
+  }
+}
+
 @utility button-base {
-  @apply border-2 rounded-md font-bold;
+  @apply border-2 rounded-lg font-bold pressable;
 }
 
 :root {
@@ -75,7 +86,7 @@ body {
 }
 
 .button-primary:active {
-  @apply button-base text-secondary border-secondary;
+  @apply text-secondary border-secondary;
 }
 
 .button-primary-filled {
@@ -83,7 +94,7 @@ body {
 }
 
 .button-primary-filled:active {
-  @apply button-base border-secondary bg-secondary text-on-secondary;
+  @apply border-secondary bg-secondary text-on-secondary;
 }
 
 .button-secondary {
@@ -180,7 +191,7 @@ input[type="file"]::-ms-browse {
 }
 
 input[type="color"] {
-  @apply rounded-md h-10;
+  @apply rounded-lg h-10;
   border: 1px solid var(--primary-color);
   background-color: var(--background-color);
   color: var(--primary-color);
@@ -232,7 +243,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   left: 50%;
   right: auto;
   bottom: auto;
-  transform: translate(-50%, -50%);
   color: var(--text-color);
   background: var(--background-color);
   padding: 10px;
@@ -243,6 +253,13 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   width: 99%;
   max-width: 1000px;
   overflow-x: auto;
+  /* Enter only: rise 8px into place while the overlay fades in. */
+  transform: translate(-50%, calc(-50% + 8px));
+  transition: transform 150ms ease-out;
+}
+
+.modal.ReactModal__Content--after-open {
+  transform: translate(-50%, -50%);
 }
 
 @media (max-width: 640px) {
@@ -275,6 +292,12 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.75);
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+.overlay.ReactModal__Overlay--after-open {
+  opacity: 1;
 }
 
 /* Class added to body when modal is open */

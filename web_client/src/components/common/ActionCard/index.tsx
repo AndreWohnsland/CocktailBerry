@@ -1,4 +1,5 @@
 import type { IconType } from 'react-icons';
+import Button from '../Button';
 import TextHeader from '../TextHeader';
 
 interface ActionCardProps {
@@ -28,14 +29,15 @@ const ActionCard = ({
         </p>
       ))}
       {onActionClick && (
-        <button
-          type='button'
+        <Button
+          style={actionStyle}
+          filled
+          icon={Icon}
+          iconSize={22}
+          label={actionText ?? ''}
+          className='mt-4 w-full'
           onClick={onActionClick}
-          className={`button-${actionStyle}-filled p-2 mt-4 w-full items-center justify-center flex`}
-        >
-          {Icon && <span className='mr-3'>{<Icon size={22} />}</span>}
-          {actionText}
-        </button>
+        />
       )}
     </div>
   );

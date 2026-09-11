@@ -19,7 +19,7 @@ const Header: React.FC = () => {
   const getNavLinkClass = (isActive: boolean) => {
     // Icon sits inline with the label; in portrait the label hides and the
     // icon-only link gets a bit more horizontal padding.
-    const baseClass = 'nav-link flex items-center gap-1.5 px-2 portrait:px-4 border-2 font-semibold';
+    const baseClass = 'flex items-center gap-1.5 px-2 portrait:px-4 border-2 font-semibold';
     const activeClass = 'text-on-secondary bg-secondary border-secondary rounded-full';
     return isActive ? `${baseClass} ${activeClass}` : `${baseClass} border-transparent`;
   };

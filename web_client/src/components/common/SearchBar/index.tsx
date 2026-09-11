@@ -36,16 +36,21 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <div className={`z-10 sticky mb-2 flex flex-row pointer-events-none ${tabBarVisible ? 'top-10' : 'top-1'}`}>
       <div className='grow' />
-      <input
-        type='text'
-        name='searchInput'
-        placeholder={t('search')}
-        value={search ?? ''}
-        onChange={(e) => setSearch(e.target.value)}
-        className='h-10 input-base mr-1 w-full p-3 max-w-sm pointer-events-auto'
-        hidden={!showSearch}
-      />
-      <div className={`flex ${showSearch ? '' : 'hidden'}`}>
+      {/* Stays mounted so the reveal can animate: the wrapper slides out from the
+          toggle button (clipped on the left via justify-end) while fading in. */}
+      <div
+        className={`flex justify-end w-full overflow-hidden transition-[max-width,opacity,visibility] duration-200 ease-[cubic-bezier(0.2,0,0,1)] ${
+          showSearch ? 'max-w-120 opacity-100 visible' : 'max-w-0 opacity-0 invisible'
+        }`}
+      >
+        <input
+          type='text'
+          name='searchInput'
+          placeholder={t('search')}
+          value={search ?? ''}
+          onChange={(e) => setSearch(e.target.value)}
+          className='h-10 input-base mr-1 w-full p-3 max-w-sm pointer-events-auto'
+        />
         <button
           type='button'
           onClick={() => setSearch('')}
@@ -53,8 +58,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
         >
           <FaEraser size={20} />
         </button>
+        {afterInput && <div className='mr-1 pointer-events-auto'>{afterInput}</div>}
       </div>
-      {afterInput && <div className={`mr-1 pointer-events-auto ${showSearch ? '' : 'hidden'}`}>{afterInput}</div>}
       <button
         type='button'
         onClick={handleHideToggle}
