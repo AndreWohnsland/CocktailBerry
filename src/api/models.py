@@ -155,7 +155,7 @@ class AboutInfo(BaseModel):
 
 class UpdateVersion(BaseModel):
     version: str
-    release_notes: str
+    release_notes: str | None
     is_major: bool
 
 

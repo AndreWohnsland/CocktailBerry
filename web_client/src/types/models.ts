@@ -476,7 +476,7 @@ export interface AboutInfo {
 
 export interface UpdateVersion {
   version: string;
-  release_notes: string;
+  release_notes: string | null;
   is_major: boolean;
 }
 

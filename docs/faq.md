@@ -17,7 +17,7 @@ Also, there is plenty of information at the [setup section](setup.md).
 Food-safe pumps with a volume flow between 10-50 ml/s are optimal.
 Higher or lower values are also possible, but may lead either to longer cocktail preparation time or not perfectly dosed cocktails.
 Best pumps to look out for are peristaltic pumps or membrane pumps.
-Also take note that currently all pumps run in parallel, so check that your power supply is able to power at least 6 pumps at once.
+Take note that up to `MAKER_SIMULTANEOUSLY_PUMPS` pumps (default 16) run at the same time, so check that your power supply can power that many pumps at once.
 You can look at the [hardware section](hardware.md) for some recommended pumps.
 
 ### Which Raspberry Pi is Recommended
@@ -52,7 +52,7 @@ Especially if you are inexperienced with programming and Linux, I strongly sugge
 If you are experienced with Linux, you can probably get almost any SBC to work properly.
 I recommend using a wayland based desktop variant, for example a Debian Linux for the OS.
 The autorun / installation may differ a bit from the Pi.
-You also probably need to run the python package installation and program as sudo.
+Run `bash scripts/setup_non_rpi.sh` once and reboot, it sets up the GPIO permissions so the program does not need to run as sudo.
 In case of any issues related to the GUI (like window positioning, overlap), please take note that officially only the RPi is supported and tested.
 
 ## Software
@@ -61,12 +61,13 @@ In case of any issues related to the GUI (like window positioning, overlap), ple
 
 Please use the latest Raspberry Pi Desktop OS, currently this is Raspberry Pi OS with desktop in 64-bit, also known as Debian 13 or Trixie.
 CocktailBerry requires **Python 3.13 or newer** (Trixie ships with Python 3.13).
+The installer uses uv, which downloads the required Python version by itself, so the Python version of the OS does not matter.
 Older OS may work, but are not supported.
 
 ### Will Older Python Version Work
 
 CocktailBerry requires **Python 3.13 or newer**.
-Older versions are not supported.
+The Python version of the OS does not matter, since uv downloads and manages the required Python version for CocktailBerry.
 Generally, it is always recommended to use a fresh Raspberry Pi OS setup for the best experience.
 
 ### How to get Updates
@@ -74,7 +75,9 @@ Generally, it is always recommended to use a fresh Raspberry Pi OS setup for the
 *See also: the [`MAKER_SEARCH_UPDATES` setting](setup.md#updates) and [Software does not Update](troubleshooting.md#software-does-not-update) if updates fail.*
 
 Simply have an internet connection and turn on the check updates option.
-If there is an update, CocktailBerry will inform you at startup.
+In v1, CocktailBerry asks you at startup if it should install the update.
+In v2, CocktailBerry installs updates within the same major version automatically at startup.
+Major updates are never installed automatically, you choose them in the options menu.
 You can also explicitly check for updates under the options menu.
 
 ### How to Change Settings
@@ -108,6 +111,7 @@ So after the installation, you just need to turn on your Pi!
 
 When you enable the `UI_ONLY_MAKER_TAB` option in the configuration, the user will only be able to access the maker tab.
 At program start, you will have to choose if you want to enter the restricted mode or the full mode.
+In the web version (v2), the browser remembers this choice until you disable the option again.
 If the restricted mode is chosen, only the maker tab is shown or clickable.
 Take note that you will still be able to access the URLs in the web version, so enabling password protection is recommended if you want to restrict access.
 
@@ -210,7 +214,7 @@ The scale measures the actual dispensed liquid, so priming is not needed and onl
 
 You can define one or more pins which control an LED (array).
 The LEDs will light up during cocktail preparation, as well as when the cocktail is finished.
-If it's a controllable WS28x LED you can activate the setting.
+If it's a controllable WS28x LED, select the `WSLED` type for that LED entry and use one of the pins 10, 12, 18 or 21.
 Instead of just turning on / off / blinking, the LED will then have some advanced light effects.
 If you want to have multiple ring LEDs having the effect synchronously, you can define the number of identical daisy-chained rings.
 The program will then not treat this chain as one, but as multiple chains.

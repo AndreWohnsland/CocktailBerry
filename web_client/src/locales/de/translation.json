@@ -139,7 +139,8 @@
       "selectHint": "Wähle die Version, auf die du aktualisieren möchtest. Du kannst vor einem Major-Update auf eine Zwischenversion gehen, um sicher zu migrieren.",
       "major": "Major",
       "majorWarning": "Dies ist ein Major-Update und kann Breaking Changes enthalten. Bitte prüfe zuerst das Changelog.",
-      "updateTo": "Auf {{version}} aktualisieren"
+      "updateTo": "Auf {{version}} aktualisieren",
+      "notesUnavailable": "Die Release Notes konnten nicht geladen werden, aber das Update {{version}} ist verfügbar."
     },
     "wifi": "WLAN",
     "waiters": "Servicepersonal",

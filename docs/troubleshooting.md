@@ -37,54 +37,29 @@ This feature is purely cosmetic and for the user of the maker tab when making co
 ## Restoring Database
 
 The migrations create a backup of the database before doing the modifying steps.
-If you'd rather not have the new recipes, you can overwrite the local `Cocktail_database.db` with the `Cocktail_database_backup.db` file.
+If you'd rather not have the new recipes, you can overwrite the local `Cocktail_database.db` with the backup file from the `~/cb_backup` folder.
 
 ```bash
-cp Cocktail_database_backup-{your-date-string}.db Cocktail_database.db
+cp ~/cb_backup/database_backup_{your-date-string}.db ~/CocktailBerry/Cocktail_database.db
 ```
 
 This will restore the state of the backup prior to this migration step.
-Please take a look at the production_log file, if a backup was created.
+Please take a look at the `logs/production_logs.log` file to see if and where a backup was created.
 Otherwise, you may end up using an older one.
 
 ## Using a High Resolution Screen
 
+This applies to the Qt version (v1), the web version scales with the browser.
 The UI of the program is somewhat dynamic, but Qt has its limitations.
 To ensure that the UI looks nice like in the screenshots, a resolution not higher than ~1200px on the long side (width) is recommended.
 If you happen to use a high-resolution screen, there is an easy fix, though.
 For example, when using a screen with a 2560x1600 resolution, I would recommend dividing the value by `x` (for example x=2).
 In the CocktailBerry config, set width to 2560/2 = 1280 and height to 1600/2 = 800.
-In case you used the provided setup, change the first line `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case) in the `~/launcher.sh` file.
+In case you used the provided setup, change the line `export QT_SCALE_FACTOR=1` from 1 to x (2 in the example case) in the `~/launcher.sh` file.
 Note that `~/launcher.sh` is a symlink to a git-tracked file, so replace it with your own copy first, otherwise an update overwrites the change (see [CLI Commands](commands.md) for the steps).
 This will use the lower dimensions for the application but scale it up by the factor of two so it occupies the whole screen.
 Decimal numbers for x also work, just try not to get decimals for width / height.
 If you use your own startup script or similar, just add the export line with a corresponding value to it, or set the environment variable in any other desired way.
-
-## Touchscreen Calibration
-
-Sometimes you need to calibrate your touchscreen, otherwise the touched points and cursor are out of sync.
-First you need to get and compile xinput.
-After that, you can execute the program and select the crosses on the touchscreen according to the shown order.
-
-```bash
-wget http://github.com/downloads/tias/xinput_calibrator/xinput_calibrator-0.7.5.tar.gz
-tar -zxvf xinput_calibrator-0.7.5.tar.gz
-cd xinput_calibrator-0.7.5
-sudo apt-get install libx11-dev libxext-dev libxi-dev x11proto-input-dev
-./configure
-make
-sudo make install
-sudo xinput_calibrator # sudo DISPLAY=:0.0 xinput_calibrator may also work
-```
-
-To adjust those new touch coordinates, they need to be saved. The xinput program should print out some block beginning with `Section "InputClass"` and ending with `EndSection`. This part needs to be copied to the `99-calibration.conf` file.
-
-```bash
-sudo mkdir /etc/X11/xorg.conf.d
-sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
-```
-
-After the reboot, the calibration should be okay.
 
 ## How to Have the Right Time
 
@@ -92,7 +67,8 @@ There is the config value `MAKER_CHECK_INTERNET`.
 If you wish to use your microservice, but have no internet at the moment, the data will be saved and sent later.
 One problem that occurred, is that, for example on a standard Raspberry Pi, the clock and therefore the timestamp will probably be wrong.
 This new option tackles that. If it's set to active with an active microservice, it will check for internet connection at startup.
-If there is no connection, a dialog will pop up and allow the user to adjust the time.
+If there is no connection, v1 shows a dialog to adjust the time.
+In v2, the startup issue page lists it and offers to adjust the time.
 In case the machine has an RTC built in and uses it, this option can usually be set to `false`, because due to the RTC, the time should be correct.
 
 ## Get the LED Working
@@ -118,22 +94,22 @@ If you are using the latest installer, there will be a virtual environment creat
 
 ```bash
 # for v1: change this line
-# uv run --extra v1 --extra nfc runme.py
+# uv run --no-dev --extra v1 --extra nfc runme.py
 # into:
-uv sync --inexact --extra v1 --extra nfc
+uv sync --inexact --no-dev --extra v1 --extra nfc
 sudo -E .venv/bin/python runme.py
 # for v2: change this line
-# uv run --extra nfc api.py
+# uv run --no-dev --extra nfc api.py
 # into:
-uv sync --inexact --extra nfc
+uv sync --inexact --no-dev --extra nfc
 sudo -E .venv/bin/python api.py
 ```
 
 If the GUI looks different than when you run it without sudo, try the `-E` flag, this should use your environment for Qt.
 
 See [here](https://github.com/jgarff/rpi_ws281x#gpio-usage) for a possible list and explanation for GPIOs.
-I had success using the 12 and 18 PWM0 pins, while also disabling (use a # for comment) the line `#dtparam=audio=on` on `/boot/config.txt`.
-Other described pins may also work, but are untested, so I recommend sticking to the two that should work.
+I had success using the 12 and 18 PWM0 pins, while also disabling (use a # for comment) the line `#dtparam=audio=on` in `/boot/firmware/config.txt` (older Pi OS: `/boot/config.txt`).
+The config only accepts the pins 10, 12, 18 and 21 for WS281x LEDs.
 If you use any other non controllable LED connected over the relay, you can use any pin you want, since it's only activating the relay.
 
 ### Run the LEDs without sudo (SPI, also works on Pi 5)
@@ -190,7 +166,8 @@ You only need the wiring and the installation of the libraries (usually they are
 The corresponding code is integrated into CocktailBerry.
 After that, you select the corresponding option in the settings dropdown for the reader.
 When using the teams function, you can then also use an RFID chip, which inserts the information (name of person) for the leaderboard.
-In addition, when going to the settings tab, the option to write a string (name) to a chip is enabled.
+In addition, the settings tab of the Qt version (v1) has the option to write a string (name) to a chip.
+The web version (v2) does not have this option yet.
 
 Take care that you don't use any of the connected pins of the RFID reader in the CocktailBerry config for a pump or an LED.
 If you do so, remove them or replace them with another pin.
@@ -211,6 +188,7 @@ If you are an inexperienced user with Linux, I recommend you stick to the recomm
 
 ## Task Bar Overlap / Push GUI
 
+This applies to the older X11 / LXDE based Raspberry Pi OS, the newer Wayland based versions use a different panel.
 This may happen (especially at older versions of RPi OS or higher res screens) when running the program and some dialog window opens.
 The task bar (bar with programs on it) may overlap the dialog window or push it down by its height.
 Ensure that you have unchecked the "Reserve space, and not covered by maximised windows" option.
@@ -245,23 +223,31 @@ cat ~/cb_backup/custom_config_pre_{version_number}.yaml
 It may happen that you don't get the latest version of the software prompted at start, even if you check for updates.
 This can be due to different reasons.
 First, check if you have an internet connection.
-If you have, check if you have the latest recommended version of python installed.
-CocktailBerry will not show the update if the future required Python version is higher than the current installed one.
-Another reason may be that your git file is corrupted.
-Check for errors like object file x is empty:
+If you have, check if you have the latest recommended version of Python installed.
+CocktailBerry will not show the update if the future required Python version is higher than the currently installed one.
+CocktailBerry also only checks for updates on the `master` branch.
+If you switched to another branch, for example `dev`, switch back to `master` first.
+
+If the update is shown but the release notes are missing, the GitHub API limit for your internet connection was reached.
+This happens when other devices in your network query GitHub often.
+The update itself still works, only the notes are missing.
+
+Another reason may be that your git files are corrupted.
+CocktailBerry finds updates through the git tags, so check that they can be fetched without errors like `object file x is empty`:
 
 ```sh
 cd ~/CocktailBerry
 git status
-git pull
-# if error occurs you can try to fix it with
+git fetch --tags --prune --prune-tags
+# if an error occurs, you can try to fix it with
 find .git/objects/ -type f -empty | xargs rm
 git fetch -p
 git fsck --full
 ```
 
-This should not only remove the corrupted files, but also fetch the latest version of the software.
-If you get another error output, it is best to submit the error output with the issue.
+Afterwards, restart CocktailBerry and check for updates again.
+Do not use `git pull` to update, since it moves you to the tip of `master`, which may be ahead of the latest release.
+The update in the options menu always moves you to a released version.
 
 ## Update Fails with "dubious ownership" (running as root)
 
@@ -322,9 +308,9 @@ If you think your cocktail has the wrong picture, you can use the corresponding 
     | Acapulco Gold         | 15.jpg       |
     | Bahama Mama           | 17.jpg       |
     | Bahia ll              | 18.jpg       |
-    | Käptn Chaos           | 19.jpg       |
+    | Captain Chaos         | 19.jpg       |
     | Vodka Mara            | 20.jpg       |
-    | Screwdriver (Vodka o) | 21.jpg       |
+    | Screwdriver           | 21.jpg       |
     | Mix Alabama           | 23.jpg       |
     | Blue Mara             | 24.jpg       |
     | Rum Sunrise           | 25.jpg       |
@@ -374,26 +360,29 @@ This should usually not be an issue anymore when using uv and Trixie Raspberry P
 ### How to get the GUI Running on Startup
 
 The easiest thing is to use RPis Autostart.
-Create a .desktop file with `sudo nano /etc/xdg/autostart/cocktail.desktop` and the `launcher.sh` in your `/home/pi` folder:
+Create a .desktop file with `sudo nano /etc/xdg/autostart/cocktail.desktop` and the `launcher.sh` in your home folder:
 
 ```text
 [Desktop Entry]
 Type=Application
-Name=CocktailScreen
+Name=CocktailBerry
 NoDisplay=false
-Exec=/usr/bin/lxterminal -e /home/pi/launcher.sh
+Exec=/usr/bin/lxterminal -e "$HOME/launcher.sh; read -p 'Press Enter to Close'"
+Icon=/usr/share/pixmaps/cocktailberry.png
+X-GNOME-Autostart-enabled=true
 ```
 
 ```bash
 #!/bin/bash
-# code to start the application, see v1-launcher.sh
+# code to start the application, see scripts/v1-launcher.sh
+# it also runs scripts/dependency_installer.sh before starting the program
 ```
 
 If your setup is equal to the docs (Raspberry Pi, CocktailBerry GitHub cloned to the home folder) you can also just copy the files and comment/uncomment within the launcher.sh to save some typing:
 
 ```bash
 cp ~/CocktailBerry/scripts/v1-launcher.sh ~/launcher.sh  # use v2-launcher.sh for v2
-cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
+sudo cp ~/CocktailBerry/scripts/cocktail.desktop /etc/xdg/autostart/
 ```
 
 Copying to a real `~/launcher.sh` file (instead of the symlink the installer creates) means the file survives updates but does not receive their changes.
@@ -413,7 +402,6 @@ sudo chmod 755 ~/launcher.sh
 
 I've noticed when running as root (sudo python) and running as the pi user (python) by default the pi will use different GUI resources.
 Using the pi user will result in the shown interfaces at CocktailBerry (and the program should work without root privilege).
-Setting the XDG_RUNTIME_DIR to use the qt5ct plugin may also work but is untested.
 Using the user's environment with `sudo -E .venv/bin/python runme.py` should also do the trick.
 
 ### Raspberry Pi 5 GPIO Issues

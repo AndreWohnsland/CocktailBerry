@@ -55,7 +55,8 @@ class UpdateWindow(QMainWindow, Ui_UpdateWindow):
         info = next((v for v in self._versions if v.version == tag), None)
         if info is None:
             return
-        self.label_release_information.setText(info.release_notes)
+        notes = info.release_notes or DP_CONTROLLER.get_translation("update_notes_unavailable", version=info.version)
+        self.label_release_information.setText(notes)
         self.label_warning.setVisible(info.is_major)
 
     def _yes_clicked(self) -> None:

@@ -179,6 +179,10 @@ dialog:
     en: 'major'
     de: 'Major'
     pl: 'duża'
+  update_notes_unavailable:
+    en: 'The release notes could not be loaded, but update {version} is available.'
+    de: 'Die Release Notes konnten nicht geladen werden, aber das Update {version} ist verfügbar.'
+    pl: 'Nie udało się wczytać informacji o wydaniu, ale aktualizacja {version} jest dostępna.'
   restart_config:
     en: 'Restart the program to apply new configuration?'
     de: 'Programm neu starten, um die geänderten Einstellungen zu laden?'

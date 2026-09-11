@@ -139,7 +139,8 @@
       "selectHint": "Wybierz wersję, do której chcesz zaktualizować. Możesz przejść do wersji przed dużą aktualizacją, aby bezpiecznie migrować.",
       "major": "duża",
       "majorWarning": "To jest duża aktualizacja i może zawierać niekompatybilne zmiany. Najpierw sprawdź changelog.",
-      "updateTo": "Aktualizuj do {{version}}"
+      "updateTo": "Aktualizuj do {{version}}",
+      "notesUnavailable": "Nie udało się wczytać informacji o wydaniu, ale aktualizacja {{version}} jest dostępna."
     },
     "wifi": "WiFi",
     "waiters": "Obsługa",

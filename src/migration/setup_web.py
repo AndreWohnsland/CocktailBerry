@@ -94,24 +94,31 @@ def download_web_client(version: str = "latest") -> None:
 
     ``version`` is a release tag (e.g. ``"v4.3.0"``). The default ``"latest"`` resolves
     to the most recent release and is used by the initial install, where the checkout
-    is already pinned to the latest tag. ``curl -f`` makes a missing asset fail fast so
-    callers can abort the update instead of serving a broken frontend.
+    is already pinned to the latest tag. The build is extracted into a staging directory
+    and only swapped into the web root once complete, so a failed download or extract
+    (``curl -f`` fails fast on a missing asset) leaves the served frontend untouched.
     """
-    # Create the web root directory if it doesn't exist
     web_root = Path("/var/www/cocktailberry_web_client")
-    web_root.mkdir(parents=True, exist_ok=True)
-    # Download the tar.gz file to the tmp directory, extract it into the web root directory, remove the tar.gz file
+    # sibling of the web root, so the final swap is a rename on the same filesystem
+    staging = web_root.with_name(f"{web_root.name}.new")
     tmp_path = Path("/tmp/cocktailberry_web_client.tar.gz")
     base_url = "https://github.com/AndreWohnsland/CocktailBerry/releases"
     if version == "latest":
         url = f"{base_url}/latest/download/cocktailberry_web_client.tar.gz"
     else:
         url = f"{base_url}/download/{version}/cocktailberry_web_client.tar.gz"
-    subprocess.run(["sudo", "curl", "-L", "-f", "-o", str(tmp_path), url], check=True)
-    # Clean up existing files with sudo since they may be owned by root
-    subprocess.run(f"sudo rm -rf {web_root}/*", shell=True, check=False)
-    subprocess.run(["sudo", "tar", "-xzf", str(tmp_path), "-C", str(web_root)], check=True)
-    subprocess.run(["sudo", "rm", "-f", str(tmp_path)], check=True)
+    try:
+        subprocess.run(["sudo", "curl", "-L", "-f", "-o", str(tmp_path), url], check=True)
+        subprocess.run(["sudo", "rm", "-rf", str(staging)], check=True)
+        subprocess.run(["sudo", "mkdir", "-p", str(staging)], check=True)
+        subprocess.run(["sudo", "tar", "-xzf", str(tmp_path), "-C", str(staging)], check=True)
+    except subprocess.CalledProcessError:
+        subprocess.run(["sudo", "rm", "-rf", str(staging)], check=False)
+        raise
+    finally:
+        subprocess.run(["sudo", "rm", "-f", str(tmp_path)], check=False)
+    subprocess.run(["sudo", "rm", "-rf", str(web_root)], check=True)
+    subprocess.run(["sudo", "mv", str(staging), str(web_root)], check=True)
 
 
 def setup_nginx(use_ssl: bool) -> None:

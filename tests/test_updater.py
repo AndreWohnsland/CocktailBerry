@@ -3,8 +3,10 @@ from pathlib import Path
 
 import pytest
 import requests
+from git import Repo
 
-from src.updater import Updater
+from src.migration.version import Version
+from src.updater import UpdateInfo, Updater
 
 
 class _Resp:
@@ -50,3 +52,50 @@ def test_fetch_releases_errors_without_cache(monkeypatch: pytest.MonkeyPatch, tm
     monkeypatch.setattr("src.updater.RELEASE_CACHE_FILE", tmp_path / "cache.json")
     monkeypatch.setattr(requests, "get", lambda *_, **__: _Resp(403))
     assert Updater()._fetch_releases() is None
+
+
+def test_check_for_updates_lists_newer_tags_without_notes(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Detection comes from the remote tags alone; unreachable release notes only leave the notes empty."""
+    origin = Repo.init(tmp_path / "origin")
+    (tmp_path / "origin" / "f").write_text("x")
+    origin.index.add(["f"])
+    origin.index.commit("init")
+    for tag in ("v3.9.0", "v4.1.0", "v5.0.0", "v1.0"):
+        origin.create_tag(tag)
+    local = origin.clone(str(tmp_path / "local"))
+    local.create_tag("v4.2.0")  # exists only locally, e.g. deleted on the remote by the release guard
+
+    class _FakeMigrator:
+        local_version = Version("4.0.0")
+
+    monkeypatch.setattr("src.updater.Migrator", _FakeMigrator)
+    monkeypatch.setattr("src.updater.RELEASE_CACHE_FILE", tmp_path / "cache.json")
+    monkeypatch.setattr(requests, "get", lambda *_, **__: _Resp(403))
+    updater = Updater()
+    updater.repo = local
+    monkeypatch.setattr(updater, "_precondition_error", lambda: None)
+
+    info = updater.check_for_updates()
+
+    assert info.status == UpdateInfo.Status.UPDATES_AVAILABLE
+    assert [(v.version, v.is_major, v.release_notes) for v in info.versions] == [
+        ("v4.1.0", False, None),
+        ("v5.0.0", True, None),
+    ]
+
+
+def test_update_aborts_before_touching_web_client_when_fetch_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    from git import GitCommandError
+
+    downloaded: list[str] = []
+    monkeypatch.setattr("src.updater.download_web_client", downloaded.append)
+    monkeypatch.setattr("src.updater.shared.is_v1", False)
+    updater = Updater()
+
+    def failing_fetch(*_: object, **__: object) -> None:
+        raise GitCommandError("fetch", 128)
+
+    monkeypatch.setattr("git.Remote.fetch", failing_fetch)
+
+    assert updater.update("v9.9.9") is False
+    assert downloaded == []
