@@ -10,7 +10,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ user }) => {
   const { t } = useTranslation();
 
   const elementStyle =
-    'px-2 bg-background border border-primary rounded-md text-center text-primary font-bold h-10 align-middle flex items-center justify-center';
+    'px-2 bg-background border border-primary rounded-lg text-center text-primary font-bold h-10 align-middle flex items-center justify-center';
   const noUserElement = <div className={elementStyle}>{t('userDisplay.noUser')}</div>;
 
   const Icon = user?.is_adult ? MdPerson : MdChildCare;

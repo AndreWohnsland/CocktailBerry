@@ -18,7 +18,7 @@ const WaiterDisplay: React.FC<WaiterDisplayProps> = ({ waiter, initialOpen = fal
   const hasWaiter = waiter?.nfc_id != null;
 
   const badgeStyle =
-    'px-2 border rounded-md text-center font-bold h-10 align-middle flex items-center justify-center bg-background border-primary text-primary';
+    'px-2 border rounded-lg text-center font-bold h-10 align-middle flex items-center justify-center bg-background border-primary text-primary';
 
   if (!hasWaiter) {
     return (

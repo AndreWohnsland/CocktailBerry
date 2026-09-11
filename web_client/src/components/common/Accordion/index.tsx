@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
+import { FaChevronRight } from 'react-icons/fa';
 
 interface AccordionProps {
   title: React.ReactNode;
@@ -20,7 +20,9 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
         aria-expanded={isOpen}
       >
         <span>{title}</span>
-        <span>{isOpen ? <FaChevronDown /> : <FaChevronRight />}</span>
+        <FaChevronRight
+          className={`transition-[rotate] duration-150 ease-[cubic-bezier(0.2,0,0,1)] ${isOpen ? 'rotate-90' : ''}`}
+        />
       </button>
       {isOpen && <div className='p-2 pt-0 pb-4'>{children}</div>}
     </div>

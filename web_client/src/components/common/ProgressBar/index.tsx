@@ -18,7 +18,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ fillPercent, className, onCli
       onClick={onClick}
     >
       <div
-        className='bg-primary rounded-full'
+        className='bg-primary rounded-full transition-[width] duration-300 ease-linear'
         style={{ width: `${fillPercent}%`, height: '100%', position: 'absolute', left: 0, top: 0 }}
       ></div>
       <span style={{ position: 'relative', zIndex: 2 }}>{fillPercent}%</span>
