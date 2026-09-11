@@ -63,9 +63,9 @@ const UpdateModal = ({ isOpen, onClose, info }: UpdateModalProps) => {
                 <span>{t('options.update.majorWarning')}</span>
               </div>
             )}
-            {selectedInfo?.release_notes && (
+            {selectedInfo && (
               <pre className='whitespace-pre-wrap text-sm text-neutral bg-primary/5 p-2 rounded max-h-60 overflow-y-auto'>
-                {selectedInfo.release_notes}
+                {selectedInfo.release_notes || t('options.update.notesUnavailable', { version: selectedInfo.version })}
               </pre>
             )}
           </div>

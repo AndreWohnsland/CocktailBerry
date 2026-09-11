@@ -122,6 +122,14 @@ _Avoid_: payment server, payment backend (use Payment Service)
 A recorded entry in the machine's activity log, identified by an event type and timestamp. Events give the operator visibility into both human-driven actions (Preparation, Cleaning) and system-driven actions (shutdown, reboot, software/OS update). Events are viewed via the admin "events" tile.
 _Avoid_: log entry, audit record, action
 
+**Release**:
+A published version of CocktailBerry, identified by its git tag (e.g. `v4.7.4`). The tag is the Release: a tag exists only for a published Release, and a Release is installed by moving the checkout to its tag. Release notes are a description attached to a Release; they may be unavailable without the Release itself being any less real.
+_Avoid_: version (ambiguous with the locally installed version), GitHub release (the hosting detail, not the concept)
+
+**Update**:
+Moving a machine from its installed Release to a newer one. An Update is **major** when it crosses a major version boundary; major Updates are never applied automatically, the operator chooses them deliberately.
+_Avoid_: upgrade, pull
+
 **Cleaning**:
 A maintenance cycle that flushes selected Bottles with water or cleaner by running their Dispensers. Recorded as its own Event type. Distinct from Preparation: no Cocktail is produced and no Customer is charged.
 _Avoid_: flush, wash, rinse

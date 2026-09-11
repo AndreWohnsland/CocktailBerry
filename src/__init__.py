@@ -28,5 +28,5 @@ ConsumptionEstimationType = Literal["time", "weight"]
 SupportedScaleDriverType = Literal["HX711", "NAU7802"]
 SupportedCarriageType = Literal["NoCarriage"]
 SupportedLedDriverType = Literal["Normal over GPIO", "Normal over I2C", "WSLED"]
-NEEDED_PYTHON_VERSION = (3, 11)
+NEEDED_PYTHON_VERSION = (3, 13)
 FUTURE_PYTHON_VERSION = (3, 13)

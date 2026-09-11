@@ -214,7 +214,9 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if target is None:
             return
         target_info = next((v for v in info.versions if v.version == target), None)
-        release_information = f"{target}\n\n{target_info.release_notes}" if target_info else info.message
+        notes = target_info.release_notes if target_info else ""
+        notes = notes or DP_CONTROLLER.get_translation("update_notes_unavailable", version=target)
+        release_information = f"{target}\n\n{notes}"
         if not DP_CONTROLLER.ask_to_update(release_information):
             return
         updater = Updater()
