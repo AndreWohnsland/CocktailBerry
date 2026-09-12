@@ -3,6 +3,7 @@ from __future__ import annotations
 import atexit
 import datetime
 import http.client as httplib
+import logging
 import os
 import platform
 import re
@@ -15,14 +16,13 @@ from typing import Literal
 
 import distro
 
-from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, LOG_FOLDER, ROOT_PATH, STYLE_FOLDER
-from src.logger_handler import LoggerHandler
+from src.filepath import CUSTOM_STYLE_FILE, CUSTOM_STYLE_SCSS, ROOT_PATH, STYLE_FOLDER
+from src.logger_handler import LogFiles, LoggerHandler
 from src.models import EventType
 
 EXECUTABLE_V1 = ROOT_PATH / "runme.py"
 EXECUTABLE_V2 = ROOT_PATH / "api.py"
 _logger = LoggerHandler("utils")
-_DEBUG_FILE = "debuglog.log"
 
 
 def has_connection() -> bool:
@@ -190,42 +190,45 @@ def update_os() -> None:
         _logger.log_exception(e)
 
 
-def get_log_files() -> list[str]:
-    """Check the logs folder for all existing log files."""
-    return [file.name for file in LOG_FOLDER.glob("*.log")]
+LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR"]
 
 
-def read_log_file(log_name: str, warning_and_higher: bool) -> list[str]:
-    """Read the current selected log file."""
-    log_path = LOG_FOLDER / log_name
-    log_text = log_path.read_text()
+def read_log_file(log_file: LogFiles, min_level: LogLevel = "DEBUG") -> list[str]:
+    """Read the log file, only lines at or above min_level, empty if the file was never written."""
+    if not log_file.path.exists():
+        return []
+    log_text = log_file.path.read_text()
     # Handle debug logs differently, since they save error traces,
     # just display the read in text from log in this case
-    if log_name == _DEBUG_FILE:
+    if log_file == LogFiles.DEBUG:
         return _parse_debug_logs(log_text)
-    return _parse_log(log_text, warning_and_higher)
+    return _parse_log(log_text, min_level)
 
 
-def _parse_log(log_text: str, warning_and_higher: bool) -> list[str]:
+def _parse_log(log_text: str, min_level: LogLevel) -> list[str]:
     """Parse all logs and return display object.
 
     Needs logs from new to old, if same message was already there, skip it.
     """
     data: dict[str, str] = {}
     counter: Counter[str] = Counter()
+    threshold = logging.getLevelNamesMapping()[min_level]
     for line in log_text.splitlines()[::-1]:
         date, message = _parse_log_line(line)
+        if _log_level(message) < threshold:
+            continue
         if message not in data:
             data[message] = date
             counter[message] = 1
         else:
             counter[message] += 1
-    log_list_data = [f"{key} ({counter[key]}x, latest: {value})" for key, value in data.items()]
-    # Filter out DEBUG or INFO msgs
-    if warning_and_higher:
-        accepted = ["WARNING", "ERROR", "CRITICAL"]
-        log_list_data = [x for x in log_list_data if any(a in x for a in accepted)]
-    return log_list_data
+    return [f"{key} ({counter[key]}x, latest: {value})" for key, value in data.items()]
+
+
+def _log_level(message: str) -> int:
+    """Numeric level of a parsed log message (format: 'LEVEL | msg'), unknown levels pass every filter."""
+    level_name = message.split(" | ", maxsplit=1)[0].strip()
+    return logging.getLevelNamesMapping().get(level_name, logging.CRITICAL)
 
 
 def _parse_log_line(line: str) -> tuple[str, str]:

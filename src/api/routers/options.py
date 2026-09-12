@@ -40,7 +40,7 @@ from src.data_utils import generate_consume_data
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import RANDOM_IMAGE_NAME, find_user_cocktail_image, process_image, save_image
-from src.logger_handler import LoggerHandler
+from src.logger_handler import LogFiles, LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
 from src.models import AddonData, ConsumeData, EventType, ResourceInfo, ResourceStats
@@ -50,7 +50,7 @@ from src.service.sumup_payment_service import Err
 from src.shared import NEWS_KEYS
 from src.updater import UpdateInfo, Updater
 from src.utils import (
-    get_log_files,
+    LogLevel,
     get_platform_data,
     has_connection,
     list_available_ssids,
@@ -278,12 +278,9 @@ async def upload_backup(
     return ApiMessage(message="Backup restored successfully")
 
 
-@protected_router.get("/logs", summary="Get the logs")
-async def get_logs(warning_and_higher: bool = False) -> DataResponse[dict[str, list[str]]]:
-    log_data: dict[str, list[str]] = {}
-    for _file in get_log_files():
-        log_data[_file] = read_log_file(_file, warning_and_higher)
-    return DataResponse(data=log_data)
+@protected_router.get("/logs/{log_file}", summary="Get the logs of one log file")
+async def get_logs(log_file: LogFiles, min_level: LogLevel = "DEBUG") -> DataResponse[list[str]]:
+    return DataResponse(data=read_log_file(log_file, min_level))
 
 
 @protected_router.get("/events", summary="Get system events")

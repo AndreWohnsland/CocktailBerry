@@ -5,7 +5,7 @@ import sqlite3
 from datetime import datetime
 from sqlite3 import OperationalError
 
-from src.filepath import BACKUP_FOLDER, DATABASE_PATH, DEFAULT_DATABASE_PATH, LOG_FOLDER
+from src.filepath import BACKUP_FOLDER, DATABASE_PATH, DEFAULT_DATABASE_PATH
 from src.logger_handler import LogFiles, LoggerHandler
 
 _logger = LoggerHandler("update_data_module")
@@ -211,7 +211,7 @@ def add_virgin_counters_to_recipes() -> None:
 def clear_resource_log_file() -> None:
     """Clear the resource log file."""
     _logger.log_event("INFO", "Clearing resource log file")
-    resource_log = LOG_FOLDER / f"{LogFiles.RESOURCES}.log"
+    resource_log = LogFiles.RESOURCES.path
     if resource_log.exists():
         with contextlib.suppress(OSError):
             resource_log.unlink()

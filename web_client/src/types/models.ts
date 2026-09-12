@@ -108,9 +108,8 @@ export interface ApiError {
   bottle?: number;
 }
 
-export interface LogData {
-  data: { [key: string]: string[] };
-}
+export type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR';
+export type LogKey = 'production' | 'service' | 'debug' | 'resources';
 
 export interface EventEntry {
   timestamp: string;

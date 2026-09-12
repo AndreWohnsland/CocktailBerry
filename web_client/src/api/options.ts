@@ -9,7 +9,8 @@ import type {
   DefinedConfigData,
   EventData,
   IssueData,
-  LogData,
+  LogKey,
+  LogLevel,
   ResourceInfo,
   ResourceStats,
   SumupReader,
@@ -135,12 +136,14 @@ export const uploadBackup = async (file: File): Promise<{ message: string }> => 
 };
 
 // Logs and data
-export const getLogs = async (): Promise<LogData> => {
-  return axiosInstance.get<LogData>(`${optionsUrl}/logs`).then((res) => res.data);
+export const getLog = async (logKey: LogKey, minLevel: LogLevel): Promise<string[]> => {
+  return axiosInstance
+    .get<{ data: string[] }>(`${optionsUrl}/logs/${logKey}`, { params: { min_level: minLevel } })
+    .then((res) => res.data.data);
 };
 
-export const useLogs = (): UseQueryResult<LogData, Error> => {
-  return useQuery<LogData, Error>('logs', getLogs);
+export const useLog = (logKey: LogKey, minLevel: LogLevel): UseQueryResult<string[], Error> => {
+  return useQuery<string[], Error>(['logs', logKey, minLevel], () => getLog(logKey, minLevel));
 };
 
 export const getEvents = async (): Promise<EventData> => {
