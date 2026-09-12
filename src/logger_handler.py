@@ -1,6 +1,8 @@
 import logging
 import os
 import sys
+from enum import StrEnum
+from pathlib import Path
 from typing import Literal
 
 from src.filepath import LOG_FOLDER
@@ -8,11 +10,25 @@ from src.filepath import LOG_FOLDER
 _AcceptedLogLevels = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
-class LogFiles:
-    PRODUCTION = "production_logs"
-    SERVICE = "service_logs"
-    DEBUG = "debuglog"
-    RESOURCES = "resource_usage"
+class LogFiles(StrEnum):
+    """Log files the app writes, the value is the key used by the ui and api."""
+
+    PRODUCTION = "production"
+    SERVICE = "service"
+    DEBUG = "debug"
+    RESOURCES = "resources"
+
+    @property
+    def path(self) -> Path:
+        return LOG_FOLDER / _LOG_FILE_NAMES[self]
+
+
+_LOG_FILE_NAMES = {
+    LogFiles.PRODUCTION: "production_logs.log",
+    LogFiles.SERVICE: "service_logs.log",
+    LogFiles.DEBUG: "debuglog.log",
+    LogFiles.RESOURCES: "resource_usage.log",
+}
 
 
 class LoggerHandler:
@@ -20,9 +36,9 @@ class LoggerHandler:
 
     log_folder = LOG_FOLDER
 
-    def __init__(self, logger_name: str, filename: str = LogFiles.PRODUCTION) -> None:
+    def __init__(self, logger_name: str, log_file: LogFiles = LogFiles.PRODUCTION) -> None:
         self.logger_name = logger_name
-        self.path = LoggerHandler.log_folder / f"{filename}.log"
+        self.path = log_file.path
 
         requested_log_level = os.getenv("COCKTAILBERRY_LOG_LEVEL", "INFO").upper()
         level_map = {
@@ -57,7 +73,7 @@ class LoggerHandler:
         # this is used to not log the exception in to the debug log
         # the exception got another format and must be parsed differently
         self._debug_logger = None
-        if filename != LogFiles.DEBUG:
+        if log_file != LogFiles.DEBUG:
             self._debug_logger = LoggerHandler(f"{logger_name}_debug", LogFiles.DEBUG)
 
     def log_event(self, level: _AcceptedLogLevels, message: str) -> None:
