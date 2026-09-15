@@ -9,7 +9,7 @@ requires-python = ">= 3.13"
 dependencies = [
     "gitpython>=3.1.59",
     "requests>=2.34.2",
-    "sumup==0.3.3",
+    "sumup==0.3.4",
     "pyyaml>=6.0.3",
     "typer>=0.27.1",
     "pyfiglet>=1.0.4",
@@ -22,7 +22,7 @@ dependencies = [
     "python-periphery>=2.4.1",
     "sqlalchemy>=2.0.52",
     "alembic>=1.19.1",
-    "pulp>=3.3.2",
+    "pulp[highs]>=3.3.2",
     "stamina>=26.1.0",
     "adafruit-circuitpython-mcp230xx>=2.6.2",
     "adafruit-circuitpython-pcf8574>=1.0.17",
@@ -50,7 +50,7 @@ dev = [
   "pytest>=9.1.1",
   "pytest-cov>=7.1.0",
   "pre-commit>=4.6.2",
-  "ty==0.0.76",
+  "ty==0.0.80",
   "ruff>=0.16.2",
   "zensical>=0.0.59",
 ]
