@@ -141,7 +141,7 @@ def ilp_selection(top_ing_ids: set[int], cocktails: list[Cocktail], n: int) -> t
     # Objective: maximize number of cocktails possible
     model += pulp.lpSum(y[c.id] for c in cocktails)
 
-    model.solve(pulp.PULP_CBC_CMD(msg=False))
+    model.solve(pulp.HiGHS(msg=False))
 
     chosen = {i for i in ing_ids if pulp.value(x[i]) == 1}
     score = sum(1 for c in cocktails if pulp.value(y[c.id]) == 1)
