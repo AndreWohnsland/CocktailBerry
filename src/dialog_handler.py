@@ -88,6 +88,7 @@ allowed_keys = Literal[
     "available_ingredient_updated",
     "backup_created",
     "backup_failed",
+    "backup_restored_and_restart",
     "bottle_calibration_started",
     "bottle_tab_locked",
     "bottle_updated",
