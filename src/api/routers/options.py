@@ -271,13 +271,11 @@ async def upload_backup(
         if extracted_root is None:
             raise HTTPException(400, detail=DH.get_translation("backup_failed", file=VERSION_FILE.name))
 
-        # Check for required files inside the extracted folder
+        # the version file above is what makes this a backup, the rest is optional by definition:
+        # the custom styles only get written by v1, so a v2-only machine never backs them up
         backup_files = [*NEEDED_BACKUP_FILES]
         for name in restored_file:
             backup_files.extend(FILE_SELECTION_MAPPER[name])
-        for needed_file in backup_files:
-            if not (extracted_root / needed_file.name).exists():
-                raise HTTPException(status_code=400, detail=DH.get_translation("backup_failed", file=needed_file.name))
 
         for _file in backup_files:
             source_path = extracted_root / _file.name
