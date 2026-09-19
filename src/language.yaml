@@ -207,6 +207,10 @@ dialog:
     en: 'This seems to be no CocktailBerry backup folder. Please use the right folder. It needs to have some specific files. Did not find {file}.'
     de: 'Ausgewählter Ordner ist kein CocktailBerry Backup. Bitte richtigen Ordner auswählen. Es müssen einige spezifische Dateien enthalten sein. Konnte {file} nicht finden.'
     pl: 'To nie wygląda na folder kopii zapasowej CocktailBerry. Wybierz właściwy folder. Brakuje wymaganych plików. Nie znaleziono {file}.'
+  backup_restored_and_restart:
+    en: 'Backup restored! Backend will be restarted.'
+    de: 'Backup wiederhergestellt! Backend wird neu gestartet.'
+    pl: 'Kopia zapasowa została przywrócona! Backend zostanie uruchomiony ponownie.'
   update_failed:
     en: 'Update failed. Please check the logs for further information.'
     de: 'Update fehlgeschlagen. Bitte schaue in die Logs für mehr Informationen.'

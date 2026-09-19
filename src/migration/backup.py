@@ -8,15 +8,17 @@ from src.filepath import (
 )
 
 # the version.ini file is always required, as it pins the user version and possible needed migration on backup restore
-NEEDED_BACKUP_FILES = [VERSION_FILE]
+# Tuples, not lists: callers build their own selection from these, and an accidental alias + extend
+# used to mutate the module-level list for the lifetime of the process.
+NEEDED_BACKUP_FILES = (VERSION_FILE,)
 # version.ini will always be copied, so it is not needed to be in the list
-OPTIONAL_BACKUP_FILES = [
+OPTIONAL_BACKUP_FILES = (
     CUSTOM_STYLE_FILE,
     CUSTOM_STYLE_SCSS,
     CUSTOM_CONFIG_FILE,
     USER_IMAGE_FOLDER,
     DATABASE_PATH,
-]
+)
 BACKUP_FILES = NEEDED_BACKUP_FILES + OPTIONAL_BACKUP_FILES
 
 

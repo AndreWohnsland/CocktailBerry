@@ -95,13 +95,13 @@ class BackupRestoreWindow(QMainWindow):
         description_string = ", ".join(description)
         if not DP_CONTROLLER.ask_backup_overwrite(description_string):
             return
-        for _file in to_backup + NEEDED_BACKUP_FILES:
-            # needs to differentiate between files and folders
-            # this will also not throw an error if the file does not exist
-            if _file.is_file():
-                shutil.copy(self.backup_path / _file.name, _file)
-            if _file.is_dir():
-                shutil.copytree(self.backup_path / _file.name, _file, dirs_exist_ok=True)
+        for _file in [*to_backup, *NEEDED_BACKUP_FILES]:
+            # the source decides file vs folder: the target may not exist yet in a fresh install
+            source = self.backup_path / _file.name
+            if source.is_file():
+                shutil.copy(source, _file)
+            if source.is_dir():
+                shutil.copytree(source, _file, dirs_exist_ok=True)
         restart_v1()
 
     def _generate_checkboxes(self) -> None:

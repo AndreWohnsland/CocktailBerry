@@ -39,6 +39,7 @@ from src.config.config_manager import shared
 from src.data_utils import generate_consume_data
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
+from src.filepath import VERSION_FILE
 from src.image_utils import RANDOM_IMAGE_NAME, find_user_cocktail_image, process_image, save_image
 from src.logger_handler import LogFiles, LoggerHandler
 from src.machine.controller import MachineController
@@ -229,10 +230,23 @@ def parse_restored_file(
     return data  # type: ignore
 
 
+def _find_backup_root(extracted: Path) -> Path | None:
+    """Return the folder holding the version file within an extracted backup zip.
+
+    The zip may have been unpacked and repacked by the user, which wraps the backup in an
+    extra folder or adds siblings like ``__MACOSX``, so the version file locates the backup
+    instead of the folder layout.
+    """
+    # ponytail: first match wins, a zip nesting two backups picks the shallowest-found one
+    version_file = next(extracted.rglob(VERSION_FILE.name), None)
+    return version_file.parent if version_file else None
+
+
 @protected_router.post("/backup", summary="Restore a backup of CocktailBerry data", dependencies=[not_on_demo])
 async def upload_backup(
     file: Annotated[UploadFile, File(...)],
     restored_file: Annotated[list[Literal["style", "config", "images", "database"]], Depends(parse_restored_file)],
+    background_tasks: BackgroundTasks,
 ) -> ApiMessage:
     file_name = file.filename
     if not file_name:
@@ -253,18 +267,15 @@ async def upload_backup(
             zipf.extractall(tmpdir)
 
         # Detect the extracted root folder
-        extracted_items = [item for item in tmpdir.iterdir() if item.is_dir()]
-        if len(extracted_items) != 1:
-            raise HTTPException(400, detail="Invalid ZIP structure: expected a single root folder")
-        extracted_root = extracted_items[0]
+        extracted_root = _find_backup_root(tmpdir)
+        if extracted_root is None:
+            raise HTTPException(400, detail=DH.get_translation("backup_failed", file=VERSION_FILE.name))
 
-        # Check for required files inside the extracted folder
-        backup_files = NEEDED_BACKUP_FILES
+        # the version file above is what makes this a backup, the rest is optional by definition:
+        # the custom styles only get written by v1, so a v2-only machine never backs them up
+        backup_files = [*NEEDED_BACKUP_FILES]
         for name in restored_file:
             backup_files.extend(FILE_SELECTION_MAPPER[name])
-        for needed_file in backup_files:
-            if not (extracted_root / needed_file.name).exists():
-                raise HTTPException(status_code=400, detail=DH.get_translation("backup_failed", file=needed_file.name))
 
         for _file in backup_files:
             source_path = extracted_root / _file.name
@@ -275,7 +286,9 @@ async def upload_backup(
             elif source_path.is_dir():
                 shutil.copytree(source_path, target_path, dirs_exist_ok=True)
 
-    return ApiMessage(message="Backup restored successfully")
+    # the restored version file may pin an older version, so pending migrations need a restart to run
+    background_tasks.add_task(_restart_task)
+    return ApiMessage(message=DH.get_translation("backup_restored_and_restart"))
 
 
 @protected_router.get("/logs/{log_file}", summary="Get the logs of one log file")
