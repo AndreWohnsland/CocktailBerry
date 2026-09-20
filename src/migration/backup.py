@@ -1,3 +1,7 @@
+import shutil
+from collections.abc import Iterable
+from pathlib import Path
+
 from src.filepath import (
     CUSTOM_CONFIG_FILE,
     CUSTOM_STYLE_FILE,
@@ -30,3 +34,37 @@ FILE_SELECTION_MAPPER = {
     "images": [USER_IMAGE_FOLDER],
     "database": [DATABASE_PATH],
 }
+
+
+def write_backup(folder: Path) -> None:
+    """Copy every backup file the installation currently has into the given folder.
+
+    Absent files are skipped: the custom styles for example only get written by v1,
+    so a machine that only ever ran v2 has none.
+    """
+    for source in BACKUP_FILES:
+        if source.is_file():
+            shutil.copy(source, folder)
+        elif source.is_dir():
+            shutil.copytree(source, folder / source.name)
+
+
+def restore_backup(folder: Path, files: Iterable[Path]) -> None:
+    """Copy the given files from a backup folder back into the installation.
+
+    Mirrors :func:`write_backup` and skips what the backup does not hold.
+    """
+    for target in files:
+        source = folder / target.name
+        if source.is_file():
+            shutil.copy(source, target)
+        elif source.is_dir():
+            shutil.copytree(source, target, dirs_exist_ok=True)
+
+
+def files_for_groups(groups: Iterable[str]) -> list[Path]:
+    """Return the version file plus the files of each selected group."""
+    files = [*NEEDED_BACKUP_FILES]
+    for group in groups:
+        files.extend(FILE_SELECTION_MAPPER[group])
+    return files
