@@ -1,4 +1,3 @@
-import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -17,7 +16,7 @@ from PyQt6.QtWidgets import (
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.migration.backup import FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
+from src.migration.backup import FILE_SELECTION_MAPPER, files_for_groups, restore_backup
 from src.ui.creation_utils import HEADER_FONT, LARGE_FONT, adjust_font, create_button, create_label, create_spacer
 from src.utils import restart_v1
 
@@ -91,31 +90,17 @@ class BackupRestoreWindow(QMainWindow):
 
         Loads the config, custom database and version from the location.
         """
-        to_backup, description = self._get_needed_backup_paths_and_description()
-        description_string = ", ".join(description)
-        if not DP_CONTROLLER.ask_backup_overwrite(description_string):
+        groups, description = self._get_selected_groups_and_description()
+        if not DP_CONTROLLER.ask_backup_overwrite(", ".join(description)):
             return
-        for _file in [*to_backup, *NEEDED_BACKUP_FILES]:
-            # the source decides file vs folder: the target may not exist yet in a fresh install
-            source = self.backup_path / _file.name
-            if source.is_file():
-                shutil.copy(source, _file)
-            if source.is_dir():
-                shutil.copytree(source, _file, dirs_exist_ok=True)
+        restore_backup(self.backup_path, files_for_groups(groups))
         restart_v1()
 
     def _generate_checkboxes(self) -> None:
         """Generate the checkboxes for the backup files."""
         for backup_type, file_paths in FILE_SELECTION_MAPPER.items():
-            # if not all needed files exist in the backup, skip
-            # This should not happen, but if the user tempers with the backup, it might
-            skip = False
-            for _file in file_paths:
-                backup_file = self.backup_path / _file.name
-                if not backup_file.exists():
-                    skip = True
-                    break
-            if skip:
+            # only offer a type the backup can actually deliver, a v2-made backup has no styles
+            if not all((self.backup_path / _file.name).exists() for _file in file_paths):
                 continue
             translation = UI_LANGUAGE.get_translation(backup_type, "backup_window")
             checkbox = QCheckBox(translation)
@@ -130,12 +115,12 @@ class BackupRestoreWindow(QMainWindow):
             container.addItem(QSpacerItem(100, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed))
             self.vbox.addLayout(container)
 
-    def _get_needed_backup_paths_and_description(self) -> tuple[list[Path], list[str]]:
-        """Return the file paths based on user selection."""
-        selected_files: list[Path] = []
+    def _get_selected_groups_and_description(self) -> tuple[list[str], list[str]]:
+        """Return the selected backup types and their translated names."""
+        selected_groups: list[str] = []
         description: list[str] = []
         for backup_type, checkbox in self.config_objects.items():
             if checkbox.isChecked():
-                selected_files.extend(FILE_SELECTION_MAPPER[backup_type])
+                selected_groups.append(backup_type)
                 description.append(UI_LANGUAGE.get_translation(backup_type, "backup_window"))
-        return selected_files, description
+        return selected_groups, description

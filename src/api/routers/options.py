@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import atexit
 import datetime
-import os
 import shutil
 import tempfile
 import time
@@ -14,6 +13,7 @@ from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
+from starlette.background import BackgroundTask
 
 from src.api.api_config import Tags
 from src.api.internal.dependencies import SumupServiceDep
@@ -43,7 +43,7 @@ from src.filepath import VERSION_FILE
 from src.image_utils import RANDOM_IMAGE_NAME, find_user_cocktail_image, process_image, save_image
 from src.logger_handler import LogFiles, LoggerHandler
 from src.machine.controller import MachineController
-from src.migration.backup import BACKUP_FILES, FILE_SELECTION_MAPPER, NEEDED_BACKUP_FILES
+from src.migration.backup import files_for_groups, restore_backup, write_backup
 from src.models import AddonData, ConsumeData, EventType, ResourceInfo, ResourceStats
 from src.programs.addons.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
@@ -192,29 +192,22 @@ async def reset_data_insights() -> ApiMessage:
 @protected_router.get("/backup", summary="Create a backup of CocktailBerry data", dependencies=[not_on_demo])
 async def create_backup() -> FileResponse:
     backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
-    zip_file_name = f"{backup_folder_name}.zip"
-    zip_file_path = Path(tempfile.gettempdir()) / zip_file_name  # Store in the system's temp folder
+    zip_base_path = Path(tempfile.gettempdir()) / backup_folder_name  # Store in the system's temp folder
 
     with tempfile.TemporaryDirectory() as tmp_dirname:
         backup_folder = Path(tmp_dirname) / backup_folder_name
         backup_folder.mkdir()
+        write_backup(backup_folder)
+        zip_file_path = Path(shutil.make_archive(str(zip_base_path), "zip", tmp_dirname, backup_folder_name))
 
-        for _file in BACKUP_FILES:
-            if _file.is_file():
-                shutil.copy(_file, backup_folder)
-            if _file.is_dir():
-                shutil.copytree(_file, backup_folder / _file.name)
-
-        # Create the ZIP file in the temp directory
-        with zipfile.ZipFile(zip_file_path, "w") as zipf:
-            for root, dirs, files in os.walk(backup_folder):
-                for file in files:
-                    file_path = Path(root) / file
-                    zipf.write(file_path, file_path.relative_to(backup_folder.parent))
-
-    # Return the file from the temp directory
+    # The zip outlives the temp dir so it can be sent, delete it once the response is out
     headers = {"Access-Control-Expose-Headers": "Content-Disposition"}
-    return FileResponse(zip_file_path, filename=zip_file_path.name, headers=headers)
+    return FileResponse(
+        zip_file_path,
+        filename=zip_file_path.name,
+        headers=headers,
+        background=BackgroundTask(zip_file_path.unlink, missing_ok=True),
+    )
 
 
 def parse_restored_file(
@@ -273,18 +266,7 @@ async def upload_backup(
 
         # the version file above is what makes this a backup, the rest is optional by definition:
         # the custom styles only get written by v1, so a v2-only machine never backs them up
-        backup_files = [*NEEDED_BACKUP_FILES]
-        for name in restored_file:
-            backup_files.extend(FILE_SELECTION_MAPPER[name])
-
-        for _file in backup_files:
-            source_path = extracted_root / _file.name
-            target_path = _file
-            # Differentiate between files and folders
-            if source_path.is_file():
-                shutil.copy(source_path, target_path)
-            elif source_path.is_dir():
-                shutil.copytree(source_path, target_path, dirs_exist_ok=True)
+        restore_backup(extracted_root, files_for_groups(restored_file))
 
     # the restored version file may pin an older version, so pending migrations need a restart to run
     background_tasks.add_task(_restart_task)

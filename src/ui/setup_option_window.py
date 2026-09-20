@@ -15,7 +15,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
-from src.migration.backup import BACKUP_FILES, NEEDED_BACKUP_FILES
+from src.migration.backup import NEEDED_BACKUP_FILES, write_backup
 from src.models import EventType
 from src.programs.blacklist import BLACKLIST
 from src.programs.calibration import CalibrationScreen
@@ -246,14 +246,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             shutil.rmtree(backup_folder)
         backup_folder.mkdir()
 
-        # copy all files to the backup folder
-        for _file in BACKUP_FILES:
-            # needs to differentiate between files and folders
-            if _file.is_file():
-                shutil.copy(_file, backup_folder)
-            if _file.is_dir():
-                shutil.copytree(_file, backup_folder / _file.name)
-
+        write_backup(backup_folder)
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
     def _upload_backup(self) -> None:
