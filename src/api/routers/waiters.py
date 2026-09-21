@@ -36,7 +36,6 @@ async def get_current_waiter() -> WaiterResponse | None:
 async def logout_current_waiter() -> ApiMessage:
     """Log out the current waiter by clearing shared state and notifying clients."""
     WaiterService().logout_waiter()
-    _notify_waiter_callbacks()
     return ApiMessage(message="Service Personnel logged out")
 
 
@@ -53,12 +52,8 @@ async def create_waiter(data: WaiterCreate) -> WaiterResponse:
     """Register a new waiter with NFC ID, name, and assigned role."""
     DBC = DatabaseCommander()
     waiter = DBC.create_waiter(data.nfc_id, data.name, role_id=data.role_id)
-    response = WaiterResponse.from_db(waiter)
-    # If the newly registered NFC ID is the currently scanned one, update shared state
-    if shared.current_waiter_nfc_id == data.nfc_id:
-        shared.current_waiter = response
-        _notify_waiter_callbacks()
-    return response
+    WaiterService().refresh_current_waiter()
+    return WaiterResponse.from_db(waiter)
 
 
 @protected_router.put("/{nfc_id}", summary="Update a waiter", dependencies=[not_on_demo])
@@ -66,12 +61,8 @@ async def update_waiter(nfc_id: str, data: WaiterUpdate) -> WaiterResponse:
     """Update a waiter's name and/or assigned role."""
     DBC = DatabaseCommander()
     waiter = DBC.update_waiter(nfc_id, name=data.name, role_id=data.role_id)
-    response = WaiterResponse.from_db(waiter)
-    # Update shared state if this is the current waiter
-    if shared.current_waiter_nfc_id == nfc_id:
-        shared.current_waiter = response
-        _notify_waiter_callbacks()
-    return response
+    WaiterService().refresh_current_waiter()
+    return WaiterResponse.from_db(waiter)
 
 
 @protected_router.delete("/{nfc_id}", summary="Delete a waiter", dependencies=[not_on_demo])
@@ -79,10 +70,7 @@ async def delete_waiter(nfc_id: str) -> ApiMessage:
     """Delete a waiter by NFC ID. Unsets current waiter if it matches."""
     DBC = DatabaseCommander()
     DBC.delete_waiter(nfc_id)
-    # Unset current waiter if they were just deleted
-    if shared.current_waiter_nfc_id == nfc_id:
-        shared.current_waiter = None
-        _notify_waiter_callbacks()
+    WaiterService().refresh_current_waiter()
     return ApiMessage(message="Service Personnel deleted successfully")
 
 
@@ -148,10 +136,3 @@ async def websocket_waiter_current(websocket: WebSocket) -> None:
         waiter_service.remove_callback(callback_name)
         with contextlib.suppress(Exception):
             await websocket.close()
-
-
-def _notify_waiter_callbacks() -> None:
-    """Notify waiter service callbacks of state changes (e.g. after CRUD operations)."""
-    if cfg.waiter_mode_active:
-        waiter_service = WaiterService()
-        waiter_service._run_callbacks()

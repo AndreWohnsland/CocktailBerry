@@ -59,16 +59,27 @@ class WaiterService:
         _logger.debug(f"NFC ID read for waiter: {nfc_id}")
         self._cancel_auto_logout_timer()
         shared.current_waiter_nfc_id = nfc_id
-        # Look up waiter in DB
+        # Start auto-logout timer if configured
+        if cfg.WAITER_AUTO_LOGOUT_S > 0:
+            self._start_auto_logout_timer()
+        self.refresh_current_waiter()
+
+    def refresh_current_waiter(self) -> None:
+        """Re-read the logged-in waiter from the DB and notify callbacks.
+
+        Must be called after any waiter or role change: the waiter state carries a
+        snapshot of the role permissions, so an edit elsewhere would otherwise keep
+        granting access by the permissions the waiter held at scan time.
+        """
+        nfc_id = shared.current_waiter_nfc_id
+        if nfc_id is None:
+            return
         waiter = DatabaseCommander().get_waiter_by_nfc_id(nfc_id)
         shared.current_waiter = WaiterResponse.from_db(waiter) if waiter else None
         if waiter:
             _logger.debug(f"Service Personnel found: {waiter.name}")
         else:
             _logger.debug(f"No registered waiter for NFC ID: {nfc_id}")
-        # Start auto-logout timer if configured
-        if cfg.WAITER_AUTO_LOGOUT_S > 0:
-            self._start_auto_logout_timer()
         self._run_callbacks()
 
     def logout_waiter(self) -> None:
