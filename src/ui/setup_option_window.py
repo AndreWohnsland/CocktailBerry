@@ -8,13 +8,11 @@ from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtWidgets import QMainWindow, QPushButton
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DatabaseCommander
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import NEEDED_BACKUP_FILES, create_backup_folder
-from src.models import EventType
 from src.programs.blacklist import BLACKLIST
 from src.programs.calibration import CalibrationScreen
 from src.programs.scale_calibration import ScaleCalibrationScreen
@@ -34,7 +32,7 @@ from src.ui.setup_waiter_window import WaiterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.updater import UpdateInfo, Updater
-from src.utils import get_platform_data, has_connection, update_os
+from src.utils import get_platform_data, has_connection, reboot_machine, shutdown_machine, update_os
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -194,9 +192,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         if self._is_windows("reboot"):
             return
-        DatabaseCommander().save_event(EventType.REBOOT)
-        atexit._run_exitfuncs()  # pylint: disable=protected-access
-        subprocess.run(["sudo", "reboot"], check=False)
+        reboot_machine()
         self.close()
 
     def _shutdown_system(self) -> None:
@@ -205,9 +201,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         if self._is_windows("shutdown"):
             return
-        DatabaseCommander().save_event(EventType.SHUTDOWN)
-        atexit._run_exitfuncs()  # pylint: disable=protected-access
-        subprocess.run(["sudo", "shutdown", "now"], check=False)
+        shutdown_machine()
         self.close()
 
     def _data_insights(self) -> None:

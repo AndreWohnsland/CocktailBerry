@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import asyncio
-import atexit
 import shutil
 import tempfile
 import time
@@ -55,9 +53,11 @@ from src.utils import (
     has_connection,
     list_available_ssids,
     read_log_file,
+    reboot_machine,
     restart_v2,
     set_system_datetime,
     setup_wifi,
+    shutdown_machine,
     update_os,
 )
 
@@ -161,9 +161,7 @@ async def initialize_bottles_endpoint(background_tasks: BackgroundTasks) -> ApiM
 async def reboot_system() -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot reboot on Windows")
-    DatabaseCommander().save_event(EventType.REBOOT)
-    atexit._run_exitfuncs()  # pylint: disable=protected-access
-    await asyncio.create_subprocess_exec("sudo", "reboot")
+    reboot_machine()
     return ApiMessage(message="System rebooting")
 
 
@@ -171,9 +169,7 @@ async def reboot_system() -> ApiMessage:
 async def shutdown_system() -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot shutdown on Windows")
-    DatabaseCommander().save_event(EventType.SHUTDOWN)
-    atexit._run_exitfuncs()  # pylint: disable=protected-access
-    await asyncio.create_subprocess_exec("sudo", "shutdown", "now")
+    shutdown_machine()
     return ApiMessage(message="System shutting down")
 
 

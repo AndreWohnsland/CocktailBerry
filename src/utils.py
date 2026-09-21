@@ -140,6 +140,31 @@ def restart_v2() -> None:
     os.execvp(cmd[0], [*cmd, str(EXECUTABLE_V2), *arguments])
 
 
+def _power_off(event: EventType, command: list[str]) -> None:
+    """Record the event, release the hardware, then hand over to the OS.
+
+    Running the exit handlers is the step that matters: they release the pumps, LEDs and
+    other hardware. Going down without them leaves the machine in an undefined state.
+    """
+    # Import here to avoid circular import
+    from src.database_commander import DatabaseCommander
+
+    DatabaseCommander().save_event(event)
+    # trigger manually, the OS command below will not trigger exit fun.
+    atexit._run_exitfuncs()  # pylint: disable=protected-access
+    subprocess.Popen(command)  # not waited on, the machine is going down anyway
+
+
+def reboot_machine() -> None:
+    """Reboot the machine, releasing the hardware first."""
+    _power_off(EventType.REBOOT, ["sudo", "reboot"])
+
+
+def shutdown_machine() -> None:
+    """Shut the machine down, releasing the hardware first."""
+    _power_off(EventType.SHUTDOWN, ["sudo", "shutdown", "now"])
+
+
 def generate_custom_style_file() -> None:
     """Generate the custom style file, if it does not exist."""
     default_style_file = STYLE_FOLDER / "default.scss"
