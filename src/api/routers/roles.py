@@ -7,6 +7,7 @@ from src.api.internal.utils import not_on_demo
 from src.api.middleware import master_protected_dependency
 from src.api.models import ApiMessage, RoleCreate, RoleResponse, RoleUpdate
 from src.database_commander import DatabaseCommander, ElementNotFoundError, RoleInUseError
+from src.service.waiter_service import WaiterService
 
 router = APIRouter(
     prefix="/roles",
@@ -44,6 +45,8 @@ async def update_role(role_id: int, data: RoleUpdate) -> RoleResponse:
         permissions=data.permissions.model_dump() if data.permissions else None,
         tile_permissions=data.tile_permissions.model_dump() if data.tile_permissions else None,
     )
+    # the logged-in waiter carries a snapshot of its role permissions
+    WaiterService().refresh_current_waiter()
     return RoleResponse.from_db(role)
 
 

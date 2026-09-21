@@ -59,19 +59,7 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
         ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
         if ingredient is None:
             return
-        # need to set amount, otherwise it will be 0
-        ingredient.amount = volume
-
-        cocktail = Cocktail(
-            id=0,
-            name=ingredient_name,
-            alcohol=0,
-            amount=volume,
-            price_per_100_ml=ingredient.cost,
-            enabled=True,
-            virgin_available=True,
-            ingredients=[ingredient],
-        )
+        cocktail = Cocktail.from_ingredient(ingredient, volume)
         result, message, _ = maker.validate_cocktail(cocktail)
         self.close()
 

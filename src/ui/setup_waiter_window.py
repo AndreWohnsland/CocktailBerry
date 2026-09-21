@@ -20,6 +20,7 @@ from src.database_commander import DatabaseCommander, ElementAlreadyExistsError,
 from src.db_models import DbWaiterLog
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
+from src.service.waiter_service import WaiterService
 from src.ui.creation_utils import MEDIUM_FONT, FontSize, adjust_font, create_button, create_label, create_spacer
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_WaiterWindow
@@ -245,6 +246,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         self._create_name_input.clear()
 
         DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_created", "waiter_window"), close_time=5)
+        WaiterService().refresh_current_waiter()
         self._refresh_waiters_list()
 
     def _start_edit_waiter(self, nfc_id: str) -> None:
@@ -274,6 +276,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
             self._cancel_edit()
             return
         DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_updated", "waiter_window"), close_time=5)
+        WaiterService().refresh_current_waiter()
         self._cancel_edit()
         self._refresh_waiters_list()
 
@@ -292,6 +295,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
             DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_not_found", "waiter_window"))
             return
         DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_deleted", "waiter_window"), close_time=5)
+        WaiterService().refresh_current_waiter()
         if self._editing_nfc_id == nfc_id:
             self._cancel_edit()
         self._refresh_waiters_list()
@@ -662,6 +666,8 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         for box in self._role_create_tile_boxes.values():
             box.setChecked(False)
         DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("role_updated", "waiter_window"), close_time=5)
+        # the logged-in waiter carries a snapshot of its role permissions
+        WaiterService().refresh_current_waiter()
         self._update_role_form_mode_labels()
         self._refresh_roles_list()
         self._refresh_waiters_list()

@@ -6,7 +6,8 @@ from importlib import import_module
 from pathlib import Path
 from typing import Any
 
-from src.config.config_types import ConfigInterface
+from src.config.config_manager import CONFIG as cfg
+from src.config.config_types import ConfigClass, ConfigInterface, DictType
 from src.logger_handler import LoggerHandler
 
 
@@ -15,7 +16,7 @@ class BaseAddonEntry:
     """Common fields shared by all extension registry entries."""
 
     name: str
-    config_class: type
+    config_class: type[ConfigClass]
     config_fields: dict[str, ConfigInterface[Any]]
 
 
@@ -27,11 +28,17 @@ class BaseExtensionManager[EntryT: BaseAddonEntry](ABC):
       _import_prefix           - dotted import path prefix (e.g. "addons.hardware")
       _label                  - human-readable label for log messages (e.g. "hardware extension")
       _validate_and_register  - type-specific validation and config entry creation
+
+    Subclasses whose extensions are variants of one discriminated config must also define:
+      _config_key             - the config name to register variants under (e.g. "LED_CONFIG")
+      _shared_fields          - fields every variant of that config carries
     """
 
     _folder: Path
     _import_prefix: str
     _label: str
+    _config_key: str
+    _shared_fields: dict[str, ConfigInterface[Any]]
 
     def __init__(self) -> None:
         self.entries: dict[str, EntryT] = {}
@@ -86,6 +93,17 @@ class BaseExtensionManager[EntryT: BaseAddonEntry](ABC):
         implementation_class: type,
     ) -> None:
         """Validate type-specific base classes and create the registry entry."""
+
+    def build_full_config_fields(self) -> None:
+        """Register every discovered extension as a variant of ``_config_key``.
+
+        Must be called before the config is read, so the new types are known.
+        """
+        self._ensure_loaded()
+        for name, entry in self.entries.items():
+            # shared fields first, so the discriminating *_type field leads the UI
+            full_fields = {**self._shared_fields, **entry.config_fields}
+            cfg.add_discriminator_variant(self._config_key, name, DictType(full_fields, entry.config_class))
 
     def _ensure_loaded(self) -> None:
         """Run discovery once, then mark as loaded."""

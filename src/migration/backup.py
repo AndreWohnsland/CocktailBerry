@@ -1,3 +1,4 @@
+import datetime
 import shutil
 from collections.abc import Iterable
 from pathlib import Path
@@ -10,6 +11,9 @@ from src.filepath import (
     USER_IMAGE_FOLDER,
     VERSION_FILE,
 )
+from src.logger_handler import LoggerHandler
+
+_logger = LoggerHandler("backup")
 
 # the version.ini file is always required, as it pins the user version and possible needed migration on backup restore
 # Tuples, not lists: callers build their own selection from these, and an accidental alias + extend
@@ -34,6 +38,21 @@ FILE_SELECTION_MAPPER = {
     "images": [USER_IMAGE_FOLDER],
     "database": [DATABASE_PATH],
 }
+
+
+def create_backup_folder(location: Path) -> Path:
+    """Create today's backup folder under the given location, fill it, and return it.
+
+    A folder from the same day is replaced rather than merged into: a second backup
+    on one day supersedes the first instead of mixing two states.
+    """
+    folder = location / f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
+    if folder.exists():
+        _logger.log_event("INFO", f"Backup folder {folder.name} already exists, overwriting current data within")
+        shutil.rmtree(folder)
+    folder.mkdir()
+    write_backup(folder)
+    return folder
 
 
 def write_backup(folder: Path) -> None:

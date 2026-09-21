@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-import asyncio
-import atexit
-import datetime
 import shutil
 import tempfile
 import time
 import zipfile
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
@@ -43,7 +40,7 @@ from src.filepath import VERSION_FILE
 from src.image_utils import RANDOM_IMAGE_NAME, find_user_cocktail_image, process_image, save_image
 from src.logger_handler import LogFiles, LoggerHandler
 from src.machine.controller import MachineController
-from src.migration.backup import files_for_groups, restore_backup, write_backup
+from src.migration.backup import create_backup_folder, files_for_groups, restore_backup
 from src.models import AddonData, ConsumeData, EventType, ResourceInfo, ResourceStats
 from src.programs.addons.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
@@ -56,9 +53,11 @@ from src.utils import (
     has_connection,
     list_available_ssids,
     read_log_file,
+    reboot_machine,
     restart_v2,
     set_system_datetime,
     setup_wifi,
+    shutdown_machine,
     update_os,
 )
 
@@ -90,9 +89,14 @@ async def get_options_with_ui_properties() -> dict[str, Any]:
     return cfg.get_config_with_ui_information()
 
 
-def _restart_task() -> None:
+def _after_response(action: Callable[[], None]) -> None:
+    """Run an action that ends the process, once the response had a moment to reach the client.
+
+    Background tasks run after the response is handed to the transport, but not necessarily
+    after the bytes have left the socket, and neither exec nor a reboot waits for them.
+    """
     time.sleep(1)
-    restart_v2()
+    action()
 
 
 @protected_router.post("", summary="Update the options", dependencies=[Depends(only_change_theme_on_demo)])
@@ -104,7 +108,7 @@ async def update_options(options: dict, background_tasks: BackgroundTasks) -> Ap
     # also create a background task to restart the backend after 1 second
     # only do this if more than the theme was changed (theme is handled by the frontend)
     if any(key != "MAKER_THEME" for key in options):
-        background_tasks.add_task(_restart_task)
+        background_tasks.add_task(_after_response, restart_v2)
         return ApiMessage(message=DH.get_translation("options_updated_and_restart"))
     return ApiMessage(message=DH.get_translation("options_updated"))
 
@@ -159,22 +163,18 @@ async def initialize_bottles_endpoint(background_tasks: BackgroundTasks) -> ApiM
 
 
 @protected_router.post("/reboot", summary="Reboot the system", dependencies=[not_on_demo])
-async def reboot_system() -> ApiMessage:
+async def reboot_system(background_tasks: BackgroundTasks) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot reboot on Windows")
-    DatabaseCommander().save_event(EventType.REBOOT)
-    atexit._run_exitfuncs()  # pylint: disable=protected-access
-    await asyncio.create_subprocess_exec("sudo", "reboot")
+    background_tasks.add_task(_after_response, reboot_machine)
     return ApiMessage(message="System rebooting")
 
 
 @protected_router.post("/shutdown", summary="Shutdown the system", dependencies=[not_on_demo])
-async def shutdown_system() -> ApiMessage:
+async def shutdown_system(background_tasks: BackgroundTasks) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot shutdown on Windows")
-    DatabaseCommander().save_event(EventType.SHUTDOWN)
-    atexit._run_exitfuncs()  # pylint: disable=protected-access
-    await asyncio.create_subprocess_exec("sudo", "shutdown", "now")
+    background_tasks.add_task(_after_response, shutdown_machine)
     return ApiMessage(message="System shutting down")
 
 
@@ -191,14 +191,11 @@ async def reset_data_insights() -> ApiMessage:
 
 @protected_router.get("/backup", summary="Create a backup of CocktailBerry data", dependencies=[not_on_demo])
 async def create_backup() -> FileResponse:
-    backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
-    zip_base_path = Path(tempfile.gettempdir()) / backup_folder_name  # Store in the system's temp folder
-
     with tempfile.TemporaryDirectory() as tmp_dirname:
-        backup_folder = Path(tmp_dirname) / backup_folder_name
-        backup_folder.mkdir()
-        write_backup(backup_folder)
-        zip_file_path = Path(shutil.make_archive(str(zip_base_path), "zip", tmp_dirname, backup_folder_name))
+        backup_folder = create_backup_folder(Path(tmp_dirname))
+        # the zip is built outside the temp dir so it survives long enough to be sent
+        zip_base_path = Path(tempfile.gettempdir()) / backup_folder.name
+        zip_file_path = Path(shutil.make_archive(str(zip_base_path), "zip", tmp_dirname, backup_folder.name))
 
     # The zip outlives the temp dir so it can be sent, delete it once the response is out
     headers = {"Access-Control-Expose-Headers": "Content-Disposition"}
@@ -269,7 +266,7 @@ async def upload_backup(
         restore_backup(extracted_root, files_for_groups(restored_file))
 
     # the restored version file may pin an older version, so pending migrations need a restart to run
-    background_tasks.add_task(_restart_task)
+    background_tasks.add_task(_after_response, restart_v2)
     return ApiMessage(message=DH.get_translation("backup_restored_and_restart"))
 
 
@@ -357,11 +354,17 @@ async def check_internet_connection() -> dict[str, str | bool]:
     }
 
 
+def _update_os_and_reboot() -> None:
+    """Update the OS and reboot into it, the same flow the v1 option window runs."""
+    if update_os():
+        reboot_machine()
+
+
 @protected_router.post("/update/system", summary="Update the system", dependencies=[not_on_demo])
 async def update_system(background_tasks: BackgroundTasks) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot update system on Windows")
-    background_tasks.add_task(update_os)
+    background_tasks.add_task(_update_os_and_reboot)
     return ApiMessage(message="System update started")
 
 

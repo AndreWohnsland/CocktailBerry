@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.database_commander import DB_COMMANDER
 from src.display_controller import DP_CONTROLLER
@@ -97,19 +96,10 @@ def renew_bottles(w: MainScreen, bottles: list[int]) -> None:
     """Renews the bottles at given slot, flush the tubes if needed."""
     DB_COMMANDER.set_bottle_volumelevel_to_max(bottles)
     set_fill_level_bars(w)
-    ingredients = []
-    # check if any of those slots have a tube volume defined
-    for num in bottles:
-        ing = DB_COMMANDER.get_ingredient_at_bottle(num)
-        if ing is None:
-            continue
-        pump_config = cfg.PUMP_CONFIG[num - 1]
-        if pump_config.tube_volume > 0:
-            ing.amount = pump_config.tube_volume
-            ingredients.append(ing)
-    # if there is at least one tube volume defined, let the user decide if the tubes get flushed
+    mc = MachineController()
+    ingredients = mc.tube_flush_ingredients(bottles)
+    # only ask when there is something to flush
     if ingredients and DP_CONTROLLER.ask_to_flush_tubes():
-        mc = MachineController()
         mc.make_cocktail(w, ingredients, "renew", False)
     DP_CONTROLLER.say_bottles_renewed()
 

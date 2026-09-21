@@ -1,22 +1,16 @@
 from __future__ import annotations
 
-import atexit
-import datetime
-import shutil
-import subprocess
 from typing import TYPE_CHECKING
 
 from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtWidgets import QMainWindow, QPushButton
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DatabaseCommander
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
-from src.migration.backup import NEEDED_BACKUP_FILES, write_backup
-from src.models import EventType
+from src.migration.backup import NEEDED_BACKUP_FILES, create_backup_folder
 from src.programs.blacklist import BLACKLIST
 from src.programs.calibration import CalibrationScreen
 from src.programs.scale_calibration import ScaleCalibrationScreen
@@ -36,7 +30,7 @@ from src.ui.setup_waiter_window import WaiterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.updater import UpdateInfo, Updater
-from src.utils import get_platform_data, has_connection, update_os
+from src.utils import get_platform_data, has_connection, reboot_machine, shutdown_machine, update_os
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -196,9 +190,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         if self._is_windows("reboot"):
             return
-        DatabaseCommander().save_event(EventType.REBOOT)
-        atexit._run_exitfuncs()  # pylint: disable=protected-access
-        subprocess.run(["sudo", "reboot"], check=False)
+        reboot_machine()
         self.close()
 
     def _shutdown_system(self) -> None:
@@ -207,9 +199,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         if self._is_windows("shutdown"):
             return
-        DatabaseCommander().save_event(EventType.SHUTDOWN)
-        atexit._run_exitfuncs()  # pylint: disable=protected-access
-        subprocess.run(["sudo", "shutdown", "now"], check=False)
+        shutdown_machine()
         self.close()
 
     def _data_insights(self) -> None:
@@ -236,17 +226,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         location = DP_CONTROLLER.ask_for_backup_location()
         if not location:
             return
-        backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
-        backup_folder = location / backup_folder_name
-
-        # Logs if the backup folder already exists
-        # also deletes the folder if it already exists
-        if backup_folder.exists():
-            _logger.log_event("INFO", "Backup folder for today already exists, overwriting current data within")
-            shutil.rmtree(backup_folder)
-        backup_folder.mkdir()
-
-        write_backup(backup_folder)
+        backup_folder = create_backup_folder(location)
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
     def _upload_backup(self) -> None:
@@ -306,10 +286,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if self._is_windows("update system"):
             return
 
-        self._worker: CallableWorker[None] = run_with_spinner(
+        self._worker: CallableWorker[bool] = run_with_spinner(
             update_os,
             parent=self,
-            on_finish=lambda _: self._finish_update_worker(),
+            on_finish=self._finish_update_worker,
         )
 
     def _update_software(self) -> None:
@@ -328,10 +308,12 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if not updater.update(selected):
             DP_CONTROLLER.say_update_failed()
 
-    def _finish_update_worker(self) -> None:
-        """End the spinner, checks if installation was successful."""
-        atexit._run_exitfuncs()  # pylint: disable=protected-access
-        subprocess.run(["sudo", "reboot"], check=False)
+    def _finish_update_worker(self, updated: bool) -> None:
+        """Reboot into the updated system, or report that the update did not go through."""
+        if not updated:
+            DP_CONTROLLER.say_update_failed()
+            return
+        reboot_machine()
 
     def _is_windows(self, action: str) -> bool:
         """Linux things cannot be done on windows.

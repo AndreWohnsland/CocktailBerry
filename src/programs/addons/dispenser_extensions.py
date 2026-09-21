@@ -3,9 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import SHARED_PUMP_FIELDS
-from src.config.config_types import BasePumpConfig, ConfigInterface, DictType
+from src.config.config_types import BasePumpConfig, ConfigInterface
 from src.filepath import DISPENSER_ADDON_FOLDER
 from src.machine.dispensers.base import BaseDispenser
 from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionManager
@@ -25,6 +24,8 @@ class DispenserExtensionManager(BaseExtensionManager[DispenserAddonEntry]):
     _folder = DISPENSER_ADDON_FOLDER
     _import_prefix = "addons.dispensers"
     _label = "dispenser extension"
+    _config_key = "PUMP_CONFIG"
+    _shared_fields = SHARED_PUMP_FIELDS
 
     def _validate_and_register(
         self,
@@ -50,23 +51,6 @@ class DispenserExtensionManager(BaseExtensionManager[DispenserAddonEntry]):
             implementation_class=implementation_class,
         )
         self._logger.info(f"Loaded dispenser extension: {name}")
-
-    def build_full_config_fields(self) -> None:
-        """Build full config fields for all extensions and register them as PUMP_CONFIG variants.
-
-        Must be called before config is read, so the new dispenser types are known.
-        """
-        self._ensure_loaded()
-        if not self.entries:
-            return
-
-        for name, entry in self.entries.items():
-            full_fields: dict[str, ConfigInterface[Any]] = {}
-            # Add shared base fields first (pump_type comes first in the UI)
-            full_fields.update(SHARED_PUMP_FIELDS)
-            # Add user-defined fields after shared ones
-            full_fields.update(entry.config_fields)
-            cfg.add_discriminator_variant("PUMP_CONFIG", name, DictType(full_fields, entry.config_class))
 
 
 DISPENSER_ADDONS = DispenserExtensionManager()
