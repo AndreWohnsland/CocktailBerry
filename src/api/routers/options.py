@@ -4,7 +4,7 @@ import shutil
 import tempfile
 import time
 import zipfile
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
@@ -89,9 +89,14 @@ async def get_options_with_ui_properties() -> dict[str, Any]:
     return cfg.get_config_with_ui_information()
 
 
-def _restart_task() -> None:
+def _after_response(action: Callable[[], None]) -> None:
+    """Run an action that ends the process, once the response had a moment to reach the client.
+
+    Background tasks run after the response is handed to the transport, but not necessarily
+    after the bytes have left the socket, and neither exec nor a reboot waits for them.
+    """
     time.sleep(1)
-    restart_v2()
+    action()
 
 
 @protected_router.post("", summary="Update the options", dependencies=[Depends(only_change_theme_on_demo)])
@@ -103,7 +108,7 @@ async def update_options(options: dict, background_tasks: BackgroundTasks) -> Ap
     # also create a background task to restart the backend after 1 second
     # only do this if more than the theme was changed (theme is handled by the frontend)
     if any(key != "MAKER_THEME" for key in options):
-        background_tasks.add_task(_restart_task)
+        background_tasks.add_task(_after_response, restart_v2)
         return ApiMessage(message=DH.get_translation("options_updated_and_restart"))
     return ApiMessage(message=DH.get_translation("options_updated"))
 
@@ -158,18 +163,18 @@ async def initialize_bottles_endpoint(background_tasks: BackgroundTasks) -> ApiM
 
 
 @protected_router.post("/reboot", summary="Reboot the system", dependencies=[not_on_demo])
-async def reboot_system() -> ApiMessage:
+async def reboot_system(background_tasks: BackgroundTasks) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot reboot on Windows")
-    reboot_machine()
+    background_tasks.add_task(_after_response, reboot_machine)
     return ApiMessage(message="System rebooting")
 
 
 @protected_router.post("/shutdown", summary="Shutdown the system", dependencies=[not_on_demo])
-async def shutdown_system() -> ApiMessage:
+async def shutdown_system(background_tasks: BackgroundTasks) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot shutdown on Windows")
-    shutdown_machine()
+    background_tasks.add_task(_after_response, shutdown_machine)
     return ApiMessage(message="System shutting down")
 
 
@@ -261,7 +266,7 @@ async def upload_backup(
         restore_backup(extracted_root, files_for_groups(restored_file))
 
     # the restored version file may pin an older version, so pending migrations need a restart to run
-    background_tasks.add_task(_restart_task)
+    background_tasks.add_task(_after_response, restart_v2)
     return ApiMessage(message=DH.get_translation("backup_restored_and_restart"))
 
 
