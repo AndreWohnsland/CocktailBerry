@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # This is an RFID extension skeleton.
-# For more information see: https://docs.cocktailberry.org/hardware-extensions/#rfid
+# For more information see: https://software.cocktailberry.org/hardware-extensions/#rfid
 # Your custom extension needs four exports:
 #   EXTENSION_NAME - unique name shown in the rfid type dropdown
 #   CONFIG_FIELDS  - dict of extra config fields (beyond the shared BaseRfidConfig fields)

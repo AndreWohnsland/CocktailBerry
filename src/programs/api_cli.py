@@ -19,7 +19,7 @@ def api(
 
     Can be used as an alternative way to control the machine, for example over an external program or a web ui.
     The FastAPI server will be started at the given port.
-    See also https://docs.cocktailberry.org/web/.
+    See also https://software.cocktailberry.org/web/.
     """
     if ctx.invoked_subcommand is not None:
         return

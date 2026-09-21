@@ -267,7 +267,7 @@ fi
 
 echo "~~ Everything should be set now! Have fun with CocktailBerry :) ~~"
 echo "> Made by Andre Wohnsland and contributors with <3"
-echo "> Documentation is found at: https://docs.cocktailberry.org/"
+echo "> Documentation is found at: https://software.cocktailberry.org/"
 echo "> Source code at: https://github.com/AndreWohnsland/CocktailBerry"
 echo "> If you want to set up your microservice, check the docks for a complete guide. Docker and compose should already be installed."
 echo "> You can use the CocktailBerry CLI for an interactive setup. Use 'python ~/CocktailBerry/runme.py setup-microservice' to start."

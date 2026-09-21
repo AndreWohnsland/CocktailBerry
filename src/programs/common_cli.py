@@ -80,7 +80,7 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
         If the units are not in ml, please provide the conversion factor into ml.
         The file should contain the cocktail name, followed by ingredient data (amount, name).
         For further information regarding the file structure,
-        please see https://docs.cocktailberry.org/commands/#importing-recipes-from-file.
+        please see https://software.cocktailberry.org/commands/#importing-recipes-from-file.
         """
         importer(path, conversion, no_unit)
 
@@ -91,7 +91,7 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
         After this action, there will be no recipes or ingredients in your local CocktailBerry data.
         A backup of your local database is created before deleting.
         Use this if you want to build your own custom database and not use any of the supplied data.
-        See also: https://docs.cocktailberry.org/commands/#clearing-local-database.
+        See also: https://software.cocktailberry.org/commands/#clearing-local-database.
         """
         clear_local_database()
 
@@ -102,7 +102,7 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
         The file is saved under the addons folder.
         File name will be the name converted to lower case, space are replaced with underscores
         and stripped of special characters.
-        For more information see https://docs.cocktailberry.org/addons/#creating-addons.
+        For more information see https://software.cocktailberry.org/addons/#creating-addons.
         """
         generate_skeleton_for("addon", addon_name)
 
@@ -180,7 +180,7 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
         A compose file will be created in the home directory, if this command was not already run once.
         If this file already exists, the values will be replaced with the provided ones.
         If you are using compose version 1, please specify the flag.
-        For more context, see https://docs.cocktailberry.org/advanced/#installation-of-services.
+        For more context, see https://software.cocktailberry.org/advanced/#installation-of-services.
         """
         setup_service(api_key, hook_endpoint, hook_header, use_v1)
 
@@ -194,7 +194,7 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
 
         You can use english [en], german [de] or polish [pl] as language.
         Will run the frontend at localhost:8050 (http://localhost:8050), backend at localhost:8080 (http://localhost:8080).
-        See also https://docs.cocktailberry.org/advanced/#dashboard-with-teams.
+        See also https://software.cocktailberry.org/advanced/#dashboard-with-teams.
         """
         setup_teams(language)
 
@@ -205,7 +205,7 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
         This will switch back to the Qt setup for CocktailBerry.
         This is an alternative setup and overwrites the current app.
         The web interface will be removed.
-        See also https://docs.cocktailberry.org/web/.
+        See also https://software.cocktailberry.org/web/.
         """
         if _platform_data.system == "Windows":
             print("Web setup is not supported on Windows")

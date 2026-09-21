@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # This is a hardware extension skeleton.
-# For more information see: https://docs.cocktailberry.org/hardware-extensions/#dispensers
+# For more information see: https://software.cocktailberry.org/hardware-extensions/#dispensers
 # Your custom extension needs four exports:
 #   EXTENSION_NAME - unique name shown in the hardware type dropdown
 #   CONFIG_FIELDS  - dict of extra config fields (beyond the shared BasePumpConfig fields)

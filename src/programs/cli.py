@@ -36,7 +36,7 @@ def main(
     """Start the cocktail program.
 
     If you want to debug your microservice, you can use the --debug flag.
-    For more information visit https://docs.cocktailberry.org/ or https://github.com/AndreWohnsland/CocktailBerry.
+    For more information visit https://software.cocktailberry.org/ or https://github.com/AndreWohnsland/CocktailBerry.
     """
     if ctx.invoked_subcommand is not None:
         return
@@ -71,7 +71,7 @@ def api(port: int = typer.Option(8000, "--port", "-p", help="Port for the FastAP
 
     Can be used as an alternative way to control the machine, for example over an external program or a web ui.
     The FastAPI server will be started at the given port.
-    See also https://docs.cocktailberry.org/web/.
+    See also https://software.cocktailberry.org/web/.
     """
     run_api(port)
 

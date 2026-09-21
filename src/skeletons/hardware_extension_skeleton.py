@@ -8,7 +8,7 @@ from src.programs.addons import BaseHardwareExtension
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # This is a hardware extension skeleton.
-# For more information see: https://docs.cocktailberry.org/hardware-extensions/#hardware-context-extensions
+# For more information see: https://software.cocktailberry.org/hardware-extensions/#hardware-context-extensions
 # Your custom extension needs four exports:
 #   EXTENSION_NAME - unique name for this hardware extension
 #   CONFIG_FIELDS  - dict of config fields for GUI configuration
