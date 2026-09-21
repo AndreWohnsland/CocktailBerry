@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import atexit
 import contextlib
+from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, Self, TypeGuard
 
 from src.logger_handler import LoggerHandler
@@ -121,6 +122,28 @@ class MachineController:
         """Return True if at least one connected pump has a tube volume > 0."""
         return any(p.tube_volume > 0 for p in cfg.PUMP_CONFIG[: cfg.MAKER_NUMBER_BOTTLES])
 
+    @staticmethod
+    def tube_flush_ingredients(bottle_numbers: Iterable[int] | None = None) -> list[Ingredient]:
+        """Return what to pump to fill the tubes of the given slots, amount set to the tube volume.
+
+        ``None`` covers every connected bottle. Slots without a tube volume or without an
+        ingredient are skipped, so an empty list means there is nothing to flush.
+        """
+        if bottle_numbers is None:
+            bottle_numbers = range(1, cfg.MAKER_NUMBER_BOTTLES + 1)
+        db = DatabaseCommander()
+        ingredients = []
+        for num in bottle_numbers:
+            tube_volume = cfg.PUMP_CONFIG[num - 1].tube_volume
+            if tube_volume <= 0:
+                continue
+            ing = db.get_ingredient_at_bottle(num)
+            if ing is None:
+                continue
+            ing.amount = tube_volume
+            ingredients.append(ing)
+        return ingredients
+
     def initialize_bottles(self, w: MainScreen | None) -> None:
         """Prime the tubes of all connected pumps that have a tube volume defined.
 
@@ -128,16 +151,7 @@ class MachineController:
         assigned and a tube volume > 0. Only removes the air gap, so the fill level
         is left untouched (the liquid stays in the system, it is not spent).
         """
-        db = DatabaseCommander()
-        ingredients = []
-        for num in range(1, cfg.MAKER_NUMBER_BOTTLES + 1):
-            if cfg.PUMP_CONFIG[num - 1].tube_volume <= 0:
-                continue
-            ing = db.get_ingredient_at_bottle(num)
-            if ing is None:
-                continue
-            ing.amount = cfg.PUMP_CONFIG[num - 1].tube_volume
-            ingredients.append(ing)
+        ingredients = self.tube_flush_ingredients()
         if ingredients:
             self.make_cocktail(w, ingredients, "initialize", is_cocktail=False, use_carriage=False)
 

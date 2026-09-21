@@ -41,20 +41,9 @@ async def refill_bottle(
         )
     DBC = DatabaseCommander()
     DBC.set_bottle_volumelevel_to_max(bottle_numbers)
-    ingredients = []
-    # check if any of those slots have a tube volume defined
-    if flush_tubes:
-        for num in bottle_numbers:
-            ing = DBC.get_ingredient_at_bottle(num)
-            pump_config = cfg.PUMP_CONFIG[num - 1]
-            if ing is None:
-                continue
-            if pump_config.tube_volume > 0:
-                ing.amount = pump_config.tube_volume
-                ingredients.append(ing)
-    # if there is at least one tube volume defined, flush the tubes
+    mc = MachineController()
+    ingredients = mc.tube_flush_ingredients(bottle_numbers) if flush_tubes else []
     if ingredients:
-        mc = MachineController()
         background_tasks.add_task(mc.make_cocktail, None, ingredients, "renew", False)
     return ApiMessage(message=f"{DH.get_translation('bottles_renewed')} {bottle_numbers}")
 

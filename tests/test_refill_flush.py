@@ -15,6 +15,7 @@ from src.models import Ingredient, PrepareResult
 @pytest.fixture
 def _refill_setup(monkeypatch: pytest.MonkeyPatch, db_commander: DatabaseCommander) -> None:
     monkeypatch.setattr("src.api.routers.bottles.DatabaseCommander", lambda: db_commander)
+    monkeypatch.setattr("src.machine.controller.DatabaseCommander", lambda: db_commander)
     # bottle 1 holds an ingredient (White Rum) and gets a tube volume, so a flush is possible
     monkeypatch.setattr(cfg.PUMP_CONFIG[0], "tube_volume", 20)
     # other tests may leave a cocktail in progress in the shared state
