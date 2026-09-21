@@ -349,11 +349,17 @@ async def check_internet_connection() -> dict[str, str | bool]:
     }
 
 
+def _update_os_and_reboot() -> None:
+    """Update the OS and reboot into it, the same flow the v1 option window runs."""
+    if update_os():
+        reboot_machine()
+
+
 @protected_router.post("/update/system", summary="Update the system", dependencies=[not_on_demo])
 async def update_system(background_tasks: BackgroundTasks) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot update system on Windows")
-    background_tasks.add_task(update_os)
+    background_tasks.add_task(_update_os_and_reboot)
     return ApiMessage(message="System update started")
 
 

@@ -180,7 +180,8 @@ def time_print(msg: str) -> None:
     print(f"{now.strftime('%H:%M:%S')}:  {msg}")
 
 
-def update_os() -> None:
+def update_os() -> bool:
+    """Update the OS with the distribution's package manager, return whether it succeeded."""
     distribution = distro.id().lower()
 
     if distribution in ["raspbian", "debian", "ubuntu"]:
@@ -201,7 +202,7 @@ def update_os() -> None:
         command = "sudo pacman -Syu --noconfirm"
     else:
         _logger.error(f"Unsupported Linux distribution: {distribution}")
-        return
+        return False
 
     try:
         subprocess.run(command, shell=True, check=True)
@@ -213,6 +214,8 @@ def update_os() -> None:
     except subprocess.CalledProcessError as e:
         _logger.error("Could not update system, see debug log for more information.")
         _logger.log_exception(e)
+        return False
+    return True
 
 
 LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR"]

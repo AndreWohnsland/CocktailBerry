@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import atexit
-import subprocess
 from typing import TYPE_CHECKING
 
 from PyQt6.QtGui import QResizeEvent
@@ -288,10 +286,10 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if self._is_windows("update system"):
             return
 
-        self._worker: CallableWorker[None] = run_with_spinner(
+        self._worker: CallableWorker[bool] = run_with_spinner(
             update_os,
             parent=self,
-            on_finish=lambda _: self._finish_update_worker(),
+            on_finish=self._finish_update_worker,
         )
 
     def _update_software(self) -> None:
@@ -310,10 +308,12 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         if not updater.update(selected):
             DP_CONTROLLER.say_update_failed()
 
-    def _finish_update_worker(self) -> None:
-        """End the spinner, checks if installation was successful."""
-        atexit._run_exitfuncs()  # pylint: disable=protected-access
-        subprocess.run(["sudo", "reboot"], check=False)
+    def _finish_update_worker(self, updated: bool) -> None:
+        """Reboot into the updated system, or report that the update did not go through."""
+        if not updated:
+            DP_CONTROLLER.say_update_failed()
+            return
+        reboot_machine()
 
     def _is_windows(self, action: str) -> bool:
         """Linux things cannot be done on windows.
