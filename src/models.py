@@ -3,7 +3,7 @@ import functools
 import math
 from dataclasses import dataclass, field
 from enum import Enum, StrEnum
-from typing import Any
+from typing import Any, Self
 
 from pydantic import BaseModel, computed_field, field_validator
 from pydantic.dataclasses import dataclass as pydantic_dataclass
@@ -155,6 +155,26 @@ class Cocktail:
         self.adjusted_ingredients = copy.deepcopy(self.ingredients)
         self.adjusted_alcohol = self.alcohol
         self.adjusted_amount = self.amount
+
+    @classmethod
+    def from_ingredient(cls, ingredient: Ingredient, amount: int) -> Self:
+        """Wrap a single ingredient as a cocktail, so it can go through the preparation flow.
+
+        ``id=0`` marks it as belonging to no recipe, which is what keeps the recipe counter
+        from being incremented for it. The alcohol stays 0 because the wrapper is not a
+        recipe: ``is_virgin`` and ``is_naturally_virgin`` ignore single-ingredient cocktails.
+        """
+        ingredient.amount = amount
+        return cls(
+            id=0,
+            name=ingredient.name,
+            alcohol=0,
+            amount=amount,
+            price_per_100_ml=ingredient.cost,
+            enabled=True,
+            virgin_available=True,
+            ingredients=[ingredient],
+        )
 
     @property
     def display_name(self) -> str:

@@ -137,17 +137,7 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
             status_code=400,
             detail=DH.get_translation("ingredient_not_connected"),
         )
-    ingredient.amount = amount
-    cocktail = Cocktail(
-        id=0,
-        name=ingredient.name,
-        alcohol=0,
-        amount=amount,
-        price_per_100_ml=ingredient.cost,
-        enabled=True,
-        virgin_available=True,
-        ingredients=[ingredient],
-    )
+    cocktail = Cocktail.from_ingredient(ingredient, amount)
     raise_on_validation_not_okay(cocktail)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
