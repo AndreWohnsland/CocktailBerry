@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from src.config.config_types import BaseCarriageConfig, ConfigInterface, IntType
+from src.config.config_types import (BaseCarriageConfig, ConfigInterface,
+                                     IntType)
 from src.config.validators import build_number_limiter
 from src.logger_handler import LoggerHandler
 from src.machine.carriage.base import CarriageInterface
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 
 # Auto created by CocktailBerry CLI version VERSION_HOLDER
 # This is a carriage extension skeleton.
-# For more information see: https://docs.cocktailberry.org/hardware-extensions/#carriages
+# For more information see: https://software.cocktailberry.org/hardware-extensions/#carriages
 # Your custom extension needs four exports:
 #   EXTENSION_NAME - unique name shown in the carriage type dropdown
 #   CONFIG_FIELDS  - dict of extra config fields (beyond the shared BaseCarriageConfig fields)

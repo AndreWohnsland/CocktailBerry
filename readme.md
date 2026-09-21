@@ -15,14 +15,14 @@
 
 CocktailBerry is a Python and Qt (or React for v2) based app for a cocktail machine on the Raspberry Pi.
 It enables you to build your own, fully customized machine, while still being able to use the identical software on each machine.
-Detailed information, installation steps and SetUp can be found at the [Official Documentation](https://docs.cocktailberry.org).
+Detailed information, installation steps and SetUp can be found at the [Software Documentation](https://software.cocktailberry.org).
 
 <a href="https://demo.cocktailberry.org/"><img src="docs/pictures/demobutton.png" alt="v2-demo" height="70"/></a>
 <a href="https://cocktailberry.org/"><img src="docs/pictures/websitebutton.png" alt="website" height="70"/></a>
 
 Supercharge your next party to a whole new level! 🐍 + 🍸 = 🥳
 
-<a href="https://docs.cocktailberry.org/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
+<a href="https://software.cocktailberry.org/"><img src="docs/pictures/docbutton.png" alt="documentation" height="70"/></a>
 <a href="https://stats-cocktailberry.streamlit.app/"><img src="docs/pictures/dashboardbutton.png" alt="dashboard" height="70"/></a>
 <a href="https://hardware.cocktailberry.org/"><img src="docs/pictures/hardwarebutton.png" alt="hardware" height="70"/></a>
 
@@ -41,7 +41,7 @@ Like this project? Give it a star on GitHub! ⭐
 
 CocktailBerry currently comes in two versions, v1 and v2.
 The v1 is the stable version which ships the QT app as a single application.
-[v2](https://docs.cocktailberry.org/web/) is the new version with a separate API and UI, which offers more flexibility, but might have some issues on built-in touchscreens.
+[v2](https://software.cocktailberry.org/web/) is the new version with a separate API and UI, which offers more flexibility, but might have some issues on built-in touchscreens.
 Both versions have the full feature set listed below.
 
 CocktailBerry can do:

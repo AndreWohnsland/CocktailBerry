@@ -46,12 +46,12 @@ const AboutModal = ({ isOpen, onClose, aboutInfo }: AboutModalProps) => {
         <footer className='bg-background px-4 rounded-b-lg flex justify-center'>
           <span className='text-neutral mr-2'>{t('options.documentation')}</span>
           <a
-            href='https://docs.cocktailberry.org'
+            href='https://cocktailberry.org'
             target='_blank'
             rel='noopener noreferrer'
             className='inline-flex items-center gap-2 text-primary hover:underline'
           >
-            docs.cocktailberry.org
+            cocktailberry.org
             <FaExternalLinkAlt size={16} />
           </a>
         </footer>
