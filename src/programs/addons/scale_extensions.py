@@ -3,9 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import SHARED_SCALE_FIELDS
-from src.config.config_types import BaseScaleConfig, ConfigInterface, DictType
+from src.config.config_types import BaseScaleConfig, ConfigInterface
 from src.filepath import SCALE_ADDON_FOLDER
 from src.machine.scale.base import ScaleInterface
 from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionManager
@@ -25,6 +24,8 @@ class ScaleExtensionManager(BaseExtensionManager[ScaleAddonEntry]):
     _folder = SCALE_ADDON_FOLDER
     _import_prefix = "addons.scales"
     _label = "scale extension"
+    _config_key = "SCALE_CONFIG"
+    _shared_fields = SHARED_SCALE_FIELDS
 
     def _validate_and_register(
         self,
@@ -50,23 +51,6 @@ class ScaleExtensionManager(BaseExtensionManager[ScaleAddonEntry]):
             implementation_class=implementation_class,
         )
         self._logger.info(f"Loaded scale extension: {name}")
-
-    def build_full_config_fields(self) -> None:
-        """Build full config fields for all extensions and register them as SCALE_CONFIG variants.
-
-        Must be called before config is read, so the new scale types are known.
-        """
-        self._ensure_loaded()
-        if not self.entries:
-            return
-
-        for name, entry in self.entries.items():
-            full_fields: dict[str, ConfigInterface[Any]] = {}
-            # Add shared base fields first (scale_type comes first in the UI)
-            full_fields.update(SHARED_SCALE_FIELDS)
-            # Add user-defined fields after shared ones
-            full_fields.update(entry.config_fields)
-            cfg.add_discriminator_variant("SCALE_CONFIG", name, DictType(full_fields, entry.config_class))
 
 
 SCALE_ADDONS = ScaleExtensionManager()

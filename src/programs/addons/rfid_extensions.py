@@ -3,9 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import SHARED_RFID_FIELDS
-from src.config.config_types import BaseRfidConfig, ConfigInterface, DictType
+from src.config.config_types import BaseRfidConfig, ConfigInterface
 from src.filepath import RFID_ADDON_FOLDER
 from src.machine.rfid.base import RFIDInterface
 from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionManager
@@ -25,6 +24,8 @@ class RfidExtensionManager(BaseExtensionManager[RfidAddonEntry]):
     _folder = RFID_ADDON_FOLDER
     _import_prefix = "addons.rfid"
     _label = "rfid extension"
+    _config_key = "RFID_CONFIG"
+    _shared_fields = SHARED_RFID_FIELDS
 
     def _validate_and_register(
         self,
@@ -50,23 +51,6 @@ class RfidExtensionManager(BaseExtensionManager[RfidAddonEntry]):
             implementation_class=implementation_class,
         )
         self._logger.info(f"Loaded rfid extension: {name}")
-
-    def build_full_config_fields(self) -> None:
-        """Build full config fields for all extensions and register them as RFID_CONFIG variants.
-
-        Must be called before config is read, so the new rfid types are known.
-        """
-        self._ensure_loaded()
-        if not self.entries:
-            return
-
-        for name, entry in self.entries.items():
-            full_fields: dict[str, ConfigInterface[Any]] = {}
-            # Add shared base fields first (rfid_type comes first in the UI)
-            full_fields.update(SHARED_RFID_FIELDS)
-            # Add user-defined fields after shared ones
-            full_fields.update(entry.config_fields)
-            cfg.add_discriminator_variant("RFID_CONFIG", name, DictType(full_fields, entry.config_class))
 
 
 RFID_ADDONS = RfidExtensionManager()
