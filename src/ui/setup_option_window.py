@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import atexit
-import datetime
-import shutil
 import subprocess
 from typing import TYPE_CHECKING
 
@@ -15,7 +13,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
-from src.migration.backup import NEEDED_BACKUP_FILES, write_backup
+from src.migration.backup import NEEDED_BACKUP_FILES, create_backup_folder
 from src.models import EventType
 from src.programs.blacklist import BLACKLIST
 from src.programs.calibration import CalibrationScreen
@@ -236,17 +234,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         location = DP_CONTROLLER.ask_for_backup_location()
         if not location:
             return
-        backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
-        backup_folder = location / backup_folder_name
-
-        # Logs if the backup folder already exists
-        # also deletes the folder if it already exists
-        if backup_folder.exists():
-            _logger.log_event("INFO", "Backup folder for today already exists, overwriting current data within")
-            shutil.rmtree(backup_folder)
-        backup_folder.mkdir()
-
-        write_backup(backup_folder)
+        backup_folder = create_backup_folder(location)
         DP_CONTROLLER.say_backup_created(str(backup_folder))
 
     def _upload_backup(self) -> None:

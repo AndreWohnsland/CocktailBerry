@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import atexit
-import datetime
 import shutil
 import tempfile
 import time
@@ -43,7 +42,7 @@ from src.filepath import VERSION_FILE
 from src.image_utils import RANDOM_IMAGE_NAME, find_user_cocktail_image, process_image, save_image
 from src.logger_handler import LogFiles, LoggerHandler
 from src.machine.controller import MachineController
-from src.migration.backup import files_for_groups, restore_backup, write_backup
+from src.migration.backup import create_backup_folder, files_for_groups, restore_backup
 from src.models import AddonData, ConsumeData, EventType, ResourceInfo, ResourceStats
 from src.programs.addons.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
@@ -191,14 +190,11 @@ async def reset_data_insights() -> ApiMessage:
 
 @protected_router.get("/backup", summary="Create a backup of CocktailBerry data", dependencies=[not_on_demo])
 async def create_backup() -> FileResponse:
-    backup_folder_name = f"CocktailBerry_backup_{datetime.datetime.now().strftime('%Y-%m-%d')}"
-    zip_base_path = Path(tempfile.gettempdir()) / backup_folder_name  # Store in the system's temp folder
-
     with tempfile.TemporaryDirectory() as tmp_dirname:
-        backup_folder = Path(tmp_dirname) / backup_folder_name
-        backup_folder.mkdir()
-        write_backup(backup_folder)
-        zip_file_path = Path(shutil.make_archive(str(zip_base_path), "zip", tmp_dirname, backup_folder_name))
+        backup_folder = create_backup_folder(Path(tmp_dirname))
+        # the zip is built outside the temp dir so it survives long enough to be sent
+        zip_base_path = Path(tempfile.gettempdir()) / backup_folder.name
+        zip_file_path = Path(shutil.make_archive(str(zip_base_path), "zip", tmp_dirname, backup_folder.name))
 
     # The zip outlives the temp dir so it can be sent, delete it once the response is out
     headers = {"Access-Control-Expose-Headers": "Content-Disposition"}
