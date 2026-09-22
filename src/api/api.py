@@ -35,7 +35,7 @@ from src.startup_checks import (
     is_python_deprecated,
 )
 from src.updater import UpdateInfo, Updater
-from src.utils import get_platform_data
+from src.utils import get_platform_data, restart_v2
 
 _logger = LoggerHandler("CocktailBerry_API")
 
@@ -44,7 +44,8 @@ def _startup_auto_update() -> None:
     """Auto-update at startup, but only within the current major.
 
     Major bumps are left for a deliberate manual choice via the options window.
-    update() downloads the matching web build itself before resetting the code.
+    update() downloads the matching web build itself before resetting the code, so the
+    restart has to follow: without it the old code keeps serving the new web client.
     """
     update_info = can_update()
     if update_info.status != UpdateInfo.Status.UPDATES_AVAILABLE:
@@ -55,7 +56,8 @@ def _startup_auto_update() -> None:
         return
     _logger.info(f"Update available, performing update to {target}...")
     try:
-        Updater().update(target)
+        if Updater().update(target):
+            restart_v2()
     except Exception as e:
         _logger.error(f"Update failed: {e}")
         _logger.log_exception(e)

@@ -1,3 +1,5 @@
+import axios from 'axios';
+import i18next from 'i18next';
 import { toast } from 'react-toastify';
 import { confirm as confirmDialog } from './confirmDialog';
 import type { Cocktail, IssueData } from './types/models';
@@ -44,7 +46,19 @@ export const askYesNo = async (message: string, yesLabel?: string, noLabel?: str
   return confirmDialog(message, yesLabel, noLabel);
 };
 
+// A request that never reached the backend (it is restarting, down, or the gateway gave up)
+// carries no API detail, only an axios status line. Say that in the user's language instead.
+// Only axios rejections qualify: any other throw is a bug and must keep its own message.
+export const isBackendUnreachable = (error: unknown): boolean => {
+  if (!axios.isAxiosError(error)) return false;
+  const status = error.response?.status;
+  return status === undefined || status >= 500;
+};
+
 const extractErrorMessage = (error: unknown): string => {
+  if (isBackendUnreachable(error)) {
+    return i18next.t('errors.backendUnreachable');
+  }
   const err = error as { response?: { data?: { detail?: string } }; detail?: string; message?: string };
   let errorMessage = err?.response?.data?.detail ?? err?.detail ?? err?.message ?? error ?? 'An error occurred';
   if (typeof errorMessage === 'object') {

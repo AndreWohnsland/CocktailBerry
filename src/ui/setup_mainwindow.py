@@ -56,6 +56,7 @@ from src.ui.setup_refill_dialog import RefillDialog
 from src.ui.setup_team_window import TeamScreen
 from src.ui_elements import Ui_MainWindow
 from src.updater import UpdateInfo, Updater
+from src.utils import restart_v1
 
 if TYPE_CHECKING:
     from src.api.models import PermissionKey
@@ -222,6 +223,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         updater = Updater()
         if not updater.update(target):
             DP_CONTROLLER.say_update_failed()
+            return
+        restart_v1()
 
     def _connection_check(self) -> None:
         """Check if there is an internet connection.

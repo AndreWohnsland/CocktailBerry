@@ -94,6 +94,8 @@ def set_system_datetime(datetime_string: str) -> None:
 
 def _common_restart() -> tuple[list[str], str, str | None]:
     """Run atexit functions, returns program arguments, python and uv executable path."""
+    _logger.info("Restarting the application!")
+    _logger.log_event("INFO", "Restarting program")
     arguments = sys.argv[1:]
     uv_executable = os.getenv("UV")  # will only return if run with uv
     python = sys.executable

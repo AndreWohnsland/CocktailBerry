@@ -148,7 +148,11 @@
       "major": "major",
       "majorWarning": "This is a major update and may contain breaking changes. Check the changelog first.",
       "updateTo": "Update to {{version}}",
-      "notesUnavailable": "The release notes could not be loaded, but update {{version}} is available."
+      "notesUnavailable": "The release notes could not be loaded, but update {{version}} is available.",
+      "restarting": "Update applied, restarting",
+      "restartingDescription": "CocktailBerry is restarting with the new version. This page reloads by itself once it is back.",
+      "takingLonger": "This is taking longer than usual. Bigger updates may need to install dependencies, which can take several minutes.",
+      "reloadNow": "Reload now"
     },
     "wifi": "WiFi",
     "waiters": "Waiters",
@@ -350,5 +354,8 @@
       "hardware": "Hardware",
       "maintenance": "Management"
     }
+  },
+  "errors": {
+    "backendUnreachable": "Connection to CocktailBerry lost. Please check that CocktailBerry is running and you are in the same network!"
   }
 }

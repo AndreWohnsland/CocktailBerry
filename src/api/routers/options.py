@@ -381,7 +381,7 @@ async def list_software_updates() -> UpdateAvailability:
 
 
 @protected_router.post("/update/software", summary="Update CocktailBerry software", dependencies=[not_on_demo])
-async def update_software(update: UpdateRequest) -> ApiMessage:
+async def update_software(update: UpdateRequest, background_tasks: BackgroundTasks) -> ApiMessage:
     updater = Updater()
     info = updater.check_for_updates()
     if info.status == UpdateInfo.Status.UP_TO_DATE:
@@ -393,7 +393,8 @@ async def update_software(update: UpdateRequest) -> ApiMessage:
         raise HTTPException(400, detail=f"Version {update.version} is not an available update")
     if not updater.update(update.version):
         raise HTTPException(400, detail=DH.get_translation("update_failed"))
-    return ApiMessage(message="Software update started")
+    background_tasks.add_task(_after_response, restart_v2)
+    return ApiMessage(message=DH.get_translation("software_updated_and_restart"))
 
 
 @router.post("/password/master/validate", summary="Validate Master Password")

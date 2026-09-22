@@ -148,7 +148,11 @@
       "major": "duża",
       "majorWarning": "To jest duża aktualizacja i może zawierać niekompatybilne zmiany. Najpierw sprawdź changelog.",
       "updateTo": "Aktualizuj do {{version}}",
-      "notesUnavailable": "Nie udało się wczytać informacji o wydaniu, ale aktualizacja {{version}} jest dostępna."
+      "notesUnavailable": "Nie udało się wczytać informacji o wydaniu, ale aktualizacja {{version}} jest dostępna.",
+      "restarting": "Aktualizacja zastosowana, trwa ponowne uruchamianie",
+      "restartingDescription": "CocktailBerry uruchamia się ponownie z nową wersją. Ta strona przeładuje się sama, gdy będzie znowu dostępna.",
+      "takingLonger": "To trwa dłużej niż zwykle. Większe aktualizacje mogą wymagać instalacji zależności, co może potrwać kilka minut.",
+      "reloadNow": "Przeładuj teraz"
     },
     "wifi": "WiFi",
     "waiters": "Obsługa",
@@ -350,5 +354,8 @@
       "hardware": "Sprzęt",
       "maintenance": "Zarządzanie"
     }
+  },
+  "errors": {
+    "backendUnreachable": "Utracono połączenie z CocktailBerry. Sprawdź, czy CocktailBerry działa i czy jesteś w tej samej sieci!"
   }
 }

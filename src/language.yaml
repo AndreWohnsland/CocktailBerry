@@ -211,6 +211,10 @@ dialog:
     en: 'Backup restored! Backend will be restarted.'
     de: 'Backup wiederhergestellt! Backend wird neu gestartet.'
     pl: 'Kopia zapasowa została przywrócona! Backend zostanie uruchomiony ponownie.'
+  software_updated_and_restart:
+    en: 'Update applied! Backend will be restarted.'
+    de: 'Update eingespielt! Backend wird neu gestartet.'
+    pl: 'Aktualizacja została zastosowana! Backend zostanie uruchomiony ponownie.'
   update_failed:
     en: 'Update failed. Please check the logs for further information.'
     de: 'Update fehlgeschlagen. Bitte schaue in die Logs für mehr Informationen.'

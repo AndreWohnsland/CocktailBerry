@@ -30,7 +30,7 @@ from src.ui.setup_waiter_window import WaiterWindow
 from src.ui.setup_wifi_window import WiFiWindow
 from src.ui_elements import Ui_Optionwindow
 from src.updater import UpdateInfo, Updater
-from src.utils import get_platform_data, has_connection, reboot_machine, shutdown_machine, update_os
+from src.utils import get_platform_data, has_connection, reboot_machine, restart_v1, shutdown_machine, update_os
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -307,6 +307,8 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             return
         if not updater.update(selected):
             DP_CONTROLLER.say_update_failed()
+            return
+        restart_v1()
 
     def _finish_update_worker(self, updated: bool) -> None:
         """Reboot into the updated system, or report that the update did not go through."""

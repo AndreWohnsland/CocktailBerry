@@ -337,7 +337,12 @@ const OptionWindow = () => {
         </div>
       </div>
       <AboutModal isOpen={isAboutModalOpen} onClose={() => setIsAboutModalOpen(false)} aboutInfo={aboutInfo} />
-      <UpdateModal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)} info={updateInfo} />
+      <UpdateModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        info={updateInfo}
+        currentVersion={aboutInfo?.version}
+      />
     </>
   );
 };
