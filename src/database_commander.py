@@ -39,6 +39,8 @@ if TYPE_CHECKING:
 _logger = LoggerHandler("database_module")
 
 VIRGIN_NAME_TEMPLATE = "(V) {}"
+# resource series are kept at this many points, both when reading and when compacting the table
+MAX_RESOURCE_POINTS = 400
 
 
 class DatabaseTransactionError(Exception):
@@ -770,18 +772,40 @@ class DatabaseCommander:
             session.add(usage)
             session.commit()
 
-    def get_resource_stats(self, session_number: int, max_raw_points: int = 500) -> ResourceStats:
+    @staticmethod
+    def _numbered_resource_rows(max_points: int, session_number: int | None = None) -> sqlalchemy.Subquery:
+        """Build a per session row numbering that flags an evenly spaced subset of at most max_points.
+
+        Both reading and compacting thin the series out with this rule, so a compacted session
+        is exactly what the reader would have shown anyway. Keeping every k-th row lands a bit
+        below max_points (2880 rows keep 360), the alternative is arithmetic in python, which
+        is what this avoids: the numbering never leaves SQLite, so a session of any length costs
+        the same memory.
+        """
+        row_number = func.row_number().over(partition_by=DbResourceUsage.session, order_by=DbResourceUsage.id)
+        total = func.count().over(partition_by=DbResourceUsage.session)
+        step = (total + max_points - 1) / max_points  # integer ceil, SQLite floors the division
+        query = sqlalchemy.select(
+            DbResourceUsage.id,
+            DbResourceUsage.cpu_usage,
+            DbResourceUsage.ram_usage,
+            ((row_number - 1) % step == 0).label("keep"),
+        )
+        if session_number is not None:
+            query = query.where(DbResourceUsage.session == session_number)
+        return query.subquery()
+
+    def get_resource_stats(self, session_number: int, max_raw_points: int = MAX_RESOURCE_POINTS) -> ResourceStats:
         """Get the resource usage for a specific session.
 
         Aggregated stats (min, max, mean) are computed in SQL to avoid memory issues.
-        Raw data points are sampled if they exceed max_raw_points.
+        Raw data points are thinned out by the same rule the compaction uses, so at most
+        max_raw_points of them ever reach python, no matter how long the session ran.
         """
         with self.session_scope() as session_scope:
             # Compute aggregated stats directly in SQL - memory efficient
             agg_query = session_scope.query(
                 func.count(DbResourceUsage.id).label("total"),
-                func.min(DbResourceUsage.id).label("min_id"),
-                func.max(DbResourceUsage.id).label("max_id"),
                 func.min(DbResourceUsage.cpu_usage).label("min_cpu"),
                 func.max(DbResourceUsage.cpu_usage).label("max_cpu"),
                 func.avg(DbResourceUsage.cpu_usage).label("avg_cpu"),
@@ -795,33 +819,12 @@ class DatabaseCommander:
             if total_count == 0:
                 return ResourceStats(0, 0, 0, 0, 0, 0, 0, [], [])
 
-            # Fetch raw data points, sampling if necessary
-            if total_count <= max_raw_points:
-                # Small enough to fetch all
-                data = (
-                    session_scope.query(DbResourceUsage.cpu_usage, DbResourceUsage.ram_usage)
-                    .filter(DbResourceUsage.session == session_number)
-                    .order_by(DbResourceUsage.id)
-                    .all()
-                )
-            else:
-                # Sample data points evenly by selecting evenly spaced IDs
-                min_id: int = agg_result.min_id
-                max_id: int = agg_result.max_id
-                id_range = max_id - min_id
-                step = id_range / (max_raw_points - 1) if max_raw_points > 1 else id_range
-                sampled_ids = [int(min_id + i * step) for i in range(max_raw_points)]
-
-                # Single query to fetch all sampled points
-                data = (
-                    session_scope.query(DbResourceUsage.cpu_usage, DbResourceUsage.ram_usage)
-                    .filter(
-                        DbResourceUsage.session == session_number,
-                        DbResourceUsage.id.in_(sampled_ids),
-                    )
-                    .order_by(DbResourceUsage.id)
-                    .all()
-                )
+            numbered = self._numbered_resource_rows(max_raw_points, session_number)
+            data = session_scope.execute(
+                sqlalchemy.select(numbered.c.cpu_usage, numbered.c.ram_usage)
+                .where(numbered.c.keep)
+                .order_by(numbered.c.id)
+            ).all()
 
             cpu_values = [d.cpu_usage for d in data]
             ram_values = [d.ram_usage for d in data]
@@ -857,7 +860,7 @@ class DatabaseCommander:
             data = session.query(DbResourceUsage.session).order_by(DbResourceUsage.session.desc()).first()
             return data[0] if data else 0
 
-    def cleanup_resource_stats(self, keep_sessions: int = 50) -> int:
+    def cleanup_resource_stats(self, keep_sessions: int = 20) -> int:
         """Remove old resource usage sessions, keeping only the latest N sessions.
 
         Returns the number of deleted records.
@@ -877,6 +880,40 @@ class DatabaseCommander:
                 .filter(DbResourceUsage.session.in_(sessions_to_delete))
                 .delete(synchronize_session="fetch")
             )
+
+    def compact_resource_stats(self, max_points: int = MAX_RESOURCE_POINTS) -> int:
+        """Thin every stored session down to at most max_points, returns the number of deleted rows.
+
+        A long session logs thousands of rows nobody ever sees, the view shows max_points of them.
+        Dropping the rest keeps the historical shape of the series and costs the min/max/mean of
+        the removed points, which is the trade for a database that stays small enough to back up.
+        Only call this at startup: a session that is still being logged would lose its history.
+        """
+        numbered = self._numbered_resource_rows(max_points)
+        with self.session_scope() as session:
+            return (
+                session.query(DbResourceUsage)
+                .filter(DbResourceUsage.id.in_(sqlalchemy.select(numbered.c.id).where(~numbered.c.keep)))
+                .delete(synchronize_session=False)
+            )
+
+    def vacuum_if_fragmented(self, free_page_ratio: float = 0.25) -> bool:
+        """Rebuild the database if too much of the file is unused, returns whether it ran.
+
+        SQLite never shrinks a file on its own, deleted pages go on a freelist and wait for the
+        next insert. That is fine for the sessions rotating through, but not after a one time
+        purge, where the freed pages would never be claimed again and stay in every backup.
+        The vacuum needs an exclusive lock and free disk space of about the database size, so it
+        belongs to the startup, before anything else touches the database.
+        """
+        with self.engine.connect().execution_options(isolation_level="AUTOCOMMIT") as connection:
+            page_count = connection.exec_driver_sql("PRAGMA page_count").scalar_one()
+            free_pages = connection.exec_driver_sql("PRAGMA freelist_count").scalar_one()
+            if not page_count or free_pages / page_count < free_page_ratio:
+                return False
+            _logger.info(f"Rebuilding the database, {free_pages} of {page_count} pages are unused")
+            connection.exec_driver_sql("VACUUM")
+            return True
 
     def get_most_used_ingredient_ids(self, k: int | None = None) -> set[int]:
         with self.session_scope() as session:
