@@ -151,6 +151,8 @@ class AboutInfo(BaseModel):
     platform: str
     project_name: str
     version: str
+    # changes whenever the process does, which is how the client tells a restart apart from a hiccup
+    startup_time: float
 
 
 class UpdateVersion(BaseModel):

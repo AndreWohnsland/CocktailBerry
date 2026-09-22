@@ -139,7 +139,7 @@
     "systemResourceUsage": "Zużycie zasobów",
     "updateCocktailBerry": "Aktualizuj CocktailBerry",
     "updateSystem": "Aktualizuj system",
-    "updateTheSystem": "Czy chcesz zaktualizować system?",
+    "updateTheSystem": "Czy zaktualizować system? Działa w tle, może potrwać do 15 minut i po zakończeniu uruchomi maszynę ponownie. W tym czasie nie przygotowuj koktajlu.",
     "update": {
       "title": "Aktualizuj CocktailBerry",
       "checking": "Sprawdzanie aktualizacji...",
@@ -350,5 +350,14 @@
       "hardware": "Sprzęt",
       "maintenance": "Zarządzanie"
     }
+  },
+  "errors": {
+    "backendUnreachable": "Utracono połączenie z CocktailBerry. Sprawdź, czy CocktailBerry działa i czy jesteś w tej samej sieci!"
+  },
+  "restart": {
+    "title": "CocktailBerry uruchamia się ponownie",
+    "description": "CocktailBerry uruchamia się ponownie. Ta strona przeładuje się sama, gdy będzie znowu dostępna.",
+    "takingLonger": "To trwa dłużej niż zwykle. Większe zmiany mogą wymagać instalacji zależności, co może potrwać kilka minut.",
+    "reloadNow": "Przeładuj teraz"
   }
 }

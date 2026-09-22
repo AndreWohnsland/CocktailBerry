@@ -14,8 +14,9 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error?.response?.data !== undefined) {
-      // Reformat the error message to include response data
+    // Only unwrap structured API errors. A gateway that cannot reach the backend answers
+    // with an HTML page, which must not end up in a toast as the error message.
+    if (typeof error?.response?.data === 'object' && error.response.data !== null) {
       return Promise.reject(error.response.data);
     }
     return Promise.reject(error);

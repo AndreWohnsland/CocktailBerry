@@ -26,6 +26,8 @@ COMMON_SERVER_BLOCK = """server_name localhost;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Master-Key $http_x_master_key;
         proxy_set_header X-Maker-Key $http_x_maker_key;
+        # a software update downloads and applies inside the request, which blows past the 60s default
+        proxy_read_timeout 300s;
     }
 """
 

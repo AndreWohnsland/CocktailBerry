@@ -139,7 +139,7 @@
     "systemResourceUsage": "Ressourcen Auslastung",
     "updateCocktailBerry": "CocktailBerry aktualisieren",
     "updateSystem": "System aktualisieren",
-    "updateTheSystem": "Möchtest du das System aktualisieren?",
+    "updateTheSystem": "Soll das System aktualisiert werden? Es läuft im Hintergrund, kann bis zu 15 Minuten dauern und startet die Maschine danach neu. Starte in der Zwischenzeit keinen Cocktail.",
     "update": {
       "title": "CocktailBerry aktualisieren",
       "checking": "Suche nach Updates...",
@@ -350,5 +350,14 @@
       "hardware": "Hardware",
       "maintenance": "Verwaltung"
     }
+  },
+  "errors": {
+    "backendUnreachable": "Verbindung zu CocktailBerry verloren. Bitte prüfe, ob CocktailBerry läuft und du im selben Netzwerk bist!"
+  },
+  "restart": {
+    "title": "CocktailBerry startet neu",
+    "description": "CocktailBerry startet neu. Diese Seite lädt sich von selbst neu, sobald es wieder da ist.",
+    "takingLonger": "Das dauert länger als üblich. Größere Änderungen müssen eventuell Abhängigkeiten installieren, das kann einige Minuten dauern.",
+    "reloadNow": "Jetzt neu laden"
   }
 }

@@ -471,6 +471,7 @@ export interface AboutInfo {
   platform: string;
   project_name: string;
   version: string;
+  startup_time: number;
 }
 
 export interface UpdateVersion {

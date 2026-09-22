@@ -94,6 +94,8 @@ def set_system_datetime(datetime_string: str) -> None:
 
 def _common_restart() -> tuple[list[str], str, str | None]:
     """Run atexit functions, returns program arguments, python and uv executable path."""
+    _logger.info("Restarting the application!")
+    _logger.log_event("INFO", "Restarting program")
     arguments = sys.argv[1:]
     uv_executable = os.getenv("UV")  # will only return if run with uv
     python = sys.executable
@@ -126,12 +128,13 @@ def restart_v2() -> None:
     - Standard: uv run --no-dev runme.py [arguments]
     - Root privilege: uv sync --no-dev && sudo -E path/env/python runme.py [arguments]
     """
-    arguments, python, uv_executable = _common_restart()
-    # skip out if this is the dev program (will not work restart here)
-    # This is because we run it with fastapi dev instead the python runme.py ...
-    if len(arguments) != 0 and arguments[0] == "dev":
+    # Bail out before _common_restart: it runs the exit handlers, which release the
+    # hardware. Returning after that would leave a still-serving process torn down.
+    # Dev runs via `fastapi dev` instead of `python runme.py`, so exec cannot reproduce it.
+    if sys.argv[1:2] == ["dev"]:
         _logger.debug("Will not restart because of dev program.")
         return
+    arguments, python, uv_executable = _common_restart()
     cmd = [uv_executable, "run", "--no-dev"] if uv_executable else [python]
     if "SUDO_USER" in os.environ:
         cmd = ["sudo", "-E", python]

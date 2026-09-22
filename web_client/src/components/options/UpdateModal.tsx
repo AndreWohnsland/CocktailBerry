@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import Modal from 'react-modal';
 import { updateSoftware } from '../../api/options';
+import { UPDATE_PATIENCE_MS, useRestartWait } from '../../providers/RestartWaitProvider';
 import type { UpdateAvailability, UpdateVersion } from '../../types/models';
-import { executeAndShow } from '../../utils';
+import { executeAndShow, isBackendUnreachable } from '../../utils';
 import CloseButton from '../common/CloseButton';
 import DropDown from '../common/DropDown';
 import TextHeader from '../common/TextHeader';
@@ -26,6 +27,7 @@ const pickDefault = (versions: UpdateVersion[]): string => {
 const UpdateModal = ({ isOpen, onClose, info }: UpdateModalProps) => {
   const { t } = useTranslation();
   const [selected, setSelected] = useState('');
+  const { startRestartWait } = useRestartWait();
 
   const versions = useMemo(() => info?.versions ?? [], [info]);
 
@@ -42,8 +44,19 @@ const UpdateModal = ({ isOpen, onClose, info }: UpdateModalProps) => {
 
   const handleUpdate = async () => {
     if (!selected) return;
-    const success = await executeAndShow(() => updateSoftware(selected));
-    if (success) onClose();
+    const applied = await executeAndShow(async () => {
+      try {
+        return await updateSoftware(selected);
+      } catch (error) {
+        // A backend that vanished mid-apply is restarting, not failing: the wait settles it.
+        // Only a structured API error is a real failure.
+        if (!isBackendUnreachable(error)) throw error;
+        return { message: t('restart.title') };
+      }
+    });
+    if (!applied) return;
+    startRestartWait(UPDATE_PATIENCE_MS);
+    onClose();
   };
 
   return (

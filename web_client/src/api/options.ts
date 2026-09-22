@@ -1,3 +1,4 @@
+import type { AxiosRequestConfig } from 'axios';
 import { type UseQueryResult, useQuery } from 'react-query';
 import type {
   AboutInfo,
@@ -43,6 +44,12 @@ export const getConfigValues = async (): Promise<DefinedConfigData> => {
 
 export const useConfig = (): UseQueryResult<ConfigDataWithUiInfo, Error> => {
   return useQuery<ConfigDataWithUiInfo, Error>('options', getConfig);
+};
+
+// The backend only restarts when something other than the theme changed, so the theme-only call
+// is its own function rather than a shape the caller has to get right.
+export const updateTheme = async (theme: string): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(optionsUrl, { MAKER_THEME: theme }).then((res) => res.data);
 };
 
 export const updateOptions = async (options: ConfigData): Promise<{ message: string }> => {
@@ -254,8 +261,8 @@ export const useResourceStats = (sessionNumber: number): UseQueryResult<Resource
 };
 
 // About info
-export const getAboutInfo = async (): Promise<AboutInfo> => {
-  return axiosInstance.get<AboutInfo>('/info').then((res) => res.data);
+export const getAboutInfo = async (config?: AxiosRequestConfig): Promise<AboutInfo> => {
+  return axiosInstance.get<AboutInfo>('/info', config).then((res) => res.data);
 };
 
 export const useAboutInfo = (): UseQueryResult<AboutInfo, Error> => {

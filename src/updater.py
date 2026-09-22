@@ -16,7 +16,6 @@ from src.migration.migrator import Migrator
 from src.migration.setup_web import download_web_client
 from src.migration.version import Version
 from src.models import EventType
-from src.utils import restart_v1, restart_v2
 
 _logger = LoggerHandler("updater_module")
 _GITHUB_RELEASE_URL = "https://api.github.com/repos/andrewohnsland/cocktailberry/releases"
@@ -69,7 +68,11 @@ class Updater:
         self.repo = Repo(self.git_path)
 
     def update(self, version: str) -> bool:
-        """Update to the given release tag.
+        """Apply the given release tag to the local checkout.
+
+        The caller restarts the program afterwards, which is what actually loads the
+        new code. Keeping that out of here lets v2 send its response before the
+        process is replaced.
 
         Order matters so a failure never leaves backend and served frontend diverged:
         fetch first (network preflight, tag present locally), then for v2 download
@@ -105,14 +108,6 @@ class Updater:
             return False
         # Save the software update event
         DatabaseCommander().save_event(EventType.SOFTWARE_UPDATE, version)
-        # restart the program, this will not work if executed over IDE
-        _logger.info("Restarting the application!")
-        _logger.log_event("INFO", "Restarting program to reload updated code")
-        if shared.is_v1:
-            restart_v1()
-        else:
-            restart_v2()
-        # technically, this will not be reached, but makes type checker happy and is easier for the logic
         return True
 
     def check_for_updates(self) -> UpdateInfo:
