@@ -11,6 +11,7 @@ import configparser
 import contextlib
 import importlib.util
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -31,6 +32,7 @@ from src.filepath import (
 from src.logger_handler import LoggerHandler
 from src.migration.export_data import add_export_tables_to_db, migrate_csv_export_data_to_db
 from src.migration.launcher import launcher_path, switch_launcher
+from src.migration.setup_web import MAX_BODY_SIZE_DIRECTIVE, NGINX_SITE_CONFIG
 from src.migration.update_data import (
     add_cost_consumption_column_to_ingredients,
     add_disallow_pump_back_column_to_ingredients,
@@ -141,6 +143,7 @@ class Migrator:
                 _migrate_global_reversion_to_split_variants,
                 _migrate_normal_led_to_split_variants,
             ],
+            "4.9.0": [_raise_nginx_upload_limit],
         }
 
         for version, actions in version_actions.items():
@@ -551,6 +554,42 @@ def _combine_led_setting_into_one_config() -> None:
 
     with CUSTOM_CONFIG_FILE.open("w", encoding="UTF-8") as stream:
         yaml.dump(configuration, stream, default_flow_style=False)
+
+
+def _raise_nginx_upload_limit() -> None:
+    """Add or update ``client_max_body_size`` in an already deployed nginx site config.
+
+    An update only refreshes the web client, never the nginx config, so installs from
+    before v4.9.0 keep nginx' 1m default and reject backup uploads with a 413.
+    """
+    if not NGINX_SITE_CONFIG.exists():
+        _logger.info("No nginx config found, skipping the upload limit migration")
+        return
+    config = NGINX_SITE_CONFIG.read_text()
+    if MAX_BODY_SIZE_DIRECTIVE in config:
+        return
+    if "client_max_body_size" in config:
+        new_config = re.sub(r"client_max_body_size[^;]*;", MAX_BODY_SIZE_DIRECTIVE, config)
+    else:
+        # the serving block is the only one with a root, the SSL setup also has a redirect-only block
+        anchor = "root /var/www/cocktailberry_web_client;"
+        new_config = config.replace(anchor, f"{MAX_BODY_SIZE_DIRECTIVE}\n    {anchor}", 1)
+    if new_config == config:
+        _logger.warning("Found no place for client_max_body_size in the nginx config, please add it manually")
+        return
+    try:
+        subprocess.run(
+            ["sudo", "tee", str(NGINX_SITE_CONFIG)],
+            input=new_config,
+            text=True,
+            stdout=subprocess.DEVNULL,
+            check=True,
+        )
+        subprocess.run(["sudo", "systemctl", "reload", "nginx"], check=True)
+        _logger.info(f"Set '{MAX_BODY_SIZE_DIRECTIVE}' in the nginx config")
+    except subprocess.CalledProcessError as err:
+        _logger.error("Could not update the nginx config, please set client_max_body_size manually")
+        _logger.log_exception(err)
 
 
 def _install_pyqt6_over_apt() -> None:
