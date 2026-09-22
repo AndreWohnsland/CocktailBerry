@@ -161,3 +161,44 @@ class TestResourceUsage:
         # Sessions 6-10 should remain (the latest 5)
         session_ids = [s.session_id for s in session_numbers]
         assert session_ids == [6, 7, 8, 9, 10]
+
+
+class TestCompactResourceStats:
+    @staticmethod
+    def _fill_session(db_commander: DatabaseCommander, session_number: int, points: int) -> None:
+        now = datetime.datetime.now()
+        for i in range(points):
+            db_commander.save_resource_usage(float(i), float(i), session_number, timestamp=now)
+
+    def _stored_cpu(self, db_commander: DatabaseCommander, session_number: int) -> list[float]:
+        return db_commander.get_resource_stats(session_number, max_raw_points=10_000).raw_cpu
+
+    def test_long_session_is_thinned_out_keeping_start_and_end(self, db_commander: DatabaseCommander):
+        self._fill_session(db_commander, 1, points=100)
+
+        deleted = db_commander.compact_resource_stats(max_points=20)
+
+        remaining = self._stored_cpu(db_commander, 1)
+        assert deleted == 100 - len(remaining)
+        assert len(remaining) <= 20
+        assert remaining[0] == 0.0
+        assert remaining[-1] >= 95.0
+
+    def test_sessions_are_compacted_independently(self, db_commander: DatabaseCommander):
+        self._fill_session(db_commander, 1, points=100)
+        self._fill_session(db_commander, 2, points=5)
+        self._fill_session(db_commander, 3, points=60)
+
+        db_commander.compact_resource_stats(max_points=20)
+
+        assert len(self._stored_cpu(db_commander, 1)) <= 20
+        assert self._stored_cpu(db_commander, 2) == [0.0, 1.0, 2.0, 3.0, 4.0]
+        assert len(self._stored_cpu(db_commander, 3)) <= 20
+
+    def test_rerun_deletes_nothing(self, db_commander: DatabaseCommander):
+        self._fill_session(db_commander, 1, points=100)
+        db_commander.compact_resource_stats(max_points=20)
+        before = self._stored_cpu(db_commander, 1)
+
+        assert db_commander.compact_resource_stats(max_points=20) == 0
+        assert self._stored_cpu(db_commander, 1) == before
