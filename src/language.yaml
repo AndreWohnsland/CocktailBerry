@@ -211,6 +211,10 @@ dialog:
     en: 'Backup restored! Backend will be restarted.'
     de: 'Backup wiederhergestellt! Backend wird neu gestartet.'
     pl: 'Kopia zapasowa została przywrócona! Backend zostanie uruchomiony ponownie.'
+  os_update_started:
+    en: 'System update started. It runs in the background and reboots the machine when done, this can take up to 15 minutes.'
+    de: 'System-Update gestartet. Es läuft im Hintergrund und startet die Maschine danach neu, das kann bis zu 15 Minuten dauern.'
+    pl: 'Aktualizacja systemu rozpoczęta. Działa w tle i po zakończeniu uruchomi maszynę ponownie, może to potrwać do 15 minut.'
   software_updated_and_restart:
     en: 'Update applied! Backend will be restarted.'
     de: 'Update eingespielt! Backend wird neu gestartet.'

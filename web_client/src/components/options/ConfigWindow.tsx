@@ -2,9 +2,9 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaSave } from 'react-icons/fa';
-import { useQueryClient } from 'react-query';
 import { updateOptions, useConfig } from '../../api/options';
 import { useConfig as useConfigProvider } from '../../providers/ConfigProvider';
+import { RESTART_PATIENCE_MS, useRestartWait } from '../../providers/RestartWaitProvider';
 import { useRestrictedMode } from '../../providers/RestrictedModeProvider';
 import type { ConfigData, PossibleConfigValue, PossibleConfigValueTypes } from '../../types/models';
 import { executeAndShow, isInCurrentSubTab, isInCurrentTab, OPTIONTABS, subTabConfig } from '../../utils';
@@ -43,10 +43,10 @@ const ConfigWindow: React.FC = () => {
   const [configData, setConfigData] = useState<ConfigData>({});
   const [selectedTab, setSelectedTab] = useState('UI');
   const [selectedSubTab, setSelectedSubTab] = useState<string | null>(null);
-  const { refetchConfig, changeTheme, isConfigBlacklisted } = useConfigProvider();
+  const { isConfigBlacklisted } = useConfigProvider();
+  const { startRestartWait } = useRestartWait();
   const { restrictedModeActive } = useRestrictedMode();
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
 
   // Sync configData when data from API changes - this is intentional external state sync
   useEffect(() => {
@@ -395,19 +395,11 @@ const ConfigWindow: React.FC = () => {
     });
   };
 
-  const postConfig = () => {
-    executeAndShow(() => updateOptions(configData)).then((success) => {
-      if (success) {
-        changeTheme(configData.MAKER_THEME as string);
-        // Invalidate the react-query 'options' cache so the useEffect re-syncs `configData`
-        // from the freshly-fetched server data. `refetchConfig` only refreshes the
-        // ConfigProvider's lighter `getConfigValues` view, leaving the 'options' cache stale —
-        // and any unrelated change to ConfigProvider state would otherwise re-fire the sync
-        // effect with stale data and visually revert the edits the user just saved.
-        queryClient.invalidateQueries('options');
-        refetchConfig();
-      }
-    });
+  // Saving the config always restarts the backend, so the reload that ends the wait is what
+  // re-syncs the theme and every cached query. Nothing to invalidate by hand.
+  const postConfig = async () => {
+    const saved = await executeAndShow(() => updateOptions(configData));
+    if (saved) startRestartWait(RESTART_PATIENCE_MS);
   };
 
   const renderConfigEntry = (key: string) => (

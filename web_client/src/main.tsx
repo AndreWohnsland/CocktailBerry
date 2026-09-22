@@ -9,6 +9,7 @@ import './index.css';
 import { AuthProvider } from './providers/AuthProvider.tsx';
 import { ConfigProvider } from './providers/ConfigProvider.tsx';
 import { CustomColorProvider } from './providers/CustomColorProvider.tsx';
+import { RestartWaitProvider } from './providers/RestartWaitProvider.tsx';
 import { RestrictedModeProvider } from './providers/RestrictedModeProvider.tsx';
 import { VirtualKeyboardProvider } from './providers/VirtualKeyboardProvider.tsx';
 import { WaiterProvider } from './providers/WaiterProvider.tsx';
@@ -24,22 +25,24 @@ if (!root) {
 createRoot(root).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ConfigProvider>
-          <CustomColorProvider>
-            <RestrictedModeProvider>
-              <WaiterProvider>
-                <AuthProvider>
-                  <VirtualKeyboardProvider>
-                    <App />
-                  </VirtualKeyboardProvider>
-                </AuthProvider>
-              </WaiterProvider>
-            </RestrictedModeProvider>
-          </CustomColorProvider>
-        </ConfigProvider>
-        {import.meta.env.VITE_APP_DEV === 'true' && <ReactQueryDevtools initialIsOpen={false} />}
-      </BrowserRouter>
+      <RestartWaitProvider>
+        <BrowserRouter>
+          <ConfigProvider>
+            <CustomColorProvider>
+              <RestrictedModeProvider>
+                <WaiterProvider>
+                  <AuthProvider>
+                    <VirtualKeyboardProvider>
+                      <App />
+                    </VirtualKeyboardProvider>
+                  </AuthProvider>
+                </WaiterProvider>
+              </RestrictedModeProvider>
+            </CustomColorProvider>
+          </ConfigProvider>
+          {import.meta.env.VITE_APP_DEV === 'true' && <ReactQueryDevtools initialIsOpen={false} />}
+        </BrowserRouter>
+      </RestartWaitProvider>
     </QueryClientProvider>
   </StrictMode>,
 );

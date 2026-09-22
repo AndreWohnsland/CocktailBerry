@@ -1,4 +1,5 @@
 import platform
+import time
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any
@@ -38,6 +39,9 @@ from src.updater import UpdateInfo, Updater
 from src.utils import get_platform_data, restart_v2
 
 _logger = LoggerHandler("CocktailBerry_API")
+# Re-evaluated on every process start, including the exec a restart does, so a client that
+# snapshots it can wait for the backend to actually come back as a new process.
+_STARTUP_TIME = time.time()
 
 
 def _startup_auto_update() -> None:
@@ -191,6 +195,7 @@ async def info() -> AboutInfo:
         platform=str(get_platform_data()),
         project_name=PROJECT_NAME,
         version=__version__,
+        startup_time=_STARTUP_TIME,
     )
 
 

@@ -46,6 +46,12 @@ export const useConfig = (): UseQueryResult<ConfigDataWithUiInfo, Error> => {
   return useQuery<ConfigDataWithUiInfo, Error>('options', getConfig);
 };
 
+// The backend only restarts when something other than the theme changed, so the theme-only call
+// is its own function rather than a shape the caller has to get right.
+export const updateTheme = async (theme: string): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(optionsUrl, { MAKER_THEME: theme }).then((res) => res.data);
+};
+
 export const updateOptions = async (options: ConfigData): Promise<{ message: string }> => {
   return axiosInstance.post<{ message: string }>(optionsUrl, options).then((res) => res.data);
 };

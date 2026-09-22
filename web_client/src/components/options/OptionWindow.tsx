@@ -26,13 +26,14 @@ import {
   listSoftwareUpdates,
   rebootSystem,
   shutdownSystem,
-  updateOptions,
   updateSystem,
+  updateTheme,
   uploadBackup,
   useAboutInfo,
 } from '../../api/options';
 import { useAuth } from '../../providers/AuthProvider';
 import { useConfig } from '../../providers/ConfigProvider';
+import { REBOOT_PATIENCE_MS, RESTART_PATIENCE_MS, useRestartWait } from '../../providers/RestartWaitProvider';
 import { useWaiter } from '../../providers/WaiterProvider';
 import type { OptionTileName, UpdateAvailability } from '../../types/models';
 import { askYesNo, confirmAndExecute, errorToast, executeAndShow } from '../../utils';
@@ -51,6 +52,7 @@ const OptionWindow = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updateInfo, setUpdateInfo] = useState<UpdateAvailability>();
   const { data: aboutInfo } = useAboutInfo();
+  const { startRestartWait } = useRestartWait();
   const themes = ['default', 'berry', 'bavaria', 'alien', 'tropical', 'purple', 'custom'];
   const { t } = useTranslation();
   const { masterAuthenticated } = useAuth();
@@ -121,31 +123,43 @@ const OptionWindow = () => {
     return t('options.backupSavedSuccessfully', { fileName });
   };
 
-  const uploadBackupClick = async () => {
-    if (globalThis.window.isSecureContext) {
-      const [fileHandle] = await globalThis.window.showOpenFilePicker();
-      const file = await fileHandle.getFile();
-      return uploadBackup(file);
+  // Returns null when the user backed out. Picking and uploading are separate so a cancelled
+  // picker stays silent instead of being reported as a successful, empty restore.
+  const pickBackupFile = async (): Promise<File | null> => {
+    if (globalThis.window.isSecureContext && 'showOpenFilePicker' in globalThis.window) {
+      try {
+        const [fileHandle] = await globalThis.window.showOpenFilePicker();
+        return await fileHandle.getFile();
+      } catch {
+        return null;
+      }
     }
 
-    // Fallback
+    // Fallback for plain http and browsers without the file system access API
     return new Promise((resolve) => {
       const input = document.createElement('input');
       input.type = 'file';
-      input.onchange = () => {
-        const files = input.files;
-        if (!files || files.length === 0) {
-          resolve(undefined);
-          return;
-        }
-        resolve(uploadBackup(files[0]));
-      };
+      input.onchange = () => resolve(input.files?.[0] ?? null);
+      // without this a dismissed picker never settles and the caller waits forever
+      input.oncancel = () => resolve(null);
       input.click();
     });
   };
 
+  const restoreBackupClick = async () => {
+    const file = await pickBackupFile();
+    if (file === null) return;
+    const restored = await executeAndShow(() => uploadBackup(file));
+    if (restored) startRestartWait(RESTART_PATIENCE_MS);
+  };
+
+  const rebootClick = async () => {
+    const rebooting = await confirmAndExecute(t('options.rebootTheSystem'), rebootSystem);
+    if (rebooting) startRestartWait(REBOOT_PATIENCE_MS);
+  };
+
   const themeSelect = async (theme: string) => {
-    const success = await executeAndShow(() => updateOptions({ MAKER_THEME: theme }));
+    const success = await executeAndShow(() => updateTheme(theme));
     if (success) changeTheme(theme);
   };
 
@@ -236,18 +250,10 @@ const OptionWindow = () => {
             <TileButton label={t('options.backup')} icon={FaDownload} onClick={() => executeAndShow(getBackupClick)} />
           )}
           {showTile('restore') && (
-            <TileButton
-              label={t('options.restore')}
-              icon={FaUpload}
-              onClick={() => executeAndShow(uploadBackupClick)}
-            />
+            <TileButton label={t('options.restore')} icon={FaUpload} onClick={restoreBackupClick} />
           )}
           {showTile('reboot') && (
-            <TileButton
-              label={t('options.reboot')}
-              icon={BsBootstrapReboot}
-              onClick={() => confirmAndExecute(t('options.rebootTheSystem'), rebootSystem)}
-            />
+            <TileButton label={t('options.reboot')} icon={BsBootstrapReboot} onClick={rebootClick} />
           )}
           {showTile('shutdown') && (
             <TileButton
@@ -337,12 +343,7 @@ const OptionWindow = () => {
         </div>
       </div>
       <AboutModal isOpen={isAboutModalOpen} onClose={() => setIsAboutModalOpen(false)} aboutInfo={aboutInfo} />
-      <UpdateModal
-        isOpen={isUpdateModalOpen}
-        onClose={() => setIsUpdateModalOpen(false)}
-        info={updateInfo}
-        currentVersion={aboutInfo?.version}
-      />
+      <UpdateModal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)} info={updateInfo} />
     </>
   );
 };

@@ -232,8 +232,9 @@ def _find_backup_root(extracted: Path) -> Path | None:
     return version_file.parent if version_file else None
 
 
+# sync on purpose: unzipping and restoring a backup blocks, see update_software below
 @protected_router.post("/backup", summary="Restore a backup of CocktailBerry data", dependencies=[not_on_demo])
-async def upload_backup(
+def upload_backup(
     file: Annotated[UploadFile, File(...)],
     restored_file: Annotated[list[Literal["style", "config", "images", "database"]], Depends(parse_restored_file)],
     background_tasks: BackgroundTasks,
@@ -365,7 +366,7 @@ async def update_system(background_tasks: BackgroundTasks) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot update system on Windows")
     background_tasks.add_task(_update_os_and_reboot)
-    return ApiMessage(message="System update started")
+    return ApiMessage(message=DH.get_translation("os_update_started"))
 
 
 @protected_router.get("/update/software", summary="List available CocktailBerry software updates")
@@ -380,8 +381,10 @@ async def list_software_updates() -> UpdateAvailability:
     )
 
 
+# sync on purpose: applying a release is minutes of blocking git and network work, which would
+# freeze the event loop for every other client. Starlette runs a plain def in a threadpool.
 @protected_router.post("/update/software", summary="Update CocktailBerry software", dependencies=[not_on_demo])
-async def update_software(update: UpdateRequest, background_tasks: BackgroundTasks) -> ApiMessage:
+def update_software(update: UpdateRequest, background_tasks: BackgroundTasks) -> ApiMessage:
     updater = Updater()
     info = updater.check_for_updates()
     if info.status == UpdateInfo.Status.UP_TO_DATE:

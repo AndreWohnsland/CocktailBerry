@@ -164,6 +164,7 @@ allowed_keys = Literal[
     "scale_calibrated",
     "scale_known_weight_positive",
     "scale_tared",
+    "os_update_started",
     "software_updated_and_restart",
     "some_value_missing",
     "some_value_missing_specific",

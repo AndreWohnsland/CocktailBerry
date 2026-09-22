@@ -139,7 +139,7 @@
     "systemResourceUsage": "Resource Usage",
     "updateCocktailBerry": "Update CocktailBerry",
     "updateSystem": "Update System",
-    "updateTheSystem": "Do you want to update the System?",
+    "updateTheSystem": "Do you want to update the System? It runs in the background, can take up to 15 minutes and reboots the machine when done. Do not start a cocktail in the meantime.",
     "update": {
       "title": "Update CocktailBerry",
       "checking": "Checking for updates...",
@@ -148,11 +148,7 @@
       "major": "major",
       "majorWarning": "This is a major update and may contain breaking changes. Check the changelog first.",
       "updateTo": "Update to {{version}}",
-      "notesUnavailable": "The release notes could not be loaded, but update {{version}} is available.",
-      "restarting": "Update applied, restarting",
-      "restartingDescription": "CocktailBerry is restarting with the new version. This page reloads by itself once it is back.",
-      "takingLonger": "This is taking longer than usual. Bigger updates may need to install dependencies, which can take several minutes.",
-      "reloadNow": "Reload now"
+      "notesUnavailable": "The release notes could not be loaded, but update {{version}} is available."
     },
     "wifi": "WiFi",
     "waiters": "Waiters",
@@ -357,5 +353,11 @@
   },
   "errors": {
     "backendUnreachable": "Connection to CocktailBerry lost. Please check that CocktailBerry is running and you are in the same network!"
+  },
+  "restart": {
+    "title": "Restarting CocktailBerry",
+    "description": "CocktailBerry is restarting. This page reloads by itself once it is back.",
+    "takingLonger": "This is taking longer than usual. Bigger changes may need to install dependencies, which can take several minutes.",
+    "reloadNow": "Reload now"
   }
 }
