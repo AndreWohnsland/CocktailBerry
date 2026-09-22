@@ -5,7 +5,14 @@ import socket
 import subprocess
 from pathlib import Path
 
-COMMON_SERVER_BLOCK = """server_name localhost;
+MAX_BODY_SIZE_DIRECTIVE = "client_max_body_size 200M;"
+NGINX_SITE_CONFIG = Path("/etc/nginx/sites-available/cocktailberry_web_client")
+
+# backup uploads carry the database plus all cocktail images, way past nginx' 1m default
+COMMON_SERVER_BLOCK = (
+    "server_name localhost;\n    "
+    + MAX_BODY_SIZE_DIRECTIVE
+    + """
 
     # Serve the React app
     root /var/www/cocktailberry_web_client;
@@ -30,6 +37,7 @@ COMMON_SERVER_BLOCK = """server_name localhost;
         proxy_read_timeout 300s;
     }
 """
+)
 
 NON_SSL_CONFIG = f"""
 server {{
@@ -125,8 +133,7 @@ def download_web_client(version: str = "latest") -> None:
 
 def setup_nginx(use_ssl: bool) -> None:
     """Install and configures Nginx to serve a React app."""
-    config_path = Path("/etc/nginx/sites-available/cocktailberry_web_client")
-    config_path_enabled = Path("/etc/nginx/sites-enabled/cocktailberry_web_client")
+    config_path_enabled = Path("/etc/nginx/sites-enabled") / NGINX_SITE_CONFIG.name
     default_site = Path("/etc/nginx/sites-enabled/default")
     try:
         # Install Nginx
@@ -166,13 +173,13 @@ def setup_nginx(use_ssl: bool) -> None:
             Path("/etc/nginx/snippets/self-signed.conf").write_text(SELF_SIGNED_CONF)
             Path("/etc/nginx/snippets/ssl-params.conf").write_text(SSL_PARAMS_CONF)
 
-            config_path.write_text(SSL_CONFIG)
+            NGINX_SITE_CONFIG.write_text(SSL_CONFIG)
         else:
-            config_path.write_text(NON_SSL_CONFIG)
+            NGINX_SITE_CONFIG.write_text(NON_SSL_CONFIG)
 
         # Enable the configuration
         if not config_path_enabled.exists():
-            config_path_enabled.symlink_to(config_path)
+            config_path_enabled.symlink_to(NGINX_SITE_CONFIG)
 
         # remove default site
         if default_site.exists():
