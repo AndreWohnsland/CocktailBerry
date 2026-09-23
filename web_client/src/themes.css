@@ -51,13 +51,13 @@
   --primary-color: #684efc;
   --secondary-color: #ec407a;
   --background-color: #0d0d0d;
-  --neutral-color: #5761a1;
+  --neutral-color: #a59ac0;
   --danger-color: #d00000;
 }
 .berry[data-mode="light"] {
   --primary-color: #553abf;
   --secondary-color: #be185d;
-  --neutral-color: #454e8a;
+  --neutral-color: #33374a;
   --danger-color: #b91c1c;
   --background-color: color-mix(in srgb, var(--primary-color) 7%, #f5f6f7);
   --text-color: #4931a7;
