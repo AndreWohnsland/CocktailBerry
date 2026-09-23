@@ -67,7 +67,7 @@ nfc = [
 ]
 
 [tool.uv]
-# Supply-chain cooldown: never resolve releases younger than 2 days
+# Supply-chain cooldown: never resolve releases younger than 3 days
 exclude-newer = "3 days"
 default-groups = ["dev", "pi-hardware"]
 override-dependencies = [
