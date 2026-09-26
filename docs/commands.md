@@ -338,6 +338,7 @@ You can also use CocktailBerry to set up an access point.
 The access point will be created on a virtual wlan1 interface.
 So you can still use the wlan0 interface for your normal network connection.
 This requires that you can have a virtual interface on your chip, for example the Raspberry Pi 3B+.
+A systemd service recreates the virtual interface on boot, so the access point survives a reboot.
 
 ```bash
 uv run runme.py setup-ap [OPTIONS]

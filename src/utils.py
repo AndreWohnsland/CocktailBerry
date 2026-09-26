@@ -306,6 +306,23 @@ def list_available_ssids() -> list[str]:
         return []
 
 
+_AP_IFACE_UNIT_PATH = "/etc/systemd/system/cocktailberry-ap-iface.service"
+# iw only creates the AP interface at runtime, so after a reboot wlan1 is gone and the AP
+# profile has no device to autoconnect to. Recreate it on every boot.
+_AP_IFACE_UNIT = """[Unit]
+Description=CocktailBerry AP virtual interface
+Wants=sys-subsystem-net-devices-wlan0.device
+After=sys-subsystem-net-devices-wlan0.device NetworkManager.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=-/usr/sbin/iw dev wlan0 interface add wlan1 type __ap
+
+[Install]
+WantedBy=multi-user.target
+"""
+
 _AP_DISPATCHER_PATH = "/etc/NetworkManager/dispatcher.d/90-cocktailberry-ap"
 # Docker sets the iptables FORWARD policy to DROP, which cuts AP clients off from the internet
 # despite NetworkManager's NAT. Re-apply accept rules on every AP interface up (boot, reactivation).
@@ -317,9 +334,12 @@ iptables -C FORWARD -o wlan1 -j ACCEPT 2>/dev/null || iptables -I FORWARD -o wla
 """
 
 
+def _write_root_file(path: str, content: str) -> None:
+    subprocess.run(f"sudo tee {path}", input=content, text=True, shell=True, check=True, stdout=subprocess.DEVNULL)
+
+
 def create_ap(ssid: str = "CocktailBerry", password: str = "cocktailconnect") -> None:
     commands = [
-        "sudo iw dev wlan0 interface add wlan1 type __ap",
         f"sudo nmcli connection add type wifi ifname wlan1 con-name {ssid} ssid {ssid}",
         f"sudo nmcli connection modify {ssid} 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared",
         # WPA2-only without PMF: offering legacy WPA1 breaks some clients (RSNXE mismatch -> instant deauth)
@@ -328,15 +348,11 @@ def create_ap(ssid: str = "CocktailBerry", password: str = "cocktailconnect") ->
     ]
     delete_ap(ssid)
     # install before activation so the dispatcher fires on the first up event
-    subprocess.run(
-        f"sudo tee {_AP_DISPATCHER_PATH}",
-        input=_AP_DISPATCHER_SCRIPT,
-        text=True,
-        shell=True,
-        check=True,
-        stdout=subprocess.DEVNULL,
-    )
+    _write_root_file(_AP_DISPATCHER_PATH, _AP_DISPATCHER_SCRIPT)
     subprocess.run(f"sudo chmod 755 {_AP_DISPATCHER_PATH}", shell=True, check=True)
+    _write_root_file(_AP_IFACE_UNIT_PATH, _AP_IFACE_UNIT)
+    subprocess.run("sudo systemctl daemon-reload", shell=True, check=True)
+    subprocess.run("sudo systemctl enable --now cocktailberry-ap-iface.service", shell=True, check=True)
     for command in commands:
         subprocess.run(command, shell=True, check=True)
     # NetworkManager needs a moment to adopt the freshly created wlan1 before it can activate on it
@@ -350,6 +366,8 @@ def create_ap(ssid: str = "CocktailBerry", password: str = "cocktailconnect") ->
 
 
 def delete_ap(ssid: str = "CocktailBerry") -> None:
+    subprocess.run("sudo systemctl disable --now cocktailberry-ap-iface.service", shell=True, check=False)
     subprocess.run("sudo iw dev wlan1 del", shell=True, check=False)
     subprocess.run(f"sudo nmcli connection delete {ssid}", shell=True, check=False)
-    subprocess.run(f"sudo rm -f {_AP_DISPATCHER_PATH}", shell=True, check=False)
+    subprocess.run(f"sudo rm -f {_AP_DISPATCHER_PATH} {_AP_IFACE_UNIT_PATH}", shell=True, check=False)
+    subprocess.run("sudo systemctl daemon-reload", shell=True, check=False)
