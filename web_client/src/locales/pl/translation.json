@@ -115,6 +115,7 @@
     "data": "Dane",
     "displayScale": "Skala wyświetlania",
     "events": "Zdarzenia",
+    "accessPoint": "Punkt dostępu",
     "internetCheck": "Połączenie internetowe",
     "issues": "Problemy",
     "logs": "Logi",
@@ -216,6 +217,16 @@
     "deleteTheAddon": "Czy chcesz usunąć dodatek '{{addon}}'?",
     "updateTheAddon": "Czy chcesz zaktualizować dodatek '{{addon}}'?",
     "update": "Aktualizuj ({{version}})"
+  },
+  "accessPoint": {
+    "title": "Punkt dostępu",
+    "enabled": "Punkt dostępu aktywny",
+    "ssid": "SSID (nazwa sieci)",
+    "password": "Hasło",
+    "apply": "Zastosuj",
+    "confirm": "Zastosować ustawienia punktu dostępu? Podłączone urządzenia mogą na chwilę stracić połączenie.",
+    "qrHint": "Zeskanuj telefonem, aby połączyć",
+    "address": "CocktailBerry jest dostępny w punkcie dostępu pod adresem"
   },
   "wifi": {
     "setupWifi": "Konfiguruj WiFi",

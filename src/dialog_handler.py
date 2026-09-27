@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from src.api.models import PermissionKey
     from src.ui.setup_custom_dialog import CustomDialog
     from src.ui_elements import (
+        Ui_AccessPointWindow,
         Ui_addingredient,
         Ui_AddonManager,
         Ui_Addonwindow,
@@ -67,6 +68,8 @@ allowed_keys = Literal[
     "alcohol_level_max_limit",
     "all_data_exported",
     "all_recipes_enabled",
+    "ap_setup_failed",
+    "ap_success",
     "api_interface_conflict",
     "ask_adjust_time",
     "ask_backup_overwrite",
@@ -525,6 +528,14 @@ class DialogHandler:
             password=password,
         )
 
+    def say_ap_setup_failed(self) -> None:
+        """Informs the user that the access point setup failed."""
+        self.__output_language_dialog("ap_setup_failed")
+
+    def say_ap_applied(self, address: str) -> None:
+        """Informs the user that the access point settings were applied."""
+        self.__output_language_dialog("ap_success", address=address)
+
     def say_wifi_setup_failed(self) -> None:
         """Informs the user that the wifi setup failed."""
         self.__output_language_dialog("wifi_setup_failed")
@@ -903,6 +914,7 @@ class UiLanguage:
             (w.button_update_software, "update_software"),
             (w.button_events, "events"),
             (w.button_wifi, "wifi"),
+            (w.button_access_point, "access_point"),
             (w.button_check_internet, "check_internet"),
             (w.button_addons, "addons"),
             (w.button_rfid, "rfid"),
@@ -1000,6 +1012,16 @@ class UiLanguage:
         w.button_enter.setText(self._choose_language("enter_button"))
         w.label_ssid.setText(self._choose_language("ssid", window))
         w.label_password.setText(self._choose_language("password", window))
+
+    def adjust_access_point_window(self, w: Ui_AccessPointWindow) -> None:
+        """Translate the elements of the access point window."""
+        window = "access_point"
+        w.button_back.setText(self._choose_language("back"))
+        w.button_apply.setText(self._choose_language("apply"))
+        w.label_ssid.setText(self._choose_language("ssid", "wifi"))
+        w.label_password.setText(self._choose_language("password", "wifi"))
+        w.checkbox_enabled.setText(self._choose_language("enabled", window))
+        w.label_qr.setText(self._choose_language("qr_hint", window))
 
     def adjust_color_window(self, w: Ui_ColorWindow) -> None:
         """Translate the elements of the custom color window."""

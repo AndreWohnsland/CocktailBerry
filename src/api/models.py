@@ -6,6 +6,7 @@ from annotated_types import Len
 from pydantic import BaseModel, ConfigDict, Field
 
 from src.config.config_manager import StartupIssue
+from src.connection import access_point
 from src.models import Event, OptionTiles, PrepareResult
 
 if TYPE_CHECKING:
@@ -109,6 +110,17 @@ class PrepareCocktailRequest(BaseModel):
 class WifiData(BaseModel):
     ssid: str
     password: str
+
+
+class AccessPointData(BaseModel):
+    enabled: bool
+    ssid: str = Field(min_length=access_point.SSID_LENGTH[0], max_length=access_point.SSID_LENGTH[1])
+    password: str = Field(min_length=access_point.PASSWORD_LENGTH[0], max_length=access_point.PASSWORD_LENGTH[1])
+
+
+class AccessPointStatus(AccessPointData):
+    configured: bool
+    qr_code: str | None  # base64 PNG, only while the access point is active
 
 
 class EventsData(BaseModel):

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import base64
 import shutil
+import subprocess
 import tempfile
 import time
 import zipfile
@@ -18,6 +20,8 @@ from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
 from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import master_protected_dependency
 from src.api.models import (
+    AccessPointData,
+    AccessPointStatus,
     ApiMessage,
     DataResponse,
     DateTimeInput,
@@ -33,6 +37,7 @@ from src.api.models import (
 )
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
+from src.connection import access_point
 from src.data_utils import generate_consume_data
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
@@ -309,6 +314,38 @@ async def update_wifi_data(wifi_data: WifiData) -> ApiMessage:
     if not success:
         raise HTTPException(400, detail=DH.get_translation("wifi_setup_failed"))
     return ApiMessage(message=DH.get_translation("wifi_success"))
+
+
+def _access_point_status() -> AccessPointStatus:
+    status = access_point.read_ap()
+    qr_code = None
+    if status.enabled:
+        qr_code = base64.b64encode(access_point.ap_qr_png(status.ssid, status.password)).decode()
+    return AccessPointStatus(
+        configured=status.configured,
+        enabled=status.enabled,
+        ssid=status.ssid,
+        password=status.password,
+        qr_code=qr_code,
+    )
+
+
+@protected_router.get("/ap", summary="Get the access point state, credentials and connect QR code")
+def get_access_point() -> AccessPointStatus:
+    return _access_point_status()
+
+
+@protected_router.put("/ap", summary="Create, update or toggle the access point", dependencies=[not_on_demo])
+def update_access_point(data: AccessPointData) -> ApiMessage:
+    if _platform_data.system == "Windows":
+        raise HTTPException(status_code=400, detail="Cannot set up an access point on Windows")
+    try:
+        access_point.apply_ap(data.enabled, data.ssid, data.password)
+    except (OSError, subprocess.SubprocessError) as e:
+        _logger.error(f"Access point setup failed: {e}")
+        _logger.log_exception(e)
+        raise HTTPException(400, detail=DH.get_translation("ap_setup_failed")) from e
+    return ApiMessage(message=DH.get_translation("ap_success", address=access_point.AP_ADDRESS))
 
 
 @protected_router.get("/addon", summary="Get installed and available addons")

@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 
 _TILE_GROUPS: dict[str, tuple[str, ...]] = {
     "system": ("reboot", "shutdown", "internet_check", "update_system", "update_software"),
-    "configuration": ("configuration", "addons", "sumup", "wifi", "adjust_time", "rfid"),
+    "configuration": ("configuration", "addons", "sumup", "wifi", "access_point", "adjust_time", "rfid"),
     "data": ("data", "logs", "system_resource_usage", "events", "news", "about", "issues"),
     "hardware": ("cleaning", "calibration", "scale_calibration"),
     "maintenance": ("backup", "restore", "waiters", "recipe_calculation"),
