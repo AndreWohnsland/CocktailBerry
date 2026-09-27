@@ -25,6 +25,7 @@ import ScaleCalibrationWindow from './components/options/ScaleCalibrationWindow.
 import SumupManager from './components/options/SumupManager.tsx';
 import TimeManager from './components/options/TimeManager.tsx';
 import WaiterWindow from './components/options/WaiterWindow.tsx';
+import AccessPointManager from './components/options/AccessPointManager.tsx';
 import WifiManager from './components/options/WifiManager.tsx';
 import RecipeCalculator from './components/recipe/RecipeCalculator.tsx';
 import RecipeList from './components/recipe/RecipeList.tsx';
@@ -167,6 +168,14 @@ function App() {
               element={
                 <MasterPasswordProtected>
                   <WifiManager />
+                </MasterPasswordProtected>
+              }
+            />
+            <Route
+              path='options/ap'
+              element={
+                <MasterPasswordProtected>
+                  <AccessPointManager />
                 </MasterPasswordProtected>
               }
             />

@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'optionwindow.ui'
+# Form implementation generated from reading ui file './optionwindow.ui'
 #
 # Created by: PyQt6 UI code generator 6.11.0
 #
@@ -203,6 +203,15 @@ class Ui_Optionwindow(object):
         self.button_wifi.setFont(font)
         self.button_wifi.setObjectName("button_wifi")
         self.gridLayout_2.addWidget(self.button_wifi, 8, 0, 1, 1)
+        self.button_access_point = QtWidgets.QPushButton(parent=self.scrollAreaWidgetContents)
+        self.button_access_point.setMinimumSize(QtCore.QSize(0, 80))
+        self.button_access_point.setMaximumSize(QtCore.QSize(5000, 300))
+        font = QtGui.QFont()
+        font.setPointSize(28)
+        font.setBold(True)
+        self.button_access_point.setFont(font)
+        self.button_access_point.setObjectName("button_access_point")
+        self.gridLayout_2.addWidget(self.button_access_point, 13, 0, 1, 1)
         self.button_resources = QtWidgets.QPushButton(parent=self.scrollAreaWidgetContents)
         self.button_resources.setMinimumSize(QtCore.QSize(0, 80))
         self.button_resources.setMaximumSize(QtCore.QSize(5000, 300))
@@ -291,6 +300,7 @@ class Ui_Optionwindow(object):
         self.button_reboot.setText(_translate("Optionwindow", "Reboot"))
         self.button_restore.setText(_translate("Optionwindow", "Restore"))
         self.button_wifi.setText(_translate("Optionwindow", "WiFi"))
+        self.button_access_point.setText(_translate("Optionwindow", "Access Point"))
         self.button_resources.setText(_translate("Optionwindow", "Resource Usage"))
         self.button_about.setText(_translate("Optionwindow", "About CocktailBerry"))
         self.button_events.setText(_translate("Optionwindow", "Events"))

@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 interface DropDownOption {
   value: string;
   label: string;
@@ -5,6 +7,7 @@ interface DropDownOption {
 
 interface DropDownProps {
   value: string;
+  label?: string;
   allowedValues: string[] | Record<string, string> | DropDownOption[];
   handleInputChange: (value: string) => void;
   className?: string;
@@ -22,7 +25,9 @@ const isDropDownOptionArray = (values: unknown[]): values is DropDownOption[] =>
   );
 };
 
-const DropDown = ({ value, allowedValues, handleInputChange, className, id, placeholder }: DropDownProps) => {
+const DropDown = ({ value, label, allowedValues, handleInputChange, className, id, placeholder }: DropDownProps) => {
+  const generatedId = useId();
+  const selectId = id ?? generatedId;
   let options: DropDownOption[];
 
   if (Array.isArray(allowedValues)) {
@@ -35,9 +40,9 @@ const DropDown = ({ value, allowedValues, handleInputChange, className, id, plac
     options = Object.entries(allowedValues).map(([val, label]) => ({ value: val, label }));
   }
 
-  return (
+  const select = (
     <select
-      id={id}
+      id={selectId}
       value={value}
       onChange={(e) => handleInputChange(e.target.value)}
       className={`select-base ${className ?? ''}`}
@@ -53,6 +58,13 @@ const DropDown = ({ value, allowedValues, handleInputChange, className, id, plac
         </option>
       ))}
     </select>
+  );
+  if (!label) return select;
+  return (
+    <label htmlFor={selectId} className='block w-full text-neutral text-center'>
+      {label}
+      {select}
+    </label>
   );
 };
 

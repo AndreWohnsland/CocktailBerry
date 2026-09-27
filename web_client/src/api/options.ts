@@ -17,6 +17,8 @@ import type {
   SumupReader,
   SumupReaderCreate,
   UpdateAvailability,
+  AccessPointData,
+  AccessPointStatus,
   WifiData,
 } from '../types/models';
 import { axiosInstance } from './common';
@@ -188,6 +190,16 @@ export const useAvailableSsids = (): UseQueryResult<string[], Error> => {
 
 export const updateWifiData = async (wifiData: WifiData): Promise<{ message: string }> => {
   return axiosInstance.post<{ message: string }>(`${optionsUrl}/wifi`, wifiData).then((res) => res.data);
+};
+
+export const useAccessPoint = (): UseQueryResult<AccessPointStatus, Error> => {
+  return useQuery<AccessPointStatus, Error>('accessPoint', () =>
+    axiosInstance.get<AccessPointStatus>(`${optionsUrl}/ap`).then((res) => res.data),
+  );
+};
+
+export const updateAccessPoint = async (data: AccessPointData): Promise<{ message: string }> => {
+  return axiosInstance.put<{ message: string }>(`${optionsUrl}/ap`, data).then((res) => res.data);
 };
 
 // Addons

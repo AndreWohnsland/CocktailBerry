@@ -115,6 +115,7 @@
     "data": "Data",
     "displayScale": "Display Scale",
     "events": "Events",
+    "accessPoint": "Access Point",
     "internetCheck": "Internet Check",
     "issues": "Issues",
     "logs": "Logs",
@@ -216,6 +217,16 @@
     "deleteTheAddon": "Do you want to delete the addon '{{addon}}'?",
     "updateTheAddon": "Do you want to update the addon '{{addon}}'?",
     "update": "Update ({{version}})"
+  },
+  "accessPoint": {
+    "title": "Access Point",
+    "enabled": "Access point active",
+    "ssid": "SSID (network name)",
+    "password": "Password",
+    "apply": "Apply",
+    "confirm": "Apply the access point settings? Connected devices may lose the connection shortly.",
+    "qrHint": "Scan with your phone to connect",
+    "address": "CocktailBerry is reachable within the access point at"
   },
   "wifi": {
     "setupWifi": "Set Up WiFi",

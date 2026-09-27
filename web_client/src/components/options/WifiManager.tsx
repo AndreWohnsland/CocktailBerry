@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { updateWifiData, useAvailableSsids } from '../../api/options';
 import { confirmAndExecute } from '../../utils';
 import Button from '../common/Button';
+import DropDown from '../common/DropDown';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
 import TextHeader from '../common/TextHeader';
+import TextInput from '../common/TextInput';
 
 const WifiManager: React.FC = () => {
   const { data: ssids, isLoading, error } = useAvailableSsids();
@@ -46,47 +48,19 @@ const WifiManager: React.FC = () => {
           className='col-span-1 md:col-span-2 my-4'
           onClick={toggleInputMode}
         />
-        <label className='text-neutral text-center' htmlFor='wifi-input'>
-          {'SSID:'}
-          {isInputMode ? (
-            <input
-              type='text'
-              id='wifi-input'
-              value={selectedSsid}
-              onChange={(e) => setSelectedSsid(e.target.value)}
-              required
-              className='input-base w-full !p-2'
-            />
-          ) : (
-            <select
-              id='wifi-input'
-              value={selectedSsid}
-              onChange={(e) => setSelectedSsid(e.target.value)}
-              required
-              className='select-base w-full !p-2'
-            >
-              <option value='' disabled>
-                {t('wifi.selectSsid')}
-              </option>
-              {ssids?.map((ssid) => (
-                <option key={ssid} value={ssid}>
-                  {ssid}
-                </option>
-              ))}
-            </select>
-          )}
-        </label>
-        <label className='text-neutral text-center' htmlFor='wifi-password'>
-          {t('wifi.password')}:
-          <input
-            type='password'
-            id='wifi-password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className='input-base !p-2'
+        {isInputMode ? (
+          <TextInput label='SSID' value={selectedSsid} large handleInputChange={setSelectedSsid} />
+        ) : (
+          <DropDown
+            label='SSID'
+            value={selectedSsid}
+            allowedValues={ssids ?? []}
+            placeholder={t('wifi.selectSsid')}
+            className='p-2!'
+            handleInputChange={setSelectedSsid}
           />
-        </label>
+        )}
+        <TextInput label={t('wifi.password')} type='password' value={password} large handleInputChange={setPassword} />
         <Button
           type='submit'
           filled

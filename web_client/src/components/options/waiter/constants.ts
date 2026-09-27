@@ -12,7 +12,7 @@ export const DEFAULT_PERMISSIONS: TabPermission = {
 
 export const TILE_GROUPS: Record<string, readonly OptionTileName[]> = {
   system: ['reboot', 'shutdown', 'internet_check', 'update_system', 'update_software'],
-  configuration: ['configuration', 'addons', 'sumup', 'wifi', 'adjust_time', 'rfid'],
+  configuration: ['configuration', 'addons', 'sumup', 'wifi', 'access_point', 'adjust_time', 'rfid'],
   data: ['data', 'logs', 'system_resource_usage', 'events', 'news', 'about', 'issues'],
   hardware: ['cleaning', 'calibration', 'scale_calibration', 'initialize_bottles'],
   maintenance: ['backup', 'restore', 'waiters', 'recipe_calculation'],
@@ -33,6 +33,7 @@ export const TILE_TRANSLATION_KEYS: Record<OptionTileName, string> = {
   data: 'options.data',
   logs: 'options.logs',
   wifi: 'options.wifi',
+  access_point: 'options.accessPoint',
   addons: 'options.addons',
   internet_check: 'options.internetCheck',
   update_system: 'options.updateSystem',

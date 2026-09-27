@@ -3,6 +3,7 @@ from pathlib import Path
 
 import typer
 
+from src.connection import access_point
 from src.filepath import NGINX_SCRIPT, QT_MIGRATION_SCRIPT, WEB_MIGRATION_SCRIPT
 from src.migration.qt_migrator import roll_back_to_qt_script
 from src.migration.squeekboard import create_and_start_squeekboard_service, stop_and_disable_squeekboard_service
@@ -12,7 +13,7 @@ from src.programs.blacklist import generate_blacklist
 from src.programs.clearing import clear_local_database
 from src.programs.data_import import importer
 from src.programs.microservice_setup import LanguageChoice, setup_service, setup_teams
-from src.utils import create_ap, delete_ap, get_platform_data
+from src.utils import get_platform_data
 
 
 def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
@@ -48,26 +49,25 @@ def register_common_commands(cli: typer.Typer) -> None:  # noqa: C901, PLR0915
 
     @cli.command()
     def setup_ap(
-        ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP"),
-        password: str = typer.Option("cocktailconnect", "--password", help="Password of the AP"),
+        ssid: str = typer.Option(access_point.DEFAULT_SSID, "--ssid", help="SSID Name of the AP"),
+        password: str = typer.Option(access_point.DEFAULT_PASSWORD, "--password", help="Password of the AP"),
     ) -> None:
-        """Set up the access point."""
-        required_password_chars = 8
-        if len(password) < required_password_chars:
-            typer.echo(typer.style("Password must be at least 8 characters long.", fg=typer.colors.RED, bold=True))
+        """Set up and activate the access point. Also possible from the options screen of the app."""
+        if not access_point.PASSWORD_LENGTH[0] <= len(password) <= access_point.PASSWORD_LENGTH[1]:
+            typer.echo(typer.style("Password must be 8 to 63 characters long.", fg=typer.colors.RED, bold=True))
             raise typer.Exit(code=1)
-        create_ap(ssid, password)
+        access_point.apply_ap(True, ssid, password)
         msg = f"Access Point {ssid=} created with {password=} successfully!"
         typer.echo(typer.style(msg, fg=typer.colors.GREEN, bold=True))
-        typer.echo("Within it, CocktailBerry is at: http://10.42.0.1 or https://10.42.0.1")
+        typer.echo(
+            f"Within it, CocktailBerry is at: http://{access_point.AP_ADDRESS} or https://{access_point.AP_ADDRESS}"
+        )
 
     @cli.command()
-    def remove_ap(ssid: str = typer.Option("CocktailBerry", "--ssid", help="SSID Name of the AP")) -> None:
-        """Remove the access point."""
-        delete_ap(ssid)
-        typer.echo(typer.style(f"Access Point {ssid=} removed successfully!", fg=typer.colors.GREEN, bold=True))
-        delete_ap(ssid)
-        typer.echo(typer.style(f"Access Point {ssid=} removed successfully!", fg=typer.colors.GREEN, bold=True))
+    def remove_ap() -> None:
+        """Remove the access point completely, including its stored name and password."""
+        access_point.remove_ap()
+        typer.echo(typer.style("Access Point removed successfully!", fg=typer.colors.GREEN, bold=True))
 
     @cli.command()
     def data_import(

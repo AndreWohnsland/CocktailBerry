@@ -12,6 +12,7 @@ const meta: Meta<typeof TextInput> = {
   argTypes: {},
   args: {
     value: '',
+    label: '',
     prefix: '',
     suffix: '',
     handleInputChange: (value) => console.log(value),
@@ -75,6 +76,15 @@ export const LargeInput: Story = {
   args: {
     value: 'Large input',
     large: true,
+    handleInputChange: () => {},
+  },
+};
+
+export const WithLabel: Story = {
+  args: {
+    value: 'Text with label',
+    label: 'Label',
+    suffix: 'ml',
     handleInputChange: () => {},
   },
 };

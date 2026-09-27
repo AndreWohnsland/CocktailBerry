@@ -405,6 +405,17 @@ export interface WifiData {
   password: string;
 }
 
+export interface AccessPointData {
+  enabled: boolean;
+  ssid: string;
+  password: string;
+}
+
+export interface AccessPointStatus extends AccessPointData {
+  configured: boolean;
+  qr_code: string | null;
+}
+
 export interface AddonData {
   name: string;
   description: string;
@@ -563,6 +574,7 @@ export interface OptionTiles {
   data: boolean;
   logs: boolean;
   wifi: boolean;
+  access_point: boolean;
   addons: boolean;
   internet_check: boolean;
   update_system: boolean;

@@ -18,6 +18,7 @@ from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
 from src.ui.creation_utils import NARROW_WIDTH_THRESHOLD, repack_grid
 from src.ui.qt_worker import CallableWorker, run_with_spinner
+from src.ui.setup_access_point_window import AccessPointWindow
 from src.ui.setup_addon_window import AddonWindow
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_event_window import EventWindow
@@ -63,6 +64,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.button_logs.clicked.connect(self._show_logs)
         self.button_rfid.clicked.connect(self._open_rfid_writer)
         self.button_wifi.clicked.connect(self._open_wifi_window)
+        self.button_access_point.clicked.connect(self._open_access_point_window)
         self.button_addons.clicked.connect(self._open_addon_window)
         self.button_check_internet.clicked.connect(self._check_internet_connection)
         self.button_update_system.clicked.connect(self._update_system)
@@ -84,6 +86,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         self.log_window: LogWindow | None = None
         self.rfid_writer_window: RFIDWriterWindow | None = None
         self.wifi_window: WiFiWindow | None = None
+        self.access_point_window: AccessPointWindow | None = None
         self.addon_window: AddonWindow | None = None
         self.data_window: DataWindow | None = None
         self.backup_restore_window: BackupRestoreWindow | None = None
@@ -150,6 +153,7 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
             (self.button_update_system, "update_system", 1),
             (self.button_update_software, "update_software", 2),
             (self.button_wifi, "wifi", 1),
+            (self.button_access_point, "access_point", 1),
             (self.button_check_internet, "internet_check", 1),
             (self.button_addons, "addons", 1),
             (self.button_rfid, "rfid", 1),
@@ -254,8 +258,12 @@ class OptionWindow(QMainWindow, Ui_Optionwindow):
         """Open a window to configure wifi."""
         self.wifi_window = WiFiWindow(self.mainscreen)
 
+    def _open_access_point_window(self) -> None:
+        """Open a window to configure the access point."""
+        self.access_point_window = AccessPointWindow(self.mainscreen)
+
     def _open_addon_window(self) -> None:
-        """Open a window to configure wifi."""
+        """Open a window to configure addons."""
         self.addon_window = AddonWindow(self.mainscreen)
 
     def _open_news_window(self) -> None:

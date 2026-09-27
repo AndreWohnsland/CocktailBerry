@@ -11,6 +11,7 @@ const meta: Meta<typeof DropDown> = {
   tags: ['autodocs'],
   args: {
     value: '',
+    label: '',
     allowedValues: ['Option 1', 'Option 2', 'Option 3'],
     handleInputChange: (value) => console.log(value),
   },
@@ -39,6 +40,15 @@ export const SingleOption: Story = {
   args: {
     value: 'Only Option',
     allowedValues: ['Only Option'],
+    handleInputChange: () => {},
+  },
+};
+
+export const WithLabel: Story = {
+  args: {
+    value: 'Option 1',
+    label: 'Label',
+    allowedValues: ['Option 1', 'Option 2', 'Option 3'],
     handleInputChange: () => {},
   },
 };

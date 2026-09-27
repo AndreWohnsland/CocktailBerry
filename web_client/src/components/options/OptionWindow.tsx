@@ -13,7 +13,13 @@ import {
 } from 'react-icons/fa';
 import { FaCalculator, FaChartSimple, FaDownload, FaGear, FaScaleUnbalanced, FaUpload, FaWifi } from 'react-icons/fa6';
 import { GrUpdate } from 'react-icons/gr';
-import { MdEventNote, MdOpacity, MdOutlineSignalWifiStatusbarConnectedNoInternet4, MdWaterDrop } from 'react-icons/md';
+import {
+  MdEventNote,
+  MdOpacity,
+  MdOutlineSignalWifiStatusbarConnectedNoInternet4,
+  MdWaterDrop,
+  MdWifiTethering,
+} from 'react-icons/md';
 import { RiShutDownLine } from 'react-icons/ri';
 import { TiDocumentAdd } from 'react-icons/ti';
 import { useNavigate } from 'react-router';
@@ -299,6 +305,9 @@ const OptionWindow = () => {
             />
           )}
           {showTile('wifi') && <TileButton label={t('options.wifi')} icon={FaWifi} onClick={() => navigate('wifi')} />}
+          {showTile('access_point') && (
+            <TileButton label={t('options.accessPoint')} icon={MdWifiTethering} onClick={() => navigate('ap')} />
+          )}
           {showTile('internet_check') && (
             <TileButton
               label={t('options.internetCheck')}

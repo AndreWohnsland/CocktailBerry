@@ -311,6 +311,14 @@ dialog:
     en: "CocktailBerry Software Version {version} by Andre Wohnsland.\nSystem: {platform}.\nUsing python version: {python_version} with PyQt app.\n\nCheck https://cocktailberry.org for more information.\n\nThere is an alternative v2 Web UI available, have a look in the software documentation for more info"
     de: "CocktailBerry Software Version {version} von Andre Wohnsland.\nSystem: {platform}.\nVerwendete Python Version: {python_version} mit PyQt App.\n\nMehr Informationen unter https://cocktailberry.org.\n\nEs gibt eine neue v2 Web Ui, schau in der Software Dokumentation für mehr Informationen."
     pl: "CocktailBerry Wersja {version} autorstwa Andre Wohnsland.\nSystem: {platform}.\nWersja Pythona: {python_version} z aplikacją PyQt.\n\nWięcej informacji: https://cocktailberry.org\n\nDostępny jest alternatywny interfejs Web UI v2."
+  ap_setup_failed:
+    en: 'There was an error setting up the access point. Please check the logs for further information.'
+    de: 'Es ist ein Fehler beim Einrichten des Access Points aufgetreten. Schaue in die Logs für mehr Informationen.'
+    pl: 'Wystąpił błąd podczas konfiguracji punktu dostępu. Sprawdź logi.'
+  ap_success:
+    en: "Access point settings applied.\nWhen active, CocktailBerry is reachable within it at http://{address}"
+    de: "Access Point Einstellungen übernommen.\nWenn aktiv, ist CocktailBerry darin unter http://{address} erreichbar"
+    pl: "Ustawienia punktu dostępu zastosowane.\nGdy aktywny, CocktailBerry jest dostępny pod http://{address}"
   wifi_setup_failed:
     en: 'There was an error setting up WiFi. Please check the logs for further information.'
     de: 'Es ist ein Fehler beim Einrichten des WiFi aufgetreten. Schaue in die Logs für mehr Informationen.'
@@ -840,6 +848,10 @@ ui:
       en: 'WiFi Setup'
       de: 'WiFi Einrichtung'
       pl: 'Konfiguracja WiFi'
+    access_point:
+      en: 'Access Point'
+      de: 'Access Point'
+      pl: 'Punkt dostępu'
     addons:
       en: 'Addons'
       de: 'Addons'
@@ -935,6 +947,18 @@ ui:
       en: 'Password'
       de: 'Passwort'
       pl: 'Hasło'
+
+  ##### ACCESS POINT WINDOW #####
+  # all values for access point window, ssid/password labels are shared with the wifi window
+  access_point:
+    enabled:
+      en: 'Access point active'
+      de: 'Access Point aktiv'
+      pl: 'Punkt dostępu aktywny'
+    qr_hint:
+      en: 'Scan to connect'
+      de: 'Zum Verbinden scannen'
+      pl: 'Zeskanuj, aby połączyć'
 
   ##### ADDON WINDOW #####
   # all values for addon window

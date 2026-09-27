@@ -340,6 +340,11 @@ So you can still use the wlan0 interface for your normal network connection.
 This requires that you can have a virtual interface on your chip, for example the Raspberry Pi 3B+.
 A systemd service recreates the virtual interface on boot, so the access point survives a reboot.
 
+The access point can also be managed from the options screen of the app (v1 and v2) under "Access Point".
+There you can switch it on or off, change name and password, and scan a QR code to connect a phone.
+NetworkManager stores the settings, so they survive a project reset or reinstall.
+Switching the access point off in the app keeps name and password, `remove-ap` deletes everything.
+
 ```bash
 uv run runme.py setup-ap [OPTIONS]
 
@@ -351,14 +356,10 @@ uv run runme.py setup-ap [OPTIONS]
 
 ## Remove the Access Point
 
-If you want to remove the access point, you can use this.
+If you want to remove the access point completely, including the stored name and password, you can use this.
 
 ```bash
-uv run runme.py remove-ap [OPTIONS]
-
-# Options:
-#   --ssid      SSID Name of the AP [default: CocktailBerry]
-#   --help      Show help
+uv run runme.py remove-ap
 ```
 
 ## Virtual Keyboard Commands

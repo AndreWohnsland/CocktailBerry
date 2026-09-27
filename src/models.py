@@ -412,6 +412,7 @@ class OptionTiles(BaseModel):
     data: bool = False
     logs: bool = False
     wifi: bool = False
+    access_point: bool = False
     addons: bool = False
     internet_check: bool = False
     update_system: bool = False

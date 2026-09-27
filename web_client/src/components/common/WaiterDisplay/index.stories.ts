@@ -47,6 +47,7 @@ const allTilesAllowed: OptionTiles = {
   data: false,
   logs: false,
   wifi: false,
+  access_point: false,
   addons: false,
   internet_check: false,
   update_system: false,

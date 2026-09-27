@@ -36,6 +36,7 @@ dependencies = [
     "rpi-ws281x>=5.0.0 ; sys_platform == 'linux'",
     "gpiozero>=2.0.1.post3 ; sys_platform == 'linux'",
     "rpi-gpio>=0.7.1 ; sys_platform == 'linux'",
+    "qrcode>=8.2",
 ]
 
 [dependency-groups]
