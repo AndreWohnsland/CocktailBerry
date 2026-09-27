@@ -100,7 +100,7 @@
   "options": {
     "about": "O CocktailBerry",
     "documentation": "Dokumentacja:",
-    "aboutText": "CocktailBerry wersja {{version}} autorstwa Andre Wohnsland.\n{{platform}}.\nUżywana wersja Pythona: {{pythonVersion}} z interfejsem Web UI.",
+    "aboutText": "CocktailBerry wersja {{version}} autorstwa Andre Wohnsland.\n{{platform}}.\nUżywana wersja Pythona: {{pythonVersion}} z interfejsem Web UI {{webVersion}}.",
     "addons": "Dodatki",
     "adjustTime": "Ustaw czas",
     "backup": "Kopia zapasowa",
@@ -221,8 +221,9 @@
   "accessPoint": {
     "title": "Punkt dostępu",
     "enabled": "Punkt dostępu aktywny",
-    "ssid": "SSID (nazwa sieci)",
+    "ssid": "Nazwa sieci (SSID)",
     "password": "Hasło",
+    "passwordHint": "{{min}}–{{max}} znaków",
     "apply": "Zastosuj",
     "confirm": "Zastosować ustawienia punktu dostępu? Podłączone urządzenia mogą na chwilę stracić połączenie.",
     "qrHint": "Zeskanuj telefonem, aby połączyć",

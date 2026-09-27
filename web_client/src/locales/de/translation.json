@@ -100,7 +100,7 @@
   "options": {
     "about": "Info CocktailBerry",
     "documentation": "Dokumentation:",
-    "aboutText": "CocktailBerry Software Version {{version}} von Andre Wohnsland.\n{{platform}}.\nVerwendete Python Version: {{pythonVersion}} mit Web UI.",
+    "aboutText": "CocktailBerry Software Version {{version}} von Andre Wohnsland.\n{{platform}}.\nVerwendete Python Version: {{pythonVersion}} mit Web UI {{webVersion}}.",
     "addons": "Addons",
     "adjustTime": "Zeit Anpassen",
     "backup": "Sicherung",
@@ -221,8 +221,9 @@
   "accessPoint": {
     "title": "Access Point",
     "enabled": "Access Point aktiv",
-    "ssid": "SSID (Netzwerkname)",
+    "ssid": "Netzwerkname (SSID)",
     "password": "Passwort",
+    "passwordHint": "{{min}}–{{max}} Zeichen",
     "apply": "Übernehmen",
     "confirm": "Access Point Einstellungen übernehmen? Verbundene Geräte verlieren kurz die Verbindung.",
     "qrHint": "Mit dem Handy scannen, um zu verbinden",
