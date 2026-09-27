@@ -36,6 +36,7 @@ const AboutModal = ({ isOpen, onClose, aboutInfo }: AboutModalProps) => {
                 version: aboutInfo.version,
                 platform: aboutInfo.platform,
                 pythonVersion: aboutInfo.python_version,
+                webVersion: __WEB_VERSION__,
               }),
             )
           ) : (

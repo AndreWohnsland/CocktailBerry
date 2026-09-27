@@ -16,8 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # only checkout the client folder
-          sparse-checkout: web_client
+          # the client folder plus pyproject, which vite.config.ts reads for the version
+          sparse-checkout: |
+            web_client
+            pyproject.toml
           sparse-checkout-cone-mode: false
 
       - name: Move mobile app files to root
