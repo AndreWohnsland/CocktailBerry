@@ -1,5 +1,8 @@
+import { useId } from 'react';
+
 interface TextInputProps {
   value: string;
+  label?: string;
   prefix?: string;
   suffix?: string;
   placeholder?: string;
@@ -11,6 +14,7 @@ interface TextInputProps {
 
 const TextInput = ({
   value,
+  label,
   prefix,
   suffix,
   placeholder,
@@ -19,10 +23,12 @@ const TextInput = ({
   className,
   handleInputChange,
 }: TextInputProps) => {
-  return (
-    <div className={`flex items-center whitespace-nowrap w-full ${className ?? ''}`}>
+  const id = useId();
+  const inputRow = (
+    <div className={`flex items-center whitespace-nowrap w-full ${label ? '' : (className ?? '')}`}>
       {prefix && <span className='text-neutral mx-1 whitespace-nowrap'>{prefix}</span>}
       <input
+        id={id}
         type={type || 'text'}
         value={value}
         onChange={(e) => handleInputChange(e.target.value)}
@@ -31,6 +37,13 @@ const TextInput = ({
       />
       {suffix && <span className='text-neutral mx-1 whitespace-nowrap'>{suffix}</span>}
     </div>
+  );
+  if (!label) return inputRow;
+  return (
+    <label htmlFor={id} className={`block w-full text-neutral text-center ${className ?? ''}`}>
+      {label}
+      {inputRow}
+    </label>
   );
 };
 

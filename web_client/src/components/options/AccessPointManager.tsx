@@ -49,11 +49,24 @@ const AccessPointManager = () => {
   return (
     <div className='p-4 w-full max-w-3xl'>
       <TextHeader text={t('accessPoint.title')} />
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4 text-neutral'>
-        <CheckBox value={enabled} checkName={t('accessPoint.enabled')} handleInputChange={setEnabled} />
-        <TextInput prefix={`${t('accessPoint.ssid')}:`} value={ssid} handleInputChange={setSsid} />
-        <TextInput prefix={`${t('accessPoint.password')}:`} value={password} handleInputChange={setPassword} />
-        <Button type='submit' label={t('accessPoint.apply')} disabled={!dataValid} className='w-full' />
+      <form onSubmit={handleSubmit} className='grid grid-cols-1 md:grid-cols-2 gap-2 text-neutral'>
+        <div className='col-span-1 md:col-span-2 mb-2 flex justify-center'>
+          <CheckBox value={enabled} checkName={t('accessPoint.enabled')} handleInputChange={setEnabled} />
+        </div>
+        <TextInput label={t('accessPoint.ssid')} value={ssid} large handleInputChange={setSsid} />
+        <div>
+          <TextInput label={t('accessPoint.password')} value={password} large handleInputChange={setPassword} />
+          <p className='text-sm text-center opacity-70'>
+            {t('accessPoint.passwordHint', { min: PASSWORD_LENGTH[0], max: PASSWORD_LENGTH[1] })}
+          </p>
+        </div>
+        <Button
+          type='submit'
+          filled
+          label={t('accessPoint.apply')}
+          disabled={!dataValid}
+          className='col-span-1 md:col-span-2 mt-4'
+        />
       </form>
       {status?.qr_code && (
         <div className='flex flex-col items-center gap-2 mt-6 text-neutral text-center'>
