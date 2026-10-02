@@ -1,5 +1,4 @@
 import tempfile
-from collections.abc import Generator
 from pathlib import Path
 from typing import Any
 
@@ -36,7 +35,7 @@ def _mark_addon_configs_initialized(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.fixture
-def db_commander() -> Generator[DatabaseCommander, Any]:
+def db_commander() -> DatabaseCommander:
     """Fixture to create an in-memory SQLite database and populate it with test data."""
     db_commander = DatabaseCommander(db_url="sqlite:///:memory:")
     # Create ingredients
@@ -79,4 +78,4 @@ def db_commander() -> Generator[DatabaseCommander, Any]:
     # Add one ingredient to available table
     db_commander.insert_multiple_existing_handadd_ingredients(["Blue Curacao"])
 
-    yield db_commander
+    return db_commander

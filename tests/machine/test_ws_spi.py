@@ -6,7 +6,7 @@ import types
 # spidev is a linux-only dependency; stub it so the encoder is testable anywhere.
 if "spidev" not in sys.modules:
     stub = types.ModuleType("spidev")
-    stub.SpiDev = object  # type: ignore[attr-defined]
+    stub.SpiDev = object  # ty: ignore[unresolved-attribute]
     sys.modules["spidev"] = stub
 
 from src.machine.leds.ws_spi import _RESET, _SPI_HZ, Color, NeoPixelSPI

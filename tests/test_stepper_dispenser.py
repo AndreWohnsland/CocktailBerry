@@ -12,7 +12,7 @@ from src.machine.hardware import HardwareContext
 
 class TestStepperDispenser:
     def _make_dispenser(self, **kwargs: Any) -> StepperDispenser:
-        defaults = {
+        defaults: dict[str, Any] = {
             "pin": 17,
             "dir_pin": 27,
             "volume_flow": 30.0,
