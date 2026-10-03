@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { cancelPayment, getCocktailStatus, stopCocktail } from '../../api/cocktails';
 import { useConfig } from '../../providers/ConfigProvider';
-import type { HandAddMeasure as HandAddItem, PrepareResult } from '../../types/models';
+import type { CocktailStatus, HandAddMeasure as HandAddItem, PrepareResult } from '../../types/models';
 import { errorToast } from '../../utils';
 import PreparationFinalize from '../cocktail/PreparationFinalize';
 import PaymentWaiting from './PaymentWaiting';
@@ -55,9 +55,8 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
 }) => {
   const { config } = useConfig();
   const [currentProgress, setCurrentProgress] = useState(progress);
-  const [currentStatus, setCurrentStatus] = useState<PrepareResult>(
-    config.PAYMENT_TYPE !== 'Disabled' ? 'WAITING_FOR_PAYMENT' : 'IN_PROGRESS',
-  );
+  const initialStatus: PrepareResult = config.PAYMENT_TYPE !== 'Disabled' ? 'WAITING_FOR_PAYMENT' : 'IN_PROGRESS';
+  const [currentStatus, setCurrentStatus] = useState<PrepareResult>(initialStatus);
   const [message, setMessage] = useState<string | null>(null);
   const [handAdds, setHandAdds] = useState<HandAddItem[]>([]);
   const { t } = useTranslation();
@@ -65,6 +64,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
   const closeWindow = React.useCallback(
     (finalStatus?: string) => {
       setCurrentProgress(0);
+      setCurrentStatus(initialStatus);
       setMessage(null);
       setHandAdds([]);
       onRequestClose();
@@ -72,7 +72,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
         triggerOnClose(finalStatus ?? 'CANCELED');
       }
     },
-    [onRequestClose, triggerOnClose],
+    [onRequestClose, triggerOnClose, initialStatus],
   );
 
   const handleCancelPayment = async () => {
@@ -95,8 +95,20 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
     };
 
     if (isOpen) {
+      let inFlight = false;
       intervalId = setInterval(async () => {
-        const cocktailStatus = await getCocktailStatus();
+        if (inFlight) return;
+        inFlight = true;
+        let cocktailStatus: CocktailStatus;
+        try {
+          cocktailStatus = await getCocktailStatus();
+        } catch (error) {
+          // a failed poll says nothing about the machine, which may still be pumping
+          console.error('Error fetching cocktail status:', error);
+          return;
+        } finally {
+          inFlight = false;
+        }
         setCurrentStatus(cocktailStatus.status);
         setCurrentProgress(cocktailStatus.progress);
         if (cocktailStatus.status === 'IN_PROGRESS' || cocktailStatus.status === 'WAITING_FOR_PAYMENT') {

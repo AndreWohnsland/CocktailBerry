@@ -28,7 +28,7 @@ export const scaleCocktail = (cocktail: Cocktail, factor: number): Cocktail => {
     amount: Math.round((ingredient.amount * targetVolume) / totalVolume),
   }));
 
-  const newAlcoholPercent = (totalAlcoholVolume / targetVolume) * 100;
+  const newAlcoholPercent = (totalAlcoholVolume / totalVolume) * 100;
 
   return { ...cocktail, alcohol: Math.round(newAlcoholPercent), ingredients };
 };

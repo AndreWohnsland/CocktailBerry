@@ -50,17 +50,7 @@ export const prepareCocktail = async (
 };
 
 export const getCocktailStatus = async (): Promise<CocktailStatus> => {
-  return axiosInstance
-    .get<CocktailStatus>(`${cocktail_url}/prepare/status`)
-    .then((res) => res.data)
-    .catch((error) => {
-      console.error('Error fetching cocktail status:', error);
-      return {
-        progress: 0,
-        error: undefined,
-        status: 'UNDEFINED',
-      };
-    });
+  return axiosInstance.get<CocktailStatus>(`${cocktail_url}/prepare/status`).then((res) => res.data);
 };
 
 export const stopCocktail = async (): Promise<void> => {

@@ -78,8 +78,7 @@ export type PrepareResult =
   | 'ADDON_ERROR'
   | 'WAITING_FOR_PAYMENT'
   | 'NO_WAITER_LOGGED_IN'
-  | 'NO_GLASS_DETECTED'
-  | 'UNDEFINED';
+  | 'NO_GLASS_DETECTED';
 
 export interface HandAddMeasure {
   name: string;
