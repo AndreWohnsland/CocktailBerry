@@ -49,7 +49,7 @@ def test_cancelled_end_effect_does_not_restore() -> None:
         while True:
             yield 10.0
 
-    led.end_frames = slow_frames  # type: ignore[method-assign]
+    led.end_frames = slow_frames  # ty: ignore[invalid-assignment]
     led.preparation_end()
     time.sleep(0.05)
     led.cleanup()

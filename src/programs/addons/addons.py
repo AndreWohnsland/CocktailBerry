@@ -235,17 +235,19 @@ class AddOnManager:
         thread.start()
 
     def remove_addon(self, addon: AddonData) -> None:
-        """Remove an addon from the manager."""
-        if addon.name in self.addons:
-            addon_instance = self.addons[addon.name]
-            self._try_function_for_addon(addon_instance, "cleanup")
-            del self.addons[addon.name]
-            _logger.info(f"Removed addon {addon.name}")
-        if addon.name in self.addon_thread_ids:
-            del self.addon_thread_ids[addon.name]
-        addon_file = ADDON_FOLDER / addon.file_name
-
+        """Remove a loaded addon and its file from the manager."""
+        # match like get_addon_data does, the official list may differ in case from ADDON_NAME
+        name = next((n for n in self.addons if n.lower() == addon.name.lower()), None)
+        if name is None:
+            _logger.warning(f"Cannot remove addon {addon.name}, it is not loaded")
+            return
+        addon_instance = self.addons.pop(name)
+        self._try_function_for_addon(addon_instance, "cleanup")
+        self.addon_thread_ids.pop(name, None)
+        # derive the file from the loaded module, addon.file_name may come from an untrusted client
+        addon_file = ADDON_FOLDER / f"{addon_instance.__module__.split('.')[-1]}.py"
         addon_file.unlink(missing_ok=True)
+        _logger.info(f"Removed addon {name}")
 
         # Remove the module from sys.modules to allow fresh import
         module_name = f"addons.{addon_file.stem}"

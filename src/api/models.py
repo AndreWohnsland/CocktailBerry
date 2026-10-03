@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime as dt
 from typing import TYPE_CHECKING, Annotated, Literal, TypeVar
 
 from annotated_types import Len
@@ -145,8 +146,8 @@ class IssueData(BaseModel):
 
 
 class DateTimeInput(BaseModel):
-    date: str
-    time: str
+    date: dt.date
+    time: dt.time
 
 
 class ApiMessage(BaseModel):

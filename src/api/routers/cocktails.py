@@ -24,7 +24,7 @@ from src.api.internal.utils import (
     map_ingredient,
     not_on_demo,
 )
-from src.api.internal.validation import raise_on_validation_not_okay
+from src.api.internal.validation import claim_machine_or_raise, raise_on_validation_not_okay
 from src.api.middleware import maker_protected
 from src.api.models import (
     ApiMessage,
@@ -131,21 +131,26 @@ async def prepare_cocktail(
     ):
         raise HTTPException(status_code=400, detail=DH.get_translation("cocktail_not_possible"))
     raise_on_validation_not_okay(cocktail)
+    # SumUp cannot be called with 0 price
+    needs_payment = cfg.payment_enabled and (not cfg.sumup_payment or requires_sumup_payment(cocktail))
+    # claim before touching team data, a refused request must not alter the running cocktail
+    claim_machine_or_raise(PrepareResult.WAITING_FOR_PAYMENT if needs_payment else PrepareResult.IN_PROGRESS)
     # handle team data
     shared.team_member_name = None
     shared.selected_team = "No Team"
     if request.selected_team is not None:
         shared.selected_team = request.selected_team
         shared.team_member_name = request.team_member_name
-    if cfg.payment_enabled:
-        # SumUp cannot be called with 0 price
-        if cfg.sumup_payment and not requires_sumup_payment(cocktail):
-            background_tasks.add_task(maker.prepare_cocktail, cocktail)
-            return CocktailStatus(status=PrepareResult.IN_PROGRESS)
-        background_tasks.add_task(payment_handler.start_payment_flow, cocktail)
+    if needs_payment:
+        background_tasks.add_task(_run_payment_flow, payment_handler, cocktail)
         return CocktailStatus(status=PrepareResult.WAITING_FOR_PAYMENT)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
+
+
+async def _run_payment_flow(payment_handler: PaymentHandler, cocktail: DbCocktail) -> None:
+    with maker.release_on_error():
+        await payment_handler.start_payment_flow(cocktail)
 
 
 @router.get("/prepare/status", tags=["preparation"], summary="Get the current cocktail preparation status")

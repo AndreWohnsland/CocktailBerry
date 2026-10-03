@@ -1100,7 +1100,7 @@ class TestEdgeCasesConfigManager:
         # PUMP_CONFIG uses a callable for min_length
         pump_list = config.config_type["PUMP_CONFIG"]
         assert isinstance(pump_list, ListType)
-        min_len = pump_list.min_length() if callable(pump_list.min_length) else pump_list.min_length  # ty:ignore[call-top-callable]
+        min_len = pump_list.min_length() if callable(pump_list.min_length) else pump_list.min_length
 
         # Should use the value from choose_bottle_number
         assert min_len == config.choose_bottle_number(ignore_limits=True)

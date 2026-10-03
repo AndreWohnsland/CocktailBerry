@@ -5,9 +5,7 @@ from __future__ import annotations
 import contextlib
 import json
 import sqlite3
-from collections.abc import Generator
 from pathlib import Path
-from typing import Any
 
 import pytest
 
@@ -16,7 +14,7 @@ from src.models import OptionTiles
 
 
 @pytest.fixture
-def v3_database(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[Path, Any, Any]:
+def v3_database(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     """Build a temp v3-shaped DB with Waiters (5 priv columns) + WaiterLog rows. No Roles table."""
     db_path = tmp_path / "v3.db"
     backup_dir = tmp_path / "backups"
@@ -83,7 +81,7 @@ def v3_database(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[Pa
         )
         conn.commit()
 
-    yield db_path
+    return db_path
 
 
 def _columns(db_path: Path, table: str) -> list[str]:

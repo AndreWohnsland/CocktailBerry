@@ -35,83 +35,77 @@ def _mock_dispenser(slot: int, volume_flow: float = 10.0, carriage_position: flo
 
 
 class TestController:
-    def test_build_preparation_items(self):
-        original_pump_config = CONFIG.PUMP_CONFIG.copy()
-        original_maker_number_bottles = CONFIG.MAKER_NUMBER_BOTTLES
-
-        try:
-            CONFIG.PUMP_CONFIG = [  # type: ignore
+    def test_build_preparation_items(self, monkeypatch: pytest.MonkeyPatch):
+        monkeypatch.setattr(
+            CONFIG,
+            "PUMP_CONFIG",
+            [
                 DCGPIOPumpConfig(pin=1, volume_flow=10.0, tube_volume=0),
                 DCGPIOPumpConfig(pin=2, volume_flow=20.0, tube_volume=0),
-            ]
-            CONFIG.MAKER_NUMBER_BOTTLES = 2
+            ],
+        )
+        monkeypatch.setattr(CONFIG, "MAKER_NUMBER_BOTTLES", 2)
+        dispensers = {1: _mock_dispenser(1, 10.0), 2: _mock_dispenser(2, 20.0)}
 
-            dispensers = {1: _mock_dispenser(1, 10.0), 2: _mock_dispenser(2, 20.0)}
+        # Create actual Ingredient objects
+        ingredients = [
+            Ingredient(
+                id=1,
+                name="Test Ing 1",
+                alcohol=40,
+                bottle_volume=750,
+                fill_level=500,
+                hand=False,
+                pump_speed=100,
+                amount=100,
+                bottle=1,
+                recipe_order=1,
+            ),
+            Ingredient(
+                id=2,
+                name="Test Ing 2",
+                alcohol=0,
+                bottle_volume=750,
+                fill_level=500,
+                hand=False,
+                pump_speed=50,
+                amount=200,
+                bottle=2,
+                recipe_order=2,
+            ),
+            Ingredient(
+                id=3,
+                name="Hand Ing",
+                alcohol=0,
+                bottle_volume=750,
+                fill_level=500,
+                hand=True,
+                pump_speed=100,
+                amount=50,
+                bottle=None,
+                recipe_order=1,
+            ),
+        ]
 
-            # Create actual Ingredient objects
-            ingredients = [
-                Ingredient(
-                    id=1,
-                    name="Test Ing 1",
-                    alcohol=40,
-                    bottle_volume=750,
-                    fill_level=500,
-                    hand=False,
-                    pump_speed=100,
-                    amount=100,
-                    bottle=1,
-                    recipe_order=1,
-                ),
-                Ingredient(
-                    id=2,
-                    name="Test Ing 2",
-                    alcohol=0,
-                    bottle_volume=750,
-                    fill_level=500,
-                    hand=False,
-                    pump_speed=50,
-                    amount=200,
-                    bottle=2,
-                    recipe_order=2,
-                ),
-                Ingredient(
-                    id=3,
-                    name="Hand Ing",
-                    alcohol=0,
-                    bottle_volume=750,
-                    fill_level=500,
-                    hand=True,
-                    pump_speed=100,
-                    amount=50,
-                    bottle=None,
-                    recipe_order=1,
-                ),
-            ]
+        mc = MachineController()
+        mc.dispensers = dispensers  # type: ignore
+        prep_data = mc._build_preparation_items(ingredients)
 
-            mc = MachineController()
-            mc.dispensers = dispensers  # type: ignore
-            prep_data = mc._build_preparation_items(ingredients)
+        # Verify results
+        assert len(prep_data) == 2
+        assert prep_data[0].dispenser is dispensers[1]
+        assert prep_data[0].pump_speed == 100
+        assert prep_data[0].estimated_time == pytest.approx(10.0)  # 100ml / (10ml/s * 100%)
+        assert prep_data[0].amount_ml == pytest.approx(100.0)
+        assert prep_data[0].recipe_order == 1
+        assert prep_data[0].ingredient is ingredients[0]
 
-            # Verify results
-            assert len(prep_data) == 2
-            assert prep_data[0].dispenser is dispensers[1]
-            assert prep_data[0].pump_speed == 100
-            assert prep_data[0].estimated_time == pytest.approx(10.0)  # 100ml / (10ml/s * 100%)
-            assert prep_data[0].amount_ml == pytest.approx(100.0)
-            assert prep_data[0].recipe_order == 1
-            assert prep_data[0].ingredient is ingredients[0]
-
-            assert prep_data[1].dispenser is dispensers[2]
-            assert prep_data[1].pump_speed == 50
-            assert prep_data[1].estimated_time == pytest.approx(20.0)  # 200ml / (20ml/s * 50%)
-            assert prep_data[1].amount_ml == pytest.approx(200.0)
-            assert prep_data[1].recipe_order == 2
-            assert prep_data[1].ingredient is ingredients[1]
-
-        finally:
-            # Restore original configuration
-            CONFIG.PUMP_CONFIG = original_pump_config  # type: ignore
-            CONFIG.MAKER_NUMBER_BOTTLES = original_maker_number_bottles
+        assert prep_data[1].dispenser is dispensers[2]
+        assert prep_data[1].pump_speed == 50
+        assert prep_data[1].estimated_time == pytest.approx(20.0)  # 200ml / (20ml/s * 50%)
+        assert prep_data[1].amount_ml == pytest.approx(200.0)
+        assert prep_data[1].recipe_order == 2
+        assert prep_data[1].ingredient is ingredients[1]
 
     def test_group_by_recipe_order(self):
         dispensers = [_mock_dispenser(i) for i in range(1, 5)]
