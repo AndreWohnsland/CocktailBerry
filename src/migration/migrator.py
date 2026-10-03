@@ -26,7 +26,6 @@ from src.filepath import (
     CUSTOM_CONFIG_FILE,
     CUSTOM_STYLE_FILE,
     CUSTOM_STYLE_SCSS,
-    VENV_FOLDER,
     VERSION_FILE,
 )
 from src.logger_handler import LoggerHandler
@@ -488,12 +487,6 @@ def _check_and_replace_qt_launcher_script() -> None:
         if not all(command in current_script_text for command in needed_commands):
             switch_launcher("v2", preserve=False)
             return
-        # need to also add uv venv on linux here if uv is already available
-        # This is because we need the system site package for pyqt
-        uv_executable = shutil.which("uv")
-        platform_name = platform.system().lower()
-        if not VENV_FOLDER.exists() and uv_executable and platform_name == "linux":
-            subprocess.run([uv_executable, "uv", "venv"], check=True)
         switch_launcher("v1", preserve=False)
 
 
