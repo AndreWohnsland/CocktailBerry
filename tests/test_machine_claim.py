@@ -1,6 +1,5 @@
 """The machine must never run two preparations at once and must not stay busy after a crash."""
 
-from collections.abc import Iterator
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -12,10 +11,8 @@ from src.tabs import maker
 
 
 @pytest.fixture(autouse=True)
-def _idle_machine() -> Iterator[None]:
-    shared.cocktail_status = CocktailStatus()
-    yield
-    shared.cocktail_status = CocktailStatus()
+def _idle_machine(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(shared, "cocktail_status", CocktailStatus())
 
 
 def _cocktail() -> Cocktail:
@@ -50,16 +47,18 @@ def test_second_claim_is_refused_while_busy(first: PrepareResult):
 
 
 @pytest.mark.parametrize("done", [PrepareResult.FINISHED, PrepareResult.CANCELED])
-def test_claim_is_granted_after_preparation_ended(done: PrepareResult):
-    shared.cocktail_status = CocktailStatus(status=done)
+def test_claim_is_granted_after_preparation_ended(done: PrepareResult, monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(shared, "cocktail_status", CocktailStatus(status=done))
     assert maker.claim_machine(PrepareResult.IN_PROGRESS)
 
 
-def test_crashed_preparation_frees_the_machine():
+def test_crashed_preparation_frees_the_machine(monkeypatch: pytest.MonkeyPatch):
     mc = MagicMock()
     mc.make_cocktail.side_effect = RuntimeError("pump driver died")
-    with patch("src.tabs.maker.MachineController", return_value=mc), pytest.raises(RuntimeError):
-        maker.prepare_cocktail(_cocktail())
+    monkeypatch.setattr(maker, "MachineController", MagicMock(return_value=mc))
+    cocktail = _cocktail()
+    with pytest.raises(RuntimeError):
+        maker.prepare_cocktail(cocktail)
     assert shared.cocktail_status.status == PrepareResult.CANCELED
     assert maker.claim_machine(PrepareResult.IN_PROGRESS)
 
