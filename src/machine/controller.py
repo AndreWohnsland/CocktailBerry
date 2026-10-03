@@ -181,9 +181,14 @@ class MachineController:
         _logger.log_header("INFO", f"Starting {recipe}")
         if is_cocktail:
             self.hardware.led_controller.preparation_start()
-        self._run_scheduler(w, items, use_carriage=use_carriage)
-        if is_cocktail:
-            self.hardware.led_controller.preparation_end()
+        try:
+            self._run_scheduler(w, items, use_carriage=use_carriage)
+        except Exception:
+            self.close_all_pumps()
+            raise
+        finally:
+            if is_cocktail:
+                self.hardware.led_controller.preparation_end()
         # Write consumption back to ingredient objects
         for item in items:
             if item.ingredient is not None:

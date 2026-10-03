@@ -343,6 +343,10 @@ dialog:
     en: 'There is an internet connection, the time is synchronized automatically.'
     de: 'Es besteht eine Internetverbindung, die Zeit wird automatisch synchronisiert.'
     pl: 'Jest połączenie z internetem, czas jest synchronizowany automatycznie.'
+  preparation_failed:
+    en: 'The preparation failed unexpectedly, please check the logs.'
+    de: 'Die Zubereitung ist unerwartet fehlgeschlagen, bitte prüfe die Logs.'
+    pl: 'Przygotowanie nieoczekiwanie się nie powiodło, sprawdź logi.'
   qtsass_not_successful:
     en: 'The package qtsass could not be installed. Try running "[sudo] pip install qtsass" (sudo only, if program is executed with sudo python) and wait until its done.'
     de: 'Das qtsass Paket konnte nicht installiert werden. Versuche "[sudo] pip install qtsass" (sudo nur, wenn das program mit sudo python ausgeführt wird) auszuführen und warte, bis die installation abgeschlossen ist.'

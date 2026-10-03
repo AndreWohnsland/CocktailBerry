@@ -26,6 +26,15 @@ def raise_when_cocktail_is_in_progress() -> None:
         )
 
 
+def claim_machine_or_raise(status: PrepareResult) -> None:
+    """Raise an HTTPException if another preparation claimed the machine first."""
+    if not maker.claim_machine(status):
+        raise ValidationError(
+            status=PrepareResult.IN_PROGRESS.value,
+            detail=DH.cocktail_in_progress(),
+        )
+
+
 def raise_on_validation_not_okay(cocktail: Cocktail) -> None:
     result, msg, ingredient = maker.validate_cocktail(cocktail)
     if result != PrepareResult.VALIDATION_OK:

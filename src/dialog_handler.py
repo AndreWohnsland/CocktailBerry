@@ -154,6 +154,7 @@ allowed_keys = Literal[
     "payment_too_young",
     "payment_user_not_found",
     "preparation_cancelled",
+    "preparation_failed",
     "pump_volume_flow_adjusted",
     "python_deprecated",
     "qtsass_not_successful",

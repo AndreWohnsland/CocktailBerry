@@ -2,7 +2,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
 from src.api.api_config import Tags
 from src.api.internal.utils import map_ingredient, not_on_demo
-from src.api.internal.validation import raise_on_validation_not_okay
+from src.api.internal.validation import claim_machine_or_raise, raise_on_validation_not_okay
 from src.api.middleware import maker_protected
 from src.api.models import ApiMessage, ApiMessageWithData, ErrorDetail, Ingredient, IngredientInput
 from src.config.config_manager import Tab
@@ -139,5 +139,6 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
         )
     cocktail = Cocktail.from_ingredient(ingredient, amount)
     raise_on_validation_not_okay(cocktail)
+    claim_machine_or_raise(PrepareResult.IN_PROGRESS)
     background_tasks.add_task(maker.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
