@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import datetime
 import shutil
 import subprocess
 import tempfile
@@ -474,15 +475,10 @@ async def ignore_issues() -> ApiMessage:
 
 @router.post("/datetime", summary="Update the system date and time", dependencies=[not_on_demo])
 async def update_datetime(data: DateTimeInput) -> ApiMessage:
-    # need YYYY-MM-DD HH:MM:SS format, time from web is "just" HH:MM
-    # users might also add ms, so remove them as well
-    time_string = data.time.split(".")[0]
-    # Add ":00" if seconds are missing
-    len_without_seconds = 2
-    if len(time_string.split(":")) == len_without_seconds:
-        time_string += ":00"
-    datetime_string = f"{data.date} {time_string}"
-    set_system_datetime(datetime_string)
+    # endpoint is unprotected so offline machines can fix their clock; with internet, NTP owns the time
+    if has_connection():
+        raise HTTPException(status_code=400, detail=DH.get_translation("time_set_not_needed"))
+    set_system_datetime(datetime.datetime.combine(data.date, data.time))
     # resolve the internet connection issue, since time is set properly now (only thing we care)
     shared.startup_need_time_adjustment.has_issue = False
     return ApiMessage(message="Success")

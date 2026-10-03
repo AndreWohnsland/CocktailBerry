@@ -176,6 +176,7 @@ allowed_keys = Literal[
     "sumup_payment_declined",
     "sumup_payment_successful",
     "sumup_waiting_for_payment",
+    "time_set_not_needed",
     "update_available",
     "update_failed",
     "update_notes_unavailable",
