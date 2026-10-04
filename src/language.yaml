@@ -435,6 +435,10 @@ dialog:
     en: 'Bottle initialization started!'
     de: 'Flascheninitialisierung gestartet!'
     pl: 'Rozpoczęto inicjalizację butelek!'
+  initialize_bottles_not_needed:
+    en: 'All tubes are already primed, nothing to initialize.'
+    de: 'Alle Schläuche sind bereits befüllt, nichts zu initialisieren.'
+    pl: 'Wszystkie rurki są już napełnione, nie ma nic do inicjalizacji.'
   options_updated:
     en: 'Options updated!'
     de: 'Optionen aktualisiert!'

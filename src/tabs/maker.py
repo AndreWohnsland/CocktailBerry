@@ -14,7 +14,7 @@ from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController, machine_is_busy, release_on_error
-from src.models import Cocktail, CocktailStatus, EventType, HandAddMeasure, Ingredient, PrepareResult
+from src.models import Cocktail, EventType, HandAddMeasure, Ingredient, PrepareResult
 from src.programs.addons.addons import ADDONS
 from src.service.waiter_service import WaiterService
 from src.service_handler import SERVICE_HANDLER
@@ -41,7 +41,6 @@ def prepare_cocktail(
     """
     # Capture current waiter at preparation start (immune to logout during prep)
     waiter_nfc_id = shared.current_waiter_nfc_id
-    shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     addon_data: dict[str, Any] = {"cocktail": cocktail}
 
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
@@ -152,7 +151,6 @@ def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> P
     Returns the final preparation status so callers can decide whether to accumulate
     the spent volume into the auto-calibration target (FINISHED) or discard it (CANCELED).
     """
-    shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     _logger.info(f"Calibrating pump #{bottle_number} with {amount} ml")
     display_name = UI_LANGUAGE._choose_language(
         "calibration_label", "progress_screen", amount=amount, pump=bottle_number
@@ -183,7 +181,6 @@ def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> P
 
 def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> None:
     """Prepare an ingredient."""
-    shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     _logger.info(f"Spending {ingredient.amount} ml {ingredient.name}")
     mc = MachineController()
     mc.make_cocktail(w, [ingredient], ingredient.name, False)

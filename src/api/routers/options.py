@@ -163,11 +163,12 @@ async def clean_machine(background_tasks: BackgroundTasks, revert_pumps: bool = 
 @protected_router.post("/initialize-bottles", tags=[Tags.PREPARATION], summary="Prime all pump tubes")
 async def initialize_bottles_endpoint(background_tasks: BackgroundTasks) -> ApiMessage:
     mc = MachineController()
-    # nothing to prime means no run would ever release the claim
-    if mc.tube_flush_ingredients():
-        claim_machine_or_raise(PrepareResult.IN_PROGRESS)
-        _logger.info("Bottle initialization started by user request")
-        background_tasks.add_task(mc.initialize_bottles, None)
+    # nothing to prime means no run would ever release the claim, and the client must not open the progress modal
+    if not mc.tube_flush_ingredients():
+        raise HTTPException(status_code=400, detail=DH.get_translation("initialize_bottles_not_needed"))
+    claim_machine_or_raise(PrepareResult.IN_PROGRESS)
+    _logger.info("Bottle initialization started by user request")
+    background_tasks.add_task(mc.initialize_bottles, None)
     return ApiMessage(message=DH.get_translation("initialize_bottles_started"))
 
 
