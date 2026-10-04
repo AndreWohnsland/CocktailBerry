@@ -5,9 +5,6 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 
 from __future__ import annotations
 
-import threading
-from collections.abc import Iterator
-from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
 
 from src.config.config_manager import CONFIG as cfg
@@ -16,7 +13,7 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MachineController
+from src.machine.controller import MachineController, machine_is_busy, release_on_error
 from src.models import Cocktail, CocktailStatus, EventType, HandAddMeasure, Ingredient, PrepareResult
 from src.programs.addons.addons import ADDONS
 from src.service.waiter_service import WaiterService
@@ -26,35 +23,9 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 _logger = LoggerHandler("maker_module")
-_BUSY_STATES = (PrepareResult.IN_PROGRESS, PrepareResult.WAITING_FOR_PAYMENT)
-_claim_lock = threading.Lock()
 
 
-def claim_machine(status: PrepareResult) -> bool:
-    """Atomically mark the machine as busy with the given status, False if it is already busy.
-
-    API requests and addon threads validate and start preparations concurrently,
-    so the busy check and the status change must not be separated.
-    """
-    with _claim_lock:
-        if shared.cocktail_status.status in _BUSY_STATES:
-            return False
-        shared.cocktail_status = CocktailStatus(status=status)
-        return True
-
-
-@contextmanager
-def release_on_error() -> Iterator[None]:
-    """Free a claimed machine if the preparation or payment crashes, otherwise it stays busy until restart."""
-    try:
-        yield
-    except Exception:
-        shared.cocktail_status = CocktailStatus(
-            status=PrepareResult.CANCELED, message=DH.get_translation("preparation_failed")
-        )
-        raise
-
-
+# also covers the DB and addon work after pumping, make_cocktail only guards the pump run itself
 @release_on_error()
 def prepare_cocktail(
     cocktail: Cocktail,
@@ -148,7 +119,7 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
     if cfg.waiter_mode_active and shared.current_waiter is None:
         return PrepareResult.NO_WAITER_LOGGED_IN, DH.get_translation("no_waiter_logged_in"), None
     addon_data: dict[str, Any] = {"cocktail": cocktail}
-    if shared.cocktail_status.status in _BUSY_STATES:
+    if machine_is_busy():
         return PrepareResult.IN_PROGRESS, DH.cocktail_in_progress(), None
     empty_ingredient = None
     if cfg.MAKER_CHECK_BOTTLE:

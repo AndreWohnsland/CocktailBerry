@@ -42,6 +42,7 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
 from src.logger_handler import LoggerHandler
+from src.machine.controller import release_on_error
 from src.models import Cocktail as DbCocktail
 from src.models import CocktailStatus, PrepareResult
 from src.payment_utils import filter_cocktails_by_user
@@ -149,7 +150,7 @@ async def prepare_cocktail(
 
 
 async def _run_payment_flow(payment_handler: PaymentHandler, cocktail: DbCocktail) -> None:
-    with maker.release_on_error():
+    with release_on_error():
         await payment_handler.start_payment_flow(cocktail)
 
 

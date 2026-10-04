@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import atexit
 import contextlib
-from collections.abc import Iterable
+import threading
+from collections.abc import Iterable, Iterator
 from typing import TYPE_CHECKING, Any, Self, TypeGuard
 
 from src.logger_handler import LoggerHandler
@@ -33,6 +34,38 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 _logger = LoggerHandler("MachineController")
+_BUSY_STATES = (PrepareResult.IN_PROGRESS, PrepareResult.WAITING_FOR_PAYMENT)
+_claim_lock = threading.Lock()
+
+
+def machine_is_busy() -> bool:
+    """Return True while a pump run or a payment wait owns the machine."""
+    return shared.cocktail_status.status in _BUSY_STATES
+
+
+def claim_machine(status: PrepareResult) -> bool:
+    """Atomically mark the machine as busy with the given status, False if it is already busy.
+
+    API requests and addon threads validate and start pump runs concurrently,
+    so the busy check and the status change must not be separated.
+    """
+    with _claim_lock:
+        if machine_is_busy():
+            return False
+        shared.cocktail_status = CocktailStatus(status=status)
+        return True
+
+
+@contextlib.contextmanager
+def release_on_error() -> Iterator[None]:
+    """Free a claimed machine if the run or payment crashes, otherwise it stays busy until restart."""
+    try:
+        yield
+    except Exception:
+        shared.cocktail_status = CocktailStatus(
+            status=PrepareResult.CANCELED, message=DIALOG_HANDLER.get_translation("preparation_failed")
+        )
+        raise
 
 
 class MachineController:
@@ -79,6 +112,7 @@ class MachineController:
         _logger.log_header("INFO", "Machine initialized")
         atexit.register(self.cleanup)
 
+    @release_on_error()
     def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False) -> None:
         """Clean the pumps for the defined time in the config.
 
@@ -108,13 +142,19 @@ class MachineController:
         def is_cancelled() -> bool:
             return shared.cocktail_status.status == PrepareResult.CANCELED
 
-        scheduler.run(items, on_progress, is_cancelled)
-        if revert_pumps and self.hardware.reverter is not None:
-            self.hardware.reverter.revert_off()
+        try:
+            scheduler.run(items, on_progress, is_cancelled)
+        except Exception:
+            self.close_all_pumps()
+            raise
+        finally:
+            if revert_pumps and self.hardware.reverter is not None:
+                self.hardware.reverter.revert_off()
         _logger.log_header("INFO", "Done Cleaning")
         if w is not None:
             w.close_progression_window()
-        shared.cocktail_status.status = PrepareResult.FINISHED
+        if shared.cocktail_status.status != PrepareResult.CANCELED:
+            shared.cocktail_status.status = PrepareResult.FINISHED
         DatabaseCommander().save_event(EventType.CLEANING)
 
     @staticmethod
@@ -155,6 +195,7 @@ class MachineController:
         if ingredients:
             self.make_cocktail(w, ingredients, "initialize", is_cocktail=False, use_carriage=False)
 
+    @release_on_error()
     def make_cocktail(
         self,
         w: MainScreen | None,
