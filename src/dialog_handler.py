@@ -128,6 +128,7 @@ allowed_keys = Literal[
     "ingredient_still_at_bottle",
     "ingredient_still_at_recipe",
     "ingredient_still_in_available",
+    "initialize_bottles_not_needed",
     "initialize_bottles_started",
     "internet_connection_not_ok",
     "internet_connection_ok",

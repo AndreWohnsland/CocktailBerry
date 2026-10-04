@@ -18,7 +18,7 @@ from starlette.background import BackgroundTask
 from src.api.api_config import Tags
 from src.api.internal.dependencies import SumupServiceDep
 from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
-from src.api.internal.validation import raise_when_cocktail_is_in_progress
+from src.api.internal.validation import claim_machine_or_raise
 from src.api.middleware import master_protected_dependency
 from src.api.models import (
     AccessPointData,
@@ -47,7 +47,7 @@ from src.image_utils import RANDOM_IMAGE_NAME, find_user_cocktail_image, process
 from src.logger_handler import LogFiles, LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import create_backup_folder, files_for_groups, restore_backup
-from src.models import AddonData, ConsumeData, EventType, ResourceInfo, ResourceStats
+from src.models import AddonData, ConsumeData, EventType, PrepareResult, ResourceInfo, ResourceStats
 from src.programs.addons.addons import ADDONS
 from src.save_handler import SAVE_HANDLER
 from src.service.sumup_payment_service import Err
@@ -151,7 +151,7 @@ async def delete_random_image() -> ApiMessage:
 
 @protected_router.post("/clean", tags=[Tags.PREPARATION], summary="Start the machine cleaning")
 async def clean_machine(background_tasks: BackgroundTasks, revert_pumps: bool = False) -> ApiMessage:
-    raise_when_cocktail_is_in_progress()
+    claim_machine_or_raise(PrepareResult.IN_PROGRESS)
     _logger.info("Cleaning started by user request")
     # Reversion only honored when machine is configured for it; ignore the flag otherwise.
     use_revert = revert_pumps and cfg.MAKER_PUMP_REVERSION_CONFIG.enabled
@@ -162,9 +162,13 @@ async def clean_machine(background_tasks: BackgroundTasks, revert_pumps: bool = 
 
 @protected_router.post("/initialize-bottles", tags=[Tags.PREPARATION], summary="Prime all pump tubes")
 async def initialize_bottles_endpoint(background_tasks: BackgroundTasks) -> ApiMessage:
-    raise_when_cocktail_is_in_progress()
+    mc = MachineController()
+    # nothing to prime means no run would ever release the claim, and the client must not open the progress modal
+    if not mc.tube_flush_ingredients():
+        raise HTTPException(status_code=400, detail=DH.get_translation("initialize_bottles_not_needed"))
+    claim_machine_or_raise(PrepareResult.IN_PROGRESS)
     _logger.info("Bottle initialization started by user request")
-    background_tasks.add_task(MachineController().initialize_bottles, None)
+    background_tasks.add_task(mc.initialize_bottles, None)
     return ApiMessage(message=DH.get_translation("initialize_bottles_started"))
 
 

@@ -45,10 +45,16 @@ class SumupPaymentHandler:
         3. Polling for completion
         4. Starting cocktail preparation on successful payment
         """
+        try:
+            await self._payment_flow(cocktail)
+        finally:
+            # reset after the flow, not before: a cancel that arrives before the flow starts must not be lost
+            self._payment_cancelled = False
+
+    async def _payment_flow(self, cocktail: Cocktail) -> None:
         _logger.info("Starting SumUp payment flow")
         shared.cocktail_status.message = CocktailBooking.sumup_waiting_for_payment().message
         shared.cocktail_status.status = PrepareResult.WAITING_FOR_PAYMENT
-        self._payment_cancelled = False
 
         price_in_cents = _get_price_in_cents(cocktail)
 

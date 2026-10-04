@@ -5,9 +5,6 @@ This includes all functions for the Lists, DB and Buttons/Dropdowns.
 
 from __future__ import annotations
 
-import threading
-from collections.abc import Iterator
-from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
 
 from src.config.config_manager import CONFIG as cfg
@@ -16,8 +13,8 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MachineController
-from src.models import Cocktail, CocktailStatus, EventType, HandAddMeasure, Ingredient, PrepareResult
+from src.machine.controller import MachineController, machine_is_busy, release_on_error
+from src.models import Cocktail, EventType, HandAddMeasure, Ingredient, PrepareResult
 from src.programs.addons.addons import ADDONS
 from src.service.waiter_service import WaiterService
 from src.service_handler import SERVICE_HANDLER
@@ -26,35 +23,9 @@ if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
 
 _logger = LoggerHandler("maker_module")
-_BUSY_STATES = (PrepareResult.IN_PROGRESS, PrepareResult.WAITING_FOR_PAYMENT)
-_claim_lock = threading.Lock()
 
 
-def claim_machine(status: PrepareResult) -> bool:
-    """Atomically mark the machine as busy with the given status, False if it is already busy.
-
-    API requests and addon threads validate and start preparations concurrently,
-    so the busy check and the status change must not be separated.
-    """
-    with _claim_lock:
-        if shared.cocktail_status.status in _BUSY_STATES:
-            return False
-        shared.cocktail_status = CocktailStatus(status=status)
-        return True
-
-
-@contextmanager
-def release_on_error() -> Iterator[None]:
-    """Free a claimed machine if the preparation or payment crashes, otherwise it stays busy until restart."""
-    try:
-        yield
-    except Exception:
-        shared.cocktail_status = CocktailStatus(
-            status=PrepareResult.CANCELED, message=DH.get_translation("preparation_failed")
-        )
-        raise
-
-
+# also covers the DB and addon work after pumping, make_cocktail only guards the pump run itself
 @release_on_error()
 def prepare_cocktail(
     cocktail: Cocktail,
@@ -70,7 +41,6 @@ def prepare_cocktail(
     """
     # Capture current waiter at preparation start (immune to logout during prep)
     waiter_nfc_id = shared.current_waiter_nfc_id
-    shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     addon_data: dict[str, Any] = {"cocktail": cocktail}
 
     # only selects the positions where amount is not 0, if virgin this will remove alcohol from the recipe
@@ -100,8 +70,11 @@ def prepare_cocktail(
     )
 
     DBC = DatabaseCommander()
+    # a cocktail only counts as made (counter, team data, webhook) if over 50% was dispensed
+    minimum_cocktail_progress = 0.5
+    counts_as_made = result.completion_ratio >= minimum_cocktail_progress
     # single ingredient got represented as a cocktail with one ingredient, but no id, skip recipe increment
-    if cocktail.id != 0:
+    if counts_as_made and cocktail.id != 0:
         DBC.increment_recipe_counter(cocktail.name, cocktail.is_virgin)
 
     # Set hand-add consumption before addon call so all data is available, always set hand add to recipe level
@@ -114,9 +87,7 @@ def prepare_cocktail(
     # Need to be called after the consumption is set, so the addon can access the real data from DB
     ADDONS.after_cocktail(addon_data)
 
-    # only post if cocktail was made over 50%
-    minimum_cocktail_progress = 0.5
-    if result.completion_ratio >= minimum_cocktail_progress:
+    if counts_as_made:
         SERVICE_HANDLER.post_team_data(shared.selected_team, cocktail.produced_volume, shared.team_member_name)
         SERVICE_HANDLER.post_cocktail_to_hook(cocktail, cocktail.produced_volume)
 
@@ -148,7 +119,7 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
     if cfg.waiter_mode_active and shared.current_waiter is None:
         return PrepareResult.NO_WAITER_LOGGED_IN, DH.get_translation("no_waiter_logged_in"), None
     addon_data: dict[str, Any] = {"cocktail": cocktail}
-    if shared.cocktail_status.status in _BUSY_STATES:
+    if machine_is_busy():
         return PrepareResult.IN_PROGRESS, DH.cocktail_in_progress(), None
     empty_ingredient = None
     if cfg.MAKER_CHECK_BOTTLE:
@@ -180,7 +151,6 @@ def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> P
     Returns the final preparation status so callers can decide whether to accumulate
     the spent volume into the auto-calibration target (FINISHED) or discard it (CANCELED).
     """
-    shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     _logger.info(f"Calibrating pump #{bottle_number} with {amount} ml")
     display_name = UI_LANGUAGE._choose_language(
         "calibration_label", "progress_screen", amount=amount, pump=bottle_number
@@ -211,7 +181,6 @@ def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> P
 
 def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> None:
     """Prepare an ingredient."""
-    shared.cocktail_status = CocktailStatus(status=PrepareResult.IN_PROGRESS)
     _logger.info(f"Spending {ingredient.amount} ml {ingredient.name}")
     mc = MachineController()
     mc.make_cocktail(w, [ingredient], ingredient.name, False)

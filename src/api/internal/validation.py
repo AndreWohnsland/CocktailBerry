@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from fastapi import HTTPException
 
-from src.config.config_manager import shared
 from src.dialog_handler import DIALOG_HANDLER as DH
+from src.machine.controller import claim_machine, machine_is_busy
 from src.models import Cocktail, PrepareResult
 from src.tabs import maker
 
@@ -17,8 +17,8 @@ class ValidationError(HTTPException):
 
 
 def raise_when_cocktail_is_in_progress() -> None:
-    """Raise an HTTPException if a cocktail is in progress."""
-    if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
+    """Raise an HTTPException if a pump run or payment wait owns the machine."""
+    if machine_is_busy():
         raise ValidationError(
             status=PrepareResult.IN_PROGRESS.value,
             detail=DH.cocktail_in_progress(),
@@ -28,7 +28,7 @@ def raise_when_cocktail_is_in_progress() -> None:
 
 def claim_machine_or_raise(status: PrepareResult) -> None:
     """Raise an HTTPException if another preparation claimed the machine first."""
-    if not maker.claim_machine(status):
+    if not claim_machine(status):
         raise ValidationError(
             status=PrepareResult.IN_PROGRESS.value,
             detail=DH.cocktail_in_progress(),

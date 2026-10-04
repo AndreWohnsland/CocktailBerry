@@ -77,8 +77,8 @@ const ProgressModal: React.FC<ProgressModalProps> = ({
 
   const handleCancelPayment = async () => {
     try {
+      // the status poll closes or continues, the payment may have completed just before the cancel
       await cancelPayment();
-      closeWindow('CANCELED');
     } catch (error) {
       errorToast(error);
     }

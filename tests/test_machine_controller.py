@@ -201,6 +201,9 @@ class TestController:
 
         # consumption stays at default; done not set when an exception occurs
         assert data.done is False
+        # the failed pump is stopped and reported as not fully dispensed
+        mock_disp.stop.assert_called_once()
+        assert data.stalled is True
 
     @patch("src.machine.dispensers.scheduler.time.sleep")
     def test_scheduler_run(self, mock_sleep: MagicMock):

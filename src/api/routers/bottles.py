@@ -2,7 +2,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
 from src.api.api_config import Tags
 from src.api.internal.utils import map_bottles
-from src.api.internal.validation import raise_when_cocktail_is_in_progress
+from src.api.internal.validation import claim_machine_or_raise, raise_when_cocktail_is_in_progress
 from src.api.middleware import maker_protected, master_protected_dependency
 from src.api.models import ApiMessage, Bottle, BottleConfigUpdate
 from src.config.config_manager import CONFIG as cfg
@@ -10,6 +10,7 @@ from src.config.config_manager import Tab
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import MachineController
+from src.models import PrepareResult
 from src.tabs import maker
 
 router = APIRouter(tags=[Tags.BOTTLES], prefix="/bottles")
@@ -39,12 +40,13 @@ async def refill_bottle(
             status_code=400,
             detail=f"Invalid bottle number, valid_range 1-{cfg.MAKER_NUMBER_BOTTLES}",
         )
-    DBC = DatabaseCommander()
-    DBC.set_bottle_volumelevel_to_max(bottle_numbers)
     mc = MachineController()
     ingredients = mc.tube_flush_ingredients(bottle_numbers) if flush_tubes else []
     if ingredients:
+        claim_machine_or_raise(PrepareResult.IN_PROGRESS)
         background_tasks.add_task(mc.make_cocktail, None, ingredients, "renew", False)
+    DBC = DatabaseCommander()
+    DBC.set_bottle_volumelevel_to_max(bottle_numbers)
     return ApiMessage(message=f"{DH.get_translation('bottles_renewed')} {bottle_numbers}")
 
 
@@ -104,6 +106,6 @@ async def update_bottle_config(bottle_id: int, data: BottleConfigUpdate) -> ApiM
     ],
 )
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks) -> ApiMessage:
-    raise_when_cocktail_is_in_progress()
+    claim_machine_or_raise(PrepareResult.IN_PROGRESS)
     background_tasks.add_task(maker.calibrate, bottle_id, amount)
     return ApiMessage(message=DH.get_translation("bottle_calibration_started", bottle_id=bottle_id, amount=amount))
