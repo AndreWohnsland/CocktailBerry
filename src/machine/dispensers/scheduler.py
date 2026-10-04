@@ -282,6 +282,9 @@ class DispenserScheduler(BaseScheduler):
 def _dispense_item(item: PreparationItem, on_step: Callable[[], None] | None = None) -> None:
     """Run one dispenser; mutate item.consumption/done; log and swallow exceptions.
 
+    A failing dispenser must not abort the others, so it is only stopped and
+    flagged as stalled, which reports it as not fully dispensed.
+
     Shared by the parallel pool path (``on_step=None``; aggregate progress is
     emitted by the outer polling loop) and the exclusive/carriage path
     (``on_step`` emits aggregate progress on every consumption update).
@@ -305,6 +308,8 @@ def _dispense_item(item: PreparationItem, on_step: Callable[[], None] | None = N
         item.done = True
     except Exception as exc:
         _logger.error(f"Dispenser error on slot {item.dispenser.slot}: {exc}")
+        _safe_stop(item.dispenser)
+        item.stalled = True
 
 
 def _group_by_recipe_order(items: list[PreparationItem]) -> list[list[PreparationItem]]:
