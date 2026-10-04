@@ -71,8 +71,11 @@ def prepare_cocktail(
     )
 
     DBC = DatabaseCommander()
+    # a cocktail only counts as made (counter, team data, webhook) if over 50% was dispensed
+    minimum_cocktail_progress = 0.5
+    counts_as_made = result.completion_ratio >= minimum_cocktail_progress
     # single ingredient got represented as a cocktail with one ingredient, but no id, skip recipe increment
-    if cocktail.id != 0:
+    if counts_as_made and cocktail.id != 0:
         DBC.increment_recipe_counter(cocktail.name, cocktail.is_virgin)
 
     # Set hand-add consumption before addon call so all data is available, always set hand add to recipe level
@@ -85,9 +88,7 @@ def prepare_cocktail(
     # Need to be called after the consumption is set, so the addon can access the real data from DB
     ADDONS.after_cocktail(addon_data)
 
-    # only post if cocktail was made over 50%
-    minimum_cocktail_progress = 0.5
-    if result.completion_ratio >= minimum_cocktail_progress:
+    if counts_as_made:
         SERVICE_HANDLER.post_team_data(shared.selected_team, cocktail.produced_volume, shared.team_member_name)
         SERVICE_HANDLER.post_cocktail_to_hook(cocktail, cocktail.produced_volume)
 
