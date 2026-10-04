@@ -177,8 +177,10 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 
 @protected_maker_router.post("/prepare/stop", tags=["preparation"], summary="Stop the current cocktail preparation")
 async def stop_cocktail() -> ApiMessage:
-    shared.cocktail_status.status = PrepareResult.CANCELED
-    _logger.info("Cocktail Canceled over the API!")
+    # a payment wait is ended by the payment cancel, stopping it here would free the machine while payment is open
+    if shared.cocktail_status.status == PrepareResult.IN_PROGRESS:
+        shared.cocktail_status.status = PrepareResult.CANCELED
+        _logger.info("Cocktail Canceled over the API!")
     return ApiMessage(message=DH.get_translation("preparation_cancelled"))
 
 
@@ -190,10 +192,12 @@ async def stop_cocktail() -> ApiMessage:
 async def cancel_payment(
     payment_handler: Annotated[PaymentHandler, Depends(get_payment_handler)],
 ) -> ApiMessage:
-    booking = payment_handler.cancel_payment()
-    shared.cocktail_status.status = PrepareResult.CANCELED
-    shared.cocktail_status.message = booking.message
-    _logger.info("Payment canceled over the API!")
+    # a late tap must not cancel a cocktail that was already paid and is being prepared
+    if shared.cocktail_status.status == PrepareResult.WAITING_FOR_PAYMENT:
+        booking = payment_handler.cancel_payment()
+        shared.cocktail_status.status = PrepareResult.CANCELED
+        shared.cocktail_status.message = booking.message
+        _logger.info("Payment canceled over the API!")
     return ApiMessage(message=DH.get_translation("payment_canceled"))
 
 

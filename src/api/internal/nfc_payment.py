@@ -30,11 +30,17 @@ class NFCPaymentHandler:
         3. Processing payment on successful NFC scan
         4. Starting cocktail preparation on successful payment
         """
+        try:
+            await self._payment_flow(cocktail)
+        finally:
+            # reset after the flow, not before: a cancel that arrives before the flow starts must not be lost
+            self._payment_cancelled = False
+
+    async def _payment_flow(self, cocktail: Cocktail) -> None:
         _logger.info("Starting NFC payment flow")
         booking = CocktailBooking.no_user_logged_in()
         shared.cocktail_status.message = booking.message
         shared.cocktail_status.status = PrepareResult.WAITING_FOR_PAYMENT
-        self._payment_cancelled = False
 
         def nfc_callback(lookup: UserLookup) -> None:
             nonlocal booking
