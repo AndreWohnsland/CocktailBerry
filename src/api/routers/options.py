@@ -80,13 +80,21 @@ protected_router = APIRouter(
 )
 
 
-@router.get("", summary="Get the current options, passwords are sanitized as boolean (yes/no)")
+# the open endpoint only tells whether a secret is set, the real values stay behind /options/full
+_SECRET_OPTIONS = (
+    "UI_MASTERPASSWORD",
+    "UI_MAKER_PASSWORD",
+    "PAYMENT_SECRET_KEY",
+    "PAYMENT_SUMUP_API_KEY",
+    "PAYMENT_SUMUP_MERCHANT_CODE",
+)
+
+
+@router.get("", summary="Get the current options, secrets are sanitized as boolean (set/not set)")
 async def get_options() -> dict[str, Any]:
-    # need to sanitized the passwords before returning, frontend only need to know if they are set
-    # e.g. 0: False otherwise: True
     config = cfg.get_config()
-    config["UI_MASTERPASSWORD"] = config["UI_MASTERPASSWORD"] != 0
-    config["UI_MAKER_PASSWORD"] = config["UI_MAKER_PASSWORD"] != 0
+    for key in _SECRET_OPTIONS:
+        config[key] = bool(config[key])
     return config
 
 
