@@ -265,7 +265,8 @@ def upload_backup(
 
     with tempfile.TemporaryDirectory() as tmp_dirname:
         tmpdir = Path(tmp_dirname)
-        zip_file_path = tmpdir / file_name
+        # the client filename is only validated above, never used as a path
+        zip_file_path = tmpdir / "backup.zip"
 
         # Save the uploaded file
         with zip_file_path.open("wb") as buffer:
