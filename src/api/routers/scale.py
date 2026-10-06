@@ -1,6 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from src.api.api_config import Tags
+from src.api.internal.validation import raise_when_cocktail_is_in_progress
 from src.api.middleware import master_protected_dependency
 from src.api.models import ApiMessageWithData
 from src.dialog_handler import DIALOG_HANDLER as DH
@@ -30,8 +33,10 @@ async def get_scale_status() -> ApiMessageWithData[bool]:
 
 # tare/read are non-destructive live reads (like status), used by both the hand-add guidance and the
 # calibration screen, so they are left open; only the config-mutating calibrate is master-protected.
+# A tare resets the zero a running scale-dispense measures against, so it has to wait for the machine.
 @router.post("/tare", summary="Tare (zero) the scale.")
-async def tare_scale(samples: int = 3) -> ApiMessageWithData[float]:
+async def tare_scale(samples: Annotated[int, Query(ge=1, le=50)] = 3) -> ApiMessageWithData[float]:
+    raise_when_cocktail_is_in_progress()
     mc = _require_scale()
     offset = mc.scale_tare(samples)
     return ApiMessageWithData(message=DH.get_translation("scale_tared"), data=offset)
