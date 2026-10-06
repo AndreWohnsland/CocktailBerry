@@ -35,7 +35,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const sampleUser: PaymentUserData = {
-  nfc_id: '123456789',
   balance: 25.5,
   is_adult: true,
 };

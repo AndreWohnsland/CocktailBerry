@@ -338,7 +338,8 @@ async def websocket_payment_user(
 
             await websocket.send_json(
                 {
-                    "user": user.__dict__ if user else None,
+                    # never the card id: a uid is enough to clone the card onto a writable tag
+                    "user": {"balance": user.balance, "is_adult": user.is_adult} if user else None,
                     "changeReason": user_lookup.result.name,
                     "cocktails": [c.model_dump() for c in mapped_cocktails],
                 }

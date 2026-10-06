@@ -463,7 +463,6 @@ export interface ResourceStats {
 }
 
 export interface PaymentUserData {
-  nfc_id: string | null;
   balance: number | null;
   is_adult: boolean | null;
 }

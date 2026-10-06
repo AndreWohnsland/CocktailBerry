@@ -10,7 +10,7 @@ export const usePaymentWebSocket = (enabled: boolean) => {
   const { t } = useTranslation();
 
   // Track previous user UID to detect changes
-  const prevUserUidRef = useRef<string | null>(null);
+  const prevUserRef = useRef<string | null>(null);
 
   const { isConnected } = useReconnectingWebSocket<PaymentUserUpdate>({
     enabled,
@@ -27,9 +27,10 @@ export const usePaymentWebSocket = (enabled: boolean) => {
         return;
       }
 
-      const currentUid = data.user?.nfc_id ?? null;
-      if (currentUid !== prevUserUidRef.current) {
-        prevUserUidRef.current = currentUid;
+      // the reader re-sends the same card every second, only react to a change
+      const currentUser = JSON.stringify(data.user);
+      if (currentUser !== prevUserRef.current) {
+        prevUserRef.current = currentUser;
         setUser(data.user);
         setCocktails(data.cocktails);
       }
@@ -37,7 +38,7 @@ export const usePaymentWebSocket = (enabled: boolean) => {
     onReset: () => {
       setUser(null);
       setCocktails([]);
-      prevUserUidRef.current = null;
+      prevUserRef.current = null;
     },
   });
 
