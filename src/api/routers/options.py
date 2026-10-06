@@ -11,7 +11,7 @@ from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 
@@ -19,7 +19,7 @@ from src.api.api_config import Tags
 from src.api.internal.dependencies import SumupServiceDep
 from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
 from src.api.internal.validation import claim_machine_or_raise
-from src.api.middleware import master_protected_dependency
+from src.api.middleware import master_protected_dependency, verify_password_attempt
 from src.api.models import (
     AccessPointData,
     AccessPointStatus,
@@ -451,16 +451,14 @@ def update_software(update: UpdateRequest, background_tasks: BackgroundTasks) ->
 
 
 @router.post("/password/master/validate", summary="Validate Master Password")
-async def validate_master_password(password: PasswordInput) -> ApiMessage:
-    if password.password != cfg.UI_MASTERPASSWORD:
-        raise HTTPException(status_code=403, detail="Invalid Master Password")
+async def validate_master_password(request: Request, password: PasswordInput) -> ApiMessage:
+    verify_password_attempt(request, password.password == cfg.UI_MASTERPASSWORD, "Invalid Master Password")
     return ApiMessage(message="Master password is valid")
 
 
 @router.post("/password/maker/validate", summary="Validate Maker Password")
-async def validate_maker_password(password: PasswordInput) -> ApiMessage:
-    if password.password != cfg.UI_MAKER_PASSWORD:
-        raise HTTPException(status_code=403, detail="Invalid Maker Password")
+async def validate_maker_password(request: Request, password: PasswordInput) -> ApiMessage:
+    verify_password_attempt(request, password.password == cfg.UI_MAKER_PASSWORD, "Invalid Maker Password")
     return ApiMessage(message="Maker password is valid")
 
 
