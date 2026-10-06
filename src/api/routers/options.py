@@ -371,10 +371,12 @@ async def addon_data() -> list[AddonData]:
 async def add_addon(addon: AddonData) -> ApiMessage:
     possible_addons = ADDONS.get_addon_data()
     matched_addon = next((a for a in possible_addons if a.name == addon.name and a.official), None)
-    if matched_addon:
-        ADDONS.install_addon(matched_addon)
-        return ApiMessage(message=f"Addon {addon.name} installed")
-    raise HTTPException(400, detail="Addon is not official or not found")
+    if not matched_addon:
+        raise HTTPException(400, detail="Addon is not official or not found")
+    if not matched_addon.is_installable:
+        raise HTTPException(400, detail="Addon cannot be installed")
+    ADDONS.install_addon(matched_addon)
+    return ApiMessage(message=f"Addon {addon.name} installed")
 
 
 @protected_router.delete("/addon/remove", summary="Remove addon")
