@@ -197,19 +197,19 @@ def cocktailberry_payment_flow(cocktail: Cocktail) -> CocktailBooking:
             booking.message, close_time=polling_time, close_callback=on_cancel
         )
 
-    while (
-        (booking.result == CocktailBooking.Result.NO_USER)
-        and (time.time() - start_time < polling_time)
-        and not canceled
-    ):
+    while (booking.result == CocktailBooking.Result.NO_USER) and (time.time() - start_time < polling_time):
         QApplication.processEvents()
+        # the cancel click runs inside processEvents, so check it before debiting the user
+        if canceled:
+            break
         time.sleep(0.2)
         booking = payment_service.book_cocktail_for_user(detected_user, cocktail)
 
     payment_service.remove_callback("payment_flow")
     _close_dialog_safe(dialog)
 
-    if canceled or booking.result == CocktailBooking.Result.NO_USER:
+    # a booking that landed together with the cancel has already debited the user, so it wins
+    if booking.result == CocktailBooking.Result.NO_USER:
         return CocktailBooking.canceled()
     return booking
 

@@ -42,10 +42,16 @@ class NFCPaymentHandler:
         shared.cocktail_status.message = booking.message
         shared.cocktail_status.status = PrepareResult.WAITING_FOR_PAYMENT
 
+        booking_in_flight = False
+
         def nfc_callback(lookup: UserLookup) -> None:
-            nonlocal booking
+            nonlocal booking, booking_in_flight
             _logger.debug(f"NFC callback triggered with user: {lookup}")
-            booking = self.nfc_service.book_cocktail_for_user(lookup, cocktail)
+            booking_in_flight = True
+            try:
+                booking = self.nfc_service.book_cocktail_for_user(lookup, cocktail)
+            finally:
+                booking_in_flight = False
 
         self.nfc_service.add_callback("payment_flow", nfc_callback)
 
@@ -53,25 +59,30 @@ class NFCPaymentHandler:
         elapsed = 0.0
         check_interval = 0.2  # Check every 200ms
 
-        while (
-            (elapsed < timeout) and (booking.result == CocktailBooking.Result.NO_USER) and (not self._payment_cancelled)
-        ):
+        def keep_waiting() -> bool:
+            # the booking request runs on the reader thread and debits on completion, so neither a cancel
+            # nor the timeout may abandon it while it is in flight
+            if booking_in_flight:
+                return True
+            return (
+                elapsed < timeout and booking.result == CocktailBooking.Result.NO_USER and not self._payment_cancelled
+            )
+
+        while keep_waiting():
             await asyncio.sleep(check_interval)
             elapsed += check_interval
 
         self.nfc_service.remove_callback("payment_flow")
 
-        if self._payment_cancelled or (elapsed >= timeout):
-            booking = CocktailBooking.canceled()
-            _logger.debug("Payment cancelled by user")
-            shared.cocktail_status.message = booking.message
-            shared.cocktail_status.status = PrepareResult.CANCELED
-            return
-
+        # a booking that landed while the cancel came in has already debited the user, so it wins
         if booking.result != CocktailBooking.Result.SUCCESS:
-            _logger.debug(f"Payment failed: {booking.message}")
-            shared.cocktail_status.status = PrepareResult.CANCELED
+            if self._payment_cancelled or (elapsed >= timeout):
+                booking = CocktailBooking.canceled()
+                _logger.debug("Payment cancelled by user")
+            else:
+                _logger.debug(f"Payment failed: {booking.message}")
             shared.cocktail_status.message = booking.message
+            shared.cocktail_status.status = PrepareResult.CANCELED
             return
 
         _logger.debug("Payment successful, starting cocktail preparation")
