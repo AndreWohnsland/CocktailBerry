@@ -92,7 +92,8 @@ class NFCPaymentService:
         if self._pause_callbacks:
             _logger.debug("Callbacks are paused; not running any callbacks.")
             return
-        for callback in self._user_callbacks.values():
+        # snapshot: websockets and the payment flow add/remove entries from other threads while a card is handled
+        for callback in list(self._user_callbacks.values()):
             callback(lookup)
 
     def _cancel_auto_logout_timer(self) -> None:
@@ -227,6 +228,7 @@ class _ApiPaymentService:
         self.api_client = requests.Session()
         self.api_client.headers.update({"x-api-key": cfg.PAYMENT_SECRET_KEY})
         self.api_base_url = f"{cfg.PAYMENT_SERVICE_URL}/api"
+        self.timeout_s = 10
         self.response_code_errors: dict[int, CocktailBooking] = {
             401: CocktailBooking.api_interface_conflict(),  # no key or invalid key
             402: CocktailBooking.insufficient_balance(),
@@ -238,7 +240,7 @@ class _ApiPaymentService:
 
     def get_user_for_id(self, nfc_id: str) -> UserLookup:
         try:
-            resp = self.api_client.get(f"{self.api_base_url}/users/{nfc_id}")
+            resp = self.api_client.get(f"{self.api_base_url}/users/{nfc_id}", timeout=self.timeout_s)
             if resp.status_code == 401:  # noqa: PLR2004
                 _logger.warning("Wrong api key when fetching user data. Check PAYMENT_SECRET_KEY.")
             if resp.status_code == 404:  # noqa: PLR2004
@@ -265,6 +267,7 @@ class _ApiPaymentService:
                     "price": price,
                     "is_alcoholic": not cocktail.is_virgin,
                 },
+                timeout=self.timeout_s,
             )
             if resp.status_code in self.response_code_errors:
                 return self.response_code_errors[resp.status_code]
