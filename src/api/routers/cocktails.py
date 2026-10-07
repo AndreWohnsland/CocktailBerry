@@ -192,12 +192,14 @@ async def stop_cocktail() -> ApiMessage:
 async def cancel_payment(
     payment_handler: Annotated[PaymentHandler, Depends(get_payment_handler)],
 ) -> ApiMessage:
-    # a late tap must not cancel a cocktail that was already paid and is being prepared
     if shared.cocktail_status.status == PrepareResult.WAITING_FOR_PAYMENT:
-        booking = payment_handler.cancel_payment()
-        shared.cocktail_status.status = PrepareResult.CANCELED
-        shared.cocktail_status.message = booking.message
-        _logger.info("Payment canceled over the API!")
+        # SumUp terminates on the terminal with retries, keep that off the event loop
+        booking = await asyncio.to_thread(payment_handler.cancel_payment)
+        # a booking that landed during the await has started the pumps, a late tap must not stop them
+        if shared.cocktail_status.status == PrepareResult.WAITING_FOR_PAYMENT:
+            shared.cocktail_status.message = booking.message
+            shared.cocktail_status.status = PrepareResult.CANCELED
+            _logger.info("Payment canceled over the API!")
     return ApiMessage(message=DH.get_translation("payment_canceled"))
 
 

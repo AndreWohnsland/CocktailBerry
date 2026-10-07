@@ -65,8 +65,9 @@ class SumupPaymentHandler:
             shared.cocktail_status.message = CocktailBooking.sumup_no_terminal().message
             return
 
-        # Trigger checkout on terminal
-        checkout_result = self.sumup_service.trigger_checkout(
+        # the SDK is synchronous, keep its calls off the event loop so status polls keep answering
+        checkout_result = await asyncio.to_thread(
+            self.sumup_service.trigger_checkout,
             reader_id=reader_id,
             value=price_in_cents,
             description=f"CocktailBerry: {cocktail.name}",
@@ -96,7 +97,7 @@ class SumupPaymentHandler:
             return
 
         # Check transaction result
-        transaction_result = self.sumup_service.get_transaction(client_transaction_id)
+        transaction_result = await asyncio.to_thread(self.sumup_service.get_transaction, client_transaction_id)
         if isinstance(transaction_result, Err):
             _logger.error(f"Failed to get transaction: {transaction_result.error}")
             shared.cocktail_status.status = PrepareResult.CANCELED
