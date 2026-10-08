@@ -90,7 +90,7 @@ class AddOnManager:
 
     def _create_cocktail_preparation(self, w: MainScreen | None = None) -> Callable[[Cocktail], tuple[bool, str]]:
         """Build the cocktail prepare function for the addon based on v1 (Qt) or v2."""
-        from src.api.internal.preparation import api_addon_prepare_flow
+        from src.service.preparation import addon_prepare_flow
 
         with contextlib.suppress(ModuleNotFoundError):
             from src.ui.shared import qt_prepare_flow
@@ -99,7 +99,7 @@ class AddOnManager:
             return lambda cocktail: qt_prepare_flow(w, cocktail)
         # Caution, this currently does not work properly, because QT needs to be run on the main thread
         # We can neither run this on a tread, nor a QThread, because it will not work
-        return api_addon_prepare_flow
+        return addon_prepare_flow
 
     def _run_in_background(
         self,

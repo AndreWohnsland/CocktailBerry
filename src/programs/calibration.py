@@ -12,7 +12,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.machine.controller import MachineController
 from src.models import PrepareResult
-from src.tabs import maker
+from src.service import preparation
 from src.ui.creation_utils import LARGE_FONT, adjust_font, create_button
 from src.ui.setup_numpad_widget import NumpadWidget
 from src.ui_elements import Ui_CalibrationRealWidget, Ui_CalibrationTargetWidget, Ui_CalibrationWindow
@@ -92,7 +92,7 @@ class _CalibrationTargetWidget(QWidget, Ui_CalibrationTargetWidget):
             self.checkbox_scale_assist.setEnabled(False)
             if self.calibration_data.use_scale_assist and self.calibration_data.target_volume == 0:
                 self.mc.scale_tare(5)
-        result = maker.calibrate(channel_number, amount, self.mainscreen)
+        result = preparation.calibrate(channel_number, amount, self.mainscreen)
         if result == PrepareResult.FINISHED:
             self.calibration_data.target_volume += amount
         self.button_next.setEnabled(self.calibration_data.target_volume > 0)

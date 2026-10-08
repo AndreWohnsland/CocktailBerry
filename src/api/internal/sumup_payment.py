@@ -7,9 +7,9 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
+from src.service import preparation
 from src.service.booking import CocktailBooking
 from src.service.sumup_payment_service import Err, SumupPaymentService
-from src.tabs import maker
 
 _logger = LoggerHandler("sumup_payment")
 
@@ -113,7 +113,7 @@ class SumupPaymentHandler:
 
         _logger.debug("Payment successful, starting cocktail preparation")
         booking = CocktailBooking.sumup_successful()
-        await asyncio.to_thread(maker.prepare_cocktail, cocktail=cocktail, additional_message=booking.message)
+        await asyncio.to_thread(preparation.prepare_cocktail, cocktail=cocktail, additional_message=booking.message)
 
     def cancel_payment(self) -> CocktailBooking:
         """Cancel the ongoing payment flow."""

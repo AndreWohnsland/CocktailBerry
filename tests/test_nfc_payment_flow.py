@@ -35,7 +35,7 @@ def prepared(monkeypatch: pytest.MonkeyPatch) -> list[Cocktail]:
     def fake_prepare(cocktail: Cocktail, additional_message: str) -> None:
         made.append(cocktail)
 
-    monkeypatch.setattr(nfc_payment.maker, "prepare_cocktail", fake_prepare)
+    monkeypatch.setattr(nfc_payment.preparation, "prepare_cocktail", fake_prepare)
     return made
 
 

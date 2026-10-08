@@ -11,7 +11,7 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import MachineController
 from src.models import PrepareResult
-from src.tabs import maker
+from src.service import preparation
 
 router = APIRouter(tags=[Tags.BOTTLES], prefix="/bottles")
 protected_router = APIRouter(
@@ -107,5 +107,5 @@ async def update_bottle_config(bottle_id: int, data: BottleConfigUpdate) -> ApiM
 )
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks) -> ApiMessage:
     claim_machine_or_raise(PrepareResult.IN_PROGRESS)
-    background_tasks.add_task(maker.calibrate, bottle_id, amount)
+    background_tasks.add_task(preparation.calibrate, bottle_id, amount)
     return ApiMessage(message=DH.get_translation("bottle_calibration_started", bottle_id=bottle_id, amount=amount))

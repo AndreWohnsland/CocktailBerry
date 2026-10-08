@@ -1,7 +1,4 @@
-"""Module with all necessary functions for the maker Tab.
-
-This includes all functions for the Lists, DB and Buttons/Dropdowns.
-"""
+"""Validate and run a cocktail preparation, shared by the Qt UI and the API."""
 
 from __future__ import annotations
 
@@ -13,13 +10,19 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MachineController, ProgressDisplay, machine_is_busy, release_on_error
+from src.machine.controller import (
+    MachineController,
+    ProgressDisplay,
+    claim_machine,
+    machine_is_busy,
+    release_on_error,
+)
 from src.models import Cocktail, EventType, HandAddMeasure, Ingredient, PrepareResult
 from src.programs.addons.addons import ADDONS
 from src.service.waiter_service import WaiterService
 from src.service_handler import SERVICE_HANDLER
 
-_logger = LoggerHandler("maker_module")
+_logger = LoggerHandler("preparation")
 
 
 # also covers the DB and addon work after pumping, make_cocktail only guards the pump run itself
@@ -105,6 +108,19 @@ def interrupt_cocktail() -> None:
     """Interrupts the cocktail preparation."""
     shared.cocktail_status.status = PrepareResult.CANCELED
     _logger.info("Canceling the cocktail over GUI!")
+
+
+def addon_prepare_flow(cocktail: Cocktail) -> tuple[bool, str]:
+    """Prepare a cocktail triggered by an addon: no payment, no team, no UI, in either app version."""
+    result, message, _ = validate_cocktail(cocktail)
+    if result != PrepareResult.VALIDATION_OK:
+        return False, message
+    if not claim_machine(PrepareResult.IN_PROGRESS):
+        return False, DH.cocktail_in_progress()
+    shared.team_member_name = None
+    shared.selected_team = "No Team"
+    _, message = prepare_cocktail(cocktail)
+    return True, message
 
 
 def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredient | None]:

@@ -46,8 +46,8 @@ from src.machine.controller import release_on_error
 from src.models import Cocktail as DbCocktail
 from src.models import CocktailStatus, PrepareResult
 from src.payment_utils import filter_cocktails_by_user
+from src.service import preparation
 from src.service.nfc_payment_service import UserLookup
-from src.tabs import maker
 
 _logger = LoggerHandler("cocktails_router")
 
@@ -145,7 +145,7 @@ async def prepare_cocktail(
     if needs_payment:
         background_tasks.add_task(_run_payment_flow, payment_handler, cocktail)
         return CocktailStatus(status=PrepareResult.WAITING_FOR_PAYMENT)
-    background_tasks.add_task(maker.prepare_cocktail, cocktail)
+    background_tasks.add_task(preparation.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)
 
 

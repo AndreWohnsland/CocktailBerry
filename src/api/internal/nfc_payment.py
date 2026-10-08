@@ -7,9 +7,9 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
+from src.service import preparation
 from src.service.booking import CocktailBooking
 from src.service.nfc_payment_service import NFCPaymentService, UserLookup
-from src.tabs import maker
 
 _logger = LoggerHandler("nfc_payment")
 
@@ -88,7 +88,7 @@ class NFCPaymentHandler:
         _logger.debug("Payment successful, starting cocktail preparation")
         # we will get blocking api call behavior if the callbacks are still fired during preparation
         with self.nfc_service.paused_callbacks():
-            await asyncio.to_thread(maker.prepare_cocktail, cocktail=cocktail, additional_message=booking.message)
+            await asyncio.to_thread(preparation.prepare_cocktail, cocktail=cocktail, additional_message=booking.message)
 
         if cfg.PAYMENT_LOGOUT_AFTER_PREPARATION:
             self.nfc_service.logout_user()

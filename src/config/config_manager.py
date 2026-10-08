@@ -764,7 +764,7 @@ class ConfigManager:
             _logger.error(f"Config Error: {error_msg}")
             if validate:
                 raise ConfigError(error_msg)
-        # Scale-assisted hand adds silently fall back to manual confirmation without a scale (see tabs/maker.py)
+        # Scale-assisted hand adds silently fall back to manual confirmation without a scale (see service/preparation)
         if self.MAKER_SCALE_FOR_HAND_ADDS and not self.SCALE_CONFIG.enabled:
             _logger.warning(
                 "'Scale-Assisted Hand Adds' is enabled but the scale is not - "
