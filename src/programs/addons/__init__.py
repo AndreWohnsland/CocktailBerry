@@ -1,10 +1,9 @@
-import contextlib
 import re
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Literal, Protocol, runtime_checkable
 
 import typer
 
@@ -28,7 +27,7 @@ from src.filepath import (
 )
 from src.models import Cocktail
 
-with contextlib.suppress(ModuleNotFoundError):
+if TYPE_CHECKING:
     from PyQt6.QtWidgets import QVBoxLayout
 
 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import atexit
-import contextlib
 import importlib
 import json
 import sys
@@ -20,11 +19,8 @@ from src.logger_handler import LoggerHandler
 from src.models import AddonData, Cocktail
 from src.programs.addons import AddonInterface
 
-with contextlib.suppress(ModuleNotFoundError):
-    from PyQt6.QtWidgets import QVBoxLayout
-
 if TYPE_CHECKING:
-    from src.ui.setup_mainwindow import MainScreen
+    from PyQt6.QtWidgets import QVBoxLayout
 
 _SupportedActions = Literal[
     "define_configuration",
@@ -88,19 +84,6 @@ class AddOnManager:
             self._try_function_for_addon(addon, "setup")
         atexit.register(self.cleanup_addons)
 
-    def _create_cocktail_preparation(self, w: MainScreen | None = None) -> Callable[[Cocktail], tuple[bool, str]]:
-        """Build the cocktail prepare function for the addon based on v1 (Qt) or v2."""
-        from src.service.preparation import addon_prepare_flow
-
-        with contextlib.suppress(ModuleNotFoundError):
-            from src.ui.shared import qt_prepare_flow
-
-        if w is not None:
-            return lambda cocktail: qt_prepare_flow(w, cocktail)
-        # Caution, this currently does not work properly, because QT needs to be run on the main thread
-        # We can neither run this on a tread, nor a QThread, because it will not work
-        return addon_prepare_flow
-
     def _run_in_background(
         self,
         addon_name: str,
@@ -128,27 +111,21 @@ class AddOnManager:
             except AttributeError:
                 break
 
-    def start_trigger_loop(self, w: MainScreen | None = None) -> None:
-        """Start the trigger loop for all addons.
-
-        This will start a thread for each addon that will call the cocktail_trigger function.
-        The function is used to prepare a cocktail over a programmed condition from the addon.
-        """
-        prepare_function = self._create_cocktail_preparation(w)
-
-        # Start threads, need to use QThread for GUI to work in case of QT (does not work, currently no GUI support)
+    def start_trigger_loop(self) -> None:
+        """Run every addon's cocktail_trigger in its own background thread."""
         for addon_name, addon in self.addons.items():
-            thread = threading.Thread(
-                target=self._run_in_background,
-                args=(
-                    addon_name,
-                    addon,
-                    prepare_function,
-                    int(time.time()),
-                ),
-            )
-            thread.daemon = True
-            thread.start()
+            self._start_trigger_thread(addon_name, addon)
+
+    def _start_trigger_thread(self, addon_name: str, addon: AddonInterface) -> None:
+        # runtime import: preparation imports ADDONS from this module
+        from src.service.preparation import addon_prepare_flow
+
+        thread = threading.Thread(
+            target=self._run_in_background,
+            args=(addon_name, addon, addon_prepare_flow, int(time.time())),
+        )
+        thread.daemon = True
+        thread.start()
 
     def cleanup_addons(self) -> None:
         """Clean up all the addons."""
@@ -226,13 +203,7 @@ class AddOnManager:
         _logger.info(f"Setting up newly added addon {name}")
         self._try_function_for_addon(addon_instance, "setup")
 
-        # Do not support V1 for now
-        thread = threading.Thread(
-            target=self._run_in_background,
-            args=(name, addon_instance, self._create_cocktail_preparation(None), int(time.time())),
-        )
-        thread.daemon = True
-        thread.start()
+        self._start_trigger_thread(name, addon_instance)
 
     def remove_addon(self, addon: AddonData) -> None:
         """Remove a loaded addon and its file from the manager."""

@@ -184,7 +184,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 if bar is not None:
                     bar.installEventFilter(self)
 
-        ADDONS.start_trigger_loop(self)
+        ADDONS.start_trigger_loop()
         # start at the cocktail list view
         self.switch_to_cocktail_list()
         if cfg.cocktailberry_payment:
