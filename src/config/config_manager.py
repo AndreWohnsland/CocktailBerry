@@ -4,7 +4,7 @@ import contextlib
 import random
 from collections.abc import Callable
 from enum import IntEnum
-from typing import TYPE_CHECKING, Any, ClassVar, NamedTuple
+from typing import TYPE_CHECKING, Any, ClassVar, NamedTuple, cast
 
 import typer
 import yaml
@@ -63,7 +63,7 @@ from src.config.validators import (
 )
 from src.filepath import CUSTOM_CONFIG_FILE
 from src.logger_handler import LoggerHandler
-from src.models import CocktailStatus
+from src.models import CocktailStatus, PermissionKey
 from src.utils import get_platform_data
 
 _logger = LoggerHandler("config_manager")
@@ -89,6 +89,11 @@ class Tab(IntEnum):
     INGREDIENTS = 1
     RECIPES = 2
     BOTTLES = 3
+
+    @property
+    def permission_key(self) -> PermissionKey:
+        """Waiter permission flag guarding this tab, named after the enum member."""
+        return cast("PermissionKey", self.name.lower())
 
 
 TAB_ORDER = [Tab.MAKER, Tab.INGREDIENTS, Tab.RECIPES, Tab.BOTTLES]

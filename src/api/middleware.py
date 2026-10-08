@@ -65,16 +65,7 @@ def verify_password_attempt(request: Request, valid: bool, error: str) -> None:
 
 def _waiter_has_tab_permission(tab: Tab) -> bool:
     waiter = shared.current_waiter
-    if waiter is None:
-        return False
-
-    permission_by_tab = {
-        Tab.MAKER: waiter.permissions.maker,
-        Tab.INGREDIENTS: waiter.permissions.ingredients,
-        Tab.RECIPES: waiter.permissions.recipes,
-        Tab.BOTTLES: waiter.permissions.bottles,
-    }
-    return permission_by_tab.get(tab, False)
+    return waiter is not None and waiter.permissions.allows(tab)
 
 
 def _waiter_has_options_permission() -> bool:

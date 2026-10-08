@@ -25,7 +25,7 @@ from src.logger_handler import LoggerHandler
 from src.utils import get_platform_data
 
 if TYPE_CHECKING:
-    from src.api.models import PermissionKey
+    from src.models import PermissionKey
     from src.ui.setup_custom_dialog import CustomDialog
     from src.ui_elements import (
         Ui_AccessPointWindow,

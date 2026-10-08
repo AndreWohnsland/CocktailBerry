@@ -3,7 +3,7 @@ import functools
 import math
 from dataclasses import dataclass, field
 from enum import Enum, StrEnum
-from typing import Any, Self
+from typing import Any, Literal, Self
 
 from pydantic import BaseModel, computed_field, field_validator
 from pydantic.dataclasses import dataclass as pydantic_dataclass
@@ -399,6 +399,9 @@ class Event:
     def __str__(self) -> str:
         additional_info = f" | {self.additional_info}" if self.additional_info else ""
         return f"{self.timestamp} | {self.event_type.value}{additional_info}"
+
+
+PermissionKey = Literal["maker", "ingredients", "recipes", "bottles", "options"]
 
 
 class OptionTiles(BaseModel):
