@@ -16,20 +16,21 @@ def filter_cocktails_by_user(user: User | None, cocktails: list[Cocktail]) -> li
         cocktail_amount = cocktail.amount
         if not cfg.MAKER_USE_RECIPE_VOLUME and lowest_amount is not None:
             cocktail_amount = lowest_amount
-        # if user not allowed alcohol, only disallow the cocktail if it's virgin available, set only virgin flag
-        # otherwise disallow the cocktail
-        # for other users, just use the regular price calculation
+        # a minor may only have cocktails that can be served without alcohol, and only that way
         cocktail.is_allowed = True
-        if not user.is_adult and not cocktail.virgin_available:
+        if not user.is_adult and not (cocktail.virgin_available or cocktail.is_naturally_virgin):
             cocktail.is_allowed = False
             filtered.append(copy.deepcopy(cocktail))
             continue
-        price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, cocktail_amount)
-        if not user.is_adult and cocktail.virgin_available:
+        if not user.is_adult:
             cocktail.only_virgin = True
-            price = cocktail.current_price(
-                cfg.PAYMENT_PRICE_ROUNDING, cocktail_amount, price_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100
-            )
+        # the recipe is unscaled here, so tell the price what the user would be served
+        price = cocktail.current_price(
+            cfg.PAYMENT_PRICE_ROUNDING,
+            cocktail_amount,
+            virgin_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100,
+            as_virgin=not user.is_adult,
+        )
         if user.balance < price:
             cocktail.is_allowed = False
         filtered.append(copy.deepcopy(cocktail))
