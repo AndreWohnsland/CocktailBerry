@@ -371,6 +371,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self.progress_window is None:
             return
         self.progress_window.progressBar.setValue(pb_value)
+        # pumping runs on the GUI thread, so the bar only repaints (and cancel only reacts) when events are pumped here
+        QApplication.processEvents()
 
     def close_progression_window(self) -> None:
         """Close the progression window at the end of the cycle."""

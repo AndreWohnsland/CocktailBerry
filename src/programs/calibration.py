@@ -92,7 +92,7 @@ class _CalibrationTargetWidget(QWidget, Ui_CalibrationTargetWidget):
             self.checkbox_scale_assist.setEnabled(False)
             if self.calibration_data.use_scale_assist and self.calibration_data.target_volume == 0:
                 self.mc.scale_tare(5)
-        result = maker.calibrate(channel_number, amount, w=self.mainscreen)
+        result = maker.calibrate(channel_number, amount, self.mainscreen)
         if result == PrepareResult.FINISHED:
             self.calibration_data.target_volume += amount
         self.button_next.setEnabled(self.calibration_data.target_volume > 0)
