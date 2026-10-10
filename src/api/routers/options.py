@@ -11,7 +11,7 @@ from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 
@@ -19,7 +19,7 @@ from src.api.api_config import Tags
 from src.api.internal.dependencies import SumupServiceDep
 from src.api.internal.utils import not_on_demo, only_change_theme_on_demo
 from src.api.internal.validation import claim_machine_or_raise
-from src.api.middleware import master_protected_dependency
+from src.api.middleware import master_protected_dependency, verify_password_attempt
 from src.api.models import (
     AccessPointData,
     AccessPointStatus,
@@ -80,13 +80,21 @@ protected_router = APIRouter(
 )
 
 
-@router.get("", summary="Get the current options, passwords are sanitized as boolean (yes/no)")
+# the open endpoint only tells whether a secret is set, the real values stay behind /options/full
+_SECRET_OPTIONS = (
+    "UI_MASTERPASSWORD",
+    "UI_MAKER_PASSWORD",
+    "PAYMENT_SECRET_KEY",
+    "PAYMENT_SUMUP_API_KEY",
+    "PAYMENT_SUMUP_MERCHANT_CODE",
+)
+
+
+@router.get("", summary="Get the current options, secrets are sanitized as boolean (set/not set)")
 async def get_options() -> dict[str, Any]:
-    # need to sanitized the passwords before returning, frontend only need to know if they are set
-    # e.g. 0: False otherwise: True
     config = cfg.get_config()
-    config["UI_MASTERPASSWORD"] = config["UI_MASTERPASSWORD"] != 0
-    config["UI_MAKER_PASSWORD"] = config["UI_MAKER_PASSWORD"] != 0
+    for key in _SECRET_OPTIONS:
+        config[key] = bool(config[key])
     return config
 
 
@@ -257,7 +265,8 @@ def upload_backup(
 
     with tempfile.TemporaryDirectory() as tmp_dirname:
         tmpdir = Path(tmp_dirname)
-        zip_file_path = tmpdir / file_name
+        # the client filename is only validated above, never used as a path
+        zip_file_path = tmpdir / "backup.zip"
 
         # Save the uploaded file
         with zip_file_path.open("wb") as buffer:
@@ -362,10 +371,12 @@ async def addon_data() -> list[AddonData]:
 async def add_addon(addon: AddonData) -> ApiMessage:
     possible_addons = ADDONS.get_addon_data()
     matched_addon = next((a for a in possible_addons if a.name == addon.name and a.official), None)
-    if matched_addon:
-        ADDONS.install_addon(matched_addon)
-        return ApiMessage(message=f"Addon {addon.name} installed")
-    raise HTTPException(400, detail="Addon is not official or not found")
+    if not matched_addon:
+        raise HTTPException(400, detail="Addon is not official or not found")
+    if not matched_addon.is_installable:
+        raise HTTPException(400, detail="Addon cannot be installed")
+    ADDONS.install_addon(matched_addon)
+    return ApiMessage(message=f"Addon {addon.name} installed")
 
 
 @protected_router.delete("/addon/remove", summary="Remove addon")
@@ -443,16 +454,14 @@ def update_software(update: UpdateRequest, background_tasks: BackgroundTasks) ->
 
 
 @router.post("/password/master/validate", summary="Validate Master Password")
-async def validate_master_password(password: PasswordInput) -> ApiMessage:
-    if password.password != cfg.UI_MASTERPASSWORD:
-        raise HTTPException(status_code=403, detail="Invalid Master Password")
+async def validate_master_password(request: Request, password: PasswordInput) -> ApiMessage:
+    verify_password_attempt(request, password.password == cfg.UI_MASTERPASSWORD, "Invalid Master Password")
     return ApiMessage(message="Master password is valid")
 
 
 @router.post("/password/maker/validate", summary="Validate Maker Password")
-async def validate_maker_password(password: PasswordInput) -> ApiMessage:
-    if password.password != cfg.UI_MAKER_PASSWORD:
-        raise HTTPException(status_code=403, detail="Invalid Maker Password")
+async def validate_maker_password(request: Request, password: PasswordInput) -> ApiMessage:
+    verify_password_attempt(request, password.password == cfg.UI_MAKER_PASSWORD, "Invalid Maker Password")
     return ApiMessage(message="Maker password is valid")
 
 

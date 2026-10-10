@@ -478,8 +478,10 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         """Compute the price string for a prepare button. Returns `?` when the price is unknown."""
         if volume is None or self.random_mode:
             return "?"
-        multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if self.is_virgin else 1.0
-        price = self.cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, volume, price_multiplier=multiplier)
+        # the cocktail is rescaled on every toggle, so it knows itself whether this serving is virgin
+        price = self.cocktail.current_price(
+            cfg.PAYMENT_PRICE_ROUNDING, volume, virgin_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100
+        )
         return f"{price}".rstrip("0").rstrip(".")
 
 

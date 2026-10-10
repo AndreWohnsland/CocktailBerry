@@ -1,4 +1,4 @@
-"""Tests for the scale-assisted hand-add gating in ``maker.prepare_cocktail``.
+"""Tests for the scale-assisted hand-add gating in ``preparation.prepare_cocktail``.
 
 The cocktail is finalized immediately; when the scale flow applies the hand-adds are attached to
 ``shared.cocktail_status.hand_adds`` so the UI can show the (non-blocking) guidance window.
@@ -45,16 +45,16 @@ def _run_prepare(cocktail: Cocktail, *, feature_on: bool, has_scale: bool) -> li
     # empty result -> completion_ratio 0, so the service hooks are skipped
     mc_instance.make_cocktail.return_value = PreparationResult(ingredients=[])
     with (
-        patch("src.tabs.maker.MachineController", return_value=mc_instance),
-        patch("src.tabs.maker.DatabaseCommander", return_value=MagicMock()),
-        patch("src.tabs.maker.ADDONS"),
-        patch("src.tabs.maker.SERVICE_HANDLER"),
+        patch("src.service.preparation.MachineController", return_value=mc_instance),
+        patch("src.service.preparation.DatabaseCommander", return_value=MagicMock()),
+        patch("src.service.preparation.ADDONS"),
+        patch("src.service.preparation.SERVICE_HANDLER"),
         patch.object(CONFIG, "MAKER_SCALE_FOR_HAND_ADDS", feature_on),
     ):
-        from src.tabs import maker
+        from src.service import preparation
 
         shared.current_waiter_nfc_id = None
-        result, _ = maker.prepare_cocktail(cocktail)
+        result, _ = preparation.prepare_cocktail(cocktail)
     assert result == PrepareResult.FINISHED
     # the gated list is handed to make_cocktail, which publishes it atomically with the FINISHED flip
     return mc_instance.make_cocktail.call_args.kwargs["hand_adds"]

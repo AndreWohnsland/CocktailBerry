@@ -9,7 +9,7 @@ from src.config.config_manager import Tab
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.models import Cocktail, CocktailStatus, PrepareResult
-from src.tabs import maker
+from src.service import preparation
 
 router = APIRouter(tags=[Tags.INGREDIENTS], prefix="/ingredients")
 protected_router = APIRouter(
@@ -140,5 +140,5 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
     cocktail = Cocktail.from_ingredient(ingredient, amount)
     raise_on_validation_not_okay(cocktail)
     claim_machine_or_raise(PrepareResult.IN_PROGRESS)
-    background_tasks.add_task(maker.prepare_cocktail, cocktail)
+    background_tasks.add_task(preparation.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)

@@ -10,7 +10,7 @@ from src.database_commander import DB_COMMANDER
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.models import Cocktail, PrepareResult
-from src.tabs import maker
+from src.service import preparation
 from src.tabs.bottles import set_fill_level_bars
 from src.ui_elements.bonusingredient import Ui_addingredient
 
@@ -60,7 +60,7 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
         if ingredient is None:
             return
         cocktail = Cocktail.from_ingredient(ingredient, volume)
-        result, message, _ = maker.validate_cocktail(cocktail)
+        result, message, _ = preparation.validate_cocktail(cocktail)
         self.close()
 
         # Go to refill dialog, if this window is not locked
@@ -75,6 +75,6 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
             DP_CONTROLLER.standard_box(message, close_time=60)
             return
 
-        maker.prepare_ingredient(ingredient, self.mainscreen)
+        preparation.prepare_ingredient(ingredient, self.mainscreen)
         set_fill_level_bars(self.mainscreen)
         set_fill_level_bars(self.mainscreen)

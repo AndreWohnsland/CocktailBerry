@@ -7,7 +7,7 @@ import pytest
 from src.config.config_manager import shared
 from src.machine.controller import MachineController, claim_machine
 from src.models import Cocktail, CocktailStatus, Ingredient, PrepareResult
-from src.tabs import maker
+from src.service import preparation
 
 
 @pytest.fixture(autouse=True)
@@ -55,10 +55,10 @@ def test_claim_is_granted_after_preparation_ended(done: PrepareResult, monkeypat
 def test_crashed_preparation_frees_the_machine(monkeypatch: pytest.MonkeyPatch):
     mc = MagicMock()
     mc.make_cocktail.side_effect = RuntimeError("pump driver died")
-    monkeypatch.setattr(maker, "MachineController", MagicMock(return_value=mc))
+    monkeypatch.setattr(preparation, "MachineController", MagicMock(return_value=mc))
     cocktail = _cocktail()
     with pytest.raises(RuntimeError):
-        maker.prepare_cocktail(cocktail)
+        preparation.prepare_cocktail(cocktail)
     assert shared.cocktail_status.status == PrepareResult.CANCELED
     assert claim_machine(PrepareResult.IN_PROGRESS)
 

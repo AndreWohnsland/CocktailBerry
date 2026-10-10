@@ -50,7 +50,7 @@ const CocktailList: React.FC = () => {
   if (
     config.PAYMENT_TYPE === 'CocktailBerry' &&
     config.PAYMENT_LOCK_SCREEN_NO_USER &&
-    !user?.nfc_id &&
+    user === null &&
     selectedCocktail === null
   ) {
     return <LockScreen title={t('lockScreen.paymentTitle')} message={t('lockScreen.paymentMessage')} />;

@@ -1,11 +1,8 @@
-"""Module with all necessary functions for the maker Tab.
-
-This includes all functions for the Lists, DB and Buttons/Dropdowns.
-"""
+"""Validate and run a cocktail preparation, shared by the Qt UI and the API."""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab, shared
@@ -13,23 +10,26 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
-from src.machine.controller import MachineController, machine_is_busy, release_on_error
+from src.machine.controller import (
+    MachineController,
+    ProgressDisplay,
+    claim_machine,
+    machine_is_busy,
+    release_on_error,
+)
 from src.models import Cocktail, EventType, HandAddMeasure, Ingredient, PrepareResult
 from src.programs.addons.addons import ADDONS
 from src.service.waiter_service import WaiterService
 from src.service_handler import SERVICE_HANDLER
 
-if TYPE_CHECKING:
-    from src.ui.setup_mainwindow import MainScreen
-
-_logger = LoggerHandler("maker_module")
+_logger = LoggerHandler("preparation")
 
 
 # also covers the DB and addon work after pumping, make_cocktail only guards the pump run itself
 @release_on_error()
 def prepare_cocktail(
     cocktail: Cocktail,
-    w: MainScreen | None = None,
+    display: ProgressDisplay | None = None,
     additional_message: str = "",
 ) -> tuple[PrepareResult, str]:
     """Prepare a Cocktail, if not already another one is in production and enough ingredients are available.
@@ -62,7 +62,7 @@ def prepare_cocktail(
     # FINISHED flip (see make_cocktail: written before the flip, so a poll never sees FINISHED
     # without the list, and a canceled run never publishes one)
     result = mc.make_cocktail(
-        w,
+        display,
         ingredient_list=ingredients_machine,
         recipe=cocktail.display_name,
         finish_message=additional_message,
@@ -110,6 +110,19 @@ def interrupt_cocktail() -> None:
     _logger.info("Canceling the cocktail over GUI!")
 
 
+def addon_prepare_flow(cocktail: Cocktail) -> tuple[bool, str]:
+    """Prepare a cocktail triggered by an addon: no payment, no team, no UI, in either app version."""
+    result, message, _ = validate_cocktail(cocktail)
+    if result != PrepareResult.VALIDATION_OK:
+        return False, message
+    if not claim_machine(PrepareResult.IN_PROGRESS):
+        return False, DH.cocktail_in_progress()
+    shared.team_member_name = None
+    shared.selected_team = "No Team"
+    _, message = prepare_cocktail(cocktail)
+    return True, message
+
+
 def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredient | None]:
     """Validate the cocktail.
 
@@ -145,7 +158,7 @@ def validate_cocktail(cocktail: Cocktail) -> tuple[PrepareResult, str, Ingredien
     return PrepareResult.VALIDATION_OK, "", None
 
 
-def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> PrepareResult:
+def calibrate(bottle_number: int, amount: int, display: ProgressDisplay | None = None) -> PrepareResult:
     """Calibrate a bottle.
 
     Returns the final preparation status so callers can decide whether to accumulate
@@ -170,7 +183,7 @@ def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> P
     # time-based on purpose: calibration measures the pump, a scale-controlled
     # dispense would just land on target and calibrate the scale against itself
     mc.make_cocktail(
-        w=w,
+        display=display,
         ingredient_list=[ing],
         recipe=display_name,
         is_cocktail=False,
@@ -179,11 +192,11 @@ def calibrate(bottle_number: int, amount: int, w: MainScreen | None = None) -> P
     return shared.cocktail_status.status
 
 
-def prepare_ingredient(ingredient: Ingredient, w: MainScreen | None = None) -> None:
+def prepare_ingredient(ingredient: Ingredient, display: ProgressDisplay | None = None) -> None:
     """Prepare an ingredient."""
     _logger.info(f"Spending {ingredient.amount} ml {ingredient.name}")
     mc = MachineController()
-    mc.make_cocktail(w, [ingredient], ingredient.name, False)
+    mc.make_cocktail(display, [ingredient], ingredient.name, False)
     consumed_volume = round(ingredient.consumption)
     DBC = DatabaseCommander()
     DBC.increment_ingredient_consumption(ingredient.name, consumed_volume)

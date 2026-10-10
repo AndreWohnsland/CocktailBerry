@@ -13,7 +13,7 @@ from src.service.waiter_service import WaiterService
 from src.ui_elements.passworddialog import Ui_PasswordDialog
 
 if TYPE_CHECKING:
-    from src.api.models import PermissionKey
+    from src.models import PermissionKey
 
 
 class PasswordDialog(QMainWindow, Ui_PasswordDialog):
