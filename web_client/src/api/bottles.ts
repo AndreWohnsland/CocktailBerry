@@ -12,6 +12,22 @@ export const useBottles = (): UseQueryResult<Bottle[], Error> => {
   return useQuery<Bottle[], Error>('bottles', getBottles);
 };
 
+export const useAvailableIngredients = (): UseQueryResult<number[], Error> => {
+  return useQuery<number[], Error>(['availableIngredients'], () =>
+    axiosInstance
+      .get<number[]>(`${bottle_url}/available`)
+      .then((res) => res.data)
+      .catch((error) => {
+        console.error('Error fetching available ingredients:', error);
+        return [];
+      }),
+  );
+};
+
+export const postAvailableIngredients = async (available: number[]): Promise<{ message: string }> => {
+  return axiosInstance.post<{ message: string }>(`${bottle_url}/available`, available).then((res) => res.data);
+};
+
 export const refillBottle = async (bottleNumbers: number[], flushTubes = true) => {
   return axiosInstance
     .post(`${bottle_url}/refill`, bottleNumbers, { params: { flush_tubes: flushTubes } })
