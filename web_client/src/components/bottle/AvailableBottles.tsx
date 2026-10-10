@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
-import { toast } from 'react-toastify';
-import { postAvailableIngredients, useAvailableIngredients, useIngredients } from '../../api/ingredients';
+import { postAvailableIngredients, useAvailableIngredients } from '../../api/bottles';
+import { useIngredients } from '../../api/ingredients';
 import type { Ingredient } from '../../types/models';
+import { executeAndShow } from '../../utils';
 import Button from '../common/Button';
 import ErrorComponent from '../common/ErrorComponent';
 import LoadingData from '../common/LoadingData';
@@ -44,16 +45,10 @@ const AvailableBottles: React.FC = () => {
   };
 
   const updateAvailable = async () => {
-    try {
-      await postAvailableIngredients(availableIngredients.map((ingredient) => ingredient.id));
-      navigate(-1);
-    } catch (error) {
-      console.error('Error updating available ingredients:', error);
-      toast(`Error setting ingredients: ${error}`, {
-        toastId: 'bottle-available-error',
-        pauseOnHover: false,
-      });
-    }
+    const success = await executeAndShow(() =>
+      postAvailableIngredients(availableIngredients.map((ingredient) => ingredient.id)),
+    );
+    if (success) navigate(-1);
   };
 
   return (

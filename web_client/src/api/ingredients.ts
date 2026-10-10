@@ -23,22 +23,6 @@ export const useIngredients = (hand: boolean = true, machine: boolean = true): U
   return useQuery<Ingredient[], Error>(['ingredients', hand, machine], () => fetchIngredients(hand, machine));
 };
 
-export const useAvailableIngredients = (): UseQueryResult<number[], Error> => {
-  return useQuery<number[], Error>(['availableIngredients'], () =>
-    axiosInstance
-      .get<number[]>(`${ingredient_url}/available`)
-      .then((res) => res.data)
-      .catch((error) => {
-        console.error('Error fetching Ingredient:', error);
-        return [];
-      }),
-  );
-};
-
-export const postAvailableIngredients = async (available: number[]): Promise<{ message: string }> => {
-  return axiosInstance.post<{ message: string }>(`${ingredient_url}/available`, available).then((res) => res.data);
-};
-
 export const deleteIngredient = async (id: number): Promise<{ message: string }> => {
   return axiosInstance.delete<{ message: string }>(`${ingredient_url}/${id}`).then((res) => res.data);
 };

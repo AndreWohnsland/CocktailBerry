@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 
 from sqlalchemy.orm import Session
 
@@ -17,7 +17,7 @@ class TestExports:
 
         db_commander.export_recipe_data()
         export_data = db_commander.get_export_data()
-        today = datetime.date.today().strftime("%Y-%m-%d")
+        today = dt.date.today().strftime("%Y-%m-%d")
         assert today in export_data
 
         # Check if the recipe counter was exported correctly
@@ -37,7 +37,7 @@ class TestExports:
         db_commander.increment_ingredient_consumption("White Rum", consumption)
         db_commander.export_ingredient_data()
         export_data = db_commander.get_export_data()
-        today = datetime.date.today().strftime("%Y-%m-%d")
+        today = dt.date.today().strftime("%Y-%m-%d")
         assert today in export_data
 
         # Check if the ingredient consumption was exported correctly
@@ -82,7 +82,7 @@ class TestExports:
         db_commander.increment_ingredient_consumption("Cola", consumption)
         db_commander.export_ingredient_data()
         export_data = db_commander.get_export_data()
-        today = datetime.date.today().strftime("%Y-%m-%d")
+        today = dt.date.today().strftime("%Y-%m-%d")
 
         assert "Cola" in export_data[today].ingredients
         assert export_data[today].ingredients["Cola"] == consumption
@@ -95,7 +95,7 @@ class TestExports:
         ingredient_name = "Fanta"
         db_commander.export_ingredient_data()
         export_data = db_commander.get_export_data()
-        today = datetime.date.today().strftime("%Y-%m-%d")
+        today = dt.date.today().strftime("%Y-%m-%d")
 
         # Check that the ingredient without consumption is not in the export
         if today in export_data:
@@ -108,12 +108,12 @@ class TestExports:
         export_dates = db_commander.get_export_dates()
 
         # Today's date should be in the list
-        today = datetime.date.today().strftime("%Y-%m-%d")
+        today = dt.date.today().strftime("%Y-%m-%d")
         assert today in export_dates
 
     def test_multiple_exports_same_day(self, db_commander: DatabaseCommander):
         """Test that multiple exports on the same day are combined correctly."""
-        today = datetime.date.today()
+        today = dt.date.today()
 
         # First export
         db_commander.increment_recipe_counter("Cuba Libre", virgin=False)
@@ -157,7 +157,7 @@ class TestExports:
         db_commander.increment_recipe_counter("Tequila Sunrise", virgin=True)
         db_commander.export_recipe_data()
         export_data = db_commander.get_export_data()
-        today = datetime.date.today().strftime("%Y-%m-%d")
+        today = dt.date.today().strftime("%Y-%m-%d")
 
         assert today in export_data
         assert "Cuba Libre" in export_data[today].recipes

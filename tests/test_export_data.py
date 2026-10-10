@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from pathlib import Path
 from typing import Any
 from unittest.mock import call, mock_open, patch
@@ -64,19 +64,19 @@ class TestExportData:
             recipe_calls = [
                 call(
                     "INSERT INTO CocktailExport (Export_Date, Recipe_Name, Counter) VALUES (?, ?, ?)",
-                    (datetime.date(2025, 5, 1), "Cuba Libre", 5),
+                    (dt.date(2025, 5, 1), "Cuba Libre", 5),
                 ),
                 call(
                     "INSERT INTO CocktailExport (Export_Date, Recipe_Name, Counter) VALUES (?, ?, ?)",
-                    (datetime.date(2025, 5, 1), "With Handadd", 3),
+                    (dt.date(2025, 5, 1), "With Handadd", 3),
                 ),
                 call(
                     "INSERT INTO CocktailExport (Export_Date, Recipe_Name, Counter) VALUES (?, ?, ?)",
-                    (datetime.date(2025, 5, 1), "Black Sun", 1),
+                    (dt.date(2025, 5, 1), "Black Sun", 1),
                 ),
                 call(
                     "INSERT INTO CocktailExport (Export_Date, Recipe_Name, Counter) VALUES (?, ?, ?)",
-                    (datetime.date(2025, 5, 1), "Blue Mara", 2),
+                    (dt.date(2025, 5, 1), "Blue Mara", 2),
                 ),
             ]
 
@@ -84,12 +84,12 @@ class TestExportData:
                 call(
                     """INSERT INTO IngredientExport (Export_Date, Ingredient_Name, Consumption, Cost_Consumption)
                     VALUES (?, ?, ?, ?)""",
-                    (datetime.date(2025, 5, 1), "Cola", 133, 200),
+                    (dt.date(2025, 5, 1), "Cola", 133, 200),
                 ),
                 call(
                     """INSERT INTO IngredientExport (Export_Date, Ingredient_Name, Consumption, Cost_Consumption)
                     VALUES (?, ?, ?, ?)""",
-                    (datetime.date(2025, 5, 1), "White Rum", 53, 150),
+                    (dt.date(2025, 5, 1), "White Rum", 53, 150),
                 ),
             ]
 
@@ -160,11 +160,11 @@ class TestExportData:
             recipe_calls = [
                 call(
                     "INSERT INTO CocktailExport (Export_Date, Recipe_Name, Counter) VALUES (?, ?, ?)",
-                    (datetime.date(2025, 5, 2), "Cuba Libre", 10),
+                    (dt.date(2025, 5, 2), "Cuba Libre", 10),
                 ),
                 call(
                     "INSERT INTO CocktailExport (Export_Date, Recipe_Name, Counter) VALUES (?, ?, ?)",
-                    (datetime.date(2025, 5, 2), "Virgin Only Possible", 5),
+                    (dt.date(2025, 5, 2), "Virgin Only Possible", 5),
                 ),
             ]
 
@@ -172,17 +172,17 @@ class TestExportData:
                 call(
                     """INSERT INTO IngredientExport (Export_Date, Ingredient_Name, Consumption, Cost_Consumption)
                     VALUES (?, ?, ?, ?)""",
-                    (datetime.date(2025, 5, 2), "Cola", 200, 0),
+                    (dt.date(2025, 5, 2), "Cola", 200, 0),
                 ),
                 call(
                     """INSERT INTO IngredientExport (Export_Date, Ingredient_Name, Consumption, Cost_Consumption)
                     VALUES (?, ?, ?, ?)""",
-                    (datetime.date(2025, 5, 2), "Vodka", 150, 0),
+                    (dt.date(2025, 5, 2), "Vodka", 150, 0),
                 ),
                 call(
                     """INSERT INTO IngredientExport (Export_Date, Ingredient_Name, Consumption, Cost_Consumption)
                     VALUES (?, ?, ?, ?)""",
-                    (datetime.date(2025, 5, 2), "Tequila", 75, 0),
+                    (dt.date(2025, 5, 2), "Tequila", 75, 0),
                 ),
             ]
 
@@ -238,11 +238,11 @@ class TestExportData:
             recipe_calls = [
                 call(
                     "INSERT INTO CocktailExport (Export_Date, Recipe_Name, Counter) VALUES (?, ?, ?)",
-                    (datetime.date(2025, 5, 3), "With Handadd", 2),
+                    (dt.date(2025, 5, 3), "With Handadd", 2),
                 ),
                 call(
                     "INSERT INTO CocktailExport (Export_Date, Recipe_Name, Counter) VALUES (?, ?, ?)",
-                    (datetime.date(2025, 5, 3), "Not Available", 4),
+                    (dt.date(2025, 5, 3), "Not Available", 4),
                 ),
             ]
 
@@ -250,17 +250,17 @@ class TestExportData:
                 call(
                     """INSERT INTO IngredientExport (Export_Date, Ingredient_Name, Consumption, Cost_Consumption)
                     VALUES (?, ?, ?, ?)""",
-                    (datetime.date(2025, 5, 3), "Cola", 100, 75),
+                    (dt.date(2025, 5, 3), "Cola", 100, 75),
                 ),
                 call(
                     """INSERT INTO IngredientExport (Export_Date, Ingredient_Name, Consumption, Cost_Consumption)
                     VALUES (?, ?, ?, ?)""",
-                    (datetime.date(2025, 5, 3), "Orange Juice", 250, 125),
+                    (dt.date(2025, 5, 3), "Orange Juice", 250, 125),
                 ),
                 call(
                     """INSERT INTO IngredientExport (Export_Date, Ingredient_Name, Consumption, Cost_Consumption)
                     VALUES (?, ?, ?, ?)""",
-                    (datetime.date(2025, 5, 3), "Blue Curacao", 30, 90),
+                    (dt.date(2025, 5, 3), "Blue Curacao", 30, 90),
                 ),
             ]
 

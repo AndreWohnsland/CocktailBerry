@@ -30,6 +30,20 @@ async def get_bottles() -> list[Bottle]:
     return [map_bottles(i) for i in ingredients]
 
 
+@router.get("/available", summary="Get IDs of ingredients available for hand-adding.")
+async def get_available_ingredients() -> list[int]:
+    DBC = DatabaseCommander()
+    return DBC.get_available_ids()
+
+
+@protected_router.post("/available", summary="Set which ingredients are available for hand-adding.")
+async def post_available_ingredients(available: list[int]) -> ApiMessage:
+    DBC = DatabaseCommander()
+    DBC.delete_existing_handadd_ingredient()
+    DBC.insert_multiple_existing_handadd_ingredients(available)
+    return ApiMessage(message=DH.get_translation("available_ingredient_updated"))
+
+
 @protected_router.post("/refill", summary="Refill all given bottles to maximum.")
 async def refill_bottle(
     bottle_numbers: list[int], background_tasks: BackgroundTasks, flush_tubes: bool = True
