@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import atexit
-import datetime
+import datetime as dt
 import http.client as httplib
 import logging
 import os
@@ -61,7 +61,7 @@ def get_platform_data() -> PlatformData:
     )
 
 
-def set_system_datetime(new_datetime: datetime.datetime) -> None:
+def set_system_datetime(new_datetime: dt.datetime) -> None:
     """Set the system time to the given time."""
     p_data = get_platform_data()
     # checking system, currently only setting on Linux (RPi), bc. its only one supported
@@ -177,7 +177,7 @@ def generate_custom_style_file() -> None:
 
 def time_print(msg: str) -> None:
     """Print the given string with a timestamp in the 'HH:MM:SS: ' prefix."""
-    now = datetime.datetime.now()
+    now = dt.datetime.now()
     print(f"{now.strftime('%H:%M:%S')}:  {msg}")
 
 

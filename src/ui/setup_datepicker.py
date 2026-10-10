@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import QDate, QTime
@@ -33,7 +33,7 @@ class DatePicker(QMainWindow, Ui_Datepicker):
         """Submit the selected Time in the interface to the OS."""
         d: QDate = self.selected_date.date()  # pylint: disable=invalid-name
         t: QTime = self.selected_time.time()  # pylint: disable=invalid-name
-        set_system_datetime(datetime.datetime(d.year(), d.month(), d.day(), t.hour(), t.minute()))
+        set_system_datetime(dt.datetime(d.year(), d.month(), d.day(), t.hour(), t.minute()))
         self.close()
 
     def _init_date_and_time(self) -> None:

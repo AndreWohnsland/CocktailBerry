@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 
 import pytest
 
@@ -14,7 +14,7 @@ class TestResourceUsage:
         cpu_values = [10.5, 20.0, 15.0]
         ram_values = [10.0, 20.0, 15.0]
         session_number = 33
-        now = datetime.datetime.now()
+        now = dt.datetime.now()
         for cpu, ram in zip(cpu_values, ram_values):
             db_commander.save_resource_usage(cpu, ram, session_number, timestamp=now)
 
@@ -53,7 +53,7 @@ class TestResourceUsage:
         cpu_values = [10.5, 20.0, 15.0]
         ram_values = [10.0, 20.0, 15.0]
         session_numbers = [2, 1, 3]
-        now = datetime.datetime.now()
+        now = dt.datetime.now()
         for cpu, ram, session_number in zip(cpu_values, ram_values, session_numbers):
             db_commander.save_resource_usage(cpu, ram, session_number, timestamp=now)
 
@@ -68,7 +68,7 @@ class TestResourceUsage:
         cpu_values = [10.5, 20.0, 15.0]
         ram_values = [10.0, 20.0, 15.0]
         session_numbers = [1, 2, 3]
-        now = datetime.datetime.now()
+        now = dt.datetime.now()
         for cpu, ram, session_number in zip(cpu_values, ram_values, session_numbers):
             db_commander.save_resource_usage(cpu, ram, session_number, timestamp=now)
 
@@ -78,7 +78,7 @@ class TestResourceUsage:
     def test_get_resource_stats_samples_large_datasets(self, db_commander: DatabaseCommander):
         """Test that large datasets are sampled to prevent OOM."""
         session_number = 99
-        now = datetime.datetime.now()
+        now = dt.datetime.now()
         # Create more data points than max_raw_points
         total_points = 100
         max_raw_points = 20
@@ -105,7 +105,7 @@ class TestResourceUsage:
 
     def test_cleanup_resource_stats_does_not_remove_if_50_or_less(self, db_commander: DatabaseCommander):
         """Test that cleanup does not remove sessions if we have 50 or fewer."""
-        now = datetime.datetime.now()
+        now = dt.datetime.now()
         # Create exactly 50 sessions
         for session_number in range(1, 51):
             db_commander.save_resource_usage(10.0, 20.0, session_number, timestamp=now)
@@ -119,7 +119,7 @@ class TestResourceUsage:
 
     def test_cleanup_resource_stats_removes_older_sessions(self, db_commander: DatabaseCommander):
         """Test that cleanup removes sessions older than the latest 50."""
-        now = datetime.datetime.now()
+        now = dt.datetime.now()
         # Create 55 sessions (should remove the 5 oldest)
         for session_number in range(1, 56):
             db_commander.save_resource_usage(10.0, 20.0, session_number, timestamp=now)
@@ -145,7 +145,7 @@ class TestResourceUsage:
 
     def test_cleanup_resource_stats_with_custom_keep_sessions(self, db_commander: DatabaseCommander):
         """Test cleanup with a custom number of sessions to keep."""
-        now = datetime.datetime.now()
+        now = dt.datetime.now()
         # Create 10 sessions
         for session_number in range(1, 11):
             db_commander.save_resource_usage(10.0, 20.0, session_number, timestamp=now)
@@ -166,7 +166,7 @@ class TestResourceUsage:
 class TestCompactResourceStats:
     @staticmethod
     def _fill_session(db_commander: DatabaseCommander, session_number: int, points: int) -> None:
-        now = datetime.datetime.now()
+        now = dt.datetime.now()
         for i in range(points):
             db_commander.save_resource_usage(float(i), float(i), session_number, timestamp=now)
 
