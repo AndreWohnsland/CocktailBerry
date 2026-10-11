@@ -8,7 +8,7 @@ Works on every Raspberry Pi, including the Pi 5.
 Run it from the CocktailBerry folder with uv, so the exact machine setup is used:
   cd ~/CocktailBerry
   uv run --no-dev scripts/led_test.py --count 5
-  uv run --no-dev scripts/led_test.py --count 5 --brightness 80
+  uv run --no-dev scripts/led_test.py --count 5 --brightness 60
 
 Sequence:
   1. Each LED individually red, green, blue
@@ -19,10 +19,11 @@ Sequence:
 Abort anytime with Ctrl+C (LEDs are switched off).
 """
 
-import argparse
 import sys
 import time
 from pathlib import Path
+
+import typer
 
 # Make the CocktailBerry `src` package importable when started as `uv run scripts/led_test.py`
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -30,11 +31,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.machine.leds.ws_spi import Color, NeoPixelSPI
 
 LED_PIN = 10  # SPI MOSI, physical pin 19
-DEFAULT_BRIGHTNESS = 50
-MAX_BRIGHTNESS = 255
+DEFAULT_BRIGHTNESS = 20  # percent
 WHEEL_SEGMENT = 85  # color wheel is split into three segments of 85 steps
 OFF = Color(0, 0, 0)
-USAGE_EXAMPLE = "Example: uv run --no-dev scripts/led_test.py --count 5"
 
 
 def fill(strip: NeoPixelSPI, color: int) -> None:
@@ -91,38 +90,28 @@ def rainbow_chase(strip: NeoPixelSPI, rounds: int = 3) -> None:
         time.sleep(0.01)
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description=f"WS281x LED test on GPIO {LED_PIN} (SPI MOSI, physical pin 19)",
-        epilog=USAGE_EXAMPLE,
-    )
-    parser.add_argument("--count", type=int, help="Number of LEDs on the strip (required)")
-    parser.add_argument(
-        "--brightness",
-        type=int,
-        default=DEFAULT_BRIGHTNESS,
-        help=f"Brightness 0-{MAX_BRIGHTNESS}, default {DEFAULT_BRIGHTNESS}",
-    )
-    args = parser.parse_args()
-
-    if args.count is None:
-        parser.error(f"Missing argument: --count <number of LEDs>\n{USAGE_EXAMPLE}")
-    if args.count < 1:
-        parser.error("The number of LEDs must be at least 1.")
-    if not 0 <= args.brightness <= MAX_BRIGHTNESS:
-        parser.error(f"Brightness must be between 0 and {MAX_BRIGHTNESS}.")
-    return args
+def percent_to_brightness(percent: int) -> int:
+    """Convert brightness in percent (0-100) to the 0-255 range of the driver, same as CocktailBerry does."""
+    return min(int(255 * percent / 100), 255)
 
 
-def main() -> None:
-    args = parse_args()
+def main(
+    count: int = typer.Option(..., "--count", "-c", min=1, help="Number of LEDs on the strip."),
+    brightness: int = typer.Option(
+        DEFAULT_BRIGHTNESS, "--brightness", "-b", min=0, max=100, help="Brightness in percent (0-100)."
+    ),
+) -> None:
+    """WS281x LED test on GPIO 10 (SPI MOSI, physical pin 19).
 
-    strip = NeoPixelSPI(args.count, LED_PIN, brightness=args.brightness)
+    Example: uv run --no-dev scripts/led_test.py --count 5
+    """
+    strip = NeoPixelSPI(count, LED_PIN, brightness=percent_to_brightness(brightness))
     try:
         strip.begin()
     except RuntimeError as err:
-        sys.exit(f"Error: {err}")
-    print(f"Strip started: {args.count} LEDs on GPIO {LED_PIN}, brightness {args.brightness}")
+        typer.echo(f"Error: {err}", err=True)
+        raise typer.Exit(1) from err
+    print(f"Strip started: {count} LEDs on GPIO {LED_PIN}, brightness {brightness} %")
 
     try:
         single_led_test(strip)
@@ -136,4 +125,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    typer.run(main)
