@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""WS2812B test script for the Raspberry Pi.
+"""WS281x LED test script for CocktailBerry.
 
-GPIO pin and number of LEDs are required:
-  sudo python3 led_test.py --pin 18 --count 5
-  sudo python3 led_test.py --pin 10 --count 5 --brightness 80
+Tests the LED strip independently of the CocktailBerry app, using the same SPI driver as CocktailBerry.
+The data wire must be connected to GPIO 10 (SPI MOSI, physical pin 19), SPI must be enabled.
+Works on every Raspberry Pi, including the Pi 5.
 
-Supported pins (BCM): 10 (SPI), 12, 13, 18, 19 (PWM), 21 (PCM)
-Brightness optional: 0-255, default 50
+Run it from the CocktailBerry folder with uv, so the exact machine setup is used:
+  cd ~/CocktailBerry
+  uv run --no-dev scripts/led_test.py --count 5
+  uv run --no-dev scripts/led_test.py --count 5 --brightness 80
 
 Sequence:
   1. Each LED individually red, green, blue
@@ -18,24 +20,24 @@ Abort anytime with Ctrl+C (LEDs are switched off).
 """
 
 import argparse
+import sys
 import time
+from pathlib import Path
 
-from rpi_ws281x import Color, PixelStrip
+# Make the CocktailBerry `src` package importable when started as `uv run scripts/led_test.py`
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-LED_FREQ_HZ = 800_000  # WS2812B signal frequency
-LED_DMA = 10  # DMA channel (10 is safe on the Pi 4)
-LED_INVERT = False  # True only with an inverting level shifter (e.g. NPN transistor)
-SUPPORTED_PINS = {10, 12, 13, 18, 19, 21}  # SPI, PWM0/PWM1, PCM
+from src.machine.leds.ws_spi import Color, NeoPixelSPI
+
+LED_PIN = 10  # SPI MOSI, physical pin 19
+DEFAULT_BRIGHTNESS = 50
 MAX_BRIGHTNESS = 255
 WHEEL_SEGMENT = 85  # color wheel is split into three segments of 85 steps
+OFF = Color(0, 0, 0)
+USAGE_EXAMPLE = "Example: uv run --no-dev scripts/led_test.py --count 5"
 
 
-def channel_for_pin(pin: int) -> int:
-    # GPIO 13, 19, 41, 45, 53 use PWM channel 1, everything else channel 0
-    return 1 if pin in (13, 19, 41, 45, 53) else 0
-
-
-def fill(strip: PixelStrip, color: int) -> None:
+def fill(strip: NeoPixelSPI, color: int) -> None:
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
     strip.show()
@@ -53,20 +55,20 @@ def wheel(pos: int) -> int:
     return Color(pos * 3, 255 - pos * 3, 0)
 
 
-def single_led_test(strip: PixelStrip) -> None:
+def single_led_test(strip: NeoPixelSPI) -> None:
     print("1) Single LED test: each LED in turn RED -> GREEN -> BLUE")
     colors = [("red", Color(255, 0, 0)), ("green", Color(0, 255, 0)), ("blue", Color(0, 0, 255))]
     for i in range(strip.numPixels()):
         for name, color in colors:
-            fill(strip, Color(0, 0, 0))
+            fill(strip, OFF)
             strip.setPixelColor(i, color)
             strip.show()
             print(f"   LED {i + 1}: {name}")
             time.sleep(0.6)
-    fill(strip, Color(0, 0, 0))
+    fill(strip, OFF)
 
 
-def all_leds_test(strip: PixelStrip) -> None:
+def all_leds_test(strip: NeoPixelSPI) -> None:
     print("2) All LEDs at once")
     for name, color in [
         ("red", Color(255, 0, 0)),
@@ -79,7 +81,7 @@ def all_leds_test(strip: PixelStrip) -> None:
         time.sleep(1.5)
 
 
-def rainbow_chase(strip: PixelStrip, rounds: int = 3) -> None:
+def rainbow_chase(strip: NeoPixelSPI, rounds: int = 3) -> None:
     print("3) Rainbow chase")
     n = strip.numPixels()
     for j in range(256 * rounds):
@@ -89,47 +91,38 @@ def rainbow_chase(strip: PixelStrip, rounds: int = 3) -> None:
         time.sleep(0.01)
 
 
-def main() -> None:
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="WS2812B test",
-        epilog="Example: sudo python3 led_test.py --pin 18 --count 5",
+        description=f"WS281x LED test on GPIO {LED_PIN} (SPI MOSI, physical pin 19)",
+        epilog=USAGE_EXAMPLE,
     )
-    parser.add_argument("--pin", type=int, help="GPIO number (BCM), e.g. 18 or 10 (required)")
     parser.add_argument("--count", type=int, help="Number of LEDs on the strip (required)")
-    parser.add_argument("--brightness", type=int, default=50, help="Brightness 0-255, default 50")
+    parser.add_argument(
+        "--brightness",
+        type=int,
+        default=DEFAULT_BRIGHTNESS,
+        help=f"Brightness 0-{MAX_BRIGHTNESS}, default {DEFAULT_BRIGHTNESS}",
+    )
     args = parser.parse_args()
 
-    missing = []
-    if args.pin is None:
-        missing.append("--pin <GPIO number>")
     if args.count is None:
-        missing.append("--count <number of LEDs>")
-    if missing:
-        parser.error(
-            "Missing argument(s): " + ", ".join(missing) + "\nExample: sudo python3 led_test.py --pin 18 --count 5"
-        )
-
-    if args.pin not in SUPPORTED_PINS:
-        parser.error(
-            f"GPIO {args.pin} is not supported for WS2812B. "
-            f"Supported pins (BCM): {', '.join(map(str, sorted(SUPPORTED_PINS)))}"
-        )
+        parser.error(f"Missing argument: --count <number of LEDs>\n{USAGE_EXAMPLE}")
     if args.count < 1:
         parser.error("The number of LEDs must be at least 1.")
     if not 0 <= args.brightness <= MAX_BRIGHTNESS:
-        parser.error("Brightness must be between 0 and 255.")
+        parser.error(f"Brightness must be between 0 and {MAX_BRIGHTNESS}.")
+    return args
 
-    strip = PixelStrip(
-        args.count,
-        args.pin,
-        LED_FREQ_HZ,
-        LED_DMA,
-        LED_INVERT,
-        args.brightness,
-        channel_for_pin(args.pin),
-    )
-    strip.begin()
-    print(f"Strip started: {args.count} LEDs on GPIO {args.pin}, brightness {args.brightness}")
+
+def main() -> None:
+    args = parse_args()
+
+    strip = NeoPixelSPI(args.count, LED_PIN, brightness=args.brightness)
+    try:
+        strip.begin()
+    except RuntimeError as err:
+        sys.exit(f"Error: {err}")
+    print(f"Strip started: {args.count} LEDs on GPIO {LED_PIN}, brightness {args.brightness}")
 
     try:
         single_led_test(strip)
@@ -139,7 +132,7 @@ def main() -> None:
     except KeyboardInterrupt:
         print("\nAborted.")
     finally:
-        fill(strip, Color(0, 0, 0))
+        fill(strip, OFF)
 
 
 if __name__ == "__main__":
