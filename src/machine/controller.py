@@ -4,18 +4,13 @@ import atexit
 import contextlib
 import threading
 from collections.abc import Iterable, Iterator
-from typing import TYPE_CHECKING, Any, Self, TypeGuard
-
-from src.logger_handler import LoggerHandler
-
-# Only needed in v1
-with contextlib.suppress(ModuleNotFoundError):
-    from PyQt6.QtWidgets import QApplication
+from typing import TYPE_CHECKING, Any, Protocol, Self, TypeGuard
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER
+from src.logger_handler import LoggerHandler
 from src.machine.carriage import create_carriage
 from src.machine.dispensers import create_dispenser
 from src.machine.dispensers.base import BaseDispenser
@@ -31,9 +26,20 @@ from src.programs.addons.hardware_extensions import HARDWARE_ADDONS
 
 if TYPE_CHECKING:
     from src.machine.scale.base import ScaleInterface
-    from src.ui.setup_mainwindow import MainScreen
 
 _logger = LoggerHandler("MachineController")
+
+
+class ProgressDisplay(Protocol):
+    """Live view of a running pump job; v1 passes its main window, v2 polls shared.cocktail_status instead."""
+
+    def open_progression_window(self, cocktail_type: str = "Cocktail") -> None: ...
+
+    def change_progression_window(self, pb_value: int) -> None: ...
+
+    def close_progression_window(self) -> None: ...
+
+
 _BUSY_STATES = (PrepareResult.IN_PROGRESS, PrepareResult.WAITING_FOR_PAYMENT)
 _claim_lock = threading.Lock()
 
@@ -113,7 +119,7 @@ class MachineController:
         atexit.register(self.cleanup)
 
     @release_on_error()
-    def clean_pumps(self, w: MainScreen | None, revert_pumps: bool = False) -> None:
+    def clean_pumps(self, display: ProgressDisplay | None, revert_pumps: bool = False) -> None:
         """Clean the pumps for the defined time in the config.
 
         Activates all pumps for the given time. When reverting, ingredients
@@ -122,8 +128,8 @@ class MachineController:
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
         items = self._build_cleaning_items(revert=revert_pumps)
-        if w is not None:
-            w.open_progression_window("Cleaning")
+        if display is not None:
+            display.open_progression_window("Cleaning")
         _logger.log_header("INFO", "Start Cleaning")
         revert_info = " reversion is active" if revert_pumps else ""
         _logger.info(f"Every pump will be cleaned for {cfg.MAKER_CLEAN_TIME} seconds{revert_info}")
@@ -135,9 +141,8 @@ class MachineController:
 
         def on_progress(progress: int) -> None:
             shared.cocktail_status.progress = progress
-            if w is not None:
-                w.change_progression_window(progress)
-                QApplication.processEvents()
+            if display is not None:
+                display.change_progression_window(progress)
 
         def is_cancelled() -> bool:
             return shared.cocktail_status.status == PrepareResult.CANCELED
@@ -151,8 +156,8 @@ class MachineController:
             if revert_pumps and self.hardware.reverter is not None:
                 self.hardware.reverter.revert_off()
         _logger.log_header("INFO", "Done Cleaning")
-        if w is not None:
-            w.close_progression_window()
+        if display is not None:
+            display.close_progression_window()
         if shared.cocktail_status.status != PrepareResult.CANCELED:
             shared.cocktail_status.status = PrepareResult.FINISHED
         DatabaseCommander().save_event(EventType.CLEANING)
@@ -184,7 +189,7 @@ class MachineController:
             ingredients.append(ing)
         return ingredients
 
-    def initialize_bottles(self, w: MainScreen | None) -> None:
+    def initialize_bottles(self, display: ProgressDisplay | None) -> None:
         """Prime the tubes of all connected pumps that have a tube volume defined.
 
         Pumps the configured tube volume through each slot that has an ingredient
@@ -193,12 +198,12 @@ class MachineController:
         """
         ingredients = self.tube_flush_ingredients()
         if ingredients:
-            self.make_cocktail(w, ingredients, "initialize", is_cocktail=False, use_carriage=False)
+            self.make_cocktail(display, ingredients, "initialize", is_cocktail=False, use_carriage=False)
 
     @release_on_error()
     def make_cocktail(
         self,
-        w: MainScreen | None,
+        display: ProgressDisplay | None,
         ingredient_list: list[Ingredient],
         recipe: str = "",
         is_cocktail: bool = True,
@@ -216,14 +221,14 @@ class MachineController:
         (pump calibration must measure the pump, not the scale).
         """
         shared.cocktail_status = CocktailStatus(0, status=PrepareResult.IN_PROGRESS)
-        if w is not None:
-            w.open_progression_window(recipe)
+        if display is not None:
+            display.open_progression_window(recipe)
         items = self._build_preparation_items(ingredient_list, use_scale=use_scale)
         _logger.log_header("INFO", f"Starting {recipe}")
         if is_cocktail:
             self.hardware.led_controller.preparation_start()
         try:
-            self._run_scheduler(w, items, use_carriage=use_carriage)
+            self._run_scheduler(display, items, use_carriage=use_carriage)
         except Exception:
             self.close_all_pumps()
             raise
@@ -243,8 +248,8 @@ class MachineController:
             )
             finish_message = f"{finish_message}\n{stall_message}".strip()
         _logger.log_header("INFO", f"Finished {recipe}")
-        if w is not None:
-            w.close_progression_window()
+        if display is not None:
+            display.close_progression_window()
         if shared.cocktail_status.status != PrepareResult.CANCELED:
             # publish message + hand-adds BEFORE flipping to FINISHED so a status poll never sees a
             # terminal status without the accompanying guidance list (every reader gates on status first)
@@ -257,7 +262,7 @@ class MachineController:
 
     def _run_scheduler(
         self,
-        w: MainScreen | None,
+        display: ProgressDisplay | None,
         items: list[PreparationItem],
         use_carriage: bool = False,
     ) -> None:
@@ -270,9 +275,8 @@ class MachineController:
 
         def on_progress(progress: int) -> None:
             shared.cocktail_status.progress = progress
-            if w is not None:
-                w.change_progression_window(progress)
-                QApplication.processEvents()
+            if display is not None:
+                display.change_progression_window(progress)
 
         def is_cancelled() -> bool:
             return shared.cocktail_status.status == PrepareResult.CANCELED

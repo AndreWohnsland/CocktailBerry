@@ -12,20 +12,20 @@ from src.logger_handler import LoggerHandler
 from src.machine.controller import MachineController
 from src.migration.backup import NEEDED_BACKUP_FILES, create_backup_folder
 from src.programs.blacklist import BLACKLIST
-from src.programs.calibration import CalibrationScreen
-from src.programs.scale_calibration import ScaleCalibrationScreen
 from src.ui.create_backup_restore_window import BackupRestoreWindow
 from src.ui.create_config_window import ConfigWindow
 from src.ui.creation_utils import NARROW_WIDTH_THRESHOLD, repack_grid
 from src.ui.qt_worker import CallableWorker, run_with_spinner
 from src.ui.setup_access_point_window import AccessPointWindow
 from src.ui.setup_addon_window import AddonWindow
+from src.ui.setup_calibration_window import CalibrationScreen
 from src.ui.setup_data_window import DataWindow
 from src.ui.setup_event_window import EventWindow
 from src.ui.setup_log_window import LogWindow
 from src.ui.setup_news_window import NewsWindow
 from src.ui.setup_resource_window import ResourceWindow
 from src.ui.setup_rfid_writer_window import RFIDWriterWindow
+from src.ui.setup_scale_calibration_window import ScaleCalibrationScreen
 from src.ui.setup_sumup_window import SumupWindow
 from src.ui.setup_waiter_window import WaiterWindow
 from src.ui.setup_wifi_window import WiFiWindow

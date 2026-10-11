@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from typing import Optional
 
 from sqlalchemy import JSON, ForeignKey, PrimaryKeyConstraint
@@ -160,24 +160,22 @@ class DbTeamdata(Base):
 class DbCocktailExport(Base):
     __tablename__ = "CocktailExport"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
-    export_date: Mapped[datetime.date] = mapped_column(nullable=False, name="Export_Date", default=datetime.date.today)
+    export_date: Mapped[dt.date] = mapped_column(nullable=False, name="Export_Date", default=dt.date.today)
     recipe_name: Mapped[str] = mapped_column(nullable=False, name="Recipe_Name")
     counter: Mapped[int] = mapped_column(nullable=False, name="Counter")
     counter_virgin: Mapped[int] = mapped_column(nullable=False, name="Counter_virgin")
 
-    def __init__(
-        self, recipe_name: str, counter: int, counter_virgin: int, export_date: datetime.date | None = None
-    ) -> None:
+    def __init__(self, recipe_name: str, counter: int, counter_virgin: int, export_date: dt.date | None = None) -> None:
         self.recipe_name = recipe_name
         self.counter = counter
         self.counter_virgin = counter_virgin
-        self.export_date = export_date or datetime.date.today()
+        self.export_date = export_date or dt.date.today()
 
 
 class DbIngredientExport(Base):
     __tablename__ = "IngredientExport"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
-    export_date: Mapped[datetime.date] = mapped_column(nullable=False, name="Export_Date", default=datetime.date.today)
+    export_date: Mapped[dt.date] = mapped_column(nullable=False, name="Export_Date", default=dt.date.today)
     ingredient_name: Mapped[str] = mapped_column(nullable=False, name="Ingredient_Name")
     consumption: Mapped[int] = mapped_column(nullable=False, name="Consumption")
     cost_consumption: Mapped[int] = mapped_column(nullable=False, name="Cost_Consumption")
@@ -187,20 +185,18 @@ class DbIngredientExport(Base):
         ingredient_name: str,
         consumption: int,
         cost_consumption: int,
-        export_date: datetime.date | None = None,
+        export_date: dt.date | None = None,
     ) -> None:
         self.ingredient_name = ingredient_name
         self.consumption = consumption
         self.cost_consumption = cost_consumption
-        self.export_date = export_date or datetime.date.today()
+        self.export_date = export_date or dt.date.today()
 
 
 class DbResourceUsage(Base):
     __tablename__ = "ResourceUsage"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
-    timestamp: Mapped[datetime.datetime] = mapped_column(
-        nullable=False, name="Timestamp", default=datetime.datetime.now
-    )
+    timestamp: Mapped[dt.datetime] = mapped_column(nullable=False, name="Timestamp", default=dt.datetime.now)
     cpu_usage: Mapped[float] = mapped_column(nullable=False, name="CPU_Usage")
     ram_usage: Mapped[float] = mapped_column(nullable=False, name="RAM_Usage")
     session: Mapped[int] = mapped_column(nullable=False, name="Session", index=True)
@@ -210,12 +206,12 @@ class DbResourceUsage(Base):
         cpu_usage: float,
         ram_usage: float,
         session: int,
-        timestamp: datetime.datetime | None = None,
+        timestamp: dt.datetime | None = None,
     ) -> None:
         self.cpu_usage = cpu_usage
         self.ram_usage = ram_usage
         self.session = session
-        self.timestamp = timestamp or datetime.datetime.now()
+        self.timestamp = timestamp or dt.datetime.now()
 
 
 class DbNews(Base):
@@ -232,19 +228,17 @@ class DbEvent(Base):
     __tablename__ = "Events"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
     event_type: Mapped[str] = mapped_column(nullable=False, name="Event_Type", index=True)
-    timestamp: Mapped[datetime.datetime] = mapped_column(
-        nullable=False, name="Timestamp", default=datetime.datetime.now
-    )
+    timestamp: Mapped[dt.datetime] = mapped_column(nullable=False, name="Timestamp", default=dt.datetime.now)
     additional_info: Mapped[str | None] = mapped_column(nullable=True, name="Additional_Info")
 
     def __init__(
         self,
         event_type: str,
-        timestamp: datetime.datetime | None = None,
+        timestamp: dt.datetime | None = None,
         additional_info: str | None = None,
     ) -> None:
         self.event_type = event_type
-        self.timestamp = timestamp or datetime.datetime.now()
+        self.timestamp = timestamp or dt.datetime.now()
         self.additional_info = additional_info
 
 
@@ -298,9 +292,7 @@ class DbWaiter(Base):
 class DbWaiterLog(Base):
     __tablename__ = "WaiterLog"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, name="ID")
-    timestamp: Mapped[datetime.datetime] = mapped_column(
-        nullable=False, name="Timestamp", default=datetime.datetime.now
-    )
+    timestamp: Mapped[dt.datetime] = mapped_column(nullable=False, name="Timestamp", default=dt.datetime.now)
     waiter_nfc_id: Mapped[str | None] = mapped_column(
         ForeignKey("Waiters.NFC_ID", ondelete="SET NULL"), nullable=True, name="Waiter_NFC_ID"
     )
@@ -324,4 +316,4 @@ class DbWaiterLog(Base):
         self.recipe_id = recipe_id
         self.volume = volume
         self.is_virgin = is_virgin
-        self.timestamp = datetime.datetime.now()
+        self.timestamp = dt.datetime.now()

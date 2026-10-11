@@ -8,7 +8,11 @@ from collections.abc import Callable
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
+from src.dialog_handler import DIALOG_HANDLER
+from src.logger_handler import LoggerHandler
 from src.ui.icons import IconSetter
+
+_logger = LoggerHandler("QtWorker")
 
 
 class CallableWorker[T](QThread):
@@ -16,7 +20,7 @@ class CallableWorker[T](QThread):
 
     This worker runs a provided callable in a background thread, keeping the
     Qt event loop responsive. When the callable completes, the result is
-    emitted via the `finished` signal.
+    emitted via the `finished` signal; if it raised, the exception is emitted instead.
 
     Usage:
         worker = CallableWorker(lambda: service.fetch_data())
@@ -35,7 +39,7 @@ class CallableWorker[T](QThread):
     """
 
     # Signal emits `object` since pyqtSignal doesn't support generics at runtime.
-    # The actual type is T, determined by the callable's return type.
+    # The actual type is T | Exception, T determined by the callable's return type.
     finished = pyqtSignal(object)
 
     def __init__(self, func: Callable[[], T]) -> None:
@@ -50,8 +54,13 @@ class CallableWorker[T](QThread):
         self._func = func
 
     def run(self) -> None:
-        """Execute the callable and emit the result."""
-        result: T = self._func()
+        """Execute the callable and emit the result, or the exception if it raised."""
+        try:
+            result: T | Exception = self._func()
+        except Exception as e:
+            _logger.error(f"Background task failed: {e!r}")
+            result = e
+        # without this the spinner would stay forever and the parent would remain disabled
         self.finished.emit(result)
 
 
@@ -72,6 +81,7 @@ def run_with_spinner[T](
         parent: The widget to show the spinner on.
         on_finish: Optional callback that receives the result when work completes.
                    For void functions, use `lambda _: do_something()` to ignore the result.
+                   Not called when the callable raised; the error is shown to the user instead.
         disable_parent: Whether to disable the parent widget while working.
 
     Returns:
@@ -101,12 +111,15 @@ def run_with_spinner[T](
 
     worker: CallableWorker[T] = CallableWorker(func)
 
-    def on_worker_finished(result: T) -> None:
-        if on_finish is not None:
-            on_finish(result)
+    def on_worker_finished(result: T | Exception) -> None:
         # spinner might already be destroyed if parent is gone
         with contextlib.suppress(Exception):
             icons.stop_spinner()
+        if isinstance(result, Exception):
+            DIALOG_HANDLER.standard_box(str(result))
+            return
+        if on_finish is not None:
+            on_finish(result)
 
     worker.finished.connect(on_worker_finished)
     worker.start()

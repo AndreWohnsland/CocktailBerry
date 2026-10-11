@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 
 from sqlalchemy.orm import Session
 
@@ -61,12 +61,12 @@ class TestEvents:
         db_commander.save_event(EventType.CLEANING)
 
         # Get events with future start_date should return empty
-        future_date = datetime.datetime.now() + datetime.timedelta(days=1)
+        future_date = dt.datetime.now() + dt.timedelta(days=1)
         events = db_commander.get_events(start_date=future_date)
         assert len(events) == 0
 
         # Get events with past start_date should return all
-        past_date = datetime.datetime.now() - datetime.timedelta(days=1)
+        past_date = dt.datetime.now() - dt.timedelta(days=1)
         events = db_commander.get_events(start_date=past_date)
         assert len(events) == 1
 
@@ -82,13 +82,13 @@ class TestEvents:
 
     def test_event_timestamp_auto_generated(self, db_commander: DatabaseCommander):
         """Test that timestamp is automatically generated."""
-        before = datetime.datetime.now()
+        before = dt.datetime.now()
         db_commander.save_event(EventType.CLEANING)
-        after = datetime.datetime.now()
+        after = dt.datetime.now()
 
         events = db_commander.get_events()
         assert len(events) == 1
-        event_timestamp = datetime.datetime.fromisoformat(events[0].timestamp)
+        event_timestamp = dt.datetime.fromisoformat(events[0].timestamp)
         assert before.replace(microsecond=0) <= event_timestamp <= after.replace(microsecond=0)
 
     def test_get_events_handles_legacy_renamed_event_type(self, db_commander: DatabaseCommander):

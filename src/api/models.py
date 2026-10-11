@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import TYPE_CHECKING, Annotated, Literal, TypeVar
+from typing import TYPE_CHECKING, Annotated, TypeVar
 
 from annotated_types import Len
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.config.config_manager import StartupIssue
+from src.config.config_manager import StartupIssue, Tab
 from src.connection import access_point
 from src.models import Event, OptionTiles, PrepareResult
 
@@ -194,15 +194,15 @@ class SumupReaderCreate(BaseModel):
     pairing_code: str
 
 
-PermissionKey = Literal["maker", "ingredients", "recipes", "bottles", "options"]
-
-
 class TabPermission(BaseModel):
     maker: bool = False
     ingredients: bool = False
     recipes: bool = False
     bottles: bool = False
     options: bool = False
+
+    def allows(self, tab: Tab) -> bool:
+        return getattr(self, tab.permission_key)
 
 
 class RoleResponse(BaseModel):

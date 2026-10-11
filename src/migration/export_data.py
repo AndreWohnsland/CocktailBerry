@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import csv
-import datetime
+import datetime as dt
 from pathlib import Path
 
 from src.filepath import SAVE_FOLDER
@@ -50,7 +50,7 @@ def migrate_csv_export_data_to_db() -> None:
     for file_path in recipe_files:
         date_str = file_path.name.split("_")[0]
         try:
-            datetime.datetime.strptime(date_str, "%Y%m%d")
+            dt.datetime.strptime(date_str, "%Y%m%d")
             export_dates.add(date_str)
         except ValueError:
             _logger.log_event("WARNING", f"Could not parse date from filename: {file_path.name}")
@@ -75,7 +75,7 @@ def migrate_csv_export_data_to_db() -> None:
             continue
 
         try:
-            export_date = datetime.datetime.strptime(date_str, "%Y%m%d").date()
+            export_date = dt.datetime.strptime(date_str, "%Y%m%d").date()
         except ValueError:
             _logger.log_event("ERROR", f"Invalid date format in {date_str}, skipping")
             continue
@@ -87,7 +87,7 @@ def migrate_csv_export_data_to_db() -> None:
     _logger.log_event("INFO", f"Migrated {migrated_csv_count} csv export files")
 
 
-def _migrate_recipe_export_file(recipe_file: Path, export_date: datetime.date) -> None:
+def _migrate_recipe_export_file(recipe_file: Path, export_date: dt.date) -> None:
     """Migrate a single recipe export file to the database."""
     needed_document_rows = 2
     try:
@@ -118,9 +118,7 @@ def _migrate_recipe_export_file(recipe_file: Path, export_date: datetime.date) -
         _logger.log_event("ERROR", f"Error migrating recipe export file {recipe_file}: {e!s}")
 
 
-def _migrate_ingredient_export_file(
-    ingredient_file: Path, cost_file_path: Path | None, export_date: datetime.date
-) -> None:
+def _migrate_ingredient_export_file(ingredient_file: Path, cost_file_path: Path | None, export_date: dt.date) -> None:
     """Migrate a single ingredient export file with its cost data to the database."""
     needed_document_rows = 2
     document_with_cost_rows = 3

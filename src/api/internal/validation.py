@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import claim_machine, machine_is_busy
 from src.models import Cocktail, PrepareResult
-from src.tabs import maker
+from src.service import preparation
 
 
 class ValidationError(HTTPException):
@@ -36,7 +36,7 @@ def claim_machine_or_raise(status: PrepareResult) -> None:
 
 
 def raise_on_validation_not_okay(cocktail: Cocktail) -> None:
-    result, msg, ingredient = maker.validate_cocktail(cocktail)
+    result, msg, ingredient = preparation.validate_cocktail(cocktail)
     if result != PrepareResult.VALIDATION_OK:
         raise ValidationError(
             status=result.value,

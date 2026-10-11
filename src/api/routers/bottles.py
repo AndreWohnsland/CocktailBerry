@@ -11,7 +11,7 @@ from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import MachineController
 from src.models import PrepareResult
-from src.tabs import maker
+from src.service import preparation
 
 router = APIRouter(tags=[Tags.BOTTLES], prefix="/bottles")
 protected_router = APIRouter(
@@ -28,6 +28,20 @@ async def get_bottles() -> list[Bottle]:
     DBC = DatabaseCommander()
     ingredients = DBC.get_ingredients_at_bottles()[: cfg.MAKER_NUMBER_BOTTLES]
     return [map_bottles(i) for i in ingredients]
+
+
+@router.get("/available", summary="Get IDs of ingredients available for hand-adding.")
+async def get_available_ingredients() -> list[int]:
+    DBC = DatabaseCommander()
+    return DBC.get_available_ids()
+
+
+@protected_router.post("/available", summary="Set which ingredients are available for hand-adding.")
+async def post_available_ingredients(available: list[int]) -> ApiMessage:
+    DBC = DatabaseCommander()
+    DBC.delete_existing_handadd_ingredient()
+    DBC.insert_multiple_existing_handadd_ingredients(available)
+    return ApiMessage(message=DH.get_translation("available_ingredient_updated"))
 
 
 @protected_router.post("/refill", summary="Refill all given bottles to maximum.")
@@ -107,5 +121,5 @@ async def update_bottle_config(bottle_id: int, data: BottleConfigUpdate) -> ApiM
 )
 def calibrate_bottle(bottle_id: int, amount: int, background_tasks: BackgroundTasks) -> ApiMessage:
     claim_machine_or_raise(PrepareResult.IN_PROGRESS)
-    background_tasks.add_task(maker.calibrate, bottle_id, amount)
+    background_tasks.add_task(preparation.calibrate, bottle_id, amount)
     return ApiMessage(message=DH.get_translation("bottle_calibration_started", bottle_id=bottle_id, amount=amount))

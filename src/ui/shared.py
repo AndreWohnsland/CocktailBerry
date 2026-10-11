@@ -12,10 +12,11 @@ from src.config.config_manager import Tab, shared
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
+from src.service import preparation
 from src.service.booking import CocktailBooking
 from src.service.nfc_payment_service import NFCPaymentService, UserLookup
 from src.service.sumup_payment_service import Err, SumupPaymentService
-from src.tabs import bottles, maker
+from src.tabs import bottles
 from src.ui.qt_worker import run_with_spinner
 
 if TYPE_CHECKING:
@@ -31,7 +32,7 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
     Switch to the maker screen at the end (if successful).
     Show error/validation message or execute needed actions.
     """
-    result, message, _ = maker.validate_cocktail(cocktail)
+    result, message, _ = preparation.validate_cocktail(cocktail)
 
     # Go to refill dialog, if this window is not locked
     if (result == PrepareResult.NOT_ENOUGH_INGREDIENTS) and (
@@ -58,7 +59,7 @@ def qt_prepare_flow(w: MainScreen, cocktail: Cocktail) -> tuple[bool, str]:
 
     additional_message = "" if booking.result == CocktailBooking.Result.INACTIVE else booking.message
     # cocktail is fully finalized here; the hand-add guidance window (if any) runs afterwards
-    result, message = maker.prepare_cocktail(cocktail, w, additional_message)
+    result, message = preparation.prepare_cocktail(cocktail, w, additional_message)
     if result == PrepareResult.CANCELED:
         DP_CONTROLLER.say_cocktail_canceled()
     elif shared.cocktail_status.hand_adds or message:
@@ -86,8 +87,7 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
 
 def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:  # noqa: PLR0911
     """Run the SumUp payment flow for qt."""
-    multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin and not cocktail.is_naturally_virgin else 1.0
-    price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
+    price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, virgin_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100)
     value_in_cents = int(price * 100)
     if value_in_cents <= 0:
         _logger.info(f"Skipping SumUp checkout for free cocktail '{cocktail.name}'")
@@ -197,19 +197,19 @@ def cocktailberry_payment_flow(cocktail: Cocktail) -> CocktailBooking:
             booking.message, close_time=polling_time, close_callback=on_cancel
         )
 
-    while (
-        (booking.result == CocktailBooking.Result.NO_USER)
-        and (time.time() - start_time < polling_time)
-        and not canceled
-    ):
+    while (booking.result == CocktailBooking.Result.NO_USER) and (time.time() - start_time < polling_time):
         QApplication.processEvents()
+        # the cancel click runs inside processEvents, so check it before debiting the user
+        if canceled:
+            break
         time.sleep(0.2)
         booking = payment_service.book_cocktail_for_user(detected_user, cocktail)
 
     payment_service.remove_callback("payment_flow")
     _close_dialog_safe(dialog)
 
-    if canceled or booking.result == CocktailBooking.Result.NO_USER:
+    # a booking that landed together with the cancel has already debited the user, so it wins
+    if booking.result == CocktailBooking.Result.NO_USER:
         return CocktailBooking.canceled()
     return booking
 

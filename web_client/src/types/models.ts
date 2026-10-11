@@ -183,9 +183,9 @@ export interface DefinedConfigData {
   PAYMENT_SHOW_NOT_POSSIBLE: boolean;
   PAYMENT_LOCK_SCREEN_NO_USER: boolean;
   PAYMENT_SERVICE_URL: string;
-  PAYMENT_SECRET_KEY: string;
-  PAYMENT_SUMUP_API_KEY: string;
-  PAYMENT_SUMUP_MERCHANT_CODE: string;
+  PAYMENT_SECRET_KEY: boolean;
+  PAYMENT_SUMUP_API_KEY: boolean;
+  PAYMENT_SUMUP_MERCHANT_CODE: boolean;
   PAYMENT_SUMUP_TERMINAL_ID: string;
   PAYMENT_TIMEOUT_S: number;
   PAYMENT_AUTO_LOGOUT_TIME_S: number;
@@ -463,7 +463,6 @@ export interface ResourceStats {
 }
 
 export interface PaymentUserData {
-  nfc_id: string | null;
   balance: number | null;
   is_adult: boolean | null;
 }

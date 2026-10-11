@@ -10,7 +10,7 @@ import contextlib
 import os
 import platform
 import time
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from PyQt6.QtCore import QEvent, QEventLoop, QObject
 from PyQt6.QtGui import QIntValidator, QMouseEvent, QResizeEvent
@@ -58,9 +58,6 @@ from src.ui_elements import Ui_MainWindow
 from src.updater import UpdateInfo, Updater
 from src.utils import restart_v1
 
-if TYPE_CHECKING:
-    from src.api.models import PermissionKey
-
 RESTRICTED_MODE_UNLOCK_SEQUENCE = [
     TabIndex.INGREDIENTS,
     TabIndex.INGREDIENTS,
@@ -72,13 +69,6 @@ RESTRICTED_MODE_UNLOCK_SEQUENCE = [
     TabIndex.BOTTLES,
     TabIndex.BOTTLES,
 ]
-
-_PERMISSION_BY_TAB_INDEX: dict[int, PermissionKey] = {
-    int(TabIndex.MAKER): "maker",
-    int(TabIndex.INGREDIENTS): "ingredients",
-    int(TabIndex.RECIPES): "recipes",
-    int(TabIndex.BOTTLES): "bottles",
-}
 
 # auto-close the (non-blocking) hand-add guidance window if the user walks away; allow more time
 # when the scale is involved (measuring takes longer than just checking off manual adds)
@@ -184,7 +174,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
                 if bar is not None:
                     bar.installEventFilter(self)
 
-        ADDONS.start_trigger_loop(self)
+        ADDONS.start_trigger_loop()
         # start at the cocktail list view
         self.switch_to_cocktail_list()
         if cfg.cocktailberry_payment:
@@ -371,6 +361,8 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if self.progress_window is None:
             return
         self.progress_window.progressBar.setValue(pb_value)
+        # pumping runs on the GUI thread, so the bar only repaints (and cancel only reacts) when events are pumped here
+        QApplication.processEvents()
 
     def close_progression_window(self) -> None:
         """Close the progression window at the end of the cycle."""
@@ -567,30 +559,19 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if index in unprotected_tabs:
             self.previous_tab_index = index
             return
-        if self._waiter_can_access_locked_tab(index):
+        tab = Tab(index - 1)  # the search tab sits in front of the config tabs and returned above
+        if self._waiter_can_access_locked_tab(tab):
             self.previous_tab_index = index
             return
-        if DP_CONTROLLER.password_prompt(
-            cfg.UI_MAKER_PASSWORD,
-            header_type="maker",
-            permission_key=_PERMISSION_BY_TAB_INDEX.get(index),
-        ):
+        if DP_CONTROLLER.password_prompt(cfg.UI_MAKER_PASSWORD, header_type="maker", permission_key=tab.permission_key):
             self.previous_tab_index = index
             return
         # Set back to the prev tab if password not right
         self.tabWidget.setCurrentIndex(old_index)
 
-    def _waiter_can_access_locked_tab(self, index: int) -> bool:
-        if not cfg.waiter_mode_active or shared.current_waiter is None:
-            return False
-
-        permission_by_index = {
-            int(TabIndex.MAKER): shared.current_waiter.permissions.maker,
-            int(TabIndex.INGREDIENTS): shared.current_waiter.permissions.ingredients,
-            int(TabIndex.RECIPES): shared.current_waiter.permissions.recipes,
-            int(TabIndex.BOTTLES): shared.current_waiter.permissions.bottles,
-        }
-        return permission_by_index.get(index, False)
+    def _waiter_can_access_locked_tab(self, tab: Tab) -> bool:
+        waiter = shared.current_waiter
+        return cfg.waiter_mode_active and waiter is not None and waiter.permissions.allows(tab)
 
     def _apply_search_to_list(self) -> None:
         """Apply the search to the list widget."""

@@ -69,3 +69,19 @@ def test_display_name_has_virgin_tag_for_virginized_cocktail() -> None:
     cocktail.scale_cocktail(200, 0.0)
     assert cocktail.is_virgin is True
     assert cocktail.display_name == "Test (Virgin)"
+
+
+def test_virgin_multiplier_applies_only_to_a_virgin_serving_of_an_alcoholic_recipe() -> None:
+    cocktail = _cocktail([_ingredient(1, "Cola", alcohol=0), _ingredient(2, "Rum", alcohol=40)])
+    cocktail.price_per_100_ml = 10
+    assert cocktail.current_price(0, virgin_multiplier=0.5) == 20
+    cocktail.scale_cocktail(200, alcohol_factor=0)
+    assert cocktail.current_price(0, virgin_multiplier=0.5) == 10
+    assert cocktail.current_price(0, 200, virgin_multiplier=0.5, as_virgin=False) == 20
+
+
+def test_naturally_virgin_recipe_never_gets_the_virgin_discount() -> None:
+    cocktail = _cocktail([_ingredient(1, "Cola", alcohol=0), _ingredient(2, "Juice", alcohol=0)])
+    cocktail.price_per_100_ml = 10
+    assert cocktail.current_price(0, virgin_multiplier=0.5) == 20
+    assert cocktail.current_price(0, virgin_multiplier=0.5, as_virgin=True) == 20
