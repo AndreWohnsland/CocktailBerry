@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import shutil
 import sqlite3
 from collections.abc import Generator
@@ -132,7 +132,7 @@ class DatabaseCommander:
 
     def create_backup(self) -> None:
         """Create a backup locally in the same folder, used before migrations."""
-        dtime = datetime.datetime.now()
+        dtime = dt.datetime.now()
         suffix = dtime.strftime("%Y-%m-%d-%H-%M-%S")
         full_backup_name = f"{DATABASE_PATH.stem}_backup-{suffix}.db"
         backup_path = HOME_PATH / full_backup_name
@@ -349,7 +349,7 @@ class DatabaseCommander:
         self, headers: list[str], resettable: list[int], lifetime: list[int]
     ) -> list[list[Any]]:
         """Convert the data from the db cursor into needed csv format."""
-        return [["date", *headers], [datetime.date.today(), *resettable], ["lifetime", *lifetime]]
+        return [["date", *headers], [dt.date.today(), *resettable], ["lifetime", *lifetime]]
 
     def get_available_ingredient_names(self) -> list[str]:
         """Get the names for the available ingredients."""
@@ -673,7 +673,7 @@ class DatabaseCommander:
 
     def export_recipe_data(self) -> None:
         """Save the recipe consumption data to the database and reset counters."""
-        today = datetime.date.today()
+        today = dt.date.today()
         with self.session_scope() as session:
             recipes = self._get_db_cocktails(session)
             for recipe in recipes:
@@ -697,7 +697,7 @@ class DatabaseCommander:
 
     def export_ingredient_data(self) -> None:
         """Save the ingredient consumption and cost data to the database and reset counters."""
-        today = datetime.date.today()
+        today = dt.date.today()
         with self.session_scope() as session:
             ingredients = self._get_all_db_ingredients(session)
             for ingredient in ingredients:
@@ -759,7 +759,7 @@ class DatabaseCommander:
             }
 
     def save_resource_usage(
-        self, cpu_usage: float, ram_usage: float, session_number: int, timestamp: datetime.datetime | None = None
+        self, cpu_usage: float, ram_usage: float, session_number: int, timestamp: dt.datetime | None = None
     ) -> None:
         """Save the resource usage to the database."""
         with self.session_scope() as session:
@@ -971,8 +971,8 @@ class DatabaseCommander:
     def get_events(
         self,
         event_types: list[EventType] | None = None,
-        start_date: datetime.datetime | None = None,
-        end_date: datetime.datetime | None = None,
+        start_date: dt.datetime | None = None,
+        end_date: dt.datetime | None = None,
     ) -> list[Event]:
         """Get events from the database with optional filtering."""
         with self.session_scope() as session:

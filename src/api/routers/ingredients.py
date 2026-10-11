@@ -9,7 +9,7 @@ from src.config.config_manager import Tab
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.models import Cocktail, CocktailStatus, PrepareResult
-from src.tabs import maker
+from src.service import preparation
 
 router = APIRouter(tags=[Tags.INGREDIENTS], prefix="/ingredients")
 protected_router = APIRouter(
@@ -93,20 +93,6 @@ async def delete_ingredients(ingredient_id: int) -> ApiMessage:
     return ApiMessage(message=DH.get_translation("ingredient_deleted", ingredient_name=ingredient_id))
 
 
-@router.get("/available", summary="Get available ingredients IDs")
-async def get_available_ingredients() -> list[int]:
-    DBC = DatabaseCommander()
-    return DBC.get_available_ids()
-
-
-@protected_router.post("/available")
-async def post_available_ingredients(available: list[int]) -> ApiMessage:
-    DBC = DatabaseCommander()
-    DBC.delete_existing_handadd_ingredient()
-    DBC.insert_multiple_existing_handadd_ingredients(available)
-    return ApiMessage(message=DH.get_translation("available_ingredient_updated"))
-
-
 @router.post(
     "/{ingredient_id:int}/prepare",
     tags=[Tags.PREPARATION, Tags.MAKER_PROTECTED],
@@ -140,5 +126,5 @@ async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: 
     cocktail = Cocktail.from_ingredient(ingredient, amount)
     raise_on_validation_not_okay(cocktail)
     claim_machine_or_raise(PrepareResult.IN_PROGRESS)
-    background_tasks.add_task(maker.prepare_cocktail, cocktail)
+    background_tasks.add_task(preparation.prepare_cocktail, cocktail)
     return CocktailStatus(status=PrepareResult.IN_PROGRESS)

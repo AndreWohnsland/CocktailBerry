@@ -7,9 +7,9 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.logger_handler import LoggerHandler
 from src.models import Cocktail, PrepareResult
+from src.service import preparation
 from src.service.booking import CocktailBooking
 from src.service.sumup_payment_service import Err, SumupPaymentService
-from src.tabs import maker
 
 _logger = LoggerHandler("sumup_payment")
 
@@ -21,8 +21,7 @@ def requires_sumup_payment(cocktail: Cocktail) -> bool:
 
 def _get_price_in_cents(cocktail: Cocktail) -> int:
     """Calculate the cocktail price in cents for SumUp."""
-    multiplier = cfg.PAYMENT_VIRGIN_MULTIPLIER / 100 if cocktail.is_virgin and not cocktail.is_naturally_virgin else 1.0
-    price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, price_multiplier=multiplier)
+    price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, virgin_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100)
     return int(price * 100)
 
 
@@ -65,8 +64,9 @@ class SumupPaymentHandler:
             shared.cocktail_status.message = CocktailBooking.sumup_no_terminal().message
             return
 
-        # Trigger checkout on terminal
-        checkout_result = self.sumup_service.trigger_checkout(
+        # the SDK is synchronous, keep its calls off the event loop so status polls keep answering
+        checkout_result = await asyncio.to_thread(
+            self.sumup_service.trigger_checkout,
             reader_id=reader_id,
             value=price_in_cents,
             description=f"CocktailBerry: {cocktail.name}",
@@ -96,7 +96,7 @@ class SumupPaymentHandler:
             return
 
         # Check transaction result
-        transaction_result = self.sumup_service.get_transaction(client_transaction_id)
+        transaction_result = await asyncio.to_thread(self.sumup_service.get_transaction, client_transaction_id)
         if isinstance(transaction_result, Err):
             _logger.error(f"Failed to get transaction: {transaction_result.error}")
             shared.cocktail_status.status = PrepareResult.CANCELED
@@ -112,7 +112,7 @@ class SumupPaymentHandler:
 
         _logger.debug("Payment successful, starting cocktail preparation")
         booking = CocktailBooking.sumup_successful()
-        await asyncio.to_thread(maker.prepare_cocktail, cocktail=cocktail, additional_message=booking.message)
+        await asyncio.to_thread(preparation.prepare_cocktail, cocktail=cocktail, additional_message=booking.message)
 
     def cancel_payment(self) -> CocktailBooking:
         """Cancel the ongoing payment flow."""

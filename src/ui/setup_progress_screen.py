@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QMainWindow
 
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
-from src.tabs.maker import interrupt_cocktail
+from src.service.preparation import interrupt_cocktail
 from src.ui_elements.progressbarwindow import Ui_Progressbarwindow
 
 if TYPE_CHECKING:

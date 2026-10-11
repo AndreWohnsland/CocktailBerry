@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 import pytest
 
-from src.models import Cocktail
+from src.models import Cocktail, Ingredient
 from src.payment_utils import filter_cocktails_by_user
 from src.service.nfc_payment_service import User
 
@@ -33,6 +33,20 @@ def create_test_cocktail(
         price_per_100_ml=price_per_100_ml,
         virgin_available=virgin_available,
         ingredients=[],
+    )
+
+
+def _alcohol_free_ingredient(_id: int, name: str) -> Ingredient:
+    return Ingredient(
+        id=_id,
+        name=name,
+        alcohol=0,
+        bottle_volume=1000,
+        fill_level=1000,
+        hand=False,
+        pump_speed=100,
+        amount=150,
+        bottle=_id,
     )
 
 
@@ -262,6 +276,21 @@ class TestFilterCocktailsVirginPricing:
             result = filter_cocktails_by_user(user, cocktails)
         assert len(result) == 1
         assert result[0].is_allowed is False
+
+    def test_minor_gets_naturally_virgin_cocktail_at_full_price(self, patch_cfg: PatchCfgType) -> None:
+        """A recipe without alcohol needs no virgin flag for a minor, and booking charges it at full price."""
+        # Full price = 10.0 / 100 * 300 = 30.0, a discount would wrongly allow the 25.0 balance
+        user = create_test_user(balance=25.0, can_get_alcohol=False)
+        lemonade = create_test_cocktail(name="Lemonade", price_per_100_ml=10.0, amount=300)
+        lemonade.ingredients = [_alcohol_free_ingredient(1, "Lemon"), _alcohol_free_ingredient(2, "Soda")]
+        with patch_cfg(PAYMENT_VIRGIN_MULTIPLIER=80):
+            result = filter_cocktails_by_user(user, [lemonade])
+        assert result[0].only_virgin is True
+        assert result[0].is_allowed is False
+        user.balance = 30.0
+        with patch_cfg(PAYMENT_VIRGIN_MULTIPLIER=80):
+            result = filter_cocktails_by_user(user, [lemonade])
+        assert result[0].is_allowed is True
 
 
 class TestFilterCocktailsVolumeConfig:
