@@ -34,20 +34,25 @@ def check_api_key() -> None:
         logger.warning("API key check inconclusive, the api responded with %s.", response.status_code)
 
 
+def parse_hook_headers(config: str) -> dict[str, str]:
+    """Parse the HOOK_HEADERS env format `name:value,name2:value2`."""
+    headers: dict[str, str] = {}
+    for entry in config.split(","):
+        # values may contain colons themselves, so split only at the first one
+        name, value = entry.split(":", 1)
+        headers[name] = value
+    return headers
+
+
 def generate_urls_and_headers() -> list[tuple[str, dict[str, str]]]:
     """Generate the urls as well as the header from the .env data."""
     hook_url = os.getenv("HOOK_ENDPOINT")
     api_key = os.getenv("API_KEY")
-    hook_headers_config = os.getenv("HOOK_HEADERS", None)
+    hook_headers_config = os.getenv("HOOK_HEADERS")
     if hook_headers_config is None:
-        # If no headers are set, use common content type
         hook_headers = {"content-type": "application/json"}
     else:
-        # Split the header config into a list
-        # the config is header:value,header2:value2
-        headers = hook_headers_config.split(",")
-        # split only on the first colon, header values may contain colons themselves
-        hook_headers = dict(x.split(":", 1) for x in headers)
+        hook_headers = parse_hook_headers(hook_headers_config)
     endpoint_data: list[tuple[str, dict[str, str]]] = []
     if (hook_url != DEFAULT_HOOK_EP) and (hook_url is not None):
         endpoint_data.append(
