@@ -105,6 +105,13 @@
     "adjustTime": "Adjust Time",
     "backup": "Backup",
     "backupSavedSuccessfully": "Backup was saved at: {{fileName}}",
+    "restoreBackup": {
+      "title": "Restore Backup",
+      "overwriteHint": "Restoring overwrites the selected data on this machine. The program restarts afterwards.",
+      "config": "Configuration",
+      "images": "Custom Images",
+      "database": "Database (Own Cocktails)"
+    },
     "calibration": "Calibration",
     "cleaning": "Cleaning",
     "cleaningTheMachine": "Cleaning the Machine",

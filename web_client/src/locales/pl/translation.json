@@ -105,6 +105,13 @@
     "adjustTime": "Ustaw czas",
     "backup": "Kopia zapasowa",
     "backupSavedSuccessfully": "Kopia zapasowa została zapisana w: {{fileName}}",
+    "restoreBackup": {
+      "title": "Przywróć kopię zapasową",
+      "overwriteHint": "Przywracanie nadpisze wybrane dane na tym urządzeniu. Program zostanie uruchomiony ponownie.",
+      "config": "Konfiguracja",
+      "images": "Obrazy użytkownika",
+      "database": "Baza danych (własne koktajle)"
+    },
     "calibration": "Kalibracja",
     "cleaning": "Czyszczenie",
     "cleaningTheMachine": "Czyszczenie maszyny",
