@@ -105,6 +105,13 @@
     "adjustTime": "Zeit Anpassen",
     "backup": "Sicherung",
     "backupSavedSuccessfully": "Backup wurde erfolgreich unter: {{fileName}} gespeichert",
+    "restoreBackup": {
+      "title": "Backup Wiederherstellen",
+      "overwriteHint": "Die ausgewählten lokalen Daten werden überschrieben. Ein Neustart wird danach ausgeführt.",
+      "config": "Einstellungen",
+      "images": "Custom Bilder",
+      "database": "Datenbank (Eigene Cocktails)"
+    },
     "calibration": "Kalibrierung",
     "cleaning": "Reinigung",
     "cleaningTheMachine": "Reinigung der Machine",

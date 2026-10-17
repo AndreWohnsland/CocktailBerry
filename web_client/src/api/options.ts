@@ -131,12 +131,18 @@ export const createBackup = async (): Promise<{ data: Blob; fileName: string }> 
   }
 };
 
-export const uploadBackup = async (file: File): Promise<{ message: string }> => {
+export type BackupGroup = 'config' | 'images' | 'database';
+
+export const uploadBackup = async (file: File, groups: BackupGroup[]): Promise<{ message: string }> => {
   const formData = new FormData();
   formData.append('file', file);
 
+  // The custom style is v1-only and never offered here, but a backup may be restored on a
+  // machine that later runs v1, so it is always passed through. A missing style is skipped.
+  const restored_file = ['style', ...groups].join(',');
   return axiosInstance
     .post<{ message: string }>(`${optionsUrl}/backup`, formData, {
+      params: { restored_file },
       headers: {
         'Content-Type': 'multipart/form-data',
       },

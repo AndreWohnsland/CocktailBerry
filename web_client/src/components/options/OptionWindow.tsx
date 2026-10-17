@@ -34,12 +34,11 @@ import {
   shutdownSystem,
   updateSystem,
   updateTheme,
-  uploadBackup,
   useAboutInfo,
 } from '../../api/options';
 import { useAuth } from '../../providers/AuthProvider';
 import { useConfig } from '../../providers/ConfigProvider';
-import { REBOOT_PATIENCE_MS, RESTART_PATIENCE_MS, useRestartWait } from '../../providers/RestartWaitProvider';
+import { REBOOT_PATIENCE_MS, useRestartWait } from '../../providers/RestartWaitProvider';
 import { useWaiter } from '../../providers/WaiterProvider';
 import type { OptionTileName, UpdateAvailability } from '../../types/models';
 import { askYesNo, confirmAndExecute, errorToast, executeAndShow } from '../../utils';
@@ -47,6 +46,7 @@ import DropDown from '../common/DropDown';
 import ProgressModal from '../common/ProgressModal';
 import TileButton from '../common/TileButton';
 import AboutModal from './AboutModal';
+import RestoreBackupModal from './RestoreBackupModal';
 import UpdateModal from './UpdateModal';
 
 const OptionWindow = () => {
@@ -57,6 +57,7 @@ const OptionWindow = () => {
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updateInfo, setUpdateInfo] = useState<UpdateAvailability>();
+  const [backupFile, setBackupFile] = useState<File | null>(null);
   const { data: aboutInfo } = useAboutInfo();
   const { startRestartWait } = useRestartWait();
   const themes = ['default', 'berry', 'bavaria', 'alien', 'tropical', 'purple', 'custom'];
@@ -153,10 +154,7 @@ const OptionWindow = () => {
   };
 
   const restoreBackupClick = async () => {
-    const file = await pickBackupFile();
-    if (file === null) return;
-    const restored = await executeAndShow(() => uploadBackup(file));
-    if (restored) startRestartWait(RESTART_PATIENCE_MS);
+    setBackupFile(await pickBackupFile());
   };
 
   const rebootClick = async () => {
@@ -353,6 +351,7 @@ const OptionWindow = () => {
       </div>
       <AboutModal isOpen={isAboutModalOpen} onClose={() => setIsAboutModalOpen(false)} aboutInfo={aboutInfo} />
       <UpdateModal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)} info={updateInfo} />
+      <RestoreBackupModal file={backupFile} onClose={() => setBackupFile(null)} />
     </>
   );
 };
