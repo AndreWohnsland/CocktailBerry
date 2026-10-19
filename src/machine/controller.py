@@ -3,7 +3,7 @@ from __future__ import annotations
 import atexit
 import contextlib
 import threading
-from collections.abc import Iterable, Iterator
+from collections.abc import Generator, Iterable
 from typing import TYPE_CHECKING, Any, Protocol, Self, TypeGuard
 
 from src.config.config_manager import CONFIG as cfg
@@ -63,7 +63,7 @@ def claim_machine(status: PrepareResult) -> bool:
 
 
 @contextlib.contextmanager
-def release_on_error() -> Iterator[None]:
+def release_on_error() -> Generator[None]:
     """Free a claimed machine if the run or payment crashes, otherwise it stays busy until restart."""
     try:
         yield

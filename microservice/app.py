@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import json
 import logging
 import os
@@ -23,6 +23,7 @@ load_dotenv()
 # The fastapi logger has no handlers by default: without this, .info() calls are
 # dropped and errors are printed bare via Python's last-resort handler.
 logging.basicConfig(format="%(asctime)s %(levelname)s [%(name)s] %(message)s", level=logging.INFO)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
@@ -55,7 +56,7 @@ async def post_cocktail_hook(cocktail: Cocktail) -> JSONResponse:
 
     # deliberately naive local time (no timezone offset): the stats api treats
     # makedate as machine wall clock, do not switch to an aware datetime.now(UTC)
-    make_date = datetime.datetime.now().isoformat(timespec="seconds")
+    make_date = dt.datetime.now().isoformat(timespec="seconds")
     if cocktail.makedate is not None:
         make_date = cocktail.makedate
 

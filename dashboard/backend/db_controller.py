@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import sqlite3
 from pathlib import Path
 
@@ -28,7 +28,7 @@ class DBController:
         if person is None:
             person = "Team"
         sql = "INSERT INTO TEAM(Date, Team, Volume, Person) VALUES(?,?,?,?)"
-        entry_datetime = datetime.datetime.now().replace(microsecond=0)
+        entry_datetime = dt.datetime.now().replace(microsecond=0)
         self.cursor.execute(
             sql,
             (

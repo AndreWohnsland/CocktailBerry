@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import dash
 from app import app
@@ -23,7 +23,7 @@ def update_plot(n: int, pathname: str) -> list:
     graph_type = routes.get(pathname, 1)
     store.current_graph_type = graph_type
     df = get_plot_data(store.current_graph_type)
-    now_time = datetime.datetime.now().strftime("%H:%M")
+    now_time = dt.datetime.now().strftime("%H:%M")
     trigger_id = dash.callback_context.triggered[0]["prop_id"]
     triggered_by_time = trigger_id == "interval-component.n_intervals"
     if df.equals(store.last_data) and triggered_by_time:

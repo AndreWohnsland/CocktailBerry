@@ -1,5 +1,5 @@
 import os
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from enum import StrEnum
@@ -153,7 +153,7 @@ class NFCPaymentService:
         self._user_callbacks.clear()
 
     @contextmanager
-    def paused_callbacks(self) -> Iterator[None]:
+    def paused_callbacks(self) -> Generator[None]:
         """Context manager to temporarily pause callbacks."""
         self._pause_callbacks = True
         try:
