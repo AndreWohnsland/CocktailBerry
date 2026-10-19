@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from threading import Timer
 from typing import Self
@@ -103,7 +103,7 @@ class WaiterService:
         self._callbacks.pop(name, None)
 
     @contextmanager
-    def paused_callbacks(self) -> Iterator[None]:
+    def paused_callbacks(self) -> Generator[None]:
         """Context manager to temporarily pause callbacks."""
         self._pause_callbacks = True
         try:
