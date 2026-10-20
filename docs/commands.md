@@ -288,7 +288,7 @@ Once added, the new LED type appears in the LED configuration dropdown.
 
 You can also use CocktailBerry to set up the [microservice](advanced.md#cocktailberry-microservice) and change the env variables.
 It uses the latest image from Docker Hub.
-With the microservice, also [watchtower](https://containrrr.dev/watchtower/) will be deployed.
+With the microservice, also [watchtower](https://watchtower.nickfedor.com/) will be deployed.
 Watchtower will check periodically if there is a new microservice image and install it in the background.
 
 ```bash
@@ -318,7 +318,7 @@ If this file already exists, the values will be replaced with the provided ones.
 
 You can also use CocktailBerry to set up the [Teams Dashboard](advanced.md#dashboard-with-teams).
 It uses the latest image from Docker Hub.
-With the dashboard, also [watchtower](https://containrrr.dev/watchtower/) will be deployed.
+With the dashboard, also [watchtower](https://watchtower.nickfedor.com/) will be deployed.
 Watchtower will check periodically if there is a new dashboard image and install it in the background.
 
 ```bash

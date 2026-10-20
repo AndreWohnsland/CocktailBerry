@@ -17,7 +17,7 @@ services:
         - "com.centurylinklabs.watchtower.enable=true"
   watchtower:
     container_name: watchtower-updater
-    image: containrrr/watchtower
+    image: nickfedor/watchtower
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

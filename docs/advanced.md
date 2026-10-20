@@ -26,7 +26,7 @@ uv run runme.py setup-microservice
 ```
 
 The terminal will interactively ask you for the required information.
-This also sets up [watchtower](https://containrrr.dev/watchtower/), which keeps the service image up to date.
+This also sets up [watchtower](https://watchtower.nickfedor.com/), which keeps the service image up to date.
 See the [CLI documentation](commands.md#setup-the-microservice) for all options.
 
 One example of the usage [can be found in my blog](https://andrewohnsland.github.io/blog/cocktailberry-now-with-home-assistant).

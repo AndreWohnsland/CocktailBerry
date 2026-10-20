@@ -44,6 +44,7 @@ from src.migration.update_data import (
     migrate_waiter_privileges_to_roles,
     remove_hand_from_recipe_data,
 )
+from src.programs.microservice_setup import migrate_watchtower_image
 
 _logger = LoggerHandler("migrator_module")
 
@@ -143,6 +144,7 @@ class Migrator:
                 _migrate_normal_led_to_split_variants,
             ],
             "4.9.0": [_raise_nginx_upload_limit],
+            "4.11.0": [migrate_watchtower_image],
         }
 
         for version, actions in version_actions.items():
