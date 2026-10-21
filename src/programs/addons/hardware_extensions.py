@@ -11,10 +11,9 @@ from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionMana
 
 
 @dataclass
-class HardwareAddonEntry(BaseAddonEntry):
+class HardwareAddonEntry(BaseAddonEntry[ConfigClass]):
     """Registry entry for one custom hardware extension."""
 
-    config_class: type[ConfigClass]
     implementation: BaseHardwareExtension[Any]
     instance: Any = field(default=None)
 

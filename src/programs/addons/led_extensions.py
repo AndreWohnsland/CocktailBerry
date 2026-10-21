@@ -11,10 +11,9 @@ from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionMana
 
 
 @dataclass
-class LedAddonEntry(BaseAddonEntry):
+class LedAddonEntry(BaseAddonEntry[BaseLedConfig]):
     """Registry entry for one custom LED extension."""
 
-    config_class: type[BaseLedConfig]
     implementation_class: type[LedInterface]
 
 

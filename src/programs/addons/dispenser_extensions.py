@@ -11,10 +11,9 @@ from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionMana
 
 
 @dataclass
-class DispenserAddonEntry(BaseAddonEntry):
+class DispenserAddonEntry(BaseAddonEntry[BasePumpConfig]):
     """Registry entry for one custom dispenser extension."""
 
-    config_class: type[BasePumpConfig]
     implementation_class: type[BaseDispenser]
 
 

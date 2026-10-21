@@ -11,10 +11,9 @@ from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionMana
 
 
 @dataclass
-class RfidAddonEntry(BaseAddonEntry):
+class RfidAddonEntry(BaseAddonEntry[BaseRfidConfig]):
     """Registry entry for one custom RFID extension."""
 
-    config_class: type[BaseRfidConfig]
     implementation_class: type[RFIDInterface]
 
 
