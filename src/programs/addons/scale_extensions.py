@@ -11,10 +11,9 @@ from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionMana
 
 
 @dataclass
-class ScaleAddonEntry(BaseAddonEntry):
+class ScaleAddonEntry(BaseAddonEntry[BaseScaleConfig]):
     """Registry entry for one custom scale extension."""
 
-    config_class: type[BaseScaleConfig]
     implementation_class: type[ScaleInterface]
 
 

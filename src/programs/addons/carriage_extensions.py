@@ -11,10 +11,9 @@ from src.programs.addons.extension_base import BaseAddonEntry, BaseExtensionMana
 
 
 @dataclass
-class CarriageAddonEntry(BaseAddonEntry):
+class CarriageAddonEntry(BaseAddonEntry[BaseCarriageConfig]):
     """Registry entry for one custom carriage extension."""
 
-    config_class: type[BaseCarriageConfig]
     implementation_class: type[CarriageInterface]
 
 

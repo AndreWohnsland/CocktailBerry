@@ -12,15 +12,15 @@ from src.logger_handler import LoggerHandler
 
 
 @dataclass
-class BaseAddonEntry:
+class BaseAddonEntry[ConfigT: ConfigClass]:
     """Common fields shared by all extension registry entries."""
 
     name: str
-    config_class: type[ConfigClass]
+    config_class: type[ConfigT]
     config_fields: dict[str, ConfigInterface[Any]]
 
 
-class BaseExtensionManager[EntryT: BaseAddonEntry](ABC):
+class BaseExtensionManager[EntryT: BaseAddonEntry[Any]](ABC):
     """Shared discovery and loading logic for extension managers.
 
     Subclasses must define:
