@@ -131,7 +131,7 @@ fi
 echo "~~ Installing uv ~~"
 # Pinned uv version for reproducible installs: uv has changed behavior between
 # releases before (e.g. exact sync by default). Bump this deliberately after testing.
-UV_VERSION="0.11.28"
+UV_VERSION="0.13.4"
 curl -LsSf "https://astral.sh/uv/$UV_VERSION/install.sh" | sh
 # shellcheck disable=SC1091
 source "$HOME"/.local/bin/env
