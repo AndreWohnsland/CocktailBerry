@@ -39,12 +39,13 @@ in-flight amount (settled - cutoff) and could provide the lead instead.
 """
 _SETTLE_TIMEOUT_S = 1.5
 """Hard upper bound for waiting on a stable reading after the pump stopped."""
-_STALL_TIMEOUT_S = 5.0
+_STALL_TIMEOUT_S = 15.0
 """Abort a scale-based dispense when the weight made no new high for this long.
 
 Catches empty bottles, blocked tubes and lost prime, where the pump would
-otherwise run forever waiting for weight that never arrives. Generous enough
-to cover the 1-2s unprimed start; raise if field priming times demand it.
+otherwise run forever waiting for weight that never arrives. Must cover a full
+re-prime: with peristaltic pumps the liquid drains back into the bottle between
+pours, and refilling a long tube at a few ml/s takes well over 5s (#854).
 """
 _SETTLE_POLL_S = 0.05
 """Poll interval while waiting for the reading to settle."""
