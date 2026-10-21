@@ -13,7 +13,7 @@ from threading import Event
 import pytest
 
 import src.machine.dispensers.base as dispenser_base
-from src.machine.dispensers.base import BaseDispenser
+from src.machine.dispensers.base import _STALL_TIMEOUT_S, BaseDispenser
 
 
 class FakeClock:
@@ -205,7 +205,7 @@ def test_stall_watchdog_stops_on_empty_bottle(clock: FakeClock) -> None:
     assert not dispenser.pump_on
     assert result == pytest.approx(15.0, abs=2.0)  # honest consumption, not the target
     # tripped roughly one stall timeout after the weight went flat, not much later
-    assert clock.now < 15.0
+    assert clock.now < _STALL_TIMEOUT_S + 5.0
 
 
 def test_cleaning_ignores_scale(clock: FakeClock) -> None:
@@ -223,14 +223,16 @@ def test_cleaning_ignores_scale(clock: FakeClock) -> None:
     scale.tare = counting_read  # ty:ignore[invalid-assignment]
 
     # without scale reads nothing advances the clock, so the callback drives it
-    def advance_and_stop_after_8s(consumption: float, done: bool) -> None:
+    def advance_and_stop_past_stall_timeout(consumption: float, done: bool) -> None:
         clock.sleep(0.08)
-        if not done and clock.now > 8.0:
+        if not done and clock.now > _STALL_TIMEOUT_S + 3.0:
             dispenser.stop()
 
-    result = dispenser.dispense(2000.0, 100, revert=False, callback=advance_and_stop_after_8s, use_scale=False)
+    result = dispenser.dispense(
+        2000.0, 100, revert=False, callback=advance_and_stop_past_stall_timeout, use_scale=False
+    )
 
     assert scale_calls == 0  # no tare, no reads, no settle: scale untouched
     assert not dispenser.last_dispense_stalled  # ran well past the stall timeout without tripping
-    assert clock.now > 8.0
+    assert clock.now > _STALL_TIMEOUT_S
     assert result == 0.0  # time-based estimate from the dummy, not a scale value
