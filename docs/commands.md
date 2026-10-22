@@ -345,6 +345,12 @@ There you can switch it on or off, change name and password, and scan a QR code 
 NetworkManager stores the settings, so they survive a project reset or reinstall.
 Switching the access point off in the app keeps name and password, `remove-ap` deletes everything.
 
+The access point is meant as the fixed address for the display device, the normal WiFi only gives the machine internet.
+Both share one radio, so the access point follows the channel of the WiFi network and may drop for a few seconds when the machine joins a new network.
+Joining a new WiFi network from the app only succeeds when the access point is active again afterwards.
+Otherwise the app removes the new network again, restores the previous one, and reports the reason from NetworkManager.
+A NetworkManager dispatcher script also brings the access point back whenever the WiFi connection goes up or down.
+
 ```bash
 uv run runme.py setup-ap [OPTIONS]
 

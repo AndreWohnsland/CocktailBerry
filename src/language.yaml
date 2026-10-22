@@ -319,10 +319,14 @@ dialog:
     en: "Access point settings applied.\nWhen active, CocktailBerry is reachable within it at http://{address}"
     de: "Access Point Einstellungen übernommen.\nWenn aktiv, ist CocktailBerry darin unter http://{address} erreichbar"
     pl: "Ustawienia punktu dostępu zastosowane.\nGdy aktywny, CocktailBerry jest dostępny pod http://{address}"
-  wifi_setup_failed:
-    en: 'There was an error setting up WiFi. Please check the logs for further information.'
-    de: 'Es ist ein Fehler beim Einrichten des WiFi aufgetreten. Schaue in die Logs für mehr Informationen.'
-    pl: 'Wystąpił błąd podczas konfiguracji WiFi. Sprawdź logi.'
+  wifi_join_running:
+    en: 'A WiFi connection attempt is already running, please wait for it to finish.'
+    de: 'Es läuft bereits ein WiFi Verbindungsversuch, bitte warte bis dieser beendet ist.'
+    pl: 'Próba połączenia z WiFi jest już w toku, poczekaj na jej zakończenie.'
+  wifi_join_started:
+    en: 'Connecting to {ssid}.'
+    de: 'Verbinde mit {ssid}.'
+    pl: 'Łączenie z {ssid}.'
   wifi_success:
     en: 'WiFi has been set up successfully.'
     de: 'WiFi wurde erfolgreich eingerichtet.'
@@ -364,8 +368,8 @@ dialog:
     de: 'Bildverarbeitung fehlgeschlagen. Bitte stelle sicher, dass du eine jpg oder png Datei verwendest.'
     pl: 'Przetwarzanie obrazu nie powiodło się. Upewnij się, że używasz pliku jpg lub png.'
   recipe_help:
-    en: 'Here you can add a Cocktail. You need the ingredient and according amount. You can assign a number from 1-9 to each ingredient. Ingredients with the same number will be spend at the same time by the machine in increasing order. Leave all at 1 if all should spend in parallel. You can also assign a picture to existing cocktails. Cocktails not enabled will not appear in the maker. If you enable virgin, a non alcoholic version of the cocktail will be possible.'
-    de: 'Hier kannst du einen Cocktail hinzufügen. Du benötigst die Zutat und die entsprechende Menge. Du kannst jeder Zutat eine Nummer von 1-9 zuweisen. Zutaten mit der gleichen Nummer werden der Größe aufsteigend gleichzeitig von der Maschine ausgegeben. Lass alle auf 1, wenn alle auf einmal ausgegeben werden sollen. Du kannst auch ein Bild zu existierenden Cocktails hinzufügen. Nicht aktivierte Cocktails werden nicht im Maker angezeigt. Wenn du Virgin aktivierst, wird eine alkoholfreie Version des Cocktails möglich sein.'
+    en: 'Here you can add a Cocktail. You need the ingredient and according amount. You can assign a number from 1-9 to each ingredient. Ingredients with the same number will be spend at the same time by the machine in increasing order. Leave all at 1 if all should spend in parallel. You can also assign a picture to existing cocktails. Cocktails not enabled will not appear in the maker. If you enable alcohol-free, a non alcoholic version of the cocktail will be possible.'
+    de: 'Hier kannst du einen Cocktail hinzufügen. Du benötigst die Zutat und die entsprechende Menge. Du kannst jeder Zutat eine Nummer von 1-9 zuweisen. Zutaten mit der gleichen Nummer werden der Größe aufsteigend gleichzeitig von der Maschine ausgegeben. Lass alle auf 1, wenn alle auf einmal ausgegeben werden sollen. Du kannst auch ein Bild zu existierenden Cocktails hinzufügen. Nicht aktivierte Cocktails werden nicht im Maker angezeigt. Wenn du Alkoholfrei aktivierst, wird eine alkoholfreie Version des Cocktails möglich sein.'
     pl: 'Tutaj możesz dodać koktajl. Potrzebujesz składnika i odpowiedniej ilości. Możesz przypisać każdemu składnikowi numer od 1 do 9. Składniki z tym samym numerem będą podawane jednocześnie w kolejności rosnącej. Zostaw 1 dla wszystkich, jeśli mają być podawane równolegle. Możesz też dodać obraz do istniejących koktajli. Nieaktywne koktajle nie będą widoczne w makerze. Jeśli włączysz "Bezalkoholowy", dostępna też będzie wersja bezalkoholowa.'
   ingredient_must_be_handadd:
     en: 'Ingredient must be configured as hand add (set checkbox) when using other units than ml. This is because the machine only supports ml as output unit.'
@@ -528,6 +532,10 @@ dialog:
 ui:
   # Some commonly used elements within multiple windows
   generics:
+    alcohol_free:
+      en: 'Alcohol-free'
+      de: 'Alkoholfrei'
+      pl: 'Bezalkoholowy'
     cancel_button:
       en: 'Cancel'
       de: 'Abbrechen'
@@ -649,9 +657,9 @@ ui:
       de: 'anwenden'
       pl: 'zastosuj'
     virgin_possibility:
-      en: 'Allow virgin'
-      de: 'Virgin erlauben'
-      pl: 'Zezwól na wersję bezalkoholową'
+      en: 'Offer alcohol-free'
+      de: 'Alkoholfrei anbieten'
+      pl: 'Wersja bezalkoholowa'
     label_pump_speed:
       en: 'Pump speed'
       de: 'Pumpengeschwindigkeit'
@@ -693,8 +701,8 @@ ui:
       de: 'Zufalls-Cocktail'
       pl: 'Losowy koktajl'
     random_virgin_cocktail_label:
-      en: 'Random Virgin Cocktail'
-      de: 'Zufalls-Virgin-Cocktail'
+      en: 'Random Alcohol-free Cocktail'
+      de: 'Alkoholfreier Zufalls-Cocktail'
       pl: 'Losowy koktajl bezalkoholowy'
     random_be_surprised:
       en: 'Be Surprised!'
@@ -1947,10 +1955,6 @@ ui:
       en: 'Deleted Recipe'
       de: 'Gelöschtes Rezept'
       pl: 'Przepis został usunięty '
-    virgin:
-      en: 'Virgin'
-      de: 'Virgin'
-      pl: 'Bezalkoholowy'
 
   ##### SUMUP WINDOW #####
   # all values for sumup window

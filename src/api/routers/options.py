@@ -35,10 +35,12 @@ from src.api.models import (
     UpdateRequest,
     UpdateVersion,
     WifiData,
+    WifiJoinJob,
+    WifiStatus,
 )
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.connection import access_point
+from src.connection import access_point, wifi
 from src.data_utils import generate_consume_data
 from src.database_commander import DatabaseCommander
 from src.dialog_handler import DIALOG_HANDLER as DH
@@ -57,12 +59,10 @@ from src.utils import (
     LogLevel,
     get_platform_data,
     has_connection,
-    list_available_ssids,
     read_log_file,
     reboot_machine,
     restart_v2,
     set_system_datetime,
-    setup_wifi,
     shutdown_machine,
     update_os,
 )
@@ -317,17 +317,30 @@ async def rfid_writer() -> ApiMessage:
 async def get_available_ssids() -> list[str]:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot scan WiFi on Windows")
-    return list_available_ssids()
+    return wifi.list_available_ssids()
 
 
-@protected_router.post("/wifi", summary="Set WiFi SSID and password", dependencies=[not_on_demo])
+@protected_router.get("/wifi/status", summary="Get the running or last WiFi join and the current uplink")
+def get_wifi_status() -> WifiStatus:
+    if _platform_data.system == "Windows":
+        raise HTTPException(status_code=400, detail="Cannot read WiFi on Windows")
+    job = wifi.JOIN_RUNNER.job
+    connection = wifi.current_connection()
+    return WifiStatus(
+        job=WifiJoinJob(state=job.state, ssid=job.ssid, reason=job.reason),
+        ssid=connection.ssid,
+        ip=connection.ip,
+        hotspot_active=access_point.read_ap().enabled,
+    )
+
+
+@protected_router.post("/wifi", status_code=202, summary="Start joining a WiFi network", dependencies=[not_on_demo])
 async def update_wifi_data(wifi_data: WifiData) -> ApiMessage:
     if _platform_data.system == "Windows":
         raise HTTPException(status_code=400, detail="Cannot set WiFi on Windows")
-    success = setup_wifi(wifi_data.ssid, wifi_data.password)
-    if not success:
-        raise HTTPException(400, detail=DH.get_translation("wifi_setup_failed"))
-    return ApiMessage(message=DH.get_translation("wifi_success"))
+    if not wifi.JOIN_RUNNER.start(wifi_data.ssid, wifi_data.password):
+        raise HTTPException(409, detail=DH.get_translation("wifi_join_running"))
+    return ApiMessage(message=DH.get_translation("wifi_join_started", ssid=wifi_data.ssid))
 
 
 def _access_point_status() -> AccessPointStatus:

@@ -42,7 +42,8 @@
     "spend": "Spend",
     "selectTeam": "Select Team",
     "randomCocktail": "Random Cocktail",
-    "randomVirginCocktail": "Random Virgin Cocktail",
+    "randomVirginCocktail": "Random Alcohol-free Cocktail",
+    "alcoholFree": "Alcohol-free",
     "beSurprised": "Be Surprised!",
     "handAdd": {
       "intro": "To finish the cocktail, add these ingredients yourself.",
@@ -82,7 +83,7 @@
     "enableAll": "Enable All",
     "name": "Name",
     "enabled": "Enabled",
-    "virginAvailable": "Virgin Available",
+    "virginAvailable": "Alcohol-free available",
     "price": "Price",
     "addIngredient": "Add Ingredient",
     "selectIngredient": "Select Ingredient",
@@ -242,7 +243,16 @@
     "password": "Password",
     "connectToWifi": "Do you want to use the data to connect to WiFi {{selectedSsid}}?",
     "switchToSelect": "Select existing WiFi",
-    "switchToInput": "Switch to text input"
+    "switchToInput": "Switch to text input",
+    "status": "Connected to {{ssid}} ({{ip}})",
+    "notConnected": "Not connected to a WiFi network",
+    "hotspotActive": "Access point is active",
+    "hotspotInactive": "Access point is off",
+    "waitTitle": "Connecting to {{ssid}}",
+    "waitDescription": "The machine joins the network. If you are connected through the access point, it may drop for a few seconds while the radio changes channel.",
+    "takingLonger": "This is taking longer than usual. If this page does not update, reconnect to the access point and reload.",
+    "connected": "Connected to {{ssid}}, address {{ip}}",
+    "failed": "Could not connect to {{ssid}}: {{reason}}"
   },
   "password": {
     "enterPassword": "Enter Password",
@@ -376,7 +386,9 @@
   "restart": {
     "title": "Restarting CocktailBerry",
     "description": "CocktailBerry is restarting. This page reloads by itself once it is back.",
-    "takingLonger": "This is taking longer than usual. Bigger changes may need to install dependencies, which can take several minutes.",
+    "takingLonger": "This is taking longer than usual. Bigger changes may need to install dependencies, which can take several minutes."
+  },
+  "wait": {
     "reloadNow": "Reload now"
   }
 }

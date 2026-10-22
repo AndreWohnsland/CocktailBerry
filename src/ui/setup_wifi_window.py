@@ -1,18 +1,17 @@
 from __future__ import annotations
 
-import subprocess
-import time
 from typing import TYPE_CHECKING
 
 from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 
+from src.connection import wifi
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.logger_handler import LoggerHandler
 from src.ui.icons import IconSetter
 from src.ui.setup_keyboard_widget import KeyboardWidget
 from src.ui_elements import Ui_WiFiWindow
-from src.utils import get_platform_data, setup_wifi
+from src.utils import get_platform_data
 
 if TYPE_CHECKING:
     from src.ui.setup_mainwindow import MainScreen
@@ -75,17 +74,5 @@ class WiFiWindow(QMainWindow, Ui_WiFiWindow):
 
         ssid = self.input_ssid.text()
         password = self.input_password.text()
-        success = setup_wifi(ssid, password)
-        if not success:
-            DP_CONTROLLER.say_wifi_setup_failed()
-            return
-
-        tries = 0
-        is_connected = False
-        max_tries = 5
-        while tries < max_tries and not is_connected:
-            ssid_output = subprocess.run(["iwgetid"], stdout=subprocess.PIPE, check=False).stdout.decode("utf-8")
-            is_connected = ssid in ssid_output
-            time.sleep(3)
-            tries += 1
-        DP_CONTROLLER.say_wifi_entered(is_connected, ssid, password)
+        result = wifi.join(ssid, password)
+        DP_CONTROLLER.say_wifi_entered(result.success, ssid, password)

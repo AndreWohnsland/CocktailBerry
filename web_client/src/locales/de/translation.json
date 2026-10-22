@@ -42,7 +42,8 @@
     "spend": "Ausgeben",
     "selectTeam": "Team Auswählen",
     "randomCocktail": "Zufalls-Cocktail",
-    "randomVirginCocktail": "Zufalls-Virgin-Cocktail",
+    "randomVirginCocktail": "Alkoholfreier Zufalls-Cocktail",
+    "alcoholFree": "Alkoholfrei",
     "beSurprised": "Lass dich überraschen!",
     "handAdd": {
       "intro": "Um den Cocktail fertigzustellen, füge diese Zutaten selbst hinzu.",
@@ -82,7 +83,7 @@
     "enableAll": "Alle aktivieren",
     "name": "Name",
     "enabled": "Aktiviert",
-    "virginAvailable": "Virgin verfügbar",
+    "virginAvailable": "Alkoholfrei verfügbar",
     "price": "Preis",
     "addIngredient": "Zutat hinzufügen",
     "selectIngredient": "Zutat auswählen",
@@ -242,7 +243,16 @@
     "password": "Passwort",
     "connectToWifi": "Möchtest du die Daten verwenden um zu '{{selectedSsid}}' verbinden?",
     "switchToSelect": "Existierendes WLAN auswählen",
-    "switchToInput": "Zu Texteingabe wechseln"
+    "switchToInput": "Zu Texteingabe wechseln",
+    "status": "Verbunden mit {{ssid}} ({{ip}})",
+    "notConnected": "Mit keinem WLAN verbunden",
+    "hotspotActive": "Access Point ist aktiv",
+    "hotspotInactive": "Access Point ist aus",
+    "waitTitle": "Verbinde mit {{ssid}}",
+    "waitDescription": "Die Maschine tritt dem Netzwerk bei. Falls du über den Access Point verbunden bist, kann die Verbindung für einige Sekunden abbrechen, während der Funkkanal wechselt.",
+    "takingLonger": "Das dauert länger als üblich. Falls sich die Seite nicht aktualisiert, verbinde dich erneut mit dem Access Point und lade neu.",
+    "connected": "Verbunden mit {{ssid}}, Adresse {{ip}}",
+    "failed": "Verbindung mit {{ssid}} fehlgeschlagen: {{reason}}"
   },
   "password": {
     "enterPassword": "Passwort eingeben",
@@ -376,7 +386,9 @@
   "restart": {
     "title": "CocktailBerry startet neu",
     "description": "CocktailBerry startet neu. Diese Seite lädt sich von selbst neu, sobald es wieder da ist.",
-    "takingLonger": "Das dauert länger als üblich. Größere Änderungen müssen eventuell Abhängigkeiten installieren, das kann einige Minuten dauern.",
+    "takingLonger": "Das dauert länger als üblich. Größere Änderungen müssen eventuell Abhängigkeiten installieren, das kann einige Minuten dauern."
+  },
+  "wait": {
     "reloadNow": "Jetzt neu laden"
   }
 }

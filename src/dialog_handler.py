@@ -184,7 +184,8 @@ allowed_keys = Literal[
     "update_notes_unavailable",
     "welcome_dialog",
     "wifi_failure",
-    "wifi_setup_failed",
+    "wifi_join_running",
+    "wifi_join_started",
     "wifi_success",
     "wrong_config",
     "wrong_password",
@@ -538,10 +539,6 @@ class DialogHandler:
     def say_ap_applied(self, address: str) -> None:
         """Informs the user that the access point settings were applied."""
         self.__output_language_dialog("ap_success", address=address)
-
-    def say_wifi_setup_failed(self) -> None:
-        """Informs the user that the wifi setup failed."""
-        self.__output_language_dialog("wifi_setup_failed")
 
     def say_internet_connection_status(self, connected: bool) -> None:
         """Display the internet status."""
