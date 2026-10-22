@@ -21,6 +21,7 @@ from typing import Any
 import yaml
 
 from src import FUTURE_PYTHON_VERSION, __version__
+from src.connection import access_point
 from src.filepath import (
     BACKUP_FOLDER,
     CUSTOM_CONFIG_FILE,
@@ -144,7 +145,7 @@ class Migrator:
                 _migrate_normal_led_to_split_variants,
             ],
             "4.9.0": [_raise_nginx_upload_limit],
-            "4.11.0": [migrate_watchtower_image],
+            "4.11.0": [migrate_watchtower_image, access_point.refresh_installation],
         }
 
         for version, actions in version_actions.items():

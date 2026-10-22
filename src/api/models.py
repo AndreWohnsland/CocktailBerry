@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import TYPE_CHECKING, Annotated, TypeVar
+from typing import TYPE_CHECKING, Annotated, Literal, TypeVar
 
 from annotated_types import Len
 from pydantic import BaseModel, ConfigDict, Field
@@ -111,6 +111,19 @@ class PrepareCocktailRequest(BaseModel):
 class WifiData(BaseModel):
     ssid: str
     password: str
+
+
+class WifiJoinJob(BaseModel):
+    state: Literal["idle", "running", "succeeded", "failed"]
+    ssid: str
+    reason: str
+
+
+class WifiStatus(BaseModel):
+    job: WifiJoinJob
+    ssid: str | None  # uplink the machine is connected to, None when offline
+    ip: str | None
+    hotspot_active: bool
 
 
 class AccessPointData(BaseModel):

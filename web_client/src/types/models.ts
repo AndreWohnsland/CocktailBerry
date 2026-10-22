@@ -404,6 +404,18 @@ export interface WifiData {
   password: string;
 }
 
+export interface WifiStatus {
+  job: {
+    state: 'idle' | 'running' | 'succeeded' | 'failed';
+    ssid: string;
+    reason: string;
+  };
+  /** uplink the machine is connected to */
+  ssid: string | null;
+  ip: string | null;
+  hotspot_active: boolean;
+}
+
 export interface AccessPointData {
   enabled: boolean;
   ssid: string;

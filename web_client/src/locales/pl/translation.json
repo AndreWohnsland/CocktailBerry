@@ -43,6 +43,7 @@
     "selectTeam": "Wybierz zespół",
     "randomCocktail": "Losowy koktajl",
     "randomVirginCocktail": "Losowy koktajl bezalkoholowy",
+    "alcoholFree": "Bezalkoholowy",
     "beSurprised": "Daj się zaskoczyć!",
     "handAdd": {
       "intro": "Aby dokończyć koktajl, dodaj te składniki samodzielnie.",
@@ -242,7 +243,16 @@
     "password": "Hasło",
     "connectToWifi": "Czy chcesz połączyć się z siecią WiFi {{selectedSsid}}?",
     "switchToSelect": "Wybierz istniejącą sieć WiFi",
-    "switchToInput": "Przełącz na wpisywanie ręczne"
+    "switchToInput": "Przełącz na wpisywanie ręczne",
+    "status": "Połączono z {{ssid}} ({{ip}})",
+    "notConnected": "Brak połączenia z siecią WiFi",
+    "hotspotActive": "Punkt dostępu jest aktywny",
+    "hotspotInactive": "Punkt dostępu jest wyłączony",
+    "waitTitle": "Łączenie z {{ssid}}",
+    "waitDescription": "Maszyna dołącza do sieci. Jeśli łączysz się przez punkt dostępu, połączenie może zniknąć na kilka sekund podczas zmiany kanału.",
+    "takingLonger": "Trwa to dłużej niż zwykle. Jeśli strona się nie odświeża, połącz się ponownie z punktem dostępu i odśwież.",
+    "connected": "Połączono z {{ssid}}, adres {{ip}}",
+    "failed": "Nie udało się połączyć z {{ssid}}: {{reason}}"
   },
   "password": {
     "enterPassword": "Wprowadź hasło",
@@ -376,7 +386,9 @@
   "restart": {
     "title": "CocktailBerry uruchamia się ponownie",
     "description": "CocktailBerry uruchamia się ponownie. Ta strona przeładuje się sama, gdy będzie znowu dostępna.",
-    "takingLonger": "To trwa dłużej niż zwykle. Większe zmiany mogą wymagać instalacji zależności, co może potrwać kilka minut.",
-    "reloadNow": "Przeładuj teraz"
+    "takingLonger": "To trwa dłużej niż zwykle. Większe zmiany mogą wymagać instalacji zależności, co może potrwać kilka minut."
+  },
+  "wait": {
+    "reloadNow": "Odśwież teraz"
   }
 }

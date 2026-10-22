@@ -2,6 +2,8 @@ import type { AxiosRequestConfig } from 'axios';
 import { type UseQueryResult, useQuery } from 'react-query';
 import type {
   AboutInfo,
+  AccessPointData,
+  AccessPointStatus,
   AddonData,
   Blacklist,
   ConfigData,
@@ -17,9 +19,8 @@ import type {
   SumupReader,
   SumupReaderCreate,
   UpdateAvailability,
-  AccessPointData,
-  AccessPointStatus,
   WifiData,
+  WifiStatus,
 } from '../types/models';
 import { axiosInstance } from './common';
 
@@ -196,6 +197,14 @@ export const useAvailableSsids = (): UseQueryResult<string[], Error> => {
 
 export const updateWifiData = async (wifiData: WifiData): Promise<{ message: string }> => {
   return axiosInstance.post<{ message: string }>(`${optionsUrl}/wifi`, wifiData).then((res) => res.data);
+};
+
+export const getWifiStatus = async (config?: AxiosRequestConfig): Promise<WifiStatus> => {
+  return axiosInstance.get<WifiStatus>(`${optionsUrl}/wifi/status`, config).then((res) => res.data);
+};
+
+export const useWifiStatus = (): UseQueryResult<WifiStatus, Error> => {
+  return useQuery<WifiStatus, Error>('wifiStatus', () => getWifiStatus());
 };
 
 export const useAccessPoint = (): UseQueryResult<AccessPointStatus, Error> => {
