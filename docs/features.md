@@ -10,25 +10,27 @@ If you don't find a feature listed in the docs on your CocktailBerry, chances ar
 Cross check your version with the feature list and their corresponding introduction time.
 Usually, updating to the latest version is always a good idea.
 
-| Version     | Feature Description                                                                                                  |
-| :---------- | :------------------------------------------------------------------------------------------------------------------- |
-| **v4.6.0**  | Scale guided hand add process                                                                                        |
-| **v4.5.0**  | Greatly improve cocktail images                                                                                      |
-| **v4.4.0**  | Add virtual keyboard option to v2                                                                                    |
-| **v4.3.0**  | Add motorkit dispenser                                                                                               |
-| **v4.2.0**  | Add v1 Portrait Mode                                                                                                 |
-| **v4.0.1**  | Add Polish Language                                                                                                  |
-| **v4.0.0**  | Hardware Extensions                                                                                                  |
-| **v3.3.0**  | Service Personnel Mode                                                                                               |
-| **v3.2.0**  | I2C Support                                                                                                          |
-| **v3.1.0**  | SumUp Support for Payment Service                                                                                    |
-| **v3.0.0**  | Integration of the CocktailBerry Payment Service                                                                     |
-| **v2.7.0**  | Option to control LED behavior during preparation                                                                    |
-| **v2.6.0**  | More update management for addons                                                                                    |
-| **v2.5.0**  | Improved LED control                                                                                                 |
-| **v2.4.0**  | Resource tracker visualization                                                                                       |
-| **v2.3.0**  | Option to filter virgin cocktails (v2)                                                                               |
-| **v2.0.0**  | API version of the program <br> New frontend for remote access                                                       |
+| Version     | Feature Description                                            |
+| :---------- | :------------------------------------------------------------- |
+| **v4.10.0** | Access point management over GUI                               |
+| **v4.7.0**  | Light and dark mode in web <br> Add bottle initializer         |
+| **v4.6.0**  | Scale guided hand add process                                  |
+| **v4.5.0**  | Greatly improve cocktail images                                |
+| **v4.4.0**  | Add virtual keyboard option to v2                              |
+| **v4.3.0**  | Add motorkit dispenser                                         |
+| **v4.2.0**  | Add v1 Portrait Mode                                           |
+| **v4.0.1**  | Add Polish Language                                            |
+| **v4.0.0**  | Hardware Extensions                                            |
+| **v3.3.0**  | Service Personnel Mode                                         |
+| **v3.2.0**  | I2C Support                                                    |
+| **v3.1.0**  | SumUp Support for Payment Service                              |
+| **v3.0.0**  | Integration of the CocktailBerry Payment Service               |
+| **v2.7.0**  | Option to control LED behavior during preparation              |
+| **v2.6.0**  | More update management for addons                              |
+| **v2.5.0**  | Improved LED control                                           |
+| **v2.4.0**  | Resource tracker visualization                                 |
+| **v2.3.0**  | Option to filter virgin cocktails (v2)                         |
+| **v2.0.0**  | API version of the program <br> New frontend for remote access |
 
 !!! abstract "And much More"
     This list is by no means a full list of changes.
