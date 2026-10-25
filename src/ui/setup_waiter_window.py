@@ -408,7 +408,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
                 if log.recipe is not None
                 else UI_LANGUAGE.get_translation("deleted_recipe", "waiter_window")
             )
-            virgin_suffix = f" ({UI_LANGUAGE.get_translation('virgin', 'waiter_window')})" if log.is_virgin else ""
+            virgin_suffix = f" ({UI_LANGUAGE.get_translation('alcohol_free')})" if log.is_virgin else ""
             content_layout.addWidget(
                 create_label(
                     f"{time_str} - {recipe_name} - {log.volume} ml{virgin_suffix}",

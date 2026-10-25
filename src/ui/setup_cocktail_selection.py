@@ -247,8 +247,10 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     def update_cocktail_data(self) -> None:
         """Update the cocktail data in the selection view."""
         self._scale_cocktail()
-        virgin_prefix = "Virgin " if self.is_virgin and not self.cocktail.is_naturally_virgin else ""
-        self.LAlkoholname.setText(f"{virgin_prefix}{self.cocktail.name}")
+        name = self.cocktail.name
+        if self.is_virgin and not self.cocktail.is_naturally_virgin:
+            name = f"{name} ({UI_LANGUAGE.get_translation('alcohol_free')})"
+        self.LAlkoholname.setText(name)
         self.LAlkoholgehalt.setText(f"{self.cocktail.adjusted_alcohol:.1f}%")
         display_data = self.cocktail.machineadds
         hand = self.cocktail.handadds
