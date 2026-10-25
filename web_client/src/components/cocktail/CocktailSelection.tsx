@@ -1,5 +1,6 @@
 import type React from 'react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaSkullCrossbones } from 'react-icons/fa';
 import { GrFormNextLink, GrFormPreviousLink } from 'react-icons/gr';
 import { IoIosHappy } from 'react-icons/io';
@@ -51,6 +52,9 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   const [isTeamOpen, setIsTeamOpen] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const { config } = useConfig();
+  const { t } = useTranslation();
+  const alcoholFreeSuffix =
+    alcohol === 'virgin' && !selectedCocktail.is_naturally_virgin ? ` (${t('cocktails.alcoholFree')})` : '';
   const possibleServingSizes = config.MAKER_USE_RECIPE_VOLUME
     ? [displayCocktail.amount]
     : (config.MAKER_PREPARE_VOLUME ?? FALLBACK_SERVING_SIZES);
@@ -134,8 +138,8 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
       <div className='flex flex-col sm:flex-row items-center md:items-start justify-center w-full h-full'>
         <div className='w-full h-full sm:mr-2 mb-2 flex-1 flex flex-col'>
           <p className='text-2xl md:text-3xl lg:text-4xl font-bold text-center text-neutral mb-2'>
-            {alcohol === 'virgin' && !selectedCocktail.is_naturally_virgin && 'Virgin '}
             {selectedCocktail.name}
+            {alcoholFreeSuffix}
           </p>
           <div className='relative flex-1'>
             <img
@@ -248,7 +252,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
         isOpen={isProgressModalOpen}
         onRequestClose={() => setIsProgressModalOpen(false)}
         progress={0}
-        displayName={`${alcohol === 'virgin' && !displayCocktail.is_naturally_virgin ? 'Virgin ' : ''}${displayCocktail.name}`}
+        displayName={displayCocktail.name + alcoholFreeSuffix}
         triggerOnClose={handleCloseModal}
       />
       <TeamSelection

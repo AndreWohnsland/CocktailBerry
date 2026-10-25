@@ -29,7 +29,7 @@ Usually, updating to the latest version is always a good idea.
 | **v2.6.0**  | More update management for addons                              |
 | **v2.5.0**  | Improved LED control                                           |
 | **v2.4.0**  | Resource tracker visualization                                 |
-| **v2.3.0**  | Option to filter virgin cocktails (v2)                         |
+| **v2.3.0**  | Option to filter alcohol free cocktails (v2)                   |
 | **v2.0.0**  | API version of the program <br> New frontend for remote access |
 
 !!! abstract "And much More"

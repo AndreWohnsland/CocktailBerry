@@ -22,7 +22,7 @@ interface RandomCocktailSelectionProps {
 }
 
 const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handleCloseModal, cocktails }) => {
-  const [isVirgin, setIsVirgin] = useState(false);
+  const [virginToggled, setVirginToggled] = useState(false);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [chosenCocktailName, setChosenCocktailName] = useState('');
   const [isRefillOpen, setIsRefillOpen] = useState(false);
@@ -33,10 +33,13 @@ const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handl
   const { config } = useConfig();
   const { t } = useTranslation();
 
+  // e.g. the virgin-only filter or a non-adult user: nothing alcoholic to pick from, so lock to virgin
+  const virginOnly = cocktails.every((c) => c.only_virgin);
+  const isVirgin = virginOnly || virginToggled;
   const pool = isVirgin
     ? cocktails.filter((c) => c.virgin_available || c.only_virgin)
     : cocktails.filter((c) => !c.only_virgin);
-  const hasVirginOption = cocktails.some((c) => c.virgin_available || c.only_virgin);
+  const canToggleVirgin = !virginOnly && cocktails.some((c) => c.virgin_available || c.only_virgin);
 
   const possibleServingSizes = config.MAKER_USE_RECIPE_VOLUME
     ? [0]
@@ -47,8 +50,8 @@ const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handl
     const chosen = pool[Math.floor(Math.random() * pool.length)];
     const factor = isVirgin ? 0 : 1;
     const prepareAmount = config.MAKER_USE_RECIPE_VOLUME ? chosen.amount : amount;
-    const displayPrefix = isVirgin && !chosen.is_naturally_virgin ? 'Virgin ' : '';
-    setChosenCocktailName(`${displayPrefix}${chosen.name}`);
+    const suffix = isVirgin && !chosen.is_naturally_virgin ? ` (${t('cocktails.alcoholFree')})` : '';
+    setChosenCocktailName(`${chosen.name}${suffix}`);
     prepareCocktail(chosen, prepareAmount, factor, teamName)
       .then(() => {
         setIsProgressModalOpen(true);
@@ -93,10 +96,10 @@ const RandomCocktailSelection: React.FC<RandomCocktailSelectionProps> = ({ handl
           <div className='flex items-center justify-between mb-2 shrink w-full'>
             <span className='ml-4 text-secondary font-bold w-6 text-xl'>?</span>
             <div className='flex space-x-2'>
-              {hasVirginOption && (
+              {canToggleVirgin && (
                 <button
                   type='button'
-                  onClick={() => setIsVirgin(!isVirgin)}
+                  onClick={() => setVirginToggled(!virginToggled)}
                   className={`w-8 p-2 rounded-full ${isVirgin ? 'bg-secondary text-on-secondary' : 'bg-primary text-on-primary'}`}
                 >
                   <MdNoDrinks />

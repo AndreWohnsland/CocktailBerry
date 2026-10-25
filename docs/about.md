@@ -44,7 +44,7 @@ There are different views for the tasks.
 </figure>
 
 This is the main window of the application and the window your guest will interact with.
-They can choose a cocktail of their choice, a crossed glass at the start indicates that there is also a virgin option of this cocktail.
+They can choose a cocktail of their choice, a crossed glass at the start indicates that there is also an alcohol-free option of this cocktail.
 The cocktail data is displayed after selection.
 The user can choose from your defined list of volumes, as well as the alcohol level of the cocktail.
 
@@ -65,7 +65,7 @@ This is extremely handy, if you want to prompt the user to add a slice of someth
 
 Here you can manage all your recipes.
 Define the name and ingredients with corresponding volumes.
-You can disable recipes, you currently don't want to serve, or activate the virgin option for a cocktail.
+You can disable recipes, you currently don't want to serve, or activate the alcohol-free option for a cocktail.
 The number after the ingredient defines the order of the ingredients in the cocktail, same numbers are added in parallel.
 
 <figure markdown>
