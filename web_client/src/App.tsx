@@ -13,6 +13,7 @@ import RestrictedModePrompt from './components/common/RestrictedModePrompt.tsx';
 import Header from './components/Header.tsx';
 import IssuePage from './components/IssuePage.tsx';
 import IngredientList from './components/ingredient/IngredientList.tsx';
+import AccessPointManager from './components/options/AccessPointManager.tsx';
 import AddonManager from './components/options/AddonManager.tsx';
 import CalibrationWindow from './components/options/CalibrationWindow.tsx';
 import ConfigWindow from './components/options/ConfigWindow.tsx';
@@ -25,7 +26,6 @@ import ScaleCalibrationWindow from './components/options/ScaleCalibrationWindow.
 import SumupManager from './components/options/SumupManager.tsx';
 import TimeManager from './components/options/TimeManager.tsx';
 import WaiterWindow from './components/options/WaiterWindow.tsx';
-import AccessPointManager from './components/options/AccessPointManager.tsx';
 import WifiManager from './components/options/WifiManager.tsx';
 import RecipeCalculator from './components/recipe/RecipeCalculator.tsx';
 import RecipeList from './components/recipe/RecipeList.tsx';

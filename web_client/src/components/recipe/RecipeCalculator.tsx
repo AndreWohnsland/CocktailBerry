@@ -87,7 +87,12 @@ function RecipeCalculator() {
           className='input-base-large max-w-20'
         />
         <Button label={t('recipeCalculation.optimize')} filled onClick={handleCalculate} icon={FaCalculator} />
-        <Button iconSize={16} label={t('recipeCalculation.selectPossible')} onClick={handleSelectPossible} icon={FaMartiniGlass} />
+        <Button
+          iconSize={16}
+          label={t('recipeCalculation.selectPossible')}
+          onClick={handleSelectPossible}
+          icon={FaMartiniGlass}
+        />
       </div>
       <div className='grow flex flex-col sm:flex-row justify-start items-start w-full h-full sm:h-[70vh] h-md:mb-6 mb-2'>
         <div className='w-full sm:w-1/2 h-full flex flex-col'>
