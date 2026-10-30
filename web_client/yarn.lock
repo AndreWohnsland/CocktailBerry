@@ -286,20 +286,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@biomejs/biome@npm:^2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/biome@npm:2.6.2"
+"@biomejs/biome@npm:^2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/biome@npm:2.6.3"
   dependencies:
-    "@biomejs/cli-android-arm64": "npm:2.6.2"
-    "@biomejs/cli-android-x64": "npm:2.6.2"
-    "@biomejs/cli-darwin-arm64": "npm:2.6.2"
-    "@biomejs/cli-darwin-x64": "npm:2.6.2"
-    "@biomejs/cli-linux-arm64": "npm:2.6.2"
-    "@biomejs/cli-linux-arm64-musl": "npm:2.6.2"
-    "@biomejs/cli-linux-x64": "npm:2.6.2"
-    "@biomejs/cli-linux-x64-musl": "npm:2.6.2"
-    "@biomejs/cli-win32-arm64": "npm:2.6.2"
-    "@biomejs/cli-win32-x64": "npm:2.6.2"
+    "@biomejs/cli-android-arm64": "npm:2.6.3"
+    "@biomejs/cli-android-x64": "npm:2.6.3"
+    "@biomejs/cli-darwin-arm64": "npm:2.6.3"
+    "@biomejs/cli-darwin-x64": "npm:2.6.3"
+    "@biomejs/cli-linux-arm64": "npm:2.6.3"
+    "@biomejs/cli-linux-arm64-musl": "npm:2.6.3"
+    "@biomejs/cli-linux-x64": "npm:2.6.3"
+    "@biomejs/cli-linux-x64-musl": "npm:2.6.3"
+    "@biomejs/cli-win32-arm64": "npm:2.6.3"
+    "@biomejs/cli-win32-x64": "npm:2.6.3"
   dependenciesMeta:
     "@biomejs/cli-android-arm64":
       optional: true
@@ -323,76 +323,76 @@ __metadata:
       optional: true
   bin:
     biome: bin/biome
-  checksum: 10c0/d106419ffeb53dea085c230b96879d94e19a0237eea824cacf669ae9b725380d960cd53ffd8910f0e5aee5ef1f6916148cd4f30aa1b255f9e2c94eec9c096738
+  checksum: 10c0/cbe3c3b5d4119dfd886e302d1c3d35eaac43f4a79b0cb81bea5ae450685e3c0480cd061c3af9ed374382c2e64bf7274b10179f3e13300c0d8f07802ca616fd7d
   languageName: node
   linkType: hard
 
-"@biomejs/cli-android-arm64@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-android-arm64@npm:2.6.2"
+"@biomejs/cli-android-arm64@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-android-arm64@npm:2.6.3"
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-android-x64@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-android-x64@npm:2.6.2"
+"@biomejs/cli-android-x64@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-android-x64@npm:2.6.3"
   conditions: os=android & cpu=x64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-arm64@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-darwin-arm64@npm:2.6.2"
+"@biomejs/cli-darwin-arm64@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-darwin-arm64@npm:2.6.3"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-x64@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-darwin-x64@npm:2.6.2"
+"@biomejs/cli-darwin-x64@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-darwin-x64@npm:2.6.3"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64-musl@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-linux-arm64-musl@npm:2.6.2"
+"@biomejs/cli-linux-arm64-musl@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-linux-arm64-musl@npm:2.6.3"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-linux-arm64@npm:2.6.2"
+"@biomejs/cli-linux-arm64@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-linux-arm64@npm:2.6.3"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64-musl@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-linux-x64-musl@npm:2.6.2"
+"@biomejs/cli-linux-x64-musl@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-linux-x64-musl@npm:2.6.3"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-linux-x64@npm:2.6.2"
+"@biomejs/cli-linux-x64@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-linux-x64@npm:2.6.3"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-arm64@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-win32-arm64@npm:2.6.2"
+"@biomejs/cli-win32-arm64@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-win32-arm64@npm:2.6.3"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-x64@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@biomejs/cli-win32-x64@npm:2.6.2"
+"@biomejs/cli-win32-x64@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@biomejs/cli-win32-x64@npm:2.6.3"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -1276,58 +1276,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-a11y@npm:10.6.3":
-  version: 10.6.3
-  resolution: "@storybook/addon-a11y@npm:10.6.3"
+"@storybook/addon-a11y@npm:10.6.4":
+  version: 10.6.4
+  resolution: "@storybook/addon-a11y@npm:10.6.4"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
     axe-core: "npm:^4.2.0"
   peerDependencies:
-    storybook: ^10.6.3
-  checksum: 10c0/fed7fe387d75a4b7e778a20efc9619164421c148a5cbdbbee909391bf242b173ca0f570ebc1a4645d21d74f9a86c1017d372dd0c8942dba46d33cf841f25dad7
+    storybook: ^10.6.4
+  checksum: 10c0/3acd92e5ec5cf950198fd3801fceebec956580968c54be0497bf95ad40bca1b8cd3a397f1424ddce43c523403a1dddfd2a03e740398076a9cac79aad14d01ed5
   languageName: node
   linkType: hard
 
-"@storybook/addon-docs@npm:10.6.3":
-  version: 10.6.3
-  resolution: "@storybook/addon-docs@npm:10.6.3"
+"@storybook/addon-docs@npm:10.6.4":
+  version: 10.6.4
+  resolution: "@storybook/addon-docs@npm:10.6.4"
   dependencies:
     "@mdx-js/react": "npm:^3.0.0"
     "@storybook/icons": "npm:^2.0.2"
-    "@storybook/react-dom-shim": "npm:10.6.3"
+    "@storybook/react-dom-shim": "npm:10.6.4"
     react: "npm:^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
     react-dom: "npm:^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
     ts-dedent: "npm:^2.0.0"
     unplugin: "npm:^2.3.5"
   peerDependencies:
     "@types/react": ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    storybook: ^10.6.3
+    storybook: ^10.6.4
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10c0/75762cfc898cf581a3702fc46a3facd675640ef52896040bce016c30492a78684aa8579c9b0e231029262c5e82b0067796ecf32d620ff77deffb933f1b619f28
+  checksum: 10c0/4c1757966c1b569254f3b4b2016b3c05f94b9ec2fd2d4b97f2d12a9dc127d962117837b91591c031c214b732bfc05ef160fbe5ce475f822e3c86b0e825bd363f
   languageName: node
   linkType: hard
 
-"@storybook/addon-onboarding@npm:10.6.3":
-  version: 10.6.3
-  resolution: "@storybook/addon-onboarding@npm:10.6.3"
+"@storybook/addon-onboarding@npm:10.6.4":
+  version: 10.6.4
+  resolution: "@storybook/addon-onboarding@npm:10.6.4"
   peerDependencies:
-    storybook: ^10.6.3
-  checksum: 10c0/dab040505715532892d0f75b8ff19b6a24641d4441a27333fc875ab39b230b70e70ccc708372df6b24e5f25b7a890eae0fa45d1901ebd5fb51fbb1495c8a52c5
+    storybook: ^10.6.4
+  checksum: 10c0/256ef2c40ca536f779273aeded16c0c79f5bcb5588e4ff8c42f5ef7a05cdc6a0c5fc10e2e303078e1063e583dc610901b822f37b7d81242a87169f5800690cbc
   languageName: node
   linkType: hard
 
-"@storybook/addon-vitest@npm:10.6.3":
-  version: 10.6.3
-  resolution: "@storybook/addon-vitest@npm:10.6.3"
+"@storybook/addon-vitest@npm:10.6.4":
+  version: 10.6.4
+  resolution: "@storybook/addon-vitest@npm:10.6.4"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
     "@storybook/icons": "npm:^2.0.2"
   peerDependencies:
     "@vitest/browser": ^4.0.0 || ^5.0.0
     "@vitest/browser-playwright": ^4.0.0 || ^5.0.0
-    storybook: ^10.6.3
+    storybook: ^10.6.4
     vitest: ^4.0.0 || ^5.0.0
   peerDependenciesMeta:
     "@vitest/browser":
@@ -1336,19 +1336,19 @@ __metadata:
       optional: true
     vitest:
       optional: true
-  checksum: 10c0/850eac1e1f7c7a71eb78682eadeddcaf9e522ac9e7946c1ae8bae0ad5fe3f3c1d2a0bfb6a50786bf4e7d4f2ab33abcc625f16d6ebd320f5414f75eb94514223b
+  checksum: 10c0/94c55d07091fa45b4c5cda1b24e9939424055679141c97534c05e9b22f2ef37c1338b1130ed01c5aff1912540e8bf98eddbd2ca3d4fc3a659415547e9669219f
   languageName: node
   linkType: hard
 
-"@storybook/builder-vite@npm:10.6.3":
-  version: 10.6.3
-  resolution: "@storybook/builder-vite@npm:10.6.3"
+"@storybook/builder-vite@npm:10.6.4":
+  version: 10.6.4
+  resolution: "@storybook/builder-vite@npm:10.6.4"
   dependencies:
     ts-dedent: "npm:^2.0.0"
   peerDependencies:
-    storybook: ^10.6.3
+    storybook: ^10.6.4
     vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
-  checksum: 10c0/52d82d6020f9e0a65a952ae68d87b5b92b01806a1dc59374f6ae34d8bfa33a7b34b31baaf92d6657a0d422ac555877b48f829465e6741a17a13849aa277fa34f
+  checksum: 10c0/fd61892fe26e8d19421f40b473b2d77ff7deddfcd415457c1ca0a1c8eb3d35b683c68cb03c2a3ccf456278c22983dfcf64896cc6de2498e8038886b8f1fd9a38
   languageName: node
   linkType: hard
 
@@ -1369,32 +1369,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react-dom-shim@npm:10.6.3":
-  version: 10.6.3
-  resolution: "@storybook/react-dom-shim@npm:10.6.3"
+"@storybook/react-dom-shim@npm:10.6.4":
+  version: 10.6.4
+  resolution: "@storybook/react-dom-shim@npm:10.6.4"
   peerDependencies:
     "@types/react": ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     "@types/react-dom": ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    storybook: ^10.6.3
+    storybook: ^10.6.4
   peerDependenciesMeta:
     "@types/react":
       optional: true
     "@types/react-dom":
       optional: true
-  checksum: 10c0/90f7d362b758026db006ca91cdec401b89fddde7974ba2b2907c15b68d3fec8109f2e6a065fbb32ee7b050935294df0bb6780e6f8da84a029cbf54ce98654b38
+  checksum: 10c0/d9344cf29dc1b2b6e29342bbfef2a635ee88636873ad27f5ab654834770b88943bbe4d4a71e5b56dea230bd107f641445ad1c1d6a5bd9279d488c75a31ee2862
   languageName: node
   linkType: hard
 
-"@storybook/react-vite@npm:10.6.3":
-  version: 10.6.3
-  resolution: "@storybook/react-vite@npm:10.6.3"
+"@storybook/react-vite@npm:10.6.4":
+  version: 10.6.4
+  resolution: "@storybook/react-vite@npm:10.6.4"
   dependencies:
     "@joshwooding/vite-plugin-react-docgen-typescript": "npm:^0.7.0"
     "@rollup/pluginutils": "npm:^5.0.2"
-    "@storybook/builder-vite": "npm:10.6.3"
-    "@storybook/react": "npm:10.6.3"
+    "@storybook/builder-vite": "npm:10.6.4"
+    "@storybook/react": "npm:10.6.4"
     empathic: "npm:^2.0.0"
     magic-string: "npm:^1.1.0"
     react-docgen: "npm:^8.0.2"
@@ -1403,22 +1403,22 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    storybook: ^10.6.3
+    storybook: ^10.6.4
     typescript: ">= 4.9.x"
     vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/c625a0500ced5a47de8a5884f95f549fcf005d386a0bc423e5f99b98a9f46c146e3a63f5c381a42751da2ffd5f8c783c3dc9bd9ac03aa9f3bd83550af741af36
+  checksum: 10c0/f62aef98c129516b239b9521070c6780f82e00311de942fec917f1b7e1451b8ed7eb68900dc2423287b3d65fcce63831895bf09b1d39a38464145135c437dedb
   languageName: node
   linkType: hard
 
-"@storybook/react@npm:10.6.3":
-  version: 10.6.3
-  resolution: "@storybook/react@npm:10.6.3"
+"@storybook/react@npm:10.6.4":
+  version: 10.6.4
+  resolution: "@storybook/react@npm:10.6.4"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
-    "@storybook/react-dom-shim": "npm:10.6.3"
+    "@storybook/react-dom-shim": "npm:10.6.4"
     react-docgen: "npm:^8.0.2"
     react-docgen-typescript: "npm:^2.2.2"
   peerDependencies:
@@ -1426,7 +1426,7 @@ __metadata:
     "@types/react-dom": ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    storybook: ^10.6.3
+    storybook: ^10.6.4
     typescript: ">= 4.9.x"
   peerDependenciesMeta:
     "@types/react":
@@ -1435,7 +1435,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/fb870dd7823adbc19b812eb4797ac091e499642be0d839d346686e582e7c75c10d5c8926d8fd47d341375aeaf445926730c83f6412238a1892f712a28a2e4817
+  checksum: 10c0/cd8776f519f9eabd9bf804d00ba44ce4dbbc1fe2f585a5dd0e5897ac188134d276208fb0dd20698d7b411b1575aebc2c085fa5331b25b733d5d6aa1026361382
   languageName: node
   linkType: hard
 
@@ -2167,15 +2167,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.20.0":
-  version: 1.20.0
-  resolution: "axios@npm:1.20.0"
+"axios@npm:^1.21.0":
+  version: 1.21.0
+  resolution: "axios@npm:1.21.0"
   dependencies:
     follow-redirects: "npm:^1.16.0"
     form-data: "npm:^4.0.6"
     https-proxy-agent: "npm:^5.0.1"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10c0/976088acf532286356f4c2e65df1ef47ba7da3936d83e928d0d64357bbf5370456abd3eb5826c15df322335fcb1fe200d4a84b4fcf20ffccdd63b40d80fa495c
+  checksum: 10c0/adaf1e81762aa7476b95a588f173796e9251a2683c1ffc3e2dfb3ae705c4f629976ef05ded4e7a513832214072058d480fb0bc7e46fe819621909a70f9571ed2
   languageName: node
   linkType: hard
 
@@ -2359,13 +2359,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cocktailberryweb@workspace:."
   dependencies:
-    "@biomejs/biome": "npm:^2.6.2"
+    "@biomejs/biome": "npm:^2.6.3"
     "@chromatic-com/storybook": "npm:5.6.0"
-    "@storybook/addon-a11y": "npm:10.6.3"
-    "@storybook/addon-docs": "npm:10.6.3"
-    "@storybook/addon-onboarding": "npm:10.6.3"
-    "@storybook/addon-vitest": "npm:10.6.3"
-    "@storybook/react-vite": "npm:10.6.3"
+    "@storybook/addon-a11y": "npm:10.6.4"
+    "@storybook/addon-docs": "npm:10.6.4"
+    "@storybook/addon-onboarding": "npm:10.6.4"
+    "@storybook/addon-vitest": "npm:10.6.4"
+    "@storybook/react-vite": "npm:10.6.4"
     "@tailwindcss/vite": "npm:^4.3.3"
     "@types/node": "npm:^26.6.5"
     "@types/react": "npm:^19.3.0"
@@ -2374,21 +2374,21 @@ __metadata:
     "@vitejs/plugin-react": "npm:^6.1.2"
     "@vitest/browser": "npm:^5.0.5"
     "@vitest/coverage-v8": "npm:^5.0.5"
-    axios: "npm:^1.20.0"
+    axios: "npm:^1.21.0"
     globals: "npm:^17.13.0"
-    i18next: "npm:^26.5.8"
+    i18next: "npm:^26.5.11"
     playwright: "npm:^1.64.1"
     react: "npm:^19.3.1"
     react-dom: "npm:^19.3.1"
-    react-i18next: "npm:^17.1.6"
+    react-i18next: "npm:^17.1.9"
     react-icons: "npm:^5.7.0"
     react-modal: "npm:^3.16.3"
     react-query: "npm:^3.39.3"
     react-router: "npm:^8.5.0"
-    react-simple-keyboard: "npm:^3.8.287"
+    react-simple-keyboard: "npm:^3.8.290"
     react-toastify: "npm:^11.1.0"
     recharts: "npm:^3.10.1"
-    storybook: "npm:10.6.3"
+    storybook: "npm:10.6.4"
     tailwindcss: "npm:^4.3.3"
     typescript: "npm:~6.0.3"
     vite: "npm:^8.3.5"
@@ -3101,15 +3101,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^26.5.8":
-  version: 26.5.8
-  resolution: "i18next@npm:26.5.8"
+"i18next@npm:^26.5.11":
+  version: 26.5.11
+  resolution: "i18next@npm:26.5.11"
   peerDependencies:
     typescript: ^5 || ^6 || ^7
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/63f025c9cb0dc0f36debe70e01c2ce8a5437535ff9a48ff335ad3c098d198d3444e577cf7d944ca267d2797d99cabc6353a877a8765e349c71abe7f1ed610ba4
+  checksum: 10c0/b2ecb58a38420530d928d93761efc1d4e966f24cf99518df843f5b8797be135d7b6defb01ca97b61bf2bc614a6fab56bd874032b42567ae22cfa84909c2187cd
   languageName: node
   linkType: hard
 
@@ -4110,9 +4110,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:^17.1.6":
-  version: 17.1.6
-  resolution: "react-i18next@npm:17.1.6"
+"react-i18next@npm:^17.1.9":
+  version: 17.1.9
+  resolution: "react-i18next@npm:17.1.9"
   dependencies:
     "@babel/runtime": "npm:^7.29.7"
     html-parse-stringify: "npm:^4.0.1"
@@ -4128,7 +4128,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/4dfada3d33b119e7a21922e52e90351037ef42995707cc2470a30c60fa9cacbbfd649d2561a8a95d171db81157b180a7e7ba02100588c5d72f94010f2f3ac4a4
+  checksum: 10c0/f3c263df1d152a6a757cd47895c86568fa36cd583ac659276afa9c5a97e6babd72e3197f22587862f7382de628428e39f757b6d67ad03ebbfd333296237d44d7
   languageName: node
   linkType: hard
 
@@ -4236,13 +4236,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-simple-keyboard@npm:^3.8.287":
-  version: 3.8.287
-  resolution: "react-simple-keyboard@npm:3.8.287"
+"react-simple-keyboard@npm:^3.8.290":
+  version: 3.8.290
+  resolution: "react-simple-keyboard@npm:3.8.290"
   peerDependencies:
     react: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/91f7762c60a2df915ed18a89890f632e53ab5c6fe2d29f705ebe866daf22ece2b12eff2362be0ecb73d3c96b170bcfd6ec8fa806b724dbcba77d402fbb0334f7
+  checksum: 10c0/6698f97b4d4edaf52e182c8604143129ad055a06a97298c421167d5b0889326f8c1e1b5c0126e587205b0d4c36cf4169fbd760a25b52f650a2b729b98d654c33
   languageName: node
   linkType: hard
 
@@ -4532,9 +4532,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:10.6.3":
-  version: 10.6.3
-  resolution: "storybook@npm:10.6.3"
+"storybook@npm:10.6.4":
+  version: 10.6.4
+  resolution: "storybook@npm:10.6.4"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
     "@storybook/icons": "npm:^2.0.2"
@@ -4566,7 +4566,7 @@ __metadata:
       optional: true
   bin:
     storybook: ./dist/bin/dispatcher.js
-  checksum: 10c0/d3b6745cb80e0b551e652645896084a8a24c376a2768df687bfed684387ad6b89f4da0fa9cc8e19074c6dfcedb6186043e410e9110216fc8dc714001359d6452
+  checksum: 10c0/4e3336c3674b7a2043e079203d420f873376bfc07c2e490e8c383451edc1c8387b4e098811cd3190db0df1c9bcc9db4fc2f528534080255121c97c53da7cbd4b
   languageName: node
   linkType: hard
 
