@@ -9,7 +9,7 @@ requires-python = ">= 3.13"
 dependencies = [
     "gitpython>=3.1.59",
     "requests>=2.34.2",
-    "sumup==0.3.5",
+    "sumup==0.4.0",
     "pyyaml>=6.0.3",
     "typer>=0.27.1",
     "pyfiglet>=1.0.4",
@@ -51,7 +51,7 @@ dev = [
   "pytest>=9.1.1",
   "pytest-cov>=7.1.0",
   "pre-commit>=4.6.2",
-  "ty==0.0.91",
+  "ty==0.0.92",
   "ruff>=0.16.2",
   "zensical>=0.0.59",
 ]
@@ -70,8 +70,6 @@ nfc = [
 [tool.uv]
 # Supply-chain cooldown: never resolve releases younger than 3 days
 exclude-newer = "3 days"
-# eMudhra CA incident (2026-10): take certifi 2026.10.19 ahead of the cooldown; drop after 2026-10-23
-exclude-newer-package = { certifi = "2026-10-22" }
 default-groups = ["dev", "pi-hardware"]
 override-dependencies = [
     "pyqt6-qt6; sys_platform != 'linux' or python_version >= '3.12'",
@@ -89,6 +87,9 @@ extra-index-url = [
 
 [tool.hatch.metadata]
 allow-direct-references = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.ruff]
 # don't check import order in the migration script
