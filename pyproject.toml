@@ -70,8 +70,6 @@ nfc = [
 [tool.uv]
 # Supply-chain cooldown: never resolve releases younger than 3 days
 exclude-newer = "3 days"
-# eMudhra CA incident (2026-10): take certifi 2026.10.19 ahead of the cooldown; drop after 2026-10-23
-exclude-newer-package = { certifi = "2026-10-22" }
 default-groups = ["dev", "pi-hardware"]
 override-dependencies = [
     "pyqt6-qt6; sys_platform != 'linux' or python_version >= '3.12'",

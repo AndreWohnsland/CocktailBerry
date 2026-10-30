@@ -10,9 +10,6 @@ resolution-markers = [
 exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
 exclude-newer-span = "P3D"
 
-[options.exclude-newer-package]
-certifi = "2026-10-23T00:00:00Z"
-
 [manifest]
 overrides = [
     { name = "pyqt6", marker = "python_full_version >= '3.12' or sys_platform != 'linux'" },
