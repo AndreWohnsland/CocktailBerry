@@ -90,6 +90,9 @@ extra-index-url = [
 [tool.hatch.metadata]
 allow-direct-references = true
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
 [tool.ruff]
 # don't check import order in the migration script
 line-length = 120
