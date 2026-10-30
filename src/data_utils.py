@@ -143,8 +143,8 @@ def ilp_selection(top_ing_ids: set[int], cocktails: list[Cocktail], n: int) -> t
 
     model.solve(pulp.HiGHS(msg=False))
 
-    chosen = {i for i in ing_ids if pulp.value(x[i]) == 1}
-    score = sum(1 for c in cocktails if pulp.value(y[c.id]) == 1)
+    chosen = {i for i in ing_ids if round(pulp.value(x[i]) or 0) == 1}
+    score = sum(1 for c in cocktails if round(pulp.value(y[c.id]) or 0) == 1)
 
     return chosen, score
 
