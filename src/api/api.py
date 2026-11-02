@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -116,7 +116,6 @@ app = FastAPI(
     description=DESCRIPTION,
     openapi_tags=TAGS_METADATA,
     lifespan=lifespan,
-    root_path="/api",
 )
 
 # Configure CORS
@@ -128,8 +127,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static/default", StaticFiles(directory=DEFAULT_IMAGE_FOLDER), name="default_images")
-app.mount("/static/user", StaticFiles(directory=USER_IMAGE_FOLDER), name="user_images")
+app.mount("/api/static/default", StaticFiles(directory=DEFAULT_IMAGE_FOLDER), name="default_images")
+app.mount("/api/static/user", StaticFiles(directory=USER_IMAGE_FOLDER), name="user_images")
 
 
 @app.exception_handler(DatabaseTransactionError)
@@ -166,29 +165,30 @@ async def validation_error_handler(request: Request, exc: ValidationError) -> JS
     return JSONResponse(status_code=exc.status_code, content=content)
 
 
-app.include_router(cocktails.router)
-app.include_router(cocktails.protected_maker_router)
-app.include_router(cocktails.protected_recipes_router)
-app.include_router(bottles.router)
-app.include_router(bottles.protected_router)
-app.include_router(options.router)
-app.include_router(options.protected_router)
-app.include_router(ingredients.router)
-app.include_router(ingredients.protected_router)
-app.include_router(waiters.router)
-app.include_router(waiters.protected_router)
-app.include_router(roles.router)
-app.include_router(scale.router)
-app.include_router(scale.protected_router)
-app.include_router(blacklist.router)
+api_router = APIRouter(prefix="/api")
+api_router.include_router(cocktails.router)
+api_router.include_router(cocktails.protected_maker_router)
+api_router.include_router(cocktails.protected_recipes_router)
+api_router.include_router(bottles.router)
+api_router.include_router(bottles.protected_router)
+api_router.include_router(options.router)
+api_router.include_router(options.protected_router)
+api_router.include_router(ingredients.router)
+api_router.include_router(ingredients.protected_router)
+api_router.include_router(waiters.router)
+api_router.include_router(waiters.protected_router)
+api_router.include_router(roles.router)
+api_router.include_router(scale.router)
+api_router.include_router(scale.protected_router)
+api_router.include_router(blacklist.router)
 
 
-@app.get("/", tags=[Tags.TESTING], summary="Test endpoint, check if api works")
+@api_router.get("/", tags=[Tags.TESTING], summary="Test endpoint, check if api works")
 async def root() -> ApiMessage:
     return ApiMessage(message="Welcome to CocktailBerry, this API works!")
 
 
-@app.get("/info", tags=[Tags.OPTIONS], summary="Get basic info about the API")
+@api_router.get("/info", tags=[Tags.OPTIONS], summary="Get basic info about the API")
 async def info() -> AboutInfo:
     return AboutInfo(
         python_version=platform.python_version(),
@@ -197,6 +197,9 @@ async def info() -> AboutInfo:
         version=__version__,
         startup_time=_STARTUP_TIME,
     )
+
+
+app.include_router(api_router)
 
 
 def run_api(port: int = 8000) -> None:
