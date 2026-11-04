@@ -17,7 +17,7 @@ from PyQt6.QtWidgets import (
 )
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.filepath import INGREDIENT_IMAGE
@@ -243,7 +243,7 @@ class CocktailView(QWidget):
 
         n_columns = _n_columns()
         DP_CONTROLLER.delete_items_of_layout(self.grid)
-        cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
+        cocktails = DBC.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
         # filter cocktails based on user criteria if payment is active
         if cfg.cocktailberry_payment:
             cocktails = filter_cocktails_by_user(self._last_known_user, cocktails)

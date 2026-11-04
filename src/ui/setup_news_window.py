@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtWidgets import QMainWindow, QSizePolicy, QVBoxLayout, QWidget
 
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import DIALOG_HANDLER, UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.shared import NEWS_KEYS
@@ -32,7 +32,6 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
 
     def _render_news(self) -> None:
         """Render not removed/acknowledged news items."""
-        DBC = DatabaseCommander()
         unacknowledged_keys = DBC.get_unacknowledged_news_keys(NEWS_KEYS)
 
         if not unacknowledged_keys:
@@ -73,7 +72,6 @@ class NewsWindow(QMainWindow, Ui_NewsWindow):
 
     def _acknowledge_news(self, news_key: str, widget: QWidget) -> None:
         """Acknowledge a news item so it won't be shown again."""
-        DBC = DatabaseCommander()
         DBC.acknowledge_news(news_key)
 
         self.data_container.removeWidget(widget)

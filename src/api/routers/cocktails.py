@@ -38,7 +38,7 @@ from src.api.models import (
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab, shared
 from src.data_utils import select_optimal
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.image_utils import find_user_cocktail_image, process_image, save_image
 from src.logger_handler import LoggerHandler
@@ -75,7 +75,6 @@ async def get_cocktails(
     max_hand_add: int = 3,
     scale: bool = True,
 ) -> list[Cocktail]:
-    DBC = DatabaseCommander()
     cocktails = DBC.get_possible_cocktails(max_hand_add) if only_possible else DBC.get_all_cocktails()
 
     if cfg.cocktailberry_payment:
@@ -89,7 +88,6 @@ async def get_cocktails(
 
 @router.get("/{cocktail_id:int}", summary="Get a cocktail by ID")
 async def get_cocktail(cocktail_id: int) -> Cocktail:
-    DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
     if cocktail is None:
         message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
@@ -116,7 +114,6 @@ async def prepare_cocktail(
     background_tasks: BackgroundTasks,
     payment_handler: Annotated[PaymentHandler, Depends(get_payment_handler)],
 ) -> CocktailStatus:
-    DBC = DatabaseCommander()
     factor = request.alcohol_factor if not request.is_virgin else 0
     cocktail = DBC.get_cocktail(cocktail_id)
     if cocktail is None:
@@ -205,7 +202,6 @@ async def cancel_payment(
 
 @protected_recipes_router.post("", summary="Create a new cocktail", dependencies=[not_on_demo])
 async def create_cocktail(cocktail: CocktailInput) -> ApiMessageWithData[Cocktail]:
-    DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
     ingredient_data = [(i.id, i.amount, i.recipe_order) for i in cocktail.ingredients]
     db_cocktail = DBC.insert_new_recipe(
@@ -225,7 +221,6 @@ async def create_cocktail(cocktail: CocktailInput) -> ApiMessageWithData[Cocktai
 
 @protected_recipes_router.put("/{cocktail_id}", summary="Update a cocktail by ID", dependencies=[not_on_demo])
 async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> ApiMessageWithData[Cocktail]:
-    DBC = DatabaseCommander()
     recipe_volume, recipe_alcohol_level = calculate_cocktail_volume_and_concentration(cocktail)
     ingredient_data = [(i.id, i.amount, i.recipe_order) for i in cocktail.ingredients]
     db_cocktail: DbCocktail = DBC.set_recipe(
@@ -246,7 +241,6 @@ async def update_cocktail(cocktail_id: int, cocktail: CocktailInput) -> ApiMessa
 
 @protected_recipes_router.delete("/{cocktail_id}", summary="Delete a cocktail by ID", dependencies=[not_on_demo])
 async def delete_cocktail(cocktail_id: int) -> ApiMessage:
-    DBC = DatabaseCommander()
     DBC.delete_recipe(cocktail_id)
     return ApiMessage(message=DH.get_translation("recipe_deleted", recipe_name=cocktail_id))
 
@@ -255,7 +249,6 @@ async def delete_cocktail(cocktail_id: int) -> ApiMessage:
     "/{cocktail_id}/image", summary="Upload an image for a cocktail", dependencies=[not_on_demo]
 )
 async def upload_cocktail_image(cocktail_id: int, file: Annotated[UploadFile, File(...)]) -> ApiMessage:
-    DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
     if cocktail is None:
         message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
@@ -275,7 +268,6 @@ async def upload_cocktail_image(cocktail_id: int, file: Annotated[UploadFile, Fi
     "/{cocktail_id}/image", summary="Delete an image for a cocktail", dependencies=[not_on_demo]
 )
 async def delete_cocktail_image(cocktail_id: int) -> ApiMessage:
-    DBC = DatabaseCommander()
     cocktail = DBC.get_cocktail(cocktail_id)
     if cocktail is None:
         message = DH.get_translation("element_not_found", element_name=f"Cocktail (id={cocktail_id})")
@@ -293,7 +285,6 @@ async def delete_cocktail_image(cocktail_id: int) -> ApiMessage:
 
 @protected_recipes_router.post("/enable", summary="Enable all recipes")
 async def enable_all_recipes() -> ApiMessage:
-    DBC = DatabaseCommander()
     DBC.set_all_recipes_enabled()
     return ApiMessage(message=DH.get_translation("all_recipes_enabled"))
 
@@ -332,9 +323,7 @@ async def websocket_payment_user(
         """Send user and filtered cocktails to websocket."""
         user = user_lookup.user
         try:
-            cocktails = filter_cocktails_by_user(
-                user, DatabaseCommander().get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
-            )
+            cocktails = filter_cocktails_by_user(user, DBC.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS))
             mapped_cocktails = [map_cocktail(c, True) for c in cocktails]
             mapped_cocktails = [c for c in mapped_cocktails if c is not None]
 

@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QLabel, QMainWindow
 
 from src import MAX_SUPPORTED_BOTTLES
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.tabs.bottles import set_fill_level_bars
@@ -92,13 +92,13 @@ class BottleWindow(QMainWindow, Ui_Bottlewindow):
             if ingredient_id == 0:
                 continue
             new_amount = min(int(label.text()), max_volume)
-            DB_COMMANDER.set_ingredient_level_to_value(ingredient_id, new_amount)
+            DBC.set_ingredient_level_to_value(ingredient_id, new_amount)
         set_fill_level_bars(self.mainscreen)
         self.close()
 
     def assign_bottle_data(self) -> None:
         number = cfg.choose_bottle_number()
-        ingredients = DB_COMMANDER.get_ingredients_at_bottles()[:number]
+        ingredients = DBC.get_ingredients_at_bottles()[:number]
         for i, ingredient in enumerate(ingredients, start=1):
             labelobj: QLabel = getattr(self, f"LName{i}")
             label_name: QLabel = getattr(self, f"LAmount{i}")

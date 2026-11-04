@@ -6,7 +6,8 @@ from src.api.api_config import Tags
 from src.api.internal.utils import not_on_demo
 from src.api.middleware import master_protected_dependency
 from src.api.models import ApiMessage, RoleCreate, RoleResponse, RoleUpdate
-from src.database_commander import DatabaseCommander, ElementNotFoundError, RoleInUseError
+from src.database_commander import DB_COMMANDER as DBC
+from src.database_commander import ElementNotFoundError, RoleInUseError
 from src.service.waiter_service import WaiterService
 
 router = APIRouter(
@@ -19,14 +20,12 @@ router = APIRouter(
 @router.get("", summary="List all roles")
 async def get_roles() -> list[RoleResponse]:
     """Get all defined roles."""
-    DBC = DatabaseCommander()
     return [RoleResponse.from_db(r) for r in DBC.get_all_roles()]
 
 
 @router.post("", summary="Create a new role", dependencies=[not_on_demo])
 async def create_role(data: RoleCreate) -> RoleResponse:
     """Create a new role with tab and tile permissions."""
-    DBC = DatabaseCommander()
     role = DBC.create_role(
         data.name,
         permissions=data.permissions.model_dump(),
@@ -38,7 +37,6 @@ async def create_role(data: RoleCreate) -> RoleResponse:
 @router.put("/{role_id}", summary="Update a role", dependencies=[not_on_demo])
 async def update_role(role_id: int, data: RoleUpdate) -> RoleResponse:
     """Update a role's name, tab permissions, and/or tile permissions."""
-    DBC = DatabaseCommander()
     role = DBC.update_role(
         role_id,
         name=data.name,
@@ -53,7 +51,6 @@ async def update_role(role_id: int, data: RoleUpdate) -> RoleResponse:
 @router.delete("/{role_id}", summary="Delete a role", dependencies=[not_on_demo])
 async def delete_role(role_id: int) -> ApiMessage:
     """Delete a role. Fails with 409 if any waiter still references it."""
-    DBC = DatabaseCommander()
     try:
         DBC.delete_role(role_id)
     except RoleInUseError as exc:

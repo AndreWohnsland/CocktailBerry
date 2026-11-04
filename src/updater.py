@@ -9,7 +9,7 @@ from git import GitCommandError, Repo
 
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import shared
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.filepath import RELEASE_CACHE_FILE, ROOT_PATH
 from src.logger_handler import LoggerHandler
 from src.migration.migrator import Migrator
@@ -107,7 +107,7 @@ class Updater:
             _logger.log_exception(err)
             return False
         # Save the software update event
-        DatabaseCommander().save_event(EventType.SOFTWARE_UPDATE, version)
+        DBC.save_event(EventType.SOFTWARE_UPDATE, version)
         return True
 
     def check_for_updates(self) -> UpdateInfo:

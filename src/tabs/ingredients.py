@@ -10,7 +10,8 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QListWidget
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DB_COMMANDER, DatabaseTransactionError
+from src.database_commander import DB_COMMANDER as DBC
+from src.database_commander import DatabaseTransactionError
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.models import Ingredient
@@ -50,12 +51,12 @@ def handle_enter_ingredient(w: MainScreen) -> None:
 
 def _add_new_ingredient(w: MainScreen, ing: Ingredient) -> bool:
     """Add the ingredient into the database."""
-    existing_ingredient = DB_COMMANDER.get_ingredient(ing.name)
+    existing_ingredient = DBC.get_ingredient(ing.name)
     if existing_ingredient:
         DP_CONTROLLER.say_name_already_exists()
         return False
 
-    DB_COMMANDER.insert_new_ingredient(
+    DBC.insert_new_ingredient(
         ing.name,
         ing.alcohol,
         ing.bottle_volume,
@@ -78,11 +79,11 @@ def _change_existing_ingredient(w: MainScreen, ingredient_list_widget: QListWidg
     if not ing.selected:
         DP_CONTROLLER.say_no_ingredient_selected()
         return False
-    old_ingredient = DB_COMMANDER.get_ingredient(ing.selected)
+    old_ingredient = DBC.get_ingredient(ing.selected)
     if old_ingredient is None:
         raise RuntimeError("This should not be happening. Ingredient not found in DB.")
 
-    bottle_used = DB_COMMANDER.get_bottle_usage(old_ingredient.id)
+    bottle_used = DBC.get_bottle_usage(old_ingredient.id)
     # if change to handadd and still used, abort
     if ing.hand and bottle_used:
         DP_CONTROLLER.say_ingredient_still_at_bottle()
@@ -90,7 +91,7 @@ def _change_existing_ingredient(w: MainScreen, ingredient_list_widget: QListWidg
 
     # in case the volume was lowered below current level get the minimum of both
     volume_level = min(old_ingredient.fill_level, ing.bottle_volume)
-    DB_COMMANDER.set_ingredient_data(
+    DBC.set_ingredient_data(
         ing.name,
         ing.alcohol,
         ing.bottle_volume,
@@ -125,7 +126,7 @@ def _change_existing_ingredient(w: MainScreen, ingredient_list_widget: QListWidg
 def load_ingredients(w: MainScreen) -> None:
     """Load all ingredient names into the ListWidget."""
     DP_CONTROLLER.clear_list_widget_ingredients(w)
-    ingredients = DB_COMMANDER.get_all_ingredients()
+    ingredients = DBC.get_all_ingredients()
     ingredient_input = DP_CONTROLLER.get_ingredient_fields(w)
     DP_CONTROLLER.fill_list_widget(ingredient_input.selected_ingredient, [x.name for x in ingredients])
 
@@ -143,13 +144,13 @@ def delete_ingredient(w: MainScreen) -> None:
     if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD, permission_key="options"):
         return
 
-    ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
+    ingredient = DBC.get_ingredient(selected_ingredient)
     if not ingredient:
         return
 
     # if everything is okay, delete from DB and remove from UI
     try:
-        DB_COMMANDER.delete_ingredient(ingredient.id)
+        DBC.delete_ingredient(ingredient.id)
     except DatabaseTransactionError as e:
         DP_CONTROLLER.standard_box(str(e), "Error")
         return
@@ -168,7 +169,7 @@ def display_selected_ingredient(w: MainScreen) -> None:
     DP_CONTROLLER.set_ingredient_add_label(w, selected_ingredient != "")
     if not selected_ingredient:
         return
-    ingredient = DB_COMMANDER.get_ingredient(selected_ingredient)
+    ingredient = DBC.get_ingredient(selected_ingredient)
     if not ingredient:
         return
     DP_CONTROLLER.fill_multiple_lineedit(

@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QMainWindow
 
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.models import EventType
@@ -30,4 +30,4 @@ class EventWindow(QMainWindow, Ui_EventWindow):
         event_str: str | None = self.selection_event.currentText()
         # Return if empty selection
         event = None if event_str == "ALL" else [EventType(event_str)]
-        self.text_display.setText("\n".join([str(e) for e in DatabaseCommander().get_events(event)]))
+        self.text_display.setText("\n".join([str(e) for e in DBC.get_events(event)]))

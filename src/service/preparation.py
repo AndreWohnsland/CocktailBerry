@@ -6,7 +6,7 @@ from typing import Any
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab, shared
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.logger_handler import LoggerHandler
@@ -68,8 +68,6 @@ def prepare_cocktail(
         finish_message=additional_message,
         hand_adds=hand_adds,
     )
-
-    DBC = DatabaseCommander()
     # a cocktail only counts as made (counter, team data, webhook) if over 50% was dispensed
     minimum_cocktail_progress = 0.5
     counts_as_made = result.completion_ratio >= minimum_cocktail_progress
@@ -198,5 +196,4 @@ def prepare_ingredient(ingredient: Ingredient, display: ProgressDisplay | None =
     mc = MachineController()
     mc.make_cocktail(display, [ingredient], ingredient.name, False)
     consumed_volume = round(ingredient.consumption)
-    DBC = DatabaseCommander()
     DBC.increment_ingredient_consumption(ingredient.name, consumed_volume)

@@ -26,7 +26,7 @@ from src.database_commander import DatabaseCommander
 def logged_in(monkeypatch: pytest.MonkeyPatch, db_commander: DatabaseCommander) -> DatabaseCommander:
     """Register a waiter on a maker-only role and put them in the shared state."""
     for module in ("src.service.waiter_service", "src.api.routers.roles", "src.api.routers.waiters"):
-        monkeypatch.setattr(f"{module}.DatabaseCommander", lambda: db_commander)
+        monkeypatch.setattr(f"{module}.DBC", db_commander)
     role = db_commander.create_role("bartender", permissions={"maker": True})
     waiter = db_commander.create_waiter("nfc_001", "Alice", role_id=role.id)
     monkeypatch.setattr(shared, "current_waiter_nfc_id", waiter.nfc_id)

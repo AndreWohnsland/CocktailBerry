@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QMainWindow
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.models import Cocktail, PrepareResult
@@ -38,7 +38,7 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
         )
         self.PBAusgeben.clicked.connect(self._spend_clicked)
         self.PBAbbrechen.clicked.connect(self._cancel_clicked)
-        all_bottles = DB_COMMANDER.get_ingredient_names_at_bottles()
+        all_bottles = DBC.get_ingredient_names_at_bottles()
         bottles = [x for x in all_bottles if x != ""]
         DP_CONTROLLER.fill_list_widget(self.ingredient_selection, bottles)
         self.ingredient_selection.setCurrentRow(0)
@@ -56,7 +56,7 @@ class GetIngredientWindow(QMainWindow, Ui_addingredient):
         # if there is nothing selected, just do nothing
         if ingredient_name == "":
             return
-        ingredient = DB_COMMANDER.get_ingredient(ingredient_name)
+        ingredient = DBC.get_ingredient(ingredient_name)
         if ingredient is None:
             return
         cocktail = Cocktail.from_ingredient(ingredient, volume)

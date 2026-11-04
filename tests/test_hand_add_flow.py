@@ -46,7 +46,7 @@ def _run_prepare(cocktail: Cocktail, *, feature_on: bool, has_scale: bool) -> li
     mc_instance.make_cocktail.return_value = PreparationResult(ingredients=[])
     with (
         patch("src.service.preparation.MachineController", return_value=mc_instance),
-        patch("src.service.preparation.DatabaseCommander", return_value=MagicMock()),
+        patch("src.service.preparation.DBC", MagicMock()),
         patch("src.service.preparation.ADDONS"),
         patch("src.service.preparation.SERVICE_HANDLER"),
         patch.object(CONFIG, "MAKER_SCALE_FOR_HAND_ADDS", feature_on),

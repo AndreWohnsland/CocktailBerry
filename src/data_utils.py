@@ -4,7 +4,7 @@ from typing import Literal
 
 import pulp
 
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.models import Cocktail, ConsumeData, Ingredient
 
 ALL_TIME = "ALL"
@@ -38,7 +38,6 @@ def _extract_data(data: list[list]) -> dict[str, dict[str, int]]:
 
 def generate_consume_data() -> dict[str, ConsumeData]:
     """Get data from database, assigns objects and fill dropdown."""
-    DBC = DatabaseCommander()
     consume_data: dict[str, ConsumeData] = {}
 
     # Get current data in DB (since reset and all time)
@@ -59,9 +58,8 @@ def load_data(k: int | None = None) -> tuple[set[int], list[Cocktail]]:
 
     Returns a tuple of (top_ing_ids, cocktails).
     """
-    dbc = DatabaseCommander()
-    ingredient_ids = dbc.get_most_used_ingredient_ids(k=k)
-    cocktails = dbc.get_all_cocktails(status="enabled")
+    ingredient_ids = DBC.get_most_used_ingredient_ids(k=k)
+    cocktails = DBC.get_all_cocktails(status="enabled")
     cocktails = [c for c in cocktails if all(ing.id in ingredient_ids for ing in c.ingredients)]
     return set(ingredient_ids), cocktails
 
@@ -160,9 +158,8 @@ def select_optimal(
     ingredient IDs (sorted), and cocktails contains all enabled cocktails that can be made using
     only the selected ingredients.
     """
-    dbc = DatabaseCommander()
-    top_ing_ids = dbc.get_most_used_ingredient_ids(k=k)
-    cocktails = dbc.get_all_cocktails(status="enabled")
+    top_ing_ids = DBC.get_most_used_ingredient_ids(k=k)
+    cocktails = DBC.get_all_cocktails(status="enabled")
     cocktails = [c for c in cocktails if all(ing.id in top_ing_ids for ing in c.ingredients)]
     n = max(0, min(n, len(top_ing_ids)))
 
@@ -178,6 +175,6 @@ def select_optimal(
     # Filter cocktails that are possible with the chosen ingredients
     chosen_set = set(chosen)
     covered = [c for c in cocktails if {ing.id for ing in c.ingredients}.issubset(chosen_set)]
-    ingredients = [x for x in [dbc.get_ingredient(ing_id) for ing_id in chosen_set] if x is not None]
+    ingredients = [x for x in [DBC.get_ingredient(ing_id) for ing_id in chosen_set] if x is not None]
 
     return ingredients, covered

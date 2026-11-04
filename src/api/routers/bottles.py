@@ -7,7 +7,7 @@ from src.api.middleware import maker_protected, master_protected_dependency
 from src.api.models import ApiMessage, Bottle, BottleConfigUpdate
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.machine.controller import MachineController
 from src.models import PrepareResult
@@ -25,20 +25,17 @@ protected_router = APIRouter(
 
 @router.get("", summary="Get all bottles with their ingredients.")
 async def get_bottles() -> list[Bottle]:
-    DBC = DatabaseCommander()
     ingredients = DBC.get_ingredients_at_bottles()[: cfg.MAKER_NUMBER_BOTTLES]
     return [map_bottles(i) for i in ingredients]
 
 
 @router.get("/available", summary="Get IDs of ingredients available for hand-adding.")
 async def get_available_ingredients() -> list[int]:
-    DBC = DatabaseCommander()
     return DBC.get_available_ids()
 
 
 @protected_router.post("/available", summary="Set which ingredients are available for hand-adding.")
 async def post_available_ingredients(available: list[int]) -> ApiMessage:
-    DBC = DatabaseCommander()
     DBC.delete_existing_handadd_ingredient()
     DBC.insert_multiple_existing_handadd_ingredients(available)
     return ApiMessage(message=DH.get_translation("available_ingredient_updated"))
@@ -59,14 +56,12 @@ async def refill_bottle(
     if ingredients:
         claim_machine_or_raise(PrepareResult.IN_PROGRESS)
         background_tasks.add_task(mc.make_cocktail, None, ingredients, "renew", False)
-    DBC = DatabaseCommander()
     DBC.set_bottle_volumelevel_to_max(bottle_numbers)
     return ApiMessage(message=f"{DH.get_translation('bottles_renewed')} {bottle_numbers}")
 
 
 @protected_router.put("/{bottle_id}", summary="Update bottle to ingredient and fill level.")
 async def update_bottle(bottle_id: int, ingredient_id: int, amount: int | None = None) -> ApiMessage:
-    DBC = DatabaseCommander()
     ingredients = DBC.get_ingredients_at_bottles()[: cfg.MAKER_NUMBER_BOTTLES]
     # cannot assign the same ingredient to multiple bottles
     # Skip if remove bottle

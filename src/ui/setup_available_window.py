@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtWidgets import QListWidget, QMainWindow
 
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.ui.icons import IconSetter
@@ -26,8 +26,8 @@ class AvailableWindow(QMainWindow, Ui_available):
         self.PBAdd.clicked.connect(lambda: self._change_ingredient(self.LWVorhanden, self.LWAlle))
         self.PBRemove.clicked.connect(lambda: self._change_ingredient(self.LWAlle, self.LWVorhanden))
         # gets the available ingredients out of the DB and assigns them to the LW
-        ingredient_available = DB_COMMANDER.get_available_ingredient_names()
-        ingredients = DB_COMMANDER.get_all_ingredients()
+        ingredient_available = DBC.get_available_ingredient_names()
+        ingredients = DBC.get_all_ingredients()
         entry_list = list({x.name for x in ingredients} - set(ingredient_available))
         DP_CONTROLLER.fill_list_widget(self.LWVorhanden, ingredient_available)
         DP_CONTROLLER.fill_list_widget(self.LWAlle, entry_list)
@@ -43,14 +43,14 @@ class AvailableWindow(QMainWindow, Ui_available):
 
     def _accepted_clicked(self) -> None:
         """Write the new availability into the DB."""
-        DB_COMMANDER.delete_existing_handadd_ingredient()
+        DBC.delete_existing_handadd_ingredient()
         ingredient_names = [
             self.LWVorhanden.item(i).text()  # pyright: ignore[reportOptionalMemberAccess]  # ty:ignore[unresolved-attribute]
             for i in range(self.LWVorhanden.count())
         ]
         # only add ingredients if there are any
         if ingredient_names:
-            DB_COMMANDER.insert_multiple_existing_handadd_ingredients(ingredient_names)
+            DBC.insert_multiple_existing_handadd_ingredients(ingredient_names)
         # reloads the maker screen and updates the shown available recipes
         DP_CONTROLLER.update_maker_view(self.mainscreen)
         self.close()

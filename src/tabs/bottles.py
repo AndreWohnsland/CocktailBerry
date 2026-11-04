@@ -8,7 +8,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from src.config.config_manager import shared
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.machine.controller import MachineController
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 def get_bottle_ingredients() -> None:
     """At the start of the program, get all the ingredients from the DB."""
-    bottles = DB_COMMANDER.get_ingredient_names_at_bottles()
+    bottles = DBC.get_ingredient_names_at_bottles()
     # replace Nones with empty string, command will return none for empty bottles
     shared.old_ingredient = [x if x is not None else "" for x in bottles]
 
@@ -49,7 +49,7 @@ def calculate_combobox_bottles(w: MainScreen) -> None:
     """Fill each bottle combobox with the possible remaining options."""
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     used_ingredients = shared.old_ingredient
-    possible_ingredients = DB_COMMANDER.get_all_ingredients(get_hand=False)
+    possible_ingredients = DBC.get_all_ingredients(get_hand=False)
     possible_names = [x.name for x in possible_ingredients]
 
     shown_ingredients = []
@@ -65,7 +65,7 @@ def __register_bottles(w: MainScreen) -> None:
     # Checks where are entries and appends them to a list
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
     ingredient_names = DP_CONTROLLER.get_current_combobox_items(combobox_bottles)
-    DB_COMMANDER.set_bottle_order(ingredient_names)
+    DBC.set_bottle_order(ingredient_names)
 
     DP_CONTROLLER.update_maker_view(w)
     set_fill_level_bars(w)
@@ -74,7 +74,7 @@ def __register_bottles(w: MainScreen) -> None:
 def read_in_bottles(w: MainScreen) -> None:
     """Read the bottle_order into the BottleTab."""
     combobox_bottles = DP_CONTROLLER.get_comboboxes_bottles(w)
-    ingredient_names = DB_COMMANDER.get_ingredient_names_at_bottles()
+    ingredient_names = DBC.get_ingredient_names_at_bottles()
     DP_CONTROLLER.set_multiple_combobox_items(combobox_bottles, ingredient_names)
 
 
@@ -94,7 +94,7 @@ def renew_checked_bottles(w: MainScreen) -> None:
 
 def renew_bottles(w: MainScreen, bottles: list[int]) -> None:
     """Renews the bottles at given slot, flush the tubes if needed."""
-    DB_COMMANDER.set_bottle_volumelevel_to_max(bottles)
+    DBC.set_bottle_volumelevel_to_max(bottles)
     set_fill_level_bars(w)
     mc = MachineController()
     ingredients = mc.tube_flush_ingredients(bottles)
@@ -107,5 +107,5 @@ def renew_bottles(w: MainScreen, bottles: list[int]) -> None:
 def set_fill_level_bars(w: MainScreen) -> None:
     """Get the proportion of actual and maximal volume of each connected bottle and assigns it."""
     progress_bars = DP_CONTROLLER.get_levelbar_bottles(w)
-    fill_levels = DB_COMMANDER.get_bottle_fill_levels()
+    fill_levels = DBC.get_bottle_fill_levels()
     DP_CONTROLLER.set_progress_bar_values(progress_bars, fill_levels)

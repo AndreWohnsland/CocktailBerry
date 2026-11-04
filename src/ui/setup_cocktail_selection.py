@@ -8,7 +8,7 @@ from PyQt6.QtGui import QPixmap, QResizeEvent
 from PyQt6.QtWidgets import QDialog, QLabel, QPushButton, QSizePolicy
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.image_utils import RANDOM_IMAGE_NAME, find_cocktail_image
@@ -164,10 +164,10 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
         # need to refetch the cocktail from db, because the db might have changed
         # this is because the gui elements have a reference to the cocktail object
         # and when it changes, the gui elements will not update
-        db_cocktail = DB_COMMANDER.get_cocktail(cocktail.id)
+        db_cocktail = DBC.get_cocktail(cocktail.id)
         if db_cocktail is not None:
             # need to revaluate if there is only the virgin version available
-            db_cocktail.is_possible(DB_COMMANDER.get_available_ids(), cfg.MAKER_MAX_HAND_INGREDIENTS)
+            db_cocktail.is_possible(DBC.get_available_ids(), cfg.MAKER_MAX_HAND_INGREDIENTS)
             cocktail = db_cocktail
         self.cocktail = cocktail
         self._set_image()
@@ -214,7 +214,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             return
         chosen = random.choice(pool)
         # Re-fetch from DB for up-to-date data
-        db_cocktail = DB_COMMANDER.get_cocktail(chosen.id)
+        db_cocktail = DBC.get_cocktail(chosen.id)
         if db_cocktail is not None:
             chosen = db_cocktail
         self.cocktail = chosen
@@ -227,7 +227,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             self._prepare_random_cocktail(amount)
             return
         # same applies here, need to refetch the cocktail from db
-        db_cocktail = DB_COMMANDER.get_cocktail(self.cocktail.id)
+        db_cocktail = DBC.get_cocktail(self.cocktail.id)
         if db_cocktail is not None:
             self.cocktail = db_cocktail
         self._scale_cocktail(amount)

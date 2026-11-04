@@ -42,7 +42,7 @@ from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
 from src.connection import access_point, wifi
 from src.data_utils import generate_consume_data
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.filepath import VERSION_FILE
 from src.image_utils import RANDOM_IMAGE_NAME, find_user_cocktail_image, process_image, save_image
@@ -299,7 +299,7 @@ async def get_logs(log_file: LogFiles, min_level: LogLevel = "DEBUG") -> DataRes
 async def get_events() -> DataResponse[EventsData]:
     return DataResponse(
         data=EventsData(
-            events=DatabaseCommander().get_events(),
+            events=DBC.get_events(),
             event_keys=[event_type.value for event_type in EventType],
         )
     )
@@ -516,7 +516,7 @@ async def update_datetime(data: DateTimeInput) -> ApiMessage:
 )
 async def get_resource_stats_endpoint(session_number: int) -> ResourceStats:
     """Get system resource usage statistics and timeline for the current session."""
-    return DatabaseCommander().get_resource_stats(session_number)
+    return DBC.get_resource_stats(session_number)
 
 
 @router.get(
@@ -525,7 +525,7 @@ async def get_resource_stats_endpoint(session_number: int) -> ResourceStats:
 )
 async def get_resource_stats_all_sessions_endpoint() -> list[ResourceInfo]:
     """Get system resource usage statistics and timeline for all sessions."""
-    return DatabaseCommander().get_resource_session_numbers()
+    return DBC.get_resource_session_numbers()
 
 
 @router.get("/news", summary="Get all unacknowledged news items")
@@ -534,8 +534,7 @@ async def get_news() -> DataResponse[dict[str, str]]:
 
     Returns a dictionary mapping news keys to their translated content.
     """
-    db_commander = DatabaseCommander()
-    unacknowledged_keys = db_commander.get_unacknowledged_news_keys(NEWS_KEYS)
+    unacknowledged_keys = DBC.get_unacknowledged_news_keys(NEWS_KEYS)
 
     news_dict = {}
     for key in unacknowledged_keys:
@@ -547,8 +546,7 @@ async def get_news() -> DataResponse[dict[str, str]]:
 @protected_router.post("/news/{news_key}", summary="Acknowledge a specific news item", dependencies=[not_on_demo])
 async def acknowledge_news(news_key: str) -> ApiMessage:
     """Mark a news item as acknowledged so it won't be shown again."""
-    db_commander = DatabaseCommander()
-    db_commander.acknowledge_news(news_key)
+    DBC.acknowledge_news(news_key)
     return ApiMessage(message=DH.get_translation("news_acknowledged"))
 
 
