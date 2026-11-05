@@ -16,7 +16,8 @@ from PyQt6.QtWidgets import (
 )
 
 from src.config.config_manager import shared
-from src.database_commander import DatabaseCommander, ElementAlreadyExistsError, ElementNotFoundError, RoleInUseError
+from src.database_commander import DB_COMMANDER as DBC
+from src.database_commander import ElementAlreadyExistsError, ElementNotFoundError, RoleInUseError
 from src.db_models import DbWaiterLog
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -234,7 +235,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
             DP_CONTROLLER.say_some_value_missing()
             return
         try:
-            DatabaseCommander().create_waiter(nfc_id=nfc_id, name=name, role_id=int(role_id))
+            DBC.create_waiter(nfc_id=nfc_id, name=name, role_id=int(role_id))
         except ElementAlreadyExistsError:
             DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_exists", "waiter_window"))
             return
@@ -250,7 +251,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         self._refresh_waiters_list()
 
     def _start_edit_waiter(self, nfc_id: str) -> None:
-        waiter = DatabaseCommander().get_waiter_by_nfc_id(nfc_id)
+        waiter = DBC.get_waiter_by_nfc_id(nfc_id)
         if waiter is None:
             return
         self._editing_nfc_id = nfc_id
@@ -267,7 +268,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
             DP_CONTROLLER.say_some_value_missing()
             return
         try:
-            DatabaseCommander().update_waiter(self._editing_nfc_id, name=edit_name, role_id=int(role_id))
+            DBC.update_waiter(self._editing_nfc_id, name=edit_name, role_id=int(role_id))
         except ElementAlreadyExistsError:
             DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_exists", "waiter_window"))
             return
@@ -290,7 +291,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         if not DP_CONTROLLER.ask_to_delete_x(waiter_name):
             return
         try:
-            DatabaseCommander().delete_waiter(nfc_id)
+            DBC.delete_waiter(nfc_id)
         except ElementNotFoundError:
             DP_CONTROLLER.standard_box(UI_LANGUAGE.get_translation("waiter_not_found", "waiter_window"))
             return
@@ -308,7 +309,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
 
         self._populate_role_combo(self._create_role_combo)
 
-        waiters = DatabaseCommander().get_all_waiters()
+        waiters = DBC.get_all_waiters()
         if not waiters:
             self._waiter_list_layout.addWidget(
                 create_label(UI_LANGUAGE.get_translation("no_waiters", "waiter_window"), FontSize.MEDIUM, centered=True)
@@ -358,7 +359,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
 
     def _render_statistics(self) -> None:
         DP_CONTROLLER.delete_items_of_layout(self.data_container_statistics)
-        logs = DatabaseCommander().get_waiter_logs()
+        logs = DBC.get_waiter_logs()
         if not logs:
             self.data_container_statistics.addWidget(
                 create_label(UI_LANGUAGE.get_translation("no_logs", "waiter_window"), FontSize.MEDIUM, centered=True)
@@ -427,7 +428,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
     def _populate_role_combo(self, combo: QComboBox, selected_role_id: int | None = None) -> None:
         combo.blockSignals(True)
         combo.clear()
-        roles = DatabaseCommander().get_all_roles()
+        roles = DBC.get_all_roles()
         for role in roles:
             combo.addItem(role.name, role.id)
         if selected_role_id is not None:
@@ -545,7 +546,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         permissions = self._collect_permissions(self._role_create_permission_boxes)
         tile_permissions = self._collect_permissions(self._role_create_tile_boxes)
         try:
-            DatabaseCommander().create_role(name, permissions=permissions, tile_permissions=tile_permissions)
+            DBC.create_role(name, permissions=permissions, tile_permissions=tile_permissions)
         except ElementAlreadyExistsError as exc:
             DP_CONTROLLER.standard_box(str(exc))
             return
@@ -561,7 +562,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
 
     def _refresh_roles_list(self) -> None:
         DP_CONTROLLER.delete_items_of_layout(self._role_list_layout)
-        roles = DatabaseCommander().get_all_roles()
+        roles = DBC.get_all_roles()
         if not roles:
             self._role_list_layout.addWidget(
                 create_label(UI_LANGUAGE.get_translation("no_roles", "waiter_window"), FontSize.MEDIUM, centered=True)
@@ -614,7 +615,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
             self._role_list_layout.addWidget(card)
 
     def _start_edit_role(self, role_id: int) -> None:
-        role = DatabaseCommander().get_role_by_id(role_id)
+        role = DBC.get_role_by_id(role_id)
         if role is None:
             return
         self._editing_role_id = role_id
@@ -644,7 +645,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         permissions = self._collect_permissions(self._role_create_permission_boxes)
         tile_permissions = self._collect_permissions(self._role_create_tile_boxes)
         try:
-            DatabaseCommander().update_role(
+            DBC.update_role(
                 self._editing_role_id,
                 name=name,
                 permissions=permissions,
@@ -676,7 +677,7 @@ class WaiterWindow(QMainWindow, Ui_WaiterWindow):
         if not DP_CONTROLLER.ask_to_delete_x(role_name):
             return
         try:
-            DatabaseCommander().delete_role(role_id)
+            DBC.delete_role(role_id)
         except RoleInUseError as exc:
             DP_CONTROLLER.standard_box(str(exc))
             return

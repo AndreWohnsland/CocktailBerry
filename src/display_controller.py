@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import (
 
 from src import MAX_SUPPORTED_BOTTLES
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import UI_LANGUAGE, DialogHandler
 from src.filepath import APP_ICON_FILE, STYLE_FOLDER
 from src.models import Cocktail, Ingredient
@@ -650,8 +650,8 @@ class DisplayController(DialogHandler):
         time.sleep(0.1)
         used_bottles = cfg.choose_bottle_number()
         # This needs to be done to get rid of registered bottles in the then removed bottles
-        all_bottles = DB_COMMANDER.get_ingredient_names_at_bottles()
-        DB_COMMANDER.set_bottle_order(all_bottles[:used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
+        all_bottles = DBC.get_ingredient_names_at_bottles()
+        DBC.set_bottle_order(all_bottles[:used_bottles] + [""] * (MAX_SUPPORTED_BOTTLES - used_bottles))
         comboboxes_bottles = self.get_comboboxes_bottles(w, True)
         self.set_multiple_combobox_to_top_item(comboboxes_bottles[used_bottles::])
         to_adjust: list[list[QPushButton] | list[QProgressBar] | list[QLabel] | list[QComboBox]] = [

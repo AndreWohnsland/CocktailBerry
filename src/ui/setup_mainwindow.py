@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import QApplication, QLineEdit, QMainWindow
 from src import FUTURE_PYTHON_VERSION
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import Tab, shared
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER, CompactItemDelegate, ItemDelegate
 from src.logger_handler import LoggerHandler
@@ -141,7 +141,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # we need this because the signal does not emit the previous index
         self.previous_tab_index = self.tabWidget.currentIndex()
         # also keep a list of available cocktails for search in cocktails
-        self.available_cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
+        self.available_cocktails = DBC.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
         self._apply_search_to_list()
 
         # internal initialization
@@ -438,7 +438,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         if not cocktail_name:
             DP_CONTROLLER.say_create_cocktail_first()
             return
-        cocktail = DB_COMMANDER.get_cocktail(cocktail_name)
+        cocktail = DBC.get_cocktail(cocktail_name)
         # usually we get a cocktail because the name was from the list
         if not cocktail:
             return
@@ -554,7 +554,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         # since the search window lives in the main window now,
         # switching to it needs to get the current available cocktails
         if index == TabIndex.SEARCH:
-            self.available_cocktails = DB_COMMANDER.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
+            self.available_cocktails = DBC.get_possible_cocktails(cfg.MAKER_MAX_HAND_INGREDIENTS)
             self._apply_search_to_list()
         if index in unprotected_tabs:
             self.previous_tab_index = index
@@ -596,7 +596,7 @@ class MainScreen(QMainWindow, Ui_MainWindow):
         search = DP_CONTROLLER.get_list_widget_selection(self.list_widget_found_cocktails)
         if not search:
             return
-        cocktail = DB_COMMANDER.get_cocktail(search)
+        cocktail = DBC.get_cocktail(search)
         if cocktail is None:
             return
         self.open_cocktail_detail(cocktail)

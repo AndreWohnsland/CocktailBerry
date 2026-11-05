@@ -6,7 +6,7 @@ from typing import Any
 import requests
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.logger_handler import LogFiles, LoggerHandler
 from src.models import Cocktail
 
@@ -121,7 +121,6 @@ class ServiceHandler:
             Dict: Status code and message, or empty if cannot reach service
 
         """
-        DBC = DatabaseCommander()
         try:
             if payload is not None:
                 req = requests.post(endpoint, data=payload, headers=self.headers, timeout=2)
@@ -151,7 +150,6 @@ class ServiceHandler:
     def _check_failed_data(self) -> None:
         """Get one failed teamdata and sends it."""
         endpoint = f"{cfg.TEAM_API_URL}/cocktail"
-        DBC = DatabaseCommander()
         failed_data = DBC.get_failed_teamdata()
         if failed_data is not None:
             msg_id, payload = failed_data

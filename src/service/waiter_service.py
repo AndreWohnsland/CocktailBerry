@@ -8,7 +8,7 @@ from typing import Self
 from src.api.models import WaiterResponse
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.logger_handler import LoggerHandler
 from src.machine.rfid import RFIDReader
 
@@ -74,7 +74,7 @@ class WaiterService:
         nfc_id = shared.current_waiter_nfc_id
         if nfc_id is None:
             return
-        waiter = DatabaseCommander().get_waiter_by_nfc_id(nfc_id)
+        waiter = DBC.get_waiter_by_nfc_id(nfc_id)
         shared.current_waiter = WaiterResponse.from_db(waiter) if waiter else None
         if waiter:
             _logger.debug(f"Service Personnel found: {waiter.name}")

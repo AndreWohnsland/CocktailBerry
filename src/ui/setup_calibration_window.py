@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QCheckBox, QMainWindow, QWidget
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
@@ -212,7 +212,6 @@ class _CalibrationRealWidget(QWidget, Ui_CalibrationRealWidget):
 
     def populate_ingredient_dropdown(self) -> None:
         """Populate the ingredient dropdown with available ingredients."""
-        DBC = DatabaseCommander()
         ingredients = DBC.get_all_ingredients(get_hand=False)
         DP_CONTROLLER.fill_single_combobox(self.input_ingredient, [i.name for i in ingredients], clear_first=True)
 
@@ -284,7 +283,6 @@ class CalibrationScreen(QMainWindow, Ui_CalibrationWindow):
         if self.page_real.is_ingredient_selected:
             # adjust ingredient speed instead of volume flow
             new_speed = int(100 * self.calibration_data.factor)
-            DBC = DatabaseCommander()
             ingredient_name = self.page_real.input_ingredient.currentText()
             ingredient = DBC.get_ingredient(ingredient_name)
             if ingredient is None:

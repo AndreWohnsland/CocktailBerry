@@ -148,9 +148,9 @@ def _power_off(event: EventType, command: list[str]) -> None:
     other hardware. Going down without them leaves the machine in an undefined state.
     """
     # Import here to avoid circular import
-    from src.database_commander import DatabaseCommander
+    from src.database_commander import DB_COMMANDER as DBC
 
-    DatabaseCommander().save_event(event)
+    DBC.save_event(event)
     # trigger manually, the OS command below will not trigger exit fun.
     atexit._run_exitfuncs()  # pylint: disable=protected-access
     subprocess.Popen(command)  # not waited on, the machine is going down anyway
@@ -209,9 +209,9 @@ def update_os() -> bool:
         subprocess.run(command, shell=True, check=True)
         _logger.info("System updated successfully.")
         # Import here to avoid circular import
-        from src.database_commander import DatabaseCommander
+        from src.database_commander import DB_COMMANDER as DBC
 
-        DatabaseCommander().save_event(EventType.OS_UPDATE)
+        DBC.save_event(EventType.OS_UPDATE)
     except subprocess.CalledProcessError as e:
         _logger.error("Could not update system, see debug log for more information.")
         _logger.log_exception(e)

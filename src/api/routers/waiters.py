@@ -11,7 +11,7 @@ from src.api.middleware import master_protected_dependency
 from src.api.models import ApiMessage, CurrentWaiterState, WaiterCreate, WaiterLogEntry, WaiterResponse, WaiterUpdate
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.logger_handler import LoggerHandler
 from src.service.waiter_service import WaiterService
 
@@ -42,7 +42,6 @@ async def logout_current_waiter() -> ApiMessage:
 @protected_router.get("", summary="List all registered waiters")
 async def get_waiters() -> list[WaiterResponse]:
     """Get all registered waiters."""
-    DBC = DatabaseCommander()
     waiters = DBC.get_all_waiters()
     return [WaiterResponse.from_db(w) for w in waiters]
 
@@ -50,7 +49,6 @@ async def get_waiters() -> list[WaiterResponse]:
 @protected_router.post("", summary="Register a new waiter", dependencies=[not_on_demo])
 async def create_waiter(data: WaiterCreate) -> WaiterResponse:
     """Register a new waiter with NFC ID, name, and assigned role."""
-    DBC = DatabaseCommander()
     waiter = DBC.create_waiter(data.nfc_id, data.name, role_id=data.role_id)
     WaiterService().refresh_current_waiter()
     return WaiterResponse.from_db(waiter)
@@ -59,7 +57,6 @@ async def create_waiter(data: WaiterCreate) -> WaiterResponse:
 @protected_router.put("/{nfc_id}", summary="Update a waiter", dependencies=[not_on_demo])
 async def update_waiter(nfc_id: str, data: WaiterUpdate) -> WaiterResponse:
     """Update a waiter's name and/or assigned role."""
-    DBC = DatabaseCommander()
     waiter = DBC.update_waiter(nfc_id, name=data.name, role_id=data.role_id)
     WaiterService().refresh_current_waiter()
     return WaiterResponse.from_db(waiter)
@@ -68,7 +65,6 @@ async def update_waiter(nfc_id: str, data: WaiterUpdate) -> WaiterResponse:
 @protected_router.delete("/{nfc_id}", summary="Delete a waiter", dependencies=[not_on_demo])
 async def delete_waiter(nfc_id: str) -> ApiMessage:
     """Delete a waiter by NFC ID. Unsets current waiter if it matches."""
-    DBC = DatabaseCommander()
     DBC.delete_waiter(nfc_id)
     WaiterService().refresh_current_waiter()
     return ApiMessage(message="Service Personnel deleted successfully")
@@ -77,7 +73,6 @@ async def delete_waiter(nfc_id: str) -> ApiMessage:
 @protected_router.get("/logs", summary="Get waiter cocktail logs")
 async def get_waiter_logs() -> list[WaiterLogEntry]:
     """Get all waiter cocktail logs with waiter and recipe names."""
-    DBC = DatabaseCommander()
     logs = DBC.get_waiter_logs()
     return [
         WaiterLogEntry(

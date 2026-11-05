@@ -29,7 +29,7 @@ class TestSelectOptimalILP:
         )
 
         # Ensure data_utils uses our in-memory DB commander
-        monkeypatch.setattr("src.data_utils.DatabaseCommander", lambda: db_commander)
+        monkeypatch.setattr("src.data_utils.DBC", db_commander)
         # Control the k-pool deterministically
         monkeypatch.setattr(db_commander, "get_most_used_ingredient_ids", lambda k=None: [1, 2, 3, 4, 5])
 
@@ -40,7 +40,7 @@ class TestSelectOptimalILP:
 
     def test_ilp_n2_covers_one_cocktail(self, db_commander: DatabaseCommander, monkeypatch: MonkeyPatch) -> None:
         """With n=2, only one cocktail can be covered; accept either Cuba Libre or With Handadd."""
-        monkeypatch.setattr("src.data_utils.DatabaseCommander", lambda: db_commander)
+        monkeypatch.setattr("src.data_utils.DBC", db_commander)
         monkeypatch.setattr(db_commander, "get_most_used_ingredient_ids", lambda k=None: [1, 2, 3, 4, 5])
 
         ingredients, cocktails = select_optimal(2, "ilp")

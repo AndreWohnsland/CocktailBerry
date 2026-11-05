@@ -6,7 +6,7 @@ from src.api.internal.validation import claim_machine_or_raise, raise_on_validat
 from src.api.middleware import maker_protected
 from src.api.models import ApiMessage, ApiMessageWithData, ErrorDetail, Ingredient, IngredientInput
 from src.config.config_manager import Tab
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import DIALOG_HANDLER as DH
 from src.models import Cocktail, CocktailStatus, PrepareResult
 from src.service import preparation
@@ -23,14 +23,12 @@ protected_router = APIRouter(
 
 @router.get("", summary="Get all ingredients, filtered by machine and hand")
 async def get_ingredients(machine: bool = True, hand: bool = True) -> list[Ingredient]:
-    DBC = DatabaseCommander()
     ingredients = DBC.get_all_ingredients(get_machine=machine, get_hand=hand)
     return [map_ingredient(i) for i in ingredients]
 
 
 @router.get("/{ingredient_id:int}", summary="Get ingredient by ID")
 async def get_ingredient(ingredient_id: int) -> Ingredient:
-    DBC = DatabaseCommander()
     ingredient = DBC.get_ingredient(ingredient_id)
     if ingredient is None:
         message = DH.get_translation("element_not_found", element_name=f"Ingredient (id={ingredient_id})")
@@ -40,7 +38,6 @@ async def get_ingredient(ingredient_id: int) -> Ingredient:
 
 @protected_router.post("", summary="Add new ingredient", dependencies=[not_on_demo])
 async def add_ingredient(ingredient: IngredientInput) -> ApiMessageWithData[Ingredient]:
-    DBC = DatabaseCommander()
     DBC.insert_new_ingredient(
         ingredient_name=ingredient.name,
         alcohol_level=ingredient.alcohol,
@@ -62,7 +59,6 @@ async def add_ingredient(ingredient: IngredientInput) -> ApiMessageWithData[Ingr
 
 @protected_router.put("/{ingredient_id:int}", summary="Update ingredient by ID", dependencies=[not_on_demo])
 async def update_ingredient(ingredient_id: int, ingredient: IngredientInput) -> ApiMessageWithData[Ingredient]:
-    DBC = DatabaseCommander()
     DBC.set_ingredient_data(
         ingredient_name=ingredient.name,
         alcohol_level=ingredient.alcohol,
@@ -88,7 +84,6 @@ async def update_ingredient(ingredient_id: int, ingredient: IngredientInput) -> 
 
 @protected_router.delete("/{ingredient_id:int}", summary="Delete ingredient by ID", dependencies=[not_on_demo])
 async def delete_ingredients(ingredient_id: int) -> ApiMessage:
-    DBC = DatabaseCommander()
     DBC.delete_ingredient(ingredient_id)
     return ApiMessage(message=DH.get_translation("ingredient_deleted", ingredient_name=ingredient_id))
 
@@ -108,7 +103,6 @@ async def delete_ingredients(ingredient_id: int) -> ApiMessage:
     dependencies=[Depends(maker_protected(Tab.MAKER))],
 )
 async def prepare_ingredient(ingredient_id: int, amount: int, background_tasks: BackgroundTasks) -> CocktailStatus:
-    DBC = DatabaseCommander()
     ingredient = DBC.get_ingredient(ingredient_id)
     if ingredient is None:
         message = DH.get_translation("element_not_found", element_name=f"Ingredient (id={ingredient_id})")

@@ -35,9 +35,10 @@ def _mark_addon_configs_initialized(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.fixture
-def db_commander() -> DatabaseCommander:
-    """Fixture to create an in-memory SQLite database and populate it with test data."""
-    db_commander = DatabaseCommander(db_url="sqlite:///:memory:")
+def db_commander(tmp_path: Path) -> DatabaseCommander:
+    """Fixture to create a temporary SQLite database and populate it with test data."""
+    # a file, not :memory:, so the database is shared across threads like in production (TestClient)
+    db_commander = DatabaseCommander(db_url=f"sqlite:///{tmp_path / 'test.db'}")
     # Create ingredients
     db_commander.insert_new_ingredient("White Rum", 40, 1000, False, 100, 100, "ml")  # id 1
     db_commander.insert_new_ingredient("Cola", 0, 1000, False, 100, 50, "ml")  # id 2

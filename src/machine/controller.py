@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Protocol, Self, TypeGuard
 
 from src.config.config_manager import CONFIG as cfg
 from src.config.config_manager import shared
-from src.database_commander import DatabaseCommander
+from src.database_commander import DB_COMMANDER as DBC
 from src.dialog_handler import DIALOG_HANDLER
 from src.logger_handler import LoggerHandler
 from src.machine.carriage import create_carriage
@@ -160,7 +160,7 @@ class MachineController:
             display.close_progression_window()
         if shared.cocktail_status.status != PrepareResult.CANCELED:
             shared.cocktail_status.status = PrepareResult.FINISHED
-        DatabaseCommander().save_event(EventType.CLEANING)
+        DBC.save_event(EventType.CLEANING)
 
     @staticmethod
     def has_tube_volume() -> bool:
@@ -176,13 +176,12 @@ class MachineController:
         """
         if bottle_numbers is None:
             bottle_numbers = range(1, cfg.MAKER_NUMBER_BOTTLES + 1)
-        db = DatabaseCommander()
         ingredients = []
         for num in bottle_numbers:
             tube_volume = cfg.PUMP_CONFIG[num - 1].tube_volume
             if tube_volume <= 0:
                 continue
-            ing = db.get_ingredient_at_bottle(num)
+            ing = DBC.get_ingredient_at_bottle(num)
             if ing is None:
                 continue
             ing.amount = tube_volume
@@ -323,7 +322,7 @@ class MachineController:
         """
         skip_slots: set[int] = set()
         if revert:
-            for ingredient in DatabaseCommander().get_ingredients_at_bottles():
+            for ingredient in DBC.get_ingredients_at_bottles():
                 if ingredient.disallow_pump_back and ingredient.bottle is not None:
                     skip_slots.add(ingredient.bottle)
         items = []

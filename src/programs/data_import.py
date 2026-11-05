@@ -6,7 +6,7 @@ from typing import NoReturn
 
 import typer
 
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.models import Ingredient
 
 
@@ -128,7 +128,7 @@ def _check_intersection(recipes: list[_RecipeInformation], unique_recipes: set[s
     If all recipes already exist, abort.
     """
     # also check if there are already existing recipes
-    cocktails = DB_COMMANDER.get_all_cocktails()
+    cocktails = DBC.get_all_cocktails()
     existing_recipe_names = [c.name for c in cocktails]
     collision_recipes = set(existing_recipe_names).intersection(unique_recipes)
     # if no new recipes will be added, abort
@@ -150,7 +150,7 @@ def _check_intersection(recipes: list[_RecipeInformation], unique_recipes: set[s
 
 def _insert_not_existing_ingredients(ingredients: list[str]) -> None:
     """Check the given ingredients with the DB and insert missing ones."""
-    existing_ingredients = DB_COMMANDER.get_all_ingredients()
+    existing_ingredients = DBC.get_all_ingredients()
     existing_names = [x.name for x in existing_ingredients]
     not_existing_names = list(set(ingredients).difference(set(existing_names)))
     typer.echo(typer.style("Ingredients, that will be added to the DB:", fg=typer.colors.GREEN, bold=True))
@@ -161,7 +161,7 @@ def _insert_not_existing_ingredients(ingredients: list[str]) -> None:
     print("Inserting ingredients:", end=" ")
     for ingredient in not_existing_names:
         print(ingredient, end=", ")
-        DB_COMMANDER.insert_new_ingredient(ingredient, 0, 1000, False, 100, 0, "ml")
+        DBC.insert_new_ingredient(ingredient, 0, 1000, False, 100, 0, "ml")
     print("")
 
 
@@ -172,7 +172,7 @@ def _insert_recipes(recipes: list[_RecipeInformation]) -> None:
     Only using handadd at recipe data if ingredient is handadd only.
     """
     # first get all ingredient data and map them for later fast access to a dict
-    ingredients = DB_COMMANDER.get_all_ingredients()
+    ingredients = DBC.get_all_ingredients()
     ingredient_mapping: dict[str, Ingredient] = {}
     for ingredient in ingredients:
         ingredient_mapping[ingredient.name] = ingredient
@@ -181,7 +181,7 @@ def _insert_recipes(recipes: list[_RecipeInformation]) -> None:
         print(rec.name, end=", ")
         volume = int(sum(x.volume for x in rec.ingredients))
         ingredient_data = [(ingredient_mapping[i.name].id, i.volume, 1) for i in rec.ingredients]
-        DB_COMMANDER.insert_new_recipe(
+        DBC.insert_new_recipe(
             name=rec.name,
             alcohol_level=0,
             volume=volume,

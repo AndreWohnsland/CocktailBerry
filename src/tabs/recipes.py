@@ -9,7 +9,7 @@ from collections import Counter
 from typing import TYPE_CHECKING
 
 from src.config.config_manager import CONFIG as cfg
-from src.database_commander import DB_COMMANDER
+from src.database_commander import DB_COMMANDER as DBC
 from src.display_controller import DP_CONTROLLER
 from src.error_handler import logerror
 from src.models import Cocktail, Ingredient
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 def fill_recipe_box_with_ingredients(w: MainScreen) -> None:
     """Assign all ingredients to the Comboboxes in the recipe tab."""
     comboboxes_recipe = DP_CONTROLLER.get_comboboxes_recipes(w)
-    ingredient_list = [x.name for x in DB_COMMANDER.get_all_ingredients()]
+    ingredient_list = [x.name for x in DBC.get_all_ingredients()]
     DP_CONTROLLER.fill_multiple_combobox(comboboxes_recipe, ingredient_list, clear_first=True)
 
 
@@ -127,12 +127,12 @@ def _check_enter_constraints(current_recipe_name: str, new_recipe_name: str, new
     Returns cocktail, got_error.
     """
     # First checks if the new cocktail already exists
-    cocktail_new = DB_COMMANDER.get_cocktail(new_recipe_name)
+    cocktail_new = DBC.get_cocktail(new_recipe_name)
     if cocktail_new is not None and new_recipe:
         DP_CONTROLLER.say_name_already_exists()
         return cocktail_new.id, True
     # then gets the current cocktail, if it's none, we got a new recipe
-    cocktail_current = DB_COMMANDER.get_cocktail(current_recipe_name)
+    cocktail_current = DBC.get_cocktail(current_recipe_name)
     if cocktail_current is None:
         return 0, False
     # also need to check if the new cocktail name collides with another existing one
@@ -151,7 +151,7 @@ def _build_recipe_data(names: list[str], volumes: list[int], orders: list[int]) 
 
     # first build the ingredient objects for machine add
     for ingredient_name, ingredient_volume, order_number in zip(names, volumes, orders):
-        ingredient: Ingredient = DB_COMMANDER.get_ingredient(ingredient_name)  # type: ignore
+        ingredient: Ingredient = DBC.get_ingredient(ingredient_name)  # type: ignore
         ingredient.amount = ingredient_volume
         ingredient.recipe_order = order_number
         recipe_volume_concentration += ingredient.alcohol * ingredient_volume
@@ -175,7 +175,7 @@ def _enter_or_update_recipe(
     """Logic to insert/update data into DB."""
     ingredient_list_data = [(x.id, x.amount, x.recipe_order) for x in ingredient_data]
     if _id:
-        return DB_COMMANDER.set_recipe(
+        return DBC.set_recipe(
             recipe_id=_id,
             name=name,
             alcohol_level=alcohol_level,
@@ -185,7 +185,7 @@ def _enter_or_update_recipe(
             virgin=virgin,
             ingredient_data=ingredient_list_data,
         )
-    return DB_COMMANDER.insert_new_recipe(
+    return DBC.insert_new_recipe(
         name=name,
         alcohol_level=alcohol_level,
         volume=volume,
@@ -198,7 +198,7 @@ def _enter_or_update_recipe(
 
 def load_recipe_view_names(w: MainScreen) -> None:
     """Update the ListWidget in the recipe Tab."""
-    cocktails = DB_COMMANDER.get_all_cocktails()
+    cocktails = DBC.get_all_cocktails()
     recipe_list = [x.name for x in cocktails]
     DP_CONTROLLER.clear_list_widget_recipes(w)
     DP_CONTROLLER.fill_list_widget_recipes(w, recipe_list)
@@ -214,7 +214,7 @@ def load_selected_recipe_data(w: MainScreen) -> None:
         return
 
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
-    cocktail = DB_COMMANDER.get_cocktail(recipe_name)
+    cocktail = DBC.get_cocktail(recipe_name)
     if cocktail is None:
         return
     DP_CONTROLLER.set_recipe_data(w, cocktail)
@@ -233,7 +233,7 @@ def delete_recipe(w: MainScreen) -> None:
     if not DP_CONTROLLER.password_prompt(cfg.UI_MASTERPASSWORD, permission_key="options"):
         return
 
-    DB_COMMANDER.delete_recipe(recipe_name)
+    DBC.delete_recipe(recipe_name)
     DP_CONTROLLER.remove_recipe_from_list_widget(w, recipe_name)
     DP_CONTROLLER.clear_recipe_data_recipes(w, False)
     DP_CONTROLLER.update_maker_view(w)
@@ -245,7 +245,7 @@ def enable_all_recipes(w: MainScreen) -> None:
     """Set all recipes to enabled."""
     if not DP_CONTROLLER.ask_enable_all_recipes():
         return
-    DB_COMMANDER.set_all_recipes_enabled()
+    DBC.set_all_recipes_enabled()
     DP_CONTROLLER.update_maker_view(w)
     DP_CONTROLLER.clear_recipe_data_recipes(w, True)
     DP_CONTROLLER.say_all_recipes_enabled()
