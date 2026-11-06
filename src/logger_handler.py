@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import time
 from enum import StrEnum
 from pathlib import Path
 from typing import Literal
@@ -119,3 +120,31 @@ class LoggerHandler:
     def critical(self, message: object, *args: object, **kwargs: object) -> None:
         """Log the message under the critical level."""
         self.logger.critical(message, *args, **kwargs)  # type: ignore
+
+
+class FailureStreak:
+    """Log discipline for retry loops: the first failure of a streak, at most once per interval, and its recovery.
+
+    A permanently broken device logs once, a flapping one at most once per interval, and a
+    streak that starts inside the quiet interval is still logged once the interval has passed.
+    """
+
+    def __init__(self, logger: LoggerHandler, what: str, interval_s: float = 60.0) -> None:
+        self._logger = logger
+        self._what = what
+        self._interval_s = interval_s
+        self._logged = False
+        self._last_log = float("-inf")
+
+    def failed(self, error: Exception) -> None:
+        if self._logged or time.monotonic() - self._last_log < self._interval_s:
+            return
+        self._logger.error(f"{self._what} failed, retrying")
+        self._logger.log_exception(error)
+        self._last_log = time.monotonic()
+        self._logged = True
+
+    def recovered(self) -> None:
+        if self._logged:
+            self._logger.info(f"{self._what} works again")
+        self._logged = False
