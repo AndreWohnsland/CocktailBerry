@@ -6,7 +6,7 @@ import time
 import psutil
 
 from src.database_commander import DB_COMMANDER as DBC
-from src.logger_handler import LogFiles, LoggerHandler
+from src.logger_handler import FailureStreak, LogFiles, LoggerHandler
 
 _logger = LoggerHandler("resource_tracker", LogFiles.RESOURCES)
 
@@ -16,10 +16,16 @@ def _resource_logger_thread(log_interval: int, session_number: int) -> None:
     _logger.info("The data will be saved in the database and can be accessed via the GUI")
     sense_interval = 5
     critical_usage = 90
+    streak = FailureStreak(_logger, "Saving the resource usage")
     while True:
         cpu_usage = psutil.cpu_percent(interval=sense_interval)
         ram_usage = psutil.virtual_memory().percent
-        DBC.save_resource_usage(cpu_usage, ram_usage, session_number)
+        try:
+            DBC.save_resource_usage(cpu_usage, ram_usage, session_number)
+        except Exception as e:  # a full disk or locked file must not end the tracking for the session
+            streak.failed(e)
+        else:
+            streak.recovered()
         if ram_usage > critical_usage:
             _logger.critical(f"Machine ressources are on the limit: CPU: {cpu_usage}%, RAM: {ram_usage}%")
         time.sleep(log_interval - sense_interval)
