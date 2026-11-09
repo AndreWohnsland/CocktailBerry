@@ -9,13 +9,14 @@ import time
 from collections.abc import Callable
 from dataclasses import fields
 from importlib import import_module
+from itertools import count
 from typing import TYPE_CHECKING, Any, Literal
 
 import requests
 from requests.exceptions import ConnectionError as ReqConnectionError
 
 from src.filepath import ADDON_FOLDER
-from src.logger_handler import LoggerHandler
+from src.logger_handler import FailureStreak, LoggerHandler
 from src.models import AddonData, Cocktail
 from src.programs.addons import AddonInterface
 
@@ -30,6 +31,10 @@ _SupportedActions = Literal[
     "after_cocktail",
     "cocktail_trigger",
 ]
+_TRIGGER_POLL_S = 0.5
+# an addon bug must not end its trigger for the whole session
+_TRIGGER_ERROR_BACKOFF_S = 5.0
+
 _logger = LoggerHandler("AddonManager")
 _check_addon = "please check addon or contact provider"
 _GITHUB_ADDON_SOURCE = "https://raw.githubusercontent.com/AndreWohnsland/CocktailBerry-Addons/main/addon_data_v2.json"
@@ -47,6 +52,7 @@ class AddOnManager:
         filenames = [x.stem for x in addon_files if "__init__" not in x.stem]
         self.addons: dict[str, AddonInterface] = {}
         self.addon_thread_ids: dict[str, int] = {}
+        self._thread_ids = count()
         for filename in filenames:
             self._load_in_addon(filename)
 
@@ -91,25 +97,19 @@ class AddOnManager:
         prepare_function: Callable[[Cocktail], tuple[bool, str]],
         thread_id: int,
     ) -> None:
-        self.addon_thread_ids[addon_name] = thread_id
+        streak = FailureStreak(_logger, f"cocktail_trigger of addon {addon_name}")
         while True:
-            time.sleep(0.5)
+            time.sleep(_TRIGGER_POLL_S)
             # if there was a new thread for the addon started, or this one removed, exit
             if self.addon_thread_ids.get(addon_name, -1) != thread_id:
                 break
             try:
-                func: Callable = getattr(addon, "cocktail_trigger")
-                func(prepare_function)
-            # In case of an interface change in base app, this error will occur
-            except TypeError:
-                _logger.error(
-                    f"Could not execute cocktail_trigger for {addon.__module__}. "
-                    + "This is probably due to a change in CocktailBerry that the addon currently did not adapt to."
-                )
-                break
-            # If the function is not found (should usually not happen), ignore it
-            except AttributeError:
-                break
+                addon.cocktail_trigger(prepare_function)
+            except Exception as e:
+                streak.failed(e)
+                time.sleep(_TRIGGER_ERROR_BACKOFF_S)
+                continue
+            streak.recovered()
 
     def start_trigger_loop(self) -> None:
         """Run every addon's cocktail_trigger in its own background thread."""
@@ -120,9 +120,12 @@ class AddOnManager:
         # runtime import: preparation imports ADDONS from this module
         from src.service.preparation import addon_prepare_flow
 
+        # registered before the thread runs, so a remove in between cannot be undone by the thread
+        thread_id = next(self._thread_ids)
+        self.addon_thread_ids[addon_name] = thread_id
         thread = threading.Thread(
             target=self._run_in_background,
-            args=(addon_name, addon, addon_prepare_flow, int(time.time())),
+            args=(addon_name, addon, addon_prepare_flow, thread_id),
         )
         thread.daemon = True
         thread.start()
