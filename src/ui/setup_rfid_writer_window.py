@@ -30,6 +30,7 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
 
         self.keyboard_window: KeyboardWidget | None = None
         self.rfid = RFIDReader()
+        self._writing = False
 
         UI_LANGUAGE.adjust_rfid_reader_window(self)
         self.showFullScreen()
@@ -44,18 +45,30 @@ class RFIDWriterWindow(QMainWindow, Ui_RFIDWriterWindow):
             return
         self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("prompt"))
         self.button_write.setDisabled(True)
-        self.rfid.write_rfid(text, self._display_success)
+        # the reader may be busy with waiter or payment sensing, then this window must not stop it on close;
+        # the flag is set before the call because the success handler clears it from the reader thread
+        self._writing = True
+        if not self.rfid.write_rfid(text, self._display_success):
+            self._writing = False
+            self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("busy"))
+            self.button_write.setDisabled(False)
+
+    def _cancel_own_write(self) -> None:
+        if self._writing:
+            self.rfid.cancel_reading()
+            self._writing = False
 
     def _close_window(self) -> None:
-        self.rfid.cancel_reading()
+        self._cancel_own_write()
         self.close()
 
     def __del__(self) -> None:
-        self.rfid.cancel_reading()
+        self._cancel_own_write()
 
     def _display_success(self, _: str) -> None:
         self.label_information.setText(UI_LANGUAGE.get_rfid_information_display("success"))
         self.button_write.setDisabled(False)
+        self._writing = False
 
     def _open_keyboard(self, le_to_write: QLineEdit, max_char_len: int = 30) -> None:
         """Open up the keyboard connected to the lineedit."""

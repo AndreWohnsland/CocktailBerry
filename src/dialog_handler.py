@@ -1001,7 +1001,7 @@ class UiLanguage:
         w.button_write.setText(self._choose_language("write", window))
         w.label_information.setText(self._choose_language("start_text", window))
 
-    def get_rfid_information_display(self, element: Literal["success", "prompt", "error"]) -> str:
+    def get_rfid_information_display(self, element: Literal["success", "prompt", "error", "busy"]) -> str:
         """Return the information element for rfid."""
         return self._choose_language(element, "rfid_writer")
 
