@@ -62,8 +62,10 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
         self._thread.start()
 
         if cfg.nfc_enabled:
+            # the reader may be busy with waiter or payment sensing, then this window must not stop it on close
             self._rfid_reader = RFIDReader()
-            self._rfid_reader.read_rfid(self._write_rfid_value)
+            if not self._rfid_reader.read_rfid(self._write_rfid_value):
+                self._rfid_reader = None
         else:
             # we do not need the person label, so remove it
             self.person_label.deleteLater()
@@ -75,14 +77,17 @@ class TeamScreen(QMainWindow, Ui_Teamselection):
     def set_team(self, team: str) -> None:
         _logger.debug(f"Team {team} selected")
         shared.selected_team = team
-        if self._rfid_reader is not None:
-            self._rfid_reader.cancel_reading()
+        self._cancel_own_read()
         self.selection_done.emit(team)
         self.close()
 
     def __del__(self) -> None:
+        self._cancel_own_read()
+
+    def _cancel_own_read(self) -> None:
         if self._rfid_reader is not None:
             self._rfid_reader.cancel_reading()
+            self._rfid_reader = None
 
     def _get_leaderboard_data(self) -> None:
         """Get leaderboard data.
