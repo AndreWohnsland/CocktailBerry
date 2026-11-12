@@ -132,7 +132,9 @@ class NFCPaymentService:
             cfg.PAYMENT_TYPE = "Disabled"
             return
         _logger.info("Starting continuous NFC sensing for NFCPaymentService.")
-        self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
+        if not self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0):
+            _logger.error("The NFC reader is already in use. Disabling payment service.")
+            cfg.PAYMENT_TYPE = "Disabled"
 
     def add_callback(self, name: str, callback: Callable[[UserLookup], None]) -> None:
         """Add a named callback to be invoked when a user is detected."""

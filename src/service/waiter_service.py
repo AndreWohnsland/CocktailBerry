@@ -52,7 +52,9 @@ class WaiterService:
             cfg.WAITER_MODE = False
             return
         _logger.info("Starting continuous NFC sensing for WaiterService.")
-        self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0)
+        if not self.rfid_reader.read_rfid(self._handle_nfc_read, read_delay_s=1.0):
+            _logger.error("The NFC reader is already in use. Disabling waiter mode.")
+            cfg.WAITER_MODE = False
 
     def _handle_nfc_read(self, _text: str, nfc_id: str) -> None:
         """Handle NFC read events from the reader thread."""
