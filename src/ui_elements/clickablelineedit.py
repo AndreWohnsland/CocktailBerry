@@ -6,6 +6,6 @@ class ClickableLineEdit(QLineEdit):
     """ Additional class to add a click event to the QLineEdit. """
     clicked = pyqtSignal()
 
-    def mousePressEvent(self, event):  # ty:ignore[invalid-method-override]
+    def mousePressEvent(self, event):
         self.clicked.emit()
         QLineEdit.mousePressEvent(self, event)
