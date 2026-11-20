@@ -14,7 +14,7 @@
     "check": "biome check ./src",
     "check:fix": "biome check --apply ./src",
     "preview": "vite preview",
-    "storybook": "10.6.7",
+    "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "dependencies": {
