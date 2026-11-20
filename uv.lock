@@ -623,7 +623,7 @@ requires-dist = [
     { name = "sqlalchemy", specifier = ">=2.0.52" },
     { name = "sse-starlette", specifier = ">=3.4.8" },
     { name = "stamina", specifier = ">=26.1.0" },
-    { name = "sumup", specifier = "==0.4.2" },
+    { name = "sumup", specifier = "==0.4.3" },
     { name = "typer", specifier = ">=0.27.1" },
     { name = "uvicorn", specifier = ">=0.52.1" },
 ]
@@ -3042,16 +3042,16 @@ wheels = [
 
 [[package]]
 name = "sumup"
-version = "0.4.2"
+version = "0.4.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
     { name = "pydantic" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/22/06/cd529e08bb2837a62c775a40620ca7d268bf6eb4920315d07fa2ddab704f/sumup-0.4.2.tar.gz", hash = "sha256:102d7d7c7c470d1b68af0810010571eb9717d31c2fc8cdfb078c70debe40eb10", size = 104720, upload-time = "2026-11-12T16:47:16.145Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bc/84/96c967af42830d8c31dac6943072ed2e1ffe00f742c80ac077b01c70b6b4/sumup-0.4.3.tar.gz", hash = "sha256:a99a50eacf773ecd7aff7950bbc31475c5c50749ea603ffe0117ef985c249447", size = 105099, upload-time = "2026-11-17T15:07:58.815Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cc/99/f2e971125fa6e6345e2c7445aa10039cf0a7e945f90fa168fe6f6e073243/sumup-0.4.2-py3-none-any.whl", hash = "sha256:99cdcca6a74cb14f878d244a459294bf61d19a3d63d6b008fc6703fa987d9ec7", size = 108471, upload-time = "2026-11-12T16:47:14.975Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/84/c7587bd2e939ba6b49214dfd4096c2399e51ec80fab7f3756fd410a8e26a/sumup-0.4.3-py3-none-any.whl", hash = "sha256:ee36858eabb4e8e0299cdaa4a40526e686a15198da73561c6db57bf6f9e66061", size = 108873, upload-time = "2026-11-17T15:07:57.367Z" },
 ]
 
 [[package]]
