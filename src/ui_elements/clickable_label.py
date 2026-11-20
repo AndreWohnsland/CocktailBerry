@@ -7,7 +7,7 @@ class ClickableLabel(QLabel):
 
     clicked = pyqtSignal()
 
-    def mouseReleaseEvent(self, event):  # ty:ignore[invalid-method-override]
+    def mouseReleaseEvent(self, event):
         if self.rect().contains(event.pos()):
             self.clicked.emit()
         QLabel.mouseReleaseEvent(self, event)
