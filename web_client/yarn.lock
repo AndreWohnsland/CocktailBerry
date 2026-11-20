@@ -2439,7 +2439,7 @@ __metadata:
     "@vitest/coverage-v8": "npm:^5.1.0"
     axios: "npm:^1.21.1"
     globals: "npm:^17.14.0"
-    i18next: "npm:^27.1.4"
+    i18next: "npm:^27.1.5"
     playwright: "npm:^1.65.1"
     react: "npm:^19.3.1"
     react-dom: "npm:^19.3.1"
@@ -3164,15 +3164,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^27.1.4":
-  version: 27.1.4
-  resolution: "i18next@npm:27.1.4"
+"i18next@npm:^27.1.5":
+  version: 27.1.5
+  resolution: "i18next@npm:27.1.5"
   peerDependencies:
     typescript: ^5 || ^6 || ^7
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/7621f72c93c493d0cea5b13ded0d5078b276c21df6bf687dbba8552e90373429e4d7da0624346b5679649c0320ba24cbb974539e15376e46adb9dfede56cddb1
+  checksum: 10c0/e345e01bcde5ae268a3a6ae1f3f0ef1e1402230160877111430c8e7a1e0e586388af25fcf21142e1a2e7c9b97c85517b994afadc1832ecf12a16dbf62dd0d9a4
   languageName: node
   linkType: hard
 
