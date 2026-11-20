@@ -112,22 +112,6 @@ class DisplayController(DialogHandler):
             return user_data.name if isinstance(user_data, Cocktail) else user_data
         return first_selected.text()
 
-    def get_list_widget_items(self, list_widget: QListWidget) -> list[str] | list[Cocktail]:
-        """Return the items of the list widget."""
-        # usually will have only one of both types in list, no mix.
-        # In the future, there should be an argument in the function to define cocktail or str
-        list_widget_data: list[str] | list[Cocktail] = []
-        for i in range(list_widget.count()):
-            item = list_widget.item(i)
-            if item is None:
-                continue
-            data: Cocktail | None = item.data(Qt.ItemDataRole.UserRole)
-            if data is not None:
-                list_widget_data.append(data)  # ty: ignore[invalid-argument-type]
-            else:
-                list_widget_data.append(item.text())
-        return list_widget_data
-
     def get_ingredient_data(self, w: Ui_MainWindow) -> Ingredient:
         """Return an Ingredient Object from the ingredient data fields."""
         ingredient_input = self.get_ingredient_fields(w)

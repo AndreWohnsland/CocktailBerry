@@ -9,7 +9,7 @@ requires-python = ">= 3.13"
 dependencies = [
     "gitpython>=3.1.59",
     "requests>=2.34.2",
-    "sumup==0.4.0",
+    "sumup==0.4.2",
     "pyyaml>=6.0.3",
     "typer>=0.27.1",
     "pyfiglet>=1.0.4",
@@ -51,7 +51,7 @@ dev = [
   "pytest>=9.1.1",
   "pytest-cov>=7.1.0",
   "pre-commit>=4.6.2",
-  "ty==0.0.95",
+  "ty==0.0.104",
   "ruff>=0.16.2",
   "zensical>=0.0.59",
 ]
@@ -73,7 +73,8 @@ exclude-newer = "3 days"
 default-groups = ["dev", "pi-hardware"]
 override-dependencies = [
     "pyqt6-qt6; sys_platform != 'linux' or python_version >= '3.12'",
-    "pyqt6; sys_platform != 'linux' or python_version >= '3.12'"
+    # 6.12.1 ships broken stubs (typing.Self parents, pyqtSignal arguments required), the override replaces the extra's constraint
+    "pyqt6!=6.12.1; sys_platform != 'linux' or python_version >= '3.12'"
 ]
 
 # Legacy: only affects the `uv pip` CLI (used by old migrations), NOT `uv sync`/`uv lock`.
@@ -146,7 +147,7 @@ ignore = [
 
 [[tool.ty.overrides]]
 include  = ["src.ui_elements.*"]
-rules = { unresolved-import = "ignore" }
+rules = { import-not-found = "ignore" }
 
 [[tool.ty.overrides]]
 include = [
@@ -160,4 +161,4 @@ include = [
   "src/machine/scale/hx711_custom.py",
   "src/machine/scale/nau7802.py",
 ]
-rules = { unresolved-import = "ignore", invalid-type-form = "ignore", unresolved-attribute = "ignore", possibly-missing-attribute = "ignore" }
+rules = { import-not-found = "ignore", invalid-type-form = "ignore", missing-attribute = "ignore", possibly-missing-attribute = "ignore" }
