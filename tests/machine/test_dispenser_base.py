@@ -75,7 +75,7 @@ class DummyDispenser(BaseDispenser):
 
     def _dispense_steps(self, amount_ml: float, pump_speed: int):
         self.pump_on = True
-        self._scale.pump_started_at = self._scale.clock.monotonic()  # ty:ignore[unresolved-attribute, invalid-assignment]
+        self._scale.pump_started_at = self._scale.clock.monotonic()  # ty:ignore[missing-union-attribute, invalid-assignment]
         try:
             while True:
                 consumption = self._get_consumption(0.0)
@@ -84,7 +84,7 @@ class DummyDispenser(BaseDispenser):
                     return
         finally:
             self.pump_on = False
-            self._scale.pump_stopped_at = self._scale.clock.monotonic()  # ty:ignore[unresolved-attribute, invalid-assignment]
+            self._scale.pump_stopped_at = self._scale.clock.monotonic()  # ty:ignore[missing-union-attribute, invalid-assignment]
 
 
 @pytest.fixture
@@ -176,7 +176,7 @@ def test_noisy_scale_settle_hits_timeout(clock: FakeClock) -> None:
             scale.noise_g = 2.0  # above jitter threshold: reading never counts as stable
         return original_read()
 
-    scale.read_grams = noisy_after_pump_off  # ty:ignore[invalid-assignment]
+    scale.read_grams = noisy_after_pump_off
 
     settle_start_max = 10.0  # generous bound for the dispense itself
     result = dispenser.dispense(40.0, 100, revert=False, callback=callback)
@@ -197,7 +197,7 @@ def test_stall_watchdog_stops_on_empty_bottle(clock: FakeClock) -> None:
     def bottle_empty_at_15ml() -> float:
         return min(original_read(), 15.0)
 
-    scale.read_grams = bottle_empty_at_15ml  # ty:ignore[invalid-assignment]
+    scale.read_grams = bottle_empty_at_15ml
 
     result = dispenser.dispense(100.0, 100, revert=False, callback=callback)
 
@@ -219,7 +219,7 @@ def test_cleaning_ignores_scale(clock: FakeClock) -> None:
         scale_calls += 1
         return 0.0
 
-    scale.read_grams = counting_read  # ty:ignore[invalid-assignment]
+    scale.read_grams = counting_read
     scale.tare = counting_read  # ty:ignore[invalid-assignment]
 
     # without scale reads nothing advances the clock, so the callback drives it

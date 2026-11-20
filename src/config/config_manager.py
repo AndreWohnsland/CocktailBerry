@@ -830,7 +830,7 @@ class ConfigManager:
             elif list_type is None:
                 list_type = type(default_value[0])
             config_class = config_type_mapping[list_type]
-            config_setting = ListType(config_class(list_validation_function), min_length)  # pyright: ignore[reportArgumentType]
+            config_setting = ListType(config_class(list_validation_function), min_length)  # pyright: ignore[reportArgumentType]  # ty:ignore[invalid-argument-type]
         else:
             config_type = type(default_value)
             config_class = config_type_mapping[config_type]

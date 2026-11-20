@@ -20,7 +20,7 @@ DEFAULT_DB = REPO_ROOT / "cocktail_data_en.db"
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
-import localize_database  # noqa: E402  # ty:ignore[unresolved-import]
+import localize_database  # noqa: E402  # ty:ignore[import-not-found]
 
 
 def _ingredient_names(db_path: Path) -> set[str]:

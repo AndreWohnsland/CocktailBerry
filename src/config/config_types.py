@@ -331,11 +331,11 @@ class DictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
         self.dict_types = dict_types
         self.config_class = config_class
 
-    def validate(self, configname: str, config_dict: dict[str, Any]) -> None:  # ty:ignore[invalid-method-override]
+    def validate(self, configname: str, value: dict[str, Any]) -> None:
         """Validate the given value."""
-        super().validate(configname, config_dict)
+        super().validate(configname, value)
         for key_name, key_type in self.dict_types.items():
-            key_value = config_dict.get(key_name)
+            key_value = value.get(key_name)
             if key_type.default is not None and key_value is None:
                 key_value = key_type.default
             if key_value is None:
@@ -343,13 +343,13 @@ class DictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]):
             key_text = f"{configname} key {key_name}"
             key_type.validate(key_text, key_value)
 
-    def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:  # ty:ignore[invalid-method-override]
+    def from_config(self, value: dict[str, Any]) -> ConfigClassT:
         """Deserialize the given value."""
-        return self.config_class.from_config(config_dict)
+        return self.config_class.from_config(value)
 
-    def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:  # ty:ignore[invalid-method-override]
+    def to_config(self, value: ConfigClassT) -> dict[str, Any]:
         """Serialize the given value."""
-        return config_class.to_config()
+        return value.to_config()
 
     def get_default(self) -> dict[str, Any]:
         """Get the default value - dict with default values for all declared fields.
@@ -411,19 +411,19 @@ class DiscriminatedDictType[ConfigClassT: ConfigClass](_ConfigType[ConfigClassT]
             raise ConfigError(f"Unknown {self.discriminator} '{disc_value}' in '{configname}', allowed: {allowed}")
         return variant
 
-    def validate(self, configname: str, config_dict: dict[str, Any]) -> None:  # ty:ignore[invalid-method-override]
-        super().validate(configname, config_dict)
-        variant = self._resolve_variant(configname, config_dict)
-        variant.validate(configname, config_dict)
+    def validate(self, configname: str, value: dict[str, Any]) -> None:
+        super().validate(configname, value)
+        variant = self._resolve_variant(configname, value)
+        variant.validate(configname, value)
 
-    def from_config(self, config_dict: dict[str, Any]) -> ConfigClassT:  # ty:ignore[invalid-method-override]
-        variant = self._resolve_variant("", config_dict)
-        return variant.from_config(config_dict)
+    def from_config(self, value: dict[str, Any]) -> ConfigClassT:
+        variant = self._resolve_variant("", value)
+        return variant.from_config(value)
 
-    def to_config(self, config_class: ConfigClassT) -> dict[str, Any]:  # ty:ignore[invalid-method-override]
-        disc_value = getattr(config_class, self.discriminator)
+    def to_config(self, value: ConfigClassT) -> dict[str, Any]:
+        disc_value = getattr(value, self.discriminator)
         variant = self.variants[disc_value]
-        return variant.to_config(config_class)
+        return variant.to_config(value)
 
     def get_default(self) -> dict[str, Any]:
         """Get the default value from the first variant."""
