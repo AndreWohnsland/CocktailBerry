@@ -59,7 +59,9 @@ def run_catching[**P, T](
             reason: str = str(exc)
             code = None
             if isinstance(exc, APIError):
-                reason = str(exc.body)
+                # since sdk 0.4 documented bodies are models and connection errors have no body,
+                # the sdk already puts their detail into the message; raw json bodies stay as dict
+                reason = str(exc.body) if isinstance(exc.body, (dict, list, str)) else exc.message
                 code = exc.status
             _logger.debug(f"SumUp API error: {reason} (code: {code})")
             return Err(error=_format_sumup_error(reason), code=code)
