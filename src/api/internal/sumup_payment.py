@@ -22,7 +22,7 @@ def requires_sumup_payment(cocktail: Cocktail) -> bool:
 def _get_price_in_cents(cocktail: Cocktail) -> int:
     """Calculate the cocktail price in cents for SumUp."""
     price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, virgin_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100)
-    return int(price * 100)
+    return round(price * 100)
 
 
 class SumupPaymentHandler:

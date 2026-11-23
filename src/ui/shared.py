@@ -88,7 +88,7 @@ def qt_payment_flow(cocktail: Cocktail) -> CocktailBooking:
 def sumup_payment_flow(cocktail: Cocktail) -> CocktailBooking:  # noqa: PLR0911
     """Run the SumUp payment flow for qt."""
     price = cocktail.current_price(cfg.PAYMENT_PRICE_ROUNDING, virgin_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100)
-    value_in_cents = int(price * 100)
+    value_in_cents = round(price * 100)
     if value_in_cents <= 0:
         _logger.info(f"Skipping SumUp checkout for free cocktail '{cocktail.name}'")
         return CocktailBooking.inactive()

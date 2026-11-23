@@ -126,7 +126,8 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
       alcohol === 'virgin' && !selectedCocktail.is_naturally_virgin ? config.PAYMENT_VIRGIN_MULTIPLIER / 100 : 1;
     const rawPrice = ((amount * pricePer100) / 100) * virginMultiplier;
     const roundTo = config.PAYMENT_PRICE_ROUNDING;
-    const price = roundTo > 0 ? Math.ceil(rawPrice / roundTo) * roundTo : rawPrice;
+    // same rounding as current_price in the backend, toFixed removes float noise like 37.00000000000001 steps
+    const price = roundTo > 0 ? Math.ceil(Number((rawPrice / roundTo).toFixed(6))) * roundTo : rawPrice;
     // Determine decimal places from roundTo
     const decimalPlaces = (roundTo.toString().split('.')[1] || '').length;
     const formatted = price.toFixed(decimalPlaces).replace(/\.?0+$/, '');

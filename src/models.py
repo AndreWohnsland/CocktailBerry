@@ -246,7 +246,8 @@ class Cocktail:
         raw_price = self.price_per_100_ml / 100 * amount * multiplier
         if round_to_next <= 0:
             return raw_price
-        return math.ceil(raw_price / round_to_next) * round_to_next
+        # remove float noise first, 37.00000000000001 steps would be one step too much
+        return math.ceil(round(raw_price / round_to_next, 6)) * round_to_next
 
     def is_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Return if the recipe is possible with given additional hand add ingredients."""
