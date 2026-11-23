@@ -1,5 +1,7 @@
 """Tests for virgin related logic on the Cocktail model."""
 
+import pytest
+
 from src.models import Cocktail, Ingredient
 
 
@@ -85,3 +87,23 @@ def test_naturally_virgin_recipe_never_gets_the_virgin_discount() -> None:
     cocktail.price_per_100_ml = 10
     assert cocktail.current_price(0, virgin_multiplier=0.5) == 20
     assert cocktail.current_price(0, virgin_multiplier=0.5, as_virgin=True) == 20
+
+
+@pytest.mark.parametrize(
+    ("price_per_100_ml", "amount", "round_to_next", "expected"),
+    [
+        (3.7, 100, 0.1, 3.7),
+        (1.8, 250, 0.05, 4.5),
+        (2.1, 300, 0.1, 6.3),
+        (3.6, 250, 0.5, 9.0),
+        (3.71, 100, 0.1, 3.8),
+        (2.5, 100, 0.25, 2.5),
+        (2.51, 100, 0.25, 2.75),
+    ],
+)
+def test_price_is_rounded_up_to_the_next_step_only(
+    price_per_100_ml: float, amount: int, round_to_next: float, expected: float
+) -> None:
+    cocktail = _cocktail([_ingredient(1, "Cola", alcohol=0)])
+    cocktail.price_per_100_ml = price_per_100_ml
+    assert cocktail.current_price(round_to_next, amount) == pytest.approx(expected)
