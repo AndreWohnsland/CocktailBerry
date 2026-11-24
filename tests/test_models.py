@@ -106,4 +106,5 @@ def test_price_is_rounded_up_to_the_next_step_only(
 ) -> None:
     cocktail = _cocktail([_ingredient(1, "Cola", alcohol=0)])
     cocktail.price_per_100_ml = price_per_100_ml
-    assert cocktail.current_price(round_to_next, amount) == pytest.approx(expected)
+    # exact, not approx: the Qt label and external payment apis get this float as is
+    assert cocktail.current_price(round_to_next, amount) == expected

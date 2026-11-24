@@ -243,11 +243,12 @@ class Cocktail:
             amount = self.adjusted_amount
         served_virgin = self.is_virgin if as_virgin is None else as_virgin
         multiplier = virgin_multiplier if served_virgin and not self.is_naturally_virgin else 1.0
-        raw_price = self.price_per_100_ml / 100 * amount * multiplier
-        if round_to_next <= 0:
-            return raw_price
-        # remove float noise first, 37.00000000000001 steps would be one step too much
-        return math.ceil(round(raw_price / round_to_next, 6)) * round_to_next
+        # work in integer cents, float steps like 0.1 carry noise that pushes ceil one step too high
+        cents = round(self.price_per_100_ml * amount * multiplier)
+        step_cents = round(round_to_next * 100)
+        if step_cents > 0:
+            cents = math.ceil(cents / step_cents) * step_cents
+        return cents / 100
 
     def is_possible(self, hand_available: list[int], max_hand_ingredients: int) -> bool:
         """Return if the recipe is possible with given additional hand add ingredients."""
