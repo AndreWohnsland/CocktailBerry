@@ -48,6 +48,44 @@ def test_ingredient_listing_filters_hand_ingredients(client: TestClient) -> None
     assert "Blue Curacao" not in machine_only
 
 
+def test_cocktail_servings_carry_the_charged_prices(
+    client: TestClient, db_commander: DatabaseCommander, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from src.config.config_manager import CONFIG as cfg
+
+    cuba_libre = db_commander.get_cocktail(1)
+    assert cuba_libre is not None
+
+    def set_price(price: float, virgin: bool) -> None:
+        ingredients = [(i.id, i.amount, i.recipe_order) for i in cuba_libre.ingredients]
+        db_commander.set_recipe(1, cuba_libre.name, 0, cuba_libre.amount, price, True, virgin, ingredients)
+
+    set_price(3.67, virgin=False)
+    monkeypatch.setattr(cfg, "MAKER_USE_RECIPE_VOLUME", False)
+    monkeypatch.setattr(cfg, "MAKER_PREPARE_VOLUME", [250, 150])
+    monkeypatch.setattr(cfg, "PAYMENT_PRICE_ROUNDING", 0.25)
+    monkeypatch.setattr(cfg, "PAYMENT_VIRGIN_MULTIPLIER", 50)
+
+    monkeypatch.setattr(cfg, "PAYMENT_TYPE", "SumUp")
+    servings = client.get("/api/cocktails/1").json()["servings"]
+    # 150 ml is 5.505 raw: half cents round up, so the step lifts it to 5.75 and not 5.50
+    assert servings == [
+        {"amount": 150, "price": 5.75, "virgin_price": None},
+        {"amount": 250, "price": 9.25, "virgin_price": None},
+    ]
+
+    set_price(3.67, virgin=True)
+    servings = client.get("/api/cocktails/1").json()["servings"]
+    assert [s["virgin_price"] for s in servings] == [2.75, 4.75]
+
+    monkeypatch.setattr(cfg, "PAYMENT_TYPE", "Disabled")
+    servings = client.get("/api/cocktails/1").json()["servings"]
+    assert servings == [
+        {"amount": 150, "price": None, "virgin_price": None},
+        {"amount": 250, "price": None, "virgin_price": None},
+    ]
+
+
 def test_cocktail_detail_and_bottle_assignment(client: TestClient) -> None:
     cocktail = client.get("/api/cocktails/1").json()
     assert cocktail["name"] == "Cuba Libre"

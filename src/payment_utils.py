@@ -3,6 +3,7 @@ import copy
 from src.config.config_manager import CONFIG as cfg
 from src.models import Cocktail
 from src.service.nfc_payment_service import User
+from src.service.preparation import serving_sizes
 
 
 def filter_cocktails_by_user(user: User | None, cocktails: list[Cocktail]) -> list[Cocktail]:
@@ -11,11 +12,7 @@ def filter_cocktails_by_user(user: User | None, cocktails: list[Cocktail]) -> li
     if user is None:
         return cocktails
     filtered = []
-    lowest_amount = min(cfg.MAKER_PREPARE_VOLUME) if cfg.MAKER_PREPARE_VOLUME else None
     for cocktail in cocktails:
-        cocktail_amount = cocktail.amount
-        if not cfg.MAKER_USE_RECIPE_VOLUME and lowest_amount is not None:
-            cocktail_amount = lowest_amount
         # a minor may only have cocktails that can be served without alcohol, and only that way
         cocktail.is_allowed = True
         if not user.is_adult and not (cocktail.virgin_available or cocktail.is_naturally_virgin):
@@ -27,7 +24,7 @@ def filter_cocktails_by_user(user: User | None, cocktails: list[Cocktail]) -> li
         # the recipe is unscaled here, so tell the price what the user would be served
         price = cocktail.current_price(
             cfg.PAYMENT_PRICE_ROUNDING,
-            cocktail_amount,
+            serving_sizes(cocktail)[0],
             virgin_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100,
             as_virgin=not user.is_adult,
         )

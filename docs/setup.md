@@ -99,12 +99,12 @@ They can be used at your own risk of CocktailBerry not working 100% properly.
 
     General Payment Config:
 
-    | Value Name                  | Description                                                    |
-    | :-------------------------- | :------------------------------------------------------------- |
-    | `PAYMENT_TYPE`              | Type of payment integration to use                             |
-    | `PAYMENT_PRICE_ROUNDING`    | Next multiple of this number to round up to                    |
-    | `PAYMENT_VIRGIN_MULTIPLIER` | Multiplier percentage to apply to virgin cocktail prices       |
-    | `PAYMENT_TIMEOUT_S`         | Timeout in seconds before reader cancels payment NFC/RFID scan |
+    | Value Name                  | Description                                                             |
+    | :-------------------------- | :---------------------------------------------------------------------- |
+    | `PAYMENT_TYPE`              | Type of payment integration to use                                      |
+    | `PAYMENT_PRICE_ROUNDING`    | Next multiple of this number to round up to (half cents round up first) |
+    | `PAYMENT_VIRGIN_MULTIPLIER` | Multiplier percentage to apply to virgin cocktail prices                |
+    | `PAYMENT_TIMEOUT_S`         | Timeout in seconds before reader cancels payment NFC/RFID scan          |
 
 
     CocktailBerry Payment Service Config:

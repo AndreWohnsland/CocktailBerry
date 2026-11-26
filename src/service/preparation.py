@@ -25,6 +25,13 @@ from src.service_handler import SERVICE_HANDLER
 _logger = LoggerHandler("preparation")
 
 
+def serving_sizes(cocktail: Cocktail) -> list[int]:
+    """Volumes a cocktail can be ordered in, ascending."""
+    if cfg.MAKER_USE_RECIPE_VOLUME or not cfg.MAKER_PREPARE_VOLUME:
+        return [cocktail.amount]
+    return sorted(int(x) for x in cfg.MAKER_PREPARE_VOLUME)
+
+
 # also covers the DB and addon work after pumping, make_cocktail only guards the pump run itself
 @release_on_error()
 def prepare_cocktail(

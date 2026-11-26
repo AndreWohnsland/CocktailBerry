@@ -99,6 +99,8 @@ def test_naturally_virgin_recipe_never_gets_the_virgin_discount() -> None:
         (3.71, 100, 0.1, 3.8),
         (2.5, 100, 0.25, 2.5),
         (2.51, 100, 0.25, 2.75),
+        # 5.505 raw: half a cent rounds up to 5.51, which the step then lifts to 5.75
+        (3.67, 150, 0.25, 5.75),
     ],
 )
 def test_price_is_rounded_up_to_the_next_step_only(

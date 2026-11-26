@@ -235,16 +235,18 @@ class Cocktail:
     ) -> float:
         """Return the price of the cocktail matched to next multiple of round_to_next.
 
-        The virgin multiplier only applies to a virgin serving of a recipe that has alcohol in it;
-        a naturally virgin recipe costs full price. ``as_virgin`` overrides the scaled state for
-        callers pricing a hypothetical virgin serving.
+        The raw price is rounded to cents first, half a cent rounds up, then the cents are
+        raised to the next multiple of the step. The virgin multiplier only applies to a virgin
+        serving of a recipe that has alcohol in it; a naturally virgin recipe costs full price.
+        ``as_virgin`` overrides the scaled state for callers pricing a hypothetical virgin serving.
         """
         if amount is None:
             amount = self.adjusted_amount
         served_virgin = self.is_virgin if as_virgin is None else as_virgin
         multiplier = virgin_multiplier if served_virgin and not self.is_naturally_virgin else 1.0
-        # work in integer cents, float steps like 0.1 carry noise that pushes ceil one step too high
-        cents = round(self.price_per_100_ml * amount * multiplier)
+        # work in integer cents, float steps like 0.1 carry noise that pushes ceil one step too high;
+        # floor(x + 0.5) instead of round(), which would send half cents to the even neighbour
+        cents = math.floor(self.price_per_100_ml * amount * multiplier + 0.5)
         step_cents = round(round_to_next * 100)
         if step_cents > 0:
             cents = math.ceil(cents / step_cents) * step_cents

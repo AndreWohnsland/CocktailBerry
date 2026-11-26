@@ -13,6 +13,7 @@ from src.dialog_handler import UI_LANGUAGE
 from src.display_controller import DP_CONTROLLER
 from src.image_utils import RANDOM_IMAGE_NAME, find_cocktail_image
 from src.models import Cocktail, Ingredient
+from src.service.preparation import serving_sizes
 from src.ui.creation_utils import (
     LARGE_FONT,
     NARROW_WIDTH_THRESHOLD,
@@ -236,12 +237,9 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
     def _scale_cocktail(self, amount: int | None = None) -> None:
         """Scale the cocktail to given conditions for volume and alcohol."""
         # if no amount is given, take the middle of the volume list
-        # this will give the first element if there is only one element
         if amount is None:
-            amount = cfg.MAKER_PREPARE_VOLUME[len(cfg.MAKER_PREPARE_VOLUME) // 2]
-        # overwrite the amount if the cocktail has a fixed volume
-        if cfg.MAKER_USE_RECIPE_VOLUME:
-            amount = self.cocktail.amount
+            sizes = serving_sizes(self.cocktail)
+            amount = sizes[len(sizes) // 2]
         self.cocktail.scale_cocktail(amount, self.alcohol_factor * (cfg.MAKER_ALCOHOL_FACTOR / 100))
 
     def update_cocktail_data(self) -> None:
@@ -415,7 +413,7 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             return
         # multi-button mode: drop the designer button and build one per volume
         DP_CONTROLLER.delete_items_of_layout(self.container_prepare_button)
-        volume_list = sorted(int(x) for x in cfg.MAKER_PREPARE_VOLUME)
+        volume_list = serving_sizes(self.cocktail)
         icon_list = _generate_needed_cocktail_icons(self.icons, len(volume_list))
 
         # First add the label, we don't need it in every button
@@ -441,8 +439,8 @@ class CocktailSelection(QDialog, Ui_CocktailSelection):
             self._volume_buttons.append((volume, button))
 
     def _single_button_volume(self) -> int:
-        """Volume targeted by the single prepare button (recipe amount or first configured volume)."""
-        return self.cocktail.amount if cfg.MAKER_USE_RECIPE_VOLUME else cfg.MAKER_PREPARE_VOLUME[0]
+        """Volume targeted by the single prepare button (recipe amount or smallest configured volume)."""
+        return serving_sizes(self.cocktail)[0]
 
     def _render_prepare_buttons(self) -> None:
         """Render labels on all prepare buttons for current cocktail/mode state.
