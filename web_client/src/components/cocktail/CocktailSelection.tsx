@@ -121,7 +121,7 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
     const serving = selectedCocktail.servings.find((s) => s.amount === amount);
     const price = (alcohol === 'virgin' ? serving?.virgin_price : serving?.price) ?? null;
     if (price === null) return `${amount}`;
-    return `${amount}: ${price.toFixed(2).replace(/\.?0+$/, '')}€`;
+    return `${amount}: ${price}€`;
   };
 
   return (
