@@ -8,12 +8,20 @@ export interface CocktailIngredient {
   unit: string;
 }
 
+export interface Serving {
+  amount: number;
+  // null when payment is disabled, virgin_price also when the recipe has no virgin option
+  price: number | null;
+  virgin_price: number | null;
+}
+
 export interface Cocktail {
   id: number;
   name: string;
   alcohol: number;
   amount: number;
   price_per_100_ml: number;
+  servings: Serving[];
   is_allowed: boolean;
   enabled: boolean;
   virgin_available: boolean;

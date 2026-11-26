@@ -39,12 +39,20 @@ class CocktailsAndIngredients(BaseModel):
     ingredients: list[Ingredient]
 
 
+class Serving(BaseModel):
+    amount: int
+    # None when payment is disabled, virgin_price also when the recipe has no virgin option
+    price: float | None
+    virgin_price: float | None
+
+
 class Cocktail(BaseModel):
     id: int
     name: str
     alcohol: int
     amount: int
     price_per_100_ml: float
+    servings: list[Serving]
     enabled: bool
     is_allowed: bool
     virgin_available: bool

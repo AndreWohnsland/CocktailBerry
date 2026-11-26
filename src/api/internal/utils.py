@@ -2,7 +2,7 @@ from typing import overload
 
 from fastapi import Depends, HTTPException, Request
 
-from src.api.models import Bottle, Cocktail, CocktailIngredient, CocktailInput, Ingredient
+from src.api.models import Bottle, Cocktail, CocktailIngredient, CocktailInput, Ingredient, Serving
 from src.config.config_manager import CONFIG as cfg
 from src.database_commander import DB_COMMANDER as DBC
 from src.database_commander import ElementNotFoundError
@@ -10,6 +10,7 @@ from src.filepath import DEFAULT_IMAGE_FOLDER
 from src.image_utils import find_cocktail_image, find_default_cocktail_image
 from src.models import Cocktail as DBCocktail
 from src.models import Ingredient as DBIngredient
+from src.service.preparation import serving_sizes
 
 
 @overload
@@ -20,17 +21,16 @@ def map_cocktail(cocktail: DBCocktail | None, scale: bool = True) -> Cocktail | 
     if cocktail is None:
         return None
     # scale by the middle of the cocktail amount data, apply user specified alcohol factor
-    default_amount = cfg.MAKER_PREPARE_VOLUME[len(cfg.MAKER_PREPARE_VOLUME) // 2]
-    if cfg.MAKER_USE_RECIPE_VOLUME:
-        default_amount = cocktail.amount
+    sizes = serving_sizes(cocktail)
     if scale:
-        cocktail.scale_cocktail(default_amount, cfg.MAKER_ALCOHOL_FACTOR / 100)
+        cocktail.scale_cocktail(sizes[len(sizes) // 2], cfg.MAKER_ALCOHOL_FACTOR / 100)
     return Cocktail(
         id=cocktail.id,
         name=cocktail.name,
         alcohol=int(cocktail.adjusted_alcohol),
         amount=cocktail.adjusted_amount,
         price_per_100_ml=cocktail.price_per_100_ml,
+        servings=[_serving(cocktail, amount) for amount in sizes],
         enabled=cocktail.enabled,
         is_allowed=cocktail.is_allowed,
         virgin_available=cocktail.virgin_available,
@@ -52,6 +52,23 @@ def map_cocktail(cocktail: DBCocktail | None, scale: bool = True) -> Cocktail | 
         image=create_image_url(cocktail),
         default_image=create_image_url(cocktail, default=True),
     )
+
+
+def _serving(cocktail: DBCocktail, amount: int) -> Serving:
+    """Price a serving the way the payment flows will charge it, so the client never computes a price."""
+    if not cfg.payment_enabled:
+        return Serving(amount=amount, price=None, virgin_price=None)
+
+    def price(as_virgin: bool) -> float:
+        return cocktail.current_price(
+            cfg.PAYMENT_PRICE_ROUNDING,
+            amount,
+            virgin_multiplier=cfg.PAYMENT_VIRGIN_MULTIPLIER / 100,
+            as_virgin=as_virgin,
+        )
+
+    virgin_possible = cocktail.virgin_available or cocktail.is_naturally_virgin
+    return Serving(amount=amount, price=price(False), virgin_price=price(True) if virgin_possible else None)
 
 
 @overload

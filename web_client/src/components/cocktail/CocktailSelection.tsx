@@ -16,7 +16,6 @@ import ProgressModal from '../common/ProgressModal';
 import RefillPrompt from './RefillPrompt';
 import ServingSizeButtons from './ServingSizeButtons';
 import TeamSelection from './TeamSelection';
-import { FALLBACK_SERVING_SIZES } from './utils';
 
 interface CocktailModalProps {
   selectedCocktail: Cocktail;
@@ -55,9 +54,6 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
   const { t } = useTranslation();
   const alcoholFreeSuffix =
     alcohol === 'virgin' && !selectedCocktail.is_naturally_virgin ? ` (${t('cocktails.alcoholFree')})` : '';
-  const possibleServingSizes = config.MAKER_USE_RECIPE_VOLUME
-    ? [displayCocktail.amount]
-    : (config.MAKER_PREPARE_VOLUME ?? FALLBACK_SERVING_SIZES);
 
   useEffect(() => {
     const initialAlcoholState = selectedCocktail.only_virgin ? 'virgin' : 'normal';
@@ -120,18 +116,12 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
     .filter((ingredient) => ingredient.hand)
     .sort((a, b) => b.amount - a.amount);
 
-  const calculateDisplayPrice = (amount: number, pricePer100: number): string => {
-    if (config.PAYMENT_TYPE === 'Disabled') return '';
-    const virginMultiplier =
-      alcohol === 'virgin' && !selectedCocktail.is_naturally_virgin ? config.PAYMENT_VIRGIN_MULTIPLIER / 100 : 1;
-    const rawPrice = ((amount * pricePer100) / 100) * virginMultiplier;
-    const roundTo = config.PAYMENT_PRICE_ROUNDING;
-    // same rounding as current_price in the backend, toFixed removes float noise like 37.00000000000001 steps
-    const price = roundTo > 0 ? Math.ceil(Number((rawPrice / roundTo).toFixed(6))) * roundTo : rawPrice;
-    // Determine decimal places from roundTo
-    const decimalPlaces = (roundTo.toString().split('.')[1] || '').length;
-    const formatted = price.toFixed(decimalPlaces).replace(/\.?0+$/, '');
-    return `: ${formatted}€`;
+  // the backend prices every serving the way it will charge it, the client only picks and formats
+  const servingLabel = (amount: number): string => {
+    const serving = selectedCocktail.servings.find((s) => s.amount === amount);
+    const price = (alcohol === 'virgin' ? serving?.virgin_price : serving?.price) ?? null;
+    if (price === null) return `${amount}`;
+    return `${amount}: ${price}€`;
   };
 
   return (
@@ -237,9 +227,9 @@ const CocktailSelection: React.FC<CocktailModalProps> = ({
             </div>
           </div>
           <ServingSizeButtons
-            servingSizes={possibleServingSizes}
+            servingSizes={selectedCocktail.servings.map((s) => s.amount)}
             onSelect={prepareCocktailClick}
-            getLabel={(amount) => amount + calculateDisplayPrice(amount, displayCocktail.price_per_100_ml)}
+            getLabel={servingLabel}
           />
         </div>
       </div>
